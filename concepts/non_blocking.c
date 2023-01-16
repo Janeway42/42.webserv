@@ -21,7 +21,7 @@
 	// If you want to set a specific flag and leave the other flags as-is,
 	// then you must F_GETFL the old flags, | the new flag in, 
 	// and then F_SETFL the result. This must be done as two separate system calls;
-	fc = fcntl(server_fd, F_SETFL, fcntl(fd, F_GETFL) | O_NONBLOCK);
+	fc = fcntl(server_fd, F_SETFL, fcntl(server_fd, F_GETFL) | O_NONBLOCK);
 
 
 	// poll

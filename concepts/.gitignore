@@ -1,0 +1,7 @@
+*.o
+*.dSYM
+.vscode
+
+a.out
+server
+client

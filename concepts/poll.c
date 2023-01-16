@@ -18,8 +18,9 @@ int main(void)
 
 	while (1)
 	{
-		poll(&mypoll, 1, 100); 
-		// poll(&mypoll, 1, -1) does not block anymore
+		poll(&mypoll, 1, 1); 
+		// printf("test\n");
+		// poll(&mypoll, 1, -1); // blocks indefinetly
 		if (mypoll.revents & POLLIN)
 		{
 			read(0, name, sizeof(name));
