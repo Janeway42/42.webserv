@@ -1,11 +1,10 @@
-#include <sys/socket.h>
-#include <sys/un.h>
-#include <netdb.h>
-
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-#include <string.h>
+
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <netdb.h>
 
 #include <sys/event.h>
 #include <sys/time.h>
