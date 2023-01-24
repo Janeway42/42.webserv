@@ -140,7 +140,9 @@ int main()
 			{
 				char buffer[1024];
 				recv(fd, &buffer, sizeof(buffer), 0);
-				printf("buffer received: %s\n", buffer);
+				printf("buffer received and read: %s\n", buffer);
+
+				send(fd, "message back: Hello to you too!\n", 19, 0);
 			}
 
 			else if (evList[i].filter == EVFILT_WRITE)
@@ -157,5 +159,19 @@ int main()
 
 
 
+// struct kevent {
+// 	uintptr_t       ident;          /* identifier for this event */
+// 	int16_t         filter;         /* filter for event */
+// 	uint16_t        flags;          /* general flags */
+// 	uint32_t        fflags;         /* filter-specific flags */
+// 	intptr_t        data;           /* filter-specific data */
+// 	void            *udata;         /* opaque user data identifier */
+// };
 
-// docs: 
+// The filter field specifies the type of kernel event. If it is either EVFILT_READ or EVFILT_WRITE, kqueue works similar to epoll. 
+// In this case, the ident field represents a file descriptor. The ident field may represent other types of identifiers, 
+// such as process ID and signal number, depending on the filter type.
+
+// The udata field is passed in and out of the kernel unchanged, and is not used in any way. The usage of this
+// field is entirely application dependent, and is provided as a way to efficiently implement a function dispatch
+// routine, or otherwise add an application identifier to the kevent structure
