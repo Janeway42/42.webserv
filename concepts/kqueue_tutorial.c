@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include <sys/socket.h>
 #include <netdb.h>
@@ -120,6 +121,9 @@ int main()
 			if (evList[i].flags & EV_EOF)  // end connection ???? 
 			{
 				printf("connection closed\n");
+				EV_SET(&evSet, fd, EVFILT_READ, EV_DELETE, 0, 0, NULL);    /// is it necessary???????
+                if (kevent(kq, &evSet, 1, NULL, 0, NULL) == -1) // pass info 
+					return (error_kq(kq, "kevent"));
 				close(fd); // socket is automatically removed from kq by the kernel
 			}
 
@@ -131,7 +135,10 @@ int main()
 				fd = accept(evList[i].ident, (struct sockaddr *)&socket_addr, &socklen);
 				if (fd == -1)
 					return (error_kq(kq, "accept"));
-				EV_SET(&evSet, fd, EVFILT_READ | EVFILT_WRITE, EV_ADD, 0, 0, NULL); // fill evSet
+				EV_SET(&evSet, fd, EVFILT_READ, EV_ADD, 0, 0, NULL); // fill evSet
+				if (kevent(kq, &evSet, 1, NULL, 0, NULL) == -1) // pass info 
+					return (error_kq(kq, "kevent"));
+				EV_SET(&evSet, fd, EVFILT_WRITE, EV_ADD, 0, 0, NULL); // fill evSet
 				if (kevent(kq, &evSet, 1, NULL, 0, NULL) == -1) // pass info 
 					return (error_kq(kq, "kevent"));
 			}
@@ -141,19 +148,37 @@ int main()
 				char buffer[1024];
 				recv(fd, &buffer, sizeof(buffer), 0);
 				printf("buffer received and read: %s\n", buffer);
+				printf("loop1: %d\n", loop1);
 
-				send(fd, "message back: Hello to you too!\n", 19, 0);
+				send(fd, "Hello back from read!\n", 22, 0);
+				// char *buffer1;
+				// char *loop;
+				// loop = itoa(loop1, buffer1, 10);
+				// send(fd, loop, strlen(loop), 0);
 			}
 
 			else if (evList[i].filter == EVFILT_WRITE)
 			{
-				printf("write loop\n");
-				send(fd, evList[i].udata, sizeof(evList[i].udata), 0);
+				printf("write loop - loop1: %d\n", loop1);
+
+				send(fd, "HTTP/2 200 OK\n", 14, 0);
+				send(fd, "Content-Lenght: 24\n", 19, 0);
+				send(fd, "\n", 1, 0);
+				send(fd, "Hello back from write!\n", 23, 0);
+				EV_SET(&evSet, fd, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);    /// is it necessary???????
+                if (kevent(kq, &evSet, 1, NULL, 0, NULL) == -1) // pass info 
+					return (error_kq(kq, "kevent write"));
+				// close(fd);
+				// send(fd, evList[i].udata, sizeof(evList[i].udata), 0);
 				// if (send(fd, evList[i].udata, sizeof(evList[i].udata), 0) == -1)  ??????????
 			}
 		}
 		loop1++;
+		// if (loop1 == 20)
+		// 	break ;
 	}
+	close(kq); // necessary??
+	freeaddrinfo(addr);
 	return (0);
 }
 

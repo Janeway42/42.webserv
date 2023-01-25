@@ -13,6 +13,8 @@ class requestStorage
 		std::string buffer;
 		int fd;
 		int method;
+		std::string path;
+		std::string protocol; //??????
 
 	requestStorage(void);
 	~requestStorage(void);
