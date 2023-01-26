@@ -96,8 +96,7 @@ int main()
 
 	struct kevent evList[32]; // stores the incoming events that need to be processed 
 	int nr_events;
-	int i;
-	int fd; // tenporary storage - gets overriden once the info gets passed to kq
+	int i = 0;
 	struct sockaddr_storage socket_addr;
 	// struct sockaddr - stores IPv6, struct sockaddr_in - stores IPv4 , struct sockaddr_storage - stores both IPv4 and IPv6
 	socklen_t socklen = sizeof(socket_addr);
@@ -105,34 +104,43 @@ int main()
 	int loop1 = 0;
 	while (1)
 	{
-		printf("WHILE LOOP: %d\n", loop1);
+		printf("WHILE LOOP ------------------------------ %d\n", loop1);
 		nr_events = kevent(kq, NULL, 0, evList, 32, NULL);
 		printf("NR EVENTS: %d\n", nr_events);
 
 		if (nr_events < 1)
 			return (error_kq(kq, "number events"));
 
-		for (i = 0; i < nr_events; i++)
+		for ( i = 0; i < nr_events; i++)
 		{
-			printf("incoming connection ...\n");
-			fd = evList[i].ident; // file descriptor of the incoming request
-			printf("I: %d\n", i);
+			// printf("incoming connection ...\n");
+			// fd = evList[i].ident; // file descriptor of the incoming request
 
-			if (evList[i].flags & EV_EOF)  // end connection ???? 
+			int fd;
+			if (evList[i].flags)
+				fd = evList[i].ident;
+
+			printf("\ni: %d\n", i);
+			printf("filter: %hd\n", evList[i].filter);
+	
+			if (evList[i].flags & EV_ERROR)  // end connection ???? 
 			{
-				printf("connection closed\n");
-				EV_SET(&evSet, fd, EVFILT_READ, EV_DELETE, 0, 0, NULL);    /// is it necessary???????
-                if (kevent(kq, &evSet, 1, NULL, 0, NULL) == -1) // pass info 
+				printf("connection closed,\n");
+				EV_SET(&evSet, fd, EVFILT_READ, EV_DELETE, 0, 0, NULL);
+                if (kevent(kq, &evSet, 1, NULL, 0, NULL) == -1) 
 					return (error_kq(kq, "kevent"));
-				close(fd); // socket is automatically removed from kq by the kernel
+				close(evList[i].ident); 
 			}
 
-			else if (fd == listening_socket) // incoming connection from a new client
+			else if (evList[i].ident == listening_socket) // incoming connection from a new client
 			{
-				printf("FD: %d\n", fd);
-				fcntl(fd, F_SETFL, O_NONBLOCK);  // add the non-block property
-				// accept creates a new client socket which inherits the properties of the original socket. 
+				printf("start loop \n");
+
+				printf("FD: %lu\n", evList[i].ident);
+				int opt_value = 1;
 				fd = accept(evList[i].ident, (struct sockaddr *)&socket_addr, &socklen);
+				fcntl(fd, F_SETFL, O_NONBLOCK);  // add the non-block property
+				setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &opt_value, sizeof(opt_value));
 				if (fd == -1)
 					return (error_kq(kq, "accept"));
 				EV_SET(&evSet, fd, EVFILT_READ, EV_ADD, 0, 0, NULL); // fill evSet
@@ -140,39 +148,34 @@ int main()
 					return (error_kq(kq, "kevent"));
 				EV_SET(&evSet, fd, EVFILT_WRITE, EV_ADD, 0, 0, NULL); // fill evSet
 				if (kevent(kq, &evSet, 1, NULL, 0, NULL) == -1) // pass info 
-					return (error_kq(kq, "kevent"));
+					return (error_kq(kq, "kevent"));				
 			}
 
-			else if (evList[i].filter == EVFILT_READ)
+			if (evList[i].filter == EVFILT_READ)
 			{
-				char buffer[1024];
-				recv(fd, &buffer, sizeof(buffer), 0);
-				printf("buffer received and read: %s\n", buffer);
-				printf("loop1: %d\n", loop1);
+				printf("read loop\n");
 
-				send(fd, "Hello back from read!\n", 22, 0);
-				// char *buffer1;
-				// char *loop;
-				// loop = itoa(loop1, buffer1, 10);
-				// send(fd, loop, strlen(loop), 0);
+				char buffer[5000] = {0};
+				memset(&buffer, '\0', sizeof(buffer));
+				int read = recv(fd, &buffer, sizeof(buffer), 0);
+				printf("buffer received and read: %s, byes: %d\n", buffer, read);
 			}
 
 			else if (evList[i].filter == EVFILT_WRITE)
 			{
-				printf("write loop - loop1: %d\n", loop1);
-
-				send(fd, "HTTP/2 200 OK\n", 14, 0);
-				send(fd, "Content-Lenght: 24\n", 19, 0);
-				send(fd, "\n", 1, 0);
-				send(fd, "Hello back from write!\n", 23, 0);
-				EV_SET(&evSet, fd, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);    /// is it necessary???????
-                if (kevent(kq, &evSet, 1, NULL, 0, NULL) == -1) // pass info 
-					return (error_kq(kq, "kevent write"));
-				// close(fd);
+					send(fd, "HTTP/2 200 OK\n", 14, 0);
+					send(fd, "Content-Length: 23\n", 19, 0);
+					send(fd, "\n", 1, 0);
+					int sent = send(fd, "Hello back from write!\n", 23, 0);
+					printf("sent: %d\n", sent);
+					close(fd);
+				// }
+				// cookies? 
 				// send(fd, evList[i].udata, sizeof(evList[i].udata), 0);
 				// if (send(fd, evList[i].udata, sizeof(evList[i].udata), 0) == -1)  ??????????
 			}
 		}
+		printf("\n");
 		loop1++;
 		// if (loop1 == 20)
 		// 	break ;
