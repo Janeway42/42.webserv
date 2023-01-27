@@ -1,0 +1,4 @@
+/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_MAKE_PROGRAM=/usr/bin/make -G "Unix Makefiles" -S /Users/joycemacksuele/42/RANKS/rank05/webserv -B /Users/joycemacksuele/42/RANKS/rank05/webserv/cmake-build-release
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /Users/joycemacksuele/42/RANKS/rank05/webserv/cmake-build-release
