@@ -1,15 +1,4 @@
-#include <unistd.h>
-#include <stdio.h>
-#include <string.h>
-
-#include <sys/socket.h>
-#include <netdb.h>
-
-#include <fcntl.h>
-
-#include <sys/event.h>
-// --------- cpp -----------
-#include "kqueue.hpp"
+#include "Server.hpp"
 
 
 typedef std::vector<requestStorage>::iterator vectIt;
@@ -39,6 +28,18 @@ vectIt getLocation(std::vector<requestStorage> storage, int fd)
 	return (it);
 }
 
+int close_connection(int kq, struct kevent event, int filter)
+{
+	struct kevent evSet;
+
+	printf("connection closed - read \n");
+	EV_SET(&evSet, event.ident, filter, EV_DELETE, 0, 0, NULL); 
+	if (kevent(kq, &evSet, 1, NULL, 0, NULL) == -1) 
+		return (1);
+	close(event.ident); 
+	return (0);
+}
+
 void prepareRequest(requestStorage* storage, vectIt location)
 {
 	// extract from location->buffer the method 
@@ -62,55 +63,38 @@ void prepareRequest(requestStorage* storage, vectIt location)
 
 int main()
 {
-
-	struct addrinfo hints;
-	struct addrinfo *addr;
-
-	memset(&hints, 0, sizeof(hints));
-	hints.ai_family = PF_UNSPEC;
-	hints.ai_flags = AI_PASSIVE;
-	hints.ai_socktype = SOCK_STREAM;
-	if (getaddrinfo("127.0.0.1", "8080", &hints, &addr) != 0)
-		return (error("getaddrinfo"));
-
-	int listening_socket = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
-	if (listening_socket == -1)
-		return (error("socket"));
-	fcntl(listening_socket, F_SETFL, O_NONBLOCK);
-
-	int socket_on = 1;
-	setsockopt(listening_socket, SOL_SOCKET, SO_REUSEADDR, &socket_on, sizeof(socket_on));
-	if (bind(listening_socket, addr->ai_addr, addr->ai_addrlen) == -1)
-		return (error("bind"));
-	if (listen(listening_socket, 5) == -1)
-		return (error("listen"));
-
-	// -------------------------- kqueue initialization ---------------------------------------------------------
-
-	int kq;
-	struct kevent evSet;
-
-	kq = kqueue();
-	if (kq == -1)
-		return (error("kqueue"));
-	EV_SET(&evSet, listening_socket, EVFILT_READ, EV_ADD, 0, 0, NULL);
-	if (kevent(kq, &evSet, 1, NULL, 0, NULL) == -1)
+	try
 	{
-		close (kq);
-		return (error("kevent start"));
+		Server webserv = new Server();
 	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
+	}	
+	
+	try
+	{
+		webserv.runServer();
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
+	}
+	
 
-	struct kevent evList[32];
-	int nr_events;
-	int i;
-	int fd;
-	struct sockaddr_storage socket_addr;
-	socklen_t socklen = sizeof(socket_addr);
-	std::vector <requestStorage> storage;
 
+
+
+
+
+
+
+
+	int loop1 = 0;
 	while (1)
 	{
-		nr_events = kevent(kq, NULL, 0, evList, 32, NULL);
+		printf("WHILE LOOP ------------------------------ %d\n", loop1);
+		int nr_events = kevent(kq, NULL, 0, evList, 32, NULL);
 		printf("NR EVENTS: %d\n", nr_events);
 
 		if (nr_events < 1)

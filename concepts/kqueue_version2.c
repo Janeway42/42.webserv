@@ -16,6 +16,8 @@
 
 #include <sys/event.h>
 
+#define BUFFER_SIZE 1024
+
 
 int error(char *str)
 {
@@ -23,10 +25,23 @@ int error(char *str)
 	return (1);
 }
 
-int error_kq(int kq, char *str)
+int error_kq(int kq, struct addrinfo *addr, char *str)
 {
 	close(kq);
+	freeaddrinfo(addr);
 	return (error(str));
+}
+
+int close_connection(int kq, struct kevent event, int filter)
+{
+	struct kevent evSet;
+
+	printf("connection closed - read \n");
+	EV_SET(&evSet, event.ident, filter, EV_DELETE, 0, 0, NULL); 
+	if (kevent(kq, &evSet, 1, NULL, 0, NULL) == -1) 
+		return (1);
+	close(event.ident); 
+	return (0);
 }
 
 int main()
@@ -67,7 +82,7 @@ int main()
 	kq = kqueue(); // the file descriptor used to communicate 
 	if (kq == -1)
 		return (error("kqueue"));
-	EV_SET(&evSet, listening_socket, EVFILT_READ, EV_ADD, 0, 0, NULL);
+	EV_SET(&evSet, listening_socket, EVFILT_READ, EV_ADD | EV_CLEAR, NOTE_WRITE	, 0, NULL);
 	if (kevent(kq, &evSet, 1, NULL, 0, NULL) == -1) 
 	{
 		close (kq);
@@ -75,7 +90,6 @@ int main()
 	}
 
 	struct kevent evList[32];
-	int nr_events;
 	int i;
 	struct sockaddr_storage socket_addr;
 	socklen_t socklen = sizeof(socket_addr);
@@ -84,68 +98,89 @@ int main()
 	while (1)
 	{
 		printf("WHILE LOOP ------------------------------ %d\n", loop1);
-		nr_events = kevent(kq, NULL, 0, evList, 32, NULL);
+		int nr_events = kevent(kq, NULL, 0, evList, 32, NULL);
 		printf("NR EVENTS: %d\n", nr_events);
 
 		if (nr_events < 1)
-			return (error_kq(kq, "number events"));
+			return (error_kq(kq, addr, "number events"));
 
 		for (i = 0; i < nr_events; i++)
 		{
-
-			if (evList[i].flags & EV_EOF)
-			{
-				printf("connection closed\n");
-				EV_SET(&evSet, evList[i].ident, EVFILT_READ, EV_DELETE, 0, 0, NULL); 
-               	if (kevent(kq, &evSet, 1, NULL, 0, NULL) == -1) 
-					return (error_kq(kq, "kevent read eof"));
-				close(evList[i].ident); 
-			}
-
 			printf("filter: %hd\n", evList[i].filter);
-			
-			if (evList[i].filter == EVFILT_READ)
-			{
-				printf("does it get here...\n");
 
-				if (evList[i].ident == listening_socket)
+			if (evList[i].flags & EV_ERROR)
+				printf("Event error\n");
+
+			else if (evList[i].ident == listening_socket)
+			{
+				printf("START\n");
+				
+				int opt_value = 1;
+				int fd = accept(evList[i].ident, (struct sockaddr *)&socket_addr, &socklen);
+				fcntl(fd, F_SETFL, O_NONBLOCK);  
+				setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &opt_value, sizeof(opt_value));
+				if (fd == -1)
+					return (error_kq(kq, addr, "accept"));
+				EV_SET(&evSet, fd, EVFILT_READ, EV_ADD, 0, 0, NULL); 
+				if (kevent(kq, &evSet, 1, NULL, 0, NULL) == -1) 
+					return (error_kq(kq, addr, "kevent add read"));
+				EV_SET(&evSet, fd, EVFILT_WRITE, EV_ADD, 0, 0, NULL); 
+				if (kevent(kq, &evSet, 1, NULL, 0, NULL) == -1) 
+					return (error_kq(kq, addr, "kevent add write"));				
+			}
+			
+			else if (evList[i].filter == EVFILT_READ)
+			{
+				if (evList[i].flags & EV_EOF)
 				{
-					// printf("incoming connection ...\n");
-					printf("start loop\n");
-					
-					int opt_value = 1;
-					int fd = accept(evList[i].ident, (struct sockaddr *)&socket_addr, &socklen);
-					fcntl(fd, F_SETFL, O_NONBLOCK);  
-					setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &opt_value, sizeof(opt_value));
-					if (fd == -1)
-						return (error_kq(kq, "accept"));
-					EV_SET(&evSet, fd, EVFILT_READ, EV_ADD, 0, 0, NULL); 
-					if (kevent(kq, &evSet, 1, NULL, 0, NULL) == -1) 
-						return (error_kq(kq, "kevent add read"));
-					EV_SET(&evSet, fd, EVFILT_WRITE, EV_ADD, 0, 0, NULL); 
-					if (kevent(kq, &evSet, 1, NULL, 0, NULL) == -1) 
-					return (error_kq(kq, "kevent add write"));				
+					if (close_connection(kq, evList[i], EVFILT_READ) == 1)
+						return (error_kq(kq, addr, "kevent read eof"));
+				}
+				else
+				{
+					printf("READ\n");
+					char buffer[BUFFER_SIZE];
+					int ret = recv(evList[i].ident, &buffer, sizeof(buffer), 0);
+					if (ret < 0)
+					{
+						printf("error reading\n");
+						close_connection(kq, evList[i], EVFILT_READ);
+					}
+					// if (ret == 0)
+					// 	finished reading
+					// else
+					// 	append the new part of the message 
+					printf("buffer received and read: %s\n", buffer);
+					printf("bytes read: %d\n", ret);
+					memset(&buffer, '\0', sizeof(buffer));
 				}
 
-				printf("\nfrom read\n");
-				char buffer[1024] = {0};
-				int ret = recv(evList[i].ident, &buffer, sizeof(buffer), 0);
-				printf("buffer received and read: %s, bytes read: %d\n", buffer, ret);
-				memset(&buffer, '\0', sizeof(buffer));
 			}
 
 			else if (evList[i].filter == EVFILT_WRITE)
 			{
-				printf("\nfrom write\n");
+				if (evList[i].flags & EV_EOF)
+				{
+					if (close_connection(kq, evList[i], EVFILT_WRITE) == 1)
+						return (error_kq(kq, addr, "kevent read eof"));
+				}
+				else
+				{
+					printf("WRITE\n");
 
-				send(evList[i].ident, "HTTP/2 200 OK\n", 14, 0);
-				send(evList[i].ident, "Content-Length: 23\n", 19, 0);
-				send(evList[i].ident, "\n", 1, 0);
-				int ret = send(evList[i].ident, "Hello back from write!\n", 23, 0);
-				printf("ret: %d\n", ret);
-				close(evList[i].ident);
-				printf("closed connection from write\n");
+					send(evList[i].ident, "HTTP/2 200 OK\n", 14, 0);
+					send(evList[i].ident, "Content-Length: 23\n", 19, 0);
+					send(evList[i].ident, "\n", 1, 0);
+					int ret = send(evList[i].ident, "Hello back from write!\n", 23, 0);
+					// if (ret < 0)
+					// 	error
+					printf("ret: %d\n", ret);
+					shutdown(evList[i].ident, SHUT_RDWR);  // not allowed && doesn't make a difference
+					close(evList[i].ident);
+					printf("closed connection from write\n");
+				}				
 			}
+			printf("\n");
 		}
 		printf("\n");
 		loop1++;
