@@ -3,20 +3,6 @@
 
 int main(int ac, char **av, char **env) {
     (void)env;
-//     if (ac == 2) {
-// //        data::Server dataFromConfigFile;
-//         data::ConfigFile configFile;
-//         std::cout << "Configuration file name: " << av[1] << std::endl;
-
-//         if (configFile.handleFile(av[1])) {
-//             std::string serverName = configFile.getServerData().getServerName();
-//             std::cout << REDB << "Value for \"server_name\" on main: [" << serverName << "]" << BACK << std::endl;
-           
-//             unsigned int listensTo = configFile.getServerData().getListensTo();
-//             std::cout << REDB << "Value for \"listens_to\" on main: [" << listensTo << "]" << BACK << std::endl;
-//         }
-//     }
-
 
     // ADDED JAKA
     data::RequestFile requestFile;
@@ -42,7 +28,6 @@ int main(int ac, char **av, char **env) {
 
     return EXIT_SUCCESS;
 }
-
 
 
 /*
