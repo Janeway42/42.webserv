@@ -1,8 +1,4 @@
-//
-// Created by Joyce Macksuele on 1/22/23.
-//
-
-#include "../includes/Parser.hpp"
+#include "includes/Parser.hpp"
 
 //std::string Parser::removeSpaces(std::string content) {
 //    while (!content.empty()) {
@@ -11,34 +7,21 @@
 //    return content;
 //}
 
-
-
-
 std::string Parser::getOneCleanValueFromKey(std::string & contentLine, std::string const & key) {
-	
-//    std::string::iterator it = content.begin();
-//    content.erase(content.back() - 1);
 	std::string content = contentLine.substr(contentLine.find(key) + key.size());
-	
 	if (content.empty())	// added jaka, it was giving error abort, when the content was empty string
-		return "returned content empty\n";
-	
+		return "Key is empty!\n";
+
 	size_t i = 0;
-//    std::cout << REDB << "content: [" << content << "]" << BACK << std::endl;
-	for (; content.at(i) == ' '; i++) {} ;
-
-
+	for (; content.at(i) == ' '; i++) {}
 	std::string trimmed_content = content.substr(i);
-	// return trimmed_content.substr(0, trimmed_content.size() - 1);
-	return trimmed_content.substr(0, trimmed_content.size() - 0); 	// Why was this -1 
+    if (trimmed_content.find(';') != std::string::npos) {
+        return trimmed_content.substr(0, trimmed_content.size() - 1);
+    }
+	return trimmed_content.substr(0, trimmed_content.size() - 0);
 }
 
-
-
-
-
-
-DataType Parser::getValueType(std::string & lineContent) {
+DataType Parser::getValueType(std::string & lineContent) {// Todo: Maybe not needed
 	if (lineContent.find("server_name") != std::string::npos) {
 		return STRING;
 	} else if (lineContent.find("listens_to") != std::string::npos) {
@@ -77,5 +60,5 @@ DataType Parser::getValueType(std::string & lineContent) {
 		return BOOL;
 	}
 	return STRING;
-	// todo: add chi location?
+	// todo: add cgi location?
 }

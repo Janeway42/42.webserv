@@ -1,21 +1,7 @@
-//
-// Created by Joyce Macksuele on 1/22/23.
-// Adapted by JAKA
-//
-
 #ifndef WEBSERV_REQUESTDATA_HPP
 #define WEBSERV_REQUESTDATA_HPP
 
 #include "Parser.hpp"
-
-#include <string>
-#include <vector>
-
-/**
- * 
- *      
- *      
- */
 
 namespace data {
 class HttpRequest {
@@ -51,4 +37,4 @@ class HttpRequest {
 
 };
 } // data
-#endif //WEBSERV_REQUESTDATA_HPP
+#endif // WEBSERV_REQUESTDATA_HPP

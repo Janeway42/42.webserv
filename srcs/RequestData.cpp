@@ -1,12 +1,6 @@
-//
-// Created by Joyce Macksuele on 1/22/23.
-// Adapted Jaka
-//
-
 #include "../includes/RequestData.hpp"
 
 namespace data {
-
 /** Default constructor */
 HttpRequest::HttpRequest() {
 
@@ -25,13 +19,12 @@ HttpRequest::~HttpRequest() {
 	_reqMethod 		= "";
 	_reqHttpPath 	= "";
     _reqHttpVersion = "";
-    _reqHost 		= "";	
+    _reqHost 		= "";
 	// _next = nullptr;
 }
 
-
-
 /** ########################################################################## */
+
 /** Request Getters */
 
 const std::string HttpRequest::getRequestMethod() const {
