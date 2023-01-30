@@ -141,6 +141,7 @@ int main()
 					printf("READ\n");
 					char buffer[BUFFER_SIZE];
 					int ret = recv(evList[i].ident, &buffer, sizeof(buffer), 0);
+					printf("ret: %d\n", ret);
 					if (ret < 0)
 					{
 						printf("error reading\n");
@@ -178,7 +179,7 @@ int main()
 					shutdown(evList[i].ident, SHUT_RDWR);  // not allowed && doesn't make a difference
 					close(evList[i].ident);
 					printf("closed connection from write\n");
-				}				
+				}
 			}
 			printf("\n");
 		}

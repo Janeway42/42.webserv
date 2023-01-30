@@ -11,7 +11,7 @@ int main()
 	{
 		std::cerr << e.what() << '\n';
 	}	
-	
+
 	try
 	{
 		webserv->runServer();

@@ -23,19 +23,19 @@ class Server
 		struct addrinfo *_addr;
 		int _listening_socket;
 
-
-
 	public:
 		Server();
 		~Server(void);
 		void runServer();
 
 		void readRequest(struct kevent event);
-		void sendRequest(struct kevent event);
+		void sendResponse(struct kevent event);
 
-		
 		int newClient(struct kevent event);
 		int closeClient(struct kevent event, int filter);
+
+		int getSocket();
+		int getKq();
 
 		
 	class ServerException: public std::exception
@@ -44,14 +44,16 @@ class Server
 			std::string _errorMessage;
 
 		public:
-			ServerException(const char *message): _errorMessage(message){}
-			virtual ~ServerException(void) noexcept{}
+			ServerException(std::string message) throw()
+			{
+				_errorMessage = message;
+			}
 			virtual const char* what() const throw()
 			{
 				return (_errorMessage.c_str());
 			}
+			virtual ~ServerException() throw(){}
 	};
-
 
 };
 

@@ -11,7 +11,7 @@ Server::Server()
 	if (getaddrinfo("127.0.0.1", "8080", &hints, &_addr) != 0)
 		throw ServerException(("failed addr"));
 
-	int _listening_socket = socket(_addr->ai_family, _addr->ai_socktype, _addr->ai_protocol);
+	_listening_socket = socket(_addr->ai_family, _addr->ai_socktype, _addr->ai_protocol);
 	if (_listening_socket == -1)
 		throw ServerException(("failed socket"));
 	fcntl(_listening_socket, F_SETFL, O_NONBLOCK);
@@ -27,6 +27,7 @@ Server::Server()
 	_kq = kqueue();
 	if (_kq == -1)
 		throw ServerException(("failed kq"));
+
 	EV_SET(&evSet, _listening_socket, EVFILT_READ, EV_ADD | EV_CLEAR, NOTE_WRITE	, 0, NULL);
 	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1) 
 		throw ServerException(("failed kevent start"));
@@ -51,7 +52,7 @@ void Server::runServer()
 	int loop1 = 0;
 	while (1)
 	{
-		std::cout << "WHILE LOOP ------------------------------ %d\n";
+		std::cout << "WHILE LOOP ------------------------------" << loop1 << std::endl;
 		int nr_events = kevent(_kq, NULL, 0, evList, 32, NULL);
 		std::cout << "NR EVENTS: " << nr_events << std::endl;
 
@@ -64,12 +65,11 @@ void Server::runServer()
 
 			if (evList[i].flags & EV_ERROR)
 				std::cout << "Event error\n";
-
 			else if (evList[i].ident == _listening_socket)
 				newClient(evList[i]);
-			
 			else if (evList[i].filter == EVFILT_READ)
 			{
+				printf("READ\n");
 				if (evList[i].flags & EV_EOF)
 				{
 					if (closeClient(evList[i], EVFILT_READ) == 1)
@@ -78,16 +78,16 @@ void Server::runServer()
 				else
 					readRequest(evList[i]);
 			}
-
 			else if (evList[i].filter == EVFILT_WRITE)
 			{
+				printf("WRITE\n");
 				if (evList[i].flags & EV_EOF)
 				{
 					if (closeClient(evList[i], EVFILT_WRITE) == 1)
 						throw ServerException("failed kevent eof - write");
 				}
 				else
-					sendRequest(evList[i]);
+					sendResponse(evList[i]);
 			}
 			std::cout << std::endl;
 		}
@@ -98,36 +98,53 @@ void Server::runServer()
 
 void Server::readRequest(struct kevent event)
 {
-	printf("READ\n");
-	std::string buffer;
-	std::string request;
-	int ret = recv(event.ident, &buffer, sizeof(buffer), 0);
+	char buffer[1024];
+	// memset(&buffer, '\0', sizeof(buffer));
+	// static std::string request;
+
+	int ret = recv(event.ident, &buffer, 1023, 0);
 	if (ret < 0)
 	{
-		printf("error reading\n");
+		std::cout << "bytes read: " << ret << std::endl;
+		std::cout << "error reading incoming header" << std::endl;
 		closeClient(event, EVFILT_READ);
 	}
+	buffer[ret] = '\0';
 	// else if (ret == 0)
-	// 	parsingJaka();
-	else
-		request.append(buffer);
+	// 	std::cout << "full request: " << request << std::endl;
+	// // 	// parsingJaka();
+	// else
+	// 	request.append(buffer);
+
 	std::cout << "buffer received and read: " << buffer << std::endl;
 	std::cout << "bytes read: " << ret << std::endl;
-	memset(&buffer, '\0', sizeof(buffer));
 }
 
-void Server::sendRequest(struct kevent event)
+void Server::sendResponse(struct kevent event)
 {
-	printf("WRITE\n");
+	std::string responseNoFav =	"<!DOCTYPE htlm>"
+						"<html>"
+						"<head>"
+						"<title>Favicon</title>"
+						"<link rel='icon' href='data:,'>"
+						"</head>"
+						"<body>"
+						"<h4>Hello</h4>"
+						"</body>"
+						"</html>";
 
-	send(event.ident, "HTTP/2 200 OK\n", 14, 0);
-	send(event.ident, "Content-Length: 23\n", 19, 0);
-	send(event.ident, "\n", 1, 0);
-	int ret = send(event.ident, "Hello back from write!\n", 23, 0);
-	// if (ret < 0)	
-	//	throw ServerException("failed send");
+	std::cout << "size body: " << responseNoFav.length() << std::endl;
+						
+	send(event.ident, "HTTP/1.1 200 OK\r\n", 17, 0);
+	send(event.ident, "Content-Length: 122\r\n", 20, 0);
+	send(event.ident, "Content-Type: text/html; charset=UTF-8\r\n", 40, 0);
+	send(event.ident, "\r\n\r\n", 4, 0);
+	// int ret = send(event.ident, "Hello back from write!\n", 23, 0);
+	int ret = send(event.ident, responseNoFav.c_str(), responseNoFav.length(), 0);
+	if (ret < 0)	
+		throw ServerException("failed send");
 	std::cout << "ret: " << ret << std::endl;
-	shutdown(event.ident, SHUT_RDWR);  // not allowed && doesn't make a difference
+	// shutdown(event.ident, SHUT_RDWR);  // not allowed && doesn't make a difference
 	close(event.ident);
 	printf("closed connection from write\n");
 }
@@ -141,6 +158,7 @@ int Server::newClient(struct kevent event)
 	socklen_t socklen = sizeof(socket_addr);
 	
 	printf("make new client connection\n");
+	
 	int opt_value = 1;
 	int fd = accept(event.ident, (struct sockaddr *)&socket_addr, &socklen);
 	fcntl(fd, F_SETFL, O_NONBLOCK);  
@@ -160,10 +178,22 @@ int Server::closeClient(struct kevent event, int filter)
 {
 	struct kevent evSet;
 
-	printf("connection closed - read \n");
+	printf("connection closed\n");
 	EV_SET(&evSet, event.ident, filter, EV_DELETE, 0, 0, NULL); 
 	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1) 
 		throw ServerException("failed kevent EV_DELETE client");
 	close(event.ident); 
 	return (0);
+}
+
+// -------------------------------------- get functions
+
+int Server::getSocket(void)
+{
+	return (_listening_socket);
+}
+
+int Server::getKq(void)
+{
+	return (_kq);
 }
