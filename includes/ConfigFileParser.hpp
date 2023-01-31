@@ -6,12 +6,15 @@
 #include "LocationData.hpp"
 
 #include <iostream>
+#include <map>
 
 namespace data {
 class ConfigFile : public Parser {
     private:
         Server _server_data;
         Location _location_data;
+        std::vector<Location> _location_data_vector;
+        std::map<Server*, std::vector<Location> > _server_map;
 
         /** Private Methods */
         //template<typename T>
@@ -26,8 +29,9 @@ class ConfigFile : public Parser {
         virtual ~ConfigFile();
 
         /** Getters */
-        Server const & getServerData() const;
-        Location const & getLocationData() const;
+//        Server const & getServerData() const;
+//        Location const & getLocationData() const;
+        std::map<Server*, std::vector<Location> > const & getServerDataMap() const;
 
     };
 } // data

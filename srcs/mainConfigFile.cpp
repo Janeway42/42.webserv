@@ -6,68 +6,92 @@ int main(int ac, char **av, char **env) {
         std::cout << std::boolalpha;
         std::cout << "Configuration file name: " << av[1] << std::endl;
         std::cout << "-----------------------------------------------------------------------------------" << std::endl;
-        data::ConfigFile configFile(av[1]);
-        data::Server serverData = configFile.getServerData();
+        data::ConfigFile configFileData(av[1]);
+        std::map<data::Server*, std::vector<data::Location> > const & serverDataMap = configFileData.getServerDataMap();
         std::cout << "-----------------------------------------------------------------------------------" << std::endl;
 
-//        std::cout << CYN << "Has server block: [" << configFile.getServerData().hasServerBlock() << "]" << BACK << std::endl << std::endl;
-        std::cout << std::endl << "Starting server block" << std::endl;
+        if (not serverDataMap.empty()) {
+            std::map<data::Server*, std::vector<data::Location> >::const_iterator it_server;
+            for (it_server = serverDataMap.begin(); it_server != serverDataMap.end(); it_server++) {//todo check cbegin
+                /****************************************** server block data *****************************************/
+                //        std::cout << CYN << "Has server block: [" << it_server->first->hasServerBlock() << "]" << BACK << std::endl << std::endl;
+                std::cout << std::endl << "Starting server block" << std::endl;
 
-        std::string serverName = configFile.getServerData().getServerName();
-        std::cout << GRE << "Value for \"server_name\" on main: [" << serverName << "]" << BACK << std::endl;
+                /** Keep in mind that "first" is the key of the map (i.e. the server block data) */
 
-        unsigned int listensTo = configFile.getServerData().getListensTo();
-        std::cout << GRE << "Value for \"listens_to\" on main: [" << listensTo << "]" << BACK << std::endl;
+                std::string serverName = it_server->first->getServerName();
+                std::cout << GRE << "Value for \"server_name\" on main: [" << serverName << "]" << BACK << std::endl;
 
-        std::string ipAddress = configFile.getServerData().getIpAddress();
-        std::cout << GRE << "Value for \"ip_address\" on main: [" << ipAddress << "]" << BACK << std::endl;
+                unsigned int listensTo = it_server->first->getListensTo();
+                std::cout << GRE << "Value for \"listens_to\" on main: [" << listensTo << "]" << BACK << std::endl;
 
-        std::string rootDirectory = configFile.getServerData().getRootDirectory();
-        std::cout << GRE << "Value for \"root_directory\" on main: [" << rootDirectory << "]" << BACK << std::endl;
+                std::string ipAddress = it_server->first->getIpAddress();
+                std::cout << GRE << "Value for \"ip_address\" on main: [" << ipAddress << "]" << BACK << std::endl;
 
-        std::string indexFile = configFile.getServerData().getIndexFile();
-        std::cout << GRE << "Value for \"index_file\" on main: [" << indexFile << "]" << BACK << std::endl;
+                std::string rootDirectory = it_server->first->getRootDirectory();
+                std::cout << GRE << "Value for \"root_directory\" on main: [" << rootDirectory << "]" << BACK << std::endl;
 
-        unsigned int clientMaxBodySize = configFile.getServerData().getClientMaxBodySize();
-        std::cout << GRE << "Value for \"client_max_body_size\" on main: [" << clientMaxBodySize << "]" << BACK << std::endl;
+                std::string indexFile = it_server->first->getIndexFile();
+                std::cout << GRE << "Value for \"index_file\" on main: [" << indexFile << "]" << BACK << std::endl;
 
-        std::string errorPage = configFile.getServerData().getErrorPage();
-        std::cout << GRE << "Value for \"error_page\" on main: [" << errorPage << "]" << BACK << std::endl;
+                unsigned int clientMaxBodySize = it_server->first->getClientMaxBodySize();
+                std::cout << GRE << "Value for \"client_max_body_size\" on main: [" << clientMaxBodySize << "]" << BACK << std::endl;
 
-        unsigned int portRedirection = configFile.getServerData().getPortRedirection();
-        std::cout << GRE << "Value for \"port_redirection\" on main: [" << portRedirection << "]" << BACK << std::endl;
+                std::string errorPage = it_server->first->getErrorPage();
+                std::cout << GRE << "Value for \"error_page\" on main: [" << errorPage << "]" << BACK << std::endl;
 
-        //std::cout << std::endl << CYN << "Has location block: [" << configFile.getLocationData().hasLocationBlock() << "]" << BACK << std::endl << std::endl;
-        std::cout << std::endl << "Starting location block" << std::endl;
+                unsigned int portRedirection = it_server->first->getPortRedirection();
+                std::cout << GRE << "Value for \"port_redirection\" on main: [" << portRedirection << "]" << BACK << std::endl;
 
-        std::string locationRootDirectory = configFile.getLocationData().getRootDirectory();
-        std::cout << BLU << "Value for \"root_directory\" on main: [" << locationRootDirectory << "]" << BACK << std::endl;
+                /***************************************** location block data ****************************************/
+                //std::cout << std::endl << CYN << "Has location block: [" << configFile.getLocationData().hasLocationBlock() << "]" << BACK << std::endl << std::endl;
+                std::cout << std::endl << "Starting location block" << std::endl;
 
-        std::vector<AllowMethods> locationAllowMethods = configFile.getLocationData().getAllowMethods();
-        std::cout << BLU << "Value for \"allow_methods\" on main: [";
-        for (int it = GET; it != NONE; it++) {
-            switch (it) {
-                case GET:
-                    std::cout << "GET";
+                /** Keep in mind that "second" is the value of the map (i.e. the data of the location block(s) inside
+                 * the current server block).
+                 * As it is a vector (so it can keep more than one server block if needed, we have to loop on this
+                 * vector to retrieve all location blocks (i.e. iterate on the it->second).
+                 * */
+                std::vector<data::Location>::const_iterator it_location = it_server->second.cbegin();//todo check cbegin
+                for (; it_location != it_server->second.end(); ++it_location) {
+                    std::string locationRootDirectory = it_location->getRootDirectory();
+                    std::cout << BLU << "Value for \"root_directory\" on main: [" << locationRootDirectory << "]" << BACK << std::endl;
+
+                    std::vector<AllowMethods> locationAllowMethods = it_location->getAllowMethods();
+                    std::cout << BLU << "Value for \"allow_methods\" on main: [";
+                    std::vector<AllowMethods>::const_iterator i = locationAllowMethods.begin();//todo check cbegin
+                    for (; i != locationAllowMethods.end(); i++) {
+                        switch (i.operator*()) {
+                            case GET:
+                                std::cout << "GET";
+                                break;
+                            case POST:
+                                std::cout << "POST";
+                                break;
+                            case DELETE:
+                                std::cout << "DELETE";
+                                break;
+                            default:
+                                break;
+                        }
+                        std::cout << " ";
+                    }
+                    std::cout << "]" << BACK << std::endl;
+
+                    std::string locationIndexFile = it_location->getIndexFile();
+                    std::cout << BLU << "Value for \"index_file\" on main: [" << locationIndexFile << "]" << BACK << std::endl;
+
+                    bool locationAutoIndex = it_location->getAutoIndex();
+                    std::cout << BLU << "Value for \"auto_index\" on main: [" << locationAutoIndex << "]" << BACK << std::endl;
+
+                    /************************************* cgi location block data ************************************/
+                    std::cout << std::endl << "Starting cgi location block" << std::endl;
+                    // TODO GET CGI VALUES
                     break;
-                case POST:
-                    std::cout << "POST";
-                    break;
-                case DELETE:
-                    std::cout << "DELETE";
-                    break;
-                default:
-                    break;
+
+                }
             }
-            std::cout << " ";
         }
-        std::cout << "]" << BACK << std::endl;
-
-        std::string locationIndexFile = configFile.getLocationData().getIndexFile();
-        std::cout << BLU << "Value for \"index_file\" on main: [" << locationIndexFile << "]" << BACK << std::endl;
-
-        bool locationAutoIndex = configFile.getLocationData().getAutoIndex();
-        std::cout << BLU << "Value for \"auto_index\" on main: [" << locationAutoIndex << "]" << BACK << std::endl;
     }
     return EXIT_SUCCESS;
 }

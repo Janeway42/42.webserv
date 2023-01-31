@@ -2,6 +2,7 @@
 #define WEBSERV_SERVERDATA_HPP
 
 #include "Parser.hpp"
+#include "includes/LocationData.hpp"
 
 /**
  * Directory and file (full/relative) path:
@@ -24,7 +25,8 @@ class Server {
         std::string _error_page;
         unsigned int _port_redirection;
         /** As more than 1 server block can be added, a linked list makes more sense */
-        class server * _next_server;
+//        class server * _next_server;
+//        std::unordered_map<Server, std::vector<Location> > _server_map;
 
     public:
         Server();
