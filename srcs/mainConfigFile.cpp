@@ -15,7 +15,7 @@ int main(int ac, char **av, char **env) {
             for (it_server = serverDataMap.begin(); it_server != serverDataMap.end(); it_server++) {//todo check cbegin
                 /****************************************** server block data *****************************************/
                 //        std::cout << CYN << "Has server block: [" << it_server->first->hasServerBlock() << "]" << BACK << std::endl << std::endl;
-                std::cout << std::endl << "Starting server block" << std::endl;
+                std::cout << std::endl << "Starting server block: " << it_server->first->getServerBlockCounter() << std::endl;
 
                 /** Keep in mind that "first" is the key of the map (i.e. the server block data) */
 
@@ -44,23 +44,26 @@ int main(int ac, char **av, char **env) {
                 std::cout << GRE << "Value for \"port_redirection\" on main: [" << portRedirection << "]" << BACK << std::endl;
 
                 /***************************************** location block data ****************************************/
-                //std::cout << std::endl << CYN << "Has location block: [" << configFile.getLocationData().hasLocationBlock() << "]" << BACK << std::endl << std::endl;
-                std::cout << std::endl << "Starting location block" << std::endl;
 
                 /** Keep in mind that "second" is the value of the map (i.e. the data of the location block(s) inside
                  * the current server block).
                  * As it is a vector (so it can keep more than one server block if needed, we have to loop on this
                  * vector to retrieve all location blocks (i.e. iterate on the it->second).
                  * */
-                std::vector<data::Location>::const_iterator it_location = it_server->second.cbegin();//todo check cbegin
-                for (; it_location != it_server->second.end(); ++it_location) {
+                std::vector<data::Location>::const_iterator it_location;//todo check cbegin
+                std::cout << RED_BG << "location sizeL: [" << it_server->second.size() << "]" << BACK << std::endl;
+
+                for (it_location = it_server->second.cbegin(); it_location != it_server->second.end(); it_location++) {
+                    //std::cout << std::endl << CYN << "Has location block: [" << configFile.getLocationData().hasLocationBlock() << "]" << BACK << std::endl << std::endl;
+                    std::cout << std::endl << "Starting location block: " << it_location->getLocationBlockCounter() << std::endl;
+
                     std::string locationRootDirectory = it_location->getRootDirectory();
                     std::cout << BLU << "Value for \"root_directory\" on main: [" << locationRootDirectory << "]" << BACK << std::endl;
 
                     std::vector<AllowMethods> locationAllowMethods = it_location->getAllowMethods();
                     std::cout << BLU << "Value for \"allow_methods\" on main: [";
-                    std::vector<AllowMethods>::const_iterator i = locationAllowMethods.begin();//todo check cbegin
-                    for (; i != locationAllowMethods.end(); i++) {
+                    std::vector<AllowMethods>::const_iterator i;//todo check cbegin
+                    for (i = locationAllowMethods.begin(); i != locationAllowMethods.end(); i++) {
                         switch (i.operator*()) {
                             case GET:
                                 std::cout << "GET";
@@ -85,9 +88,16 @@ int main(int ac, char **av, char **env) {
                     std::cout << BLU << "Value for \"auto_index\" on main: [" << locationAutoIndex << "]" << BACK << std::endl;
 
                     /************************************* cgi location block data ************************************/
-                    std::cout << std::endl << "Starting cgi location block" << std::endl;
-                    // TODO GET CGI VALUES
-                    break;
+                    if (it_location++ != it_server->second.end()) {
+                        continue;
+                    }
+                    std::cout << std::endl << "Starting cgi location block: " << it_location->getLocationBlockCounter() << std::endl;
+
+                    std::string interpreterPath = it_location->getInterpreterPath();
+                    std::cout << BLU << "Value for \"interpreter_path\" on main: [" << interpreterPath << "]" << BACK << std::endl;
+
+                    std::string scriptExtension = it_location->getScriptExtension();
+                    std::cout << BLU << "Value for \"script_extension\" on main: [" << scriptExtension << "]" << BACK << std::endl;
 
                 }
             }

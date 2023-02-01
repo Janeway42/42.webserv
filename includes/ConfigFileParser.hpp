@@ -13,7 +13,9 @@ class ConfigFile : public Parser {
     private:
         Server _server_data;
         Location _location_data;
+        /* As more than 1 location block can be added */
         std::vector<Location> _location_data_vector;
+        /* As more than 1 server block can be added */
         std::map<Server*, std::vector<Location> > _server_map;
 
         /** Private Methods */
@@ -29,8 +31,6 @@ class ConfigFile : public Parser {
         virtual ~ConfigFile();
 
         /** Getters */
-//        Server const & getServerData() const;
-//        Location const & getLocationData() const;
         std::map<Server*, std::vector<Location> > const & getServerDataMap() const;
 
     };

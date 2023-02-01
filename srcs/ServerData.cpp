@@ -4,7 +4,7 @@ namespace data {
 /** Default constructor */
 Server::Server() {
     /** Initializing default values for the server block */
-    _server_block = false;
+    _server_block_counter = 0;
     _server_name = "localhost";
     _listens_to = 0;
     _ip_address = "127.0.0.1";
@@ -14,14 +14,13 @@ Server::Server() {
     /* default: $root_directory/error_pages/$status_code.html -> $status_code.html will be set later */
     _error_page = _root_directory + "/error_pages";
     _port_redirection = _listens_to;
-    /* Only one server block by default */
-//    _next_server = nullptr;
+
 }
 
 /** Destructor */
 Server::~Server() {
     /** Cleaning default values for the server block */
-    _server_block = false;
+    _server_block_counter = 0;
     _server_name = "";
     _listens_to = 0;
     _ip_address = std::string();
@@ -30,13 +29,18 @@ Server::~Server() {
     _client_max_body_size = 0;
     _error_page = std::string();
     _port_redirection = 0;
-//    _next_server = nullptr;
+}
+
+/** #################################### Methods #################################### */
+
+unsigned short Server::serverBlockCounter() {
+    return _server_block_counter++;
 }
 
 /** #################################### Getters #################################### */
 
-bool Server::hasServerBlock() const {
-    return _server_block;
+unsigned short Server::getServerBlockCounter() const {
+    return _server_block_counter;
 }
 
 std::string Server::getServerName() const {
@@ -72,10 +76,6 @@ unsigned int Server::getPortRedirection() const {
 }
 
 /** #################################### Setters #################################### */
-
-void Server::setHasServerBlock(unsigned int server_block) {
-    _server_block = server_block;
-}
 
 void Server::setServerName(const std::string &name) {
     _server_name = name;
