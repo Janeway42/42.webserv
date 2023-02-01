@@ -3,14 +3,15 @@
 #include <fstream>
 
 namespace data {
-/** Default constructor */
+/** Default  */
 ConfigFile::ConfigFile() {// todo make it unacceptable to construct?
 }
 
 ConfigFile::ConfigFile(std::string const & configFileName) {
-//   _server_data = new Server();
+//   _server_data = new Server();??
     _server_data = Server();
     _location_data = Location(_server_data.getRootDirectory(), _server_data.getIndexFile());
+    _location_data_vector = std::vector<Location>();
     handleFile(configFileName);
 }
 
@@ -19,17 +20,29 @@ ConfigFile::~ConfigFile() {
 //   delete _data;
 }
 
-/** ########################################################################## */
+/** #################################### Getters #################################### */
 
+std::map<Server*, std::vector<Location> > const & ConfigFile::getServerDataMap() const {
+    return _server_map;
+}
+
+/** #################################### Methods #################################### */
 bool ConfigFile::handleFile(std::string const & configFileName) {
     /** Opening the file */
-    //std::ifstream destructor will close the file automatically, which is one of the perks of using this class.
+    // std::ifstream destructor will close the file automatically, which is one of the perks of using this class.
     // The IDE may compile the program on a child directory and so the file to open would be one path behind
     std::ifstream configFile;
     configFile.open("./" + configFileName);
-
     if (configFile.is_open()) {
         ConfigFile::parseFileServerBlock(configFile);
+        _server_map.insert(std::make_pair(&_server_data, _location_data_vector));
+
+//        //testing
+//        std::map<data::Server*, std::vector<data::Location> >::const_iterator it_location = _server_map.begin();
+//        for (; it_location != _server_map.end(); it_location++) {
+//            std::cout << RED_BG << "JOYCE server name: " << it_location->first->getServerName() << BACK << std::endl;
+//        }
+
     } else {
         std::cerr << "Not able to open the configuration file" << std::endl;
         return false;
@@ -50,6 +63,8 @@ void ConfigFile::parseFileServerBlock(std::ifstream & configFile) {
         }
         if (lineContent.find('}') != std::string::npos) {
             _server_data.setHasServerBlock(false);
+            // TODO we have to know how many Server blocks we have to deal with
+            // checking size of map is ok?
             continue;
         }
         if (lineContent == "server {") {
@@ -61,17 +76,10 @@ void ConfigFile::parseFileServerBlock(std::ifstream & configFile) {
             break;
         }
 
-// TODO: find a way to check if a server block was already parsed so I would need to create another node of Server to send to the parseFileServerBlock recursively
-// ex: Server next_server = _server_data._next_location; // malloc?
-// ex: parseFileServerBlock(configFile, next_server);
-// Also we have to know how many Server blocks we have to deal with
-
-        //DataType datatype = getValueType(lineContent);
         /** Start reading and parsing the server block */
         std::string serverName = keyParser(lineContent, "server_name");
         if (!serverName.empty()) {
             _server_data.setServerName(serverName);
-            std::cout << RED_BG << "JOYCE : " << _server_data.getServerName() << BACK << std::endl;
             continue;
         }
         std::string listensTo = keyParser(lineContent, "listens_to");
@@ -110,19 +118,14 @@ void ConfigFile::parseFileServerBlock(std::ifstream & configFile) {
             continue;
         }
         if (lineContent.find("location") != std::string::npos && lineContent.find('{') != std::string::npos ) {
-//            _location_data.setHasLocationBlock(true);
+            //_location_data.setHasLocationBlock(true);
             std::cout << RED << "Server block already have a location block? " << std::boolalpha << _location_data.hasLocationBlock() << BACK << std::endl;
+            parseFileLocationBlock(configFile);// current location data
 
-// TODO: find a way to check if a location block was already parsed so I would need to create another node of Location to send to the parseFileLocationBlock recursively
-// Also we have to know how many Location blocks we have to deal with (inside this Server block)
-
-//            if (_location_data.hasLocationBlock()) {
-//                _location_data.setNextBlock(_server_data);
-//                parseFileLocationBlock(configFile);// returns the new created node, empty only with Server standards
-//            } else {
-                parseFileLocationBlock(configFile);// current location data
-//            }
+            // TODO we have to know how many Location blocks we have to deal with (inside this Server block)
+            // check size of vector instead?
         }
+        // TODO SET CGI VALUES
     }
 }
 
@@ -138,6 +141,19 @@ void ConfigFile::parseFileLocationBlock(std::ifstream & configFile) {
         }
         if (lineContent.find('}') != std::string::npos) {
             _location_data.setHasLocationBlock(true);
+            /** Adding the location block to the vector so it can be later on added to the server map */
+            _location_data_vector.push_back(_location_data);
+
+//            //testing
+//            std::vector<data::Location>::const_iterator it_location = _location_data_vector.begin();
+//            for (; it_location != _location_data_vector.end(); it_location++) {
+//                std::cout << RED_BG << "JOYCE location root directory: " << it_location->getRootDirectory() << BACK << std::endl;
+//            }
+
+            /** Cleaning the _location_data private member so it can receive new data if a new location
+             * block is found inside this current server block
+             */
+            _location_data = Location(_server_data.getRootDirectory(), _server_data.getIndexFile());
             break;
         }
         std::string locationRootDirectory = keyParser(lineContent, "root_directory");
@@ -186,15 +202,6 @@ std::string ConfigFile::keyParser(std::string & lineContent, std::string const &
         return getOneCleanValueFromKey(lineContent, keyToFind);
     }
     return std::string();
-}
-
-/** Getters */
-Server const & ConfigFile::getServerData() const {
-    return _server_data;
-}
-
-Location const & ConfigFile::getLocationData() const {
-    return _location_data;
 }
 } // data
 

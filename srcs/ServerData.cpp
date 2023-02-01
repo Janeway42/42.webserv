@@ -15,7 +15,7 @@ Server::Server() {
     _error_page = _root_directory + "/error_pages";
     _port_redirection = _listens_to;
     /* Only one server block by default */
-    _next_server = nullptr;
+//    _next_server = nullptr;
 }
 
 /** Destructor */
@@ -30,12 +30,11 @@ Server::~Server() {
     _client_max_body_size = 0;
     _error_page = std::string();
     _port_redirection = 0;
-    _next_server = nullptr;
+//    _next_server = nullptr;
 }
 
-/** ########################################################################## */
+/** #################################### Getters #################################### */
 
-/** server Getters */
 bool Server::hasServerBlock() const {
     return _server_block;
 }
@@ -72,9 +71,8 @@ unsigned int Server::getPortRedirection() const {
     return _port_redirection;
 }
 
-/** ########################################################################## */
+/** #################################### Setters #################################### */
 
-/** server Setters */
 void Server::setHasServerBlock(unsigned int server_block) {
     _server_block = server_block;
 }

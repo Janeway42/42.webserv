@@ -1,7 +1,7 @@
 #include <fstream>
 #include "includes/Parser.hpp"
 #include "includes/RequestData.hpp"
-#include "includes/RequesParser.hpp"
+#include "includes/RequestParser.hpp"
 
 int main() {
     data::Request requestFile;

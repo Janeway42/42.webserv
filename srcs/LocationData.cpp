@@ -10,7 +10,7 @@ Location::Location() {
     _index_file = std::string();
     _auto_index = false;
     /* Only one location block by default */
-    _next_location = nullptr;
+//    _next_location = nullptr;
 }
 
 /** Overloaded constructor */
@@ -22,7 +22,7 @@ Location::Location(std::string const & server_root_directory, std::string const 
     _index_file = server_index_file;
     _auto_index = false;
     /* Only one location block by default */
-    _next_location = nullptr;
+//    _next_location = nullptr;
 }
 
 /** Destructor */
@@ -33,12 +33,11 @@ Location::~Location() {
     _allow_methods = std::vector<AllowMethods>(NONE);
     _index_file = std::string();
     _auto_index = false;
-    _next_location = nullptr;
+//    _next_location = nullptr;
 }
 
-/** ########################################################################## */
+/** #################################### Methods #################################### */
 
-/** Location Methods */
 //Location Location::nextLocationBlock(Location & currentLocation) {
 //    Server server_data = Server();
 //    Location nextLocation = Location(server_data.getRootDirectory(), server_data.getIndexFile());
@@ -46,7 +45,8 @@ Location::~Location() {
 //    return nextLocation;
 //}
 
-/** Location Getters */
+/** #################################### Getters #################################### */
+
 bool Location::hasLocationBlock() const {
     return _location_block;
 }
@@ -67,13 +67,12 @@ bool Location::getAutoIndex() const {
     return _auto_index;
 }
 
-Location *Location::getNextBlock() const {
-    return _next_location;
-}
+//Location *Location::getNextBlock() const {
+//    return _next_location;
+//}
 
-/** ########################################################################## */
+/** #################################### Setters #################################### */
 
-/** Location Setters */
 void Location::setHasLocationBlock(bool next_server_block) {
     _location_block = next_server_block;
 }
@@ -94,10 +93,10 @@ void Location::setAutoIndex(bool autoIndex) {
     _auto_index = autoIndex;
 }
 
-void Location::setNextBlock(Server standardServerData) {
+//void Location::setNextBlock(Server standardServerData) {
 //    _next_location = next_location_block;
-    Location nextLocation = Location(standardServerData.getRootDirectory(), standardServerData.getIndexFile());
-    _next_location = &nextLocation;
-}
+//    Location nextLocation = Location(standardServerData.getRootDirectory(), standardServerData.getIndexFile());
+//    _next_location = &nextLocation;
+//}
 } // data
 

@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+
 /**
  * Directory and file (full/relative) path:
  *      ./ means $path_to_web_server_executable/
@@ -23,7 +24,9 @@ class Location {
         std::string _index_file;
         bool _auto_index;
         /** As more than 1 location block can be added, a linked list makes more sense */
-        class Location * _next_location;
+//        class Location * _next_location;
+        std::vector<Location> locationVector;
+
 
     public:
         Location();// todo make it unacceptable to construct?
@@ -39,7 +42,7 @@ class Location {
         std::vector<AllowMethods> getAllowMethods() const;
         std::string getIndexFile() const;
         bool getAutoIndex() const;
-        class Location * getNextBlock() const;
+//        class Location * getNextBlock() const;
 
         /** Location Setters */
         void setHasLocationBlock(bool next_server_block);
@@ -47,7 +50,7 @@ class Location {
         void setAllowMethods(const std::vector<AllowMethods> & allowMethods);
         void setIndexFile(std::string const & indexFile);
         void setAutoIndex(bool autoIndex);
-        void setNextBlock(Server standardServerData);
+//        void setNextBlock(Server standardServerData);
     };
 } // data
 #endif // WEBSERV_LOCATIONDATA_HPP
