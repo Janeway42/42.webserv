@@ -12,10 +12,12 @@ namespace data {
 class ConfigFile : public Parser {
     private:
         Server _server_data;
+        unsigned short _server_block_counter;
         Location _location_data;
+        unsigned short _location_block_counter;
         /* As more than 1 location block can be added */
         std::vector<Location> _location_data_vector;
-        /* As more than 1 server block can be added */
+        /* As more than 1 server block can be added (with one or more location blocks inside) */
         std::map<Server*, std::vector<Location> > _server_map;
 
         /** Private Methods */
@@ -26,12 +28,19 @@ class ConfigFile : public Parser {
         void parseFileLocationBlock(std::ifstream & configFile);
 
     public:
-        ConfigFile();// todo make it unacceptable to construct?
-        explicit ConfigFile(std::string const & configFileName);// todo what is it: Clang-Tidy: Single-argument constructors must be marked explicit to avoid unintentional implicit conversions
+        ConfigFile();
+//        explicit ConfigFile(std::string const & configFileName);// todo what is it: Clang-Tidy: Single-argument constructors must be marked explicit to avoid unintentional implicit conversions
         virtual ~ConfigFile();
+
+        /** Methods */
+        std::map<Server*, std::vector<Location> > parseFile(std::string const & configFileName);
+        void serverBlockCounter();
+        void locationBlockCounter();
 
         /** Getters */
         std::map<Server*, std::vector<Location> > const & getServerDataMap() const;
+        unsigned short getServerBlockCounter() const;
+        unsigned short getLocationBlockCounter() const;
 
     };
 } // data

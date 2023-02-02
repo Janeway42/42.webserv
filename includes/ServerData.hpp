@@ -13,7 +13,6 @@
 namespace data {
 class Server {
     private:
-        unsigned short _server_block_counter;
         std::string _server_name;
         unsigned int _listens_to;
         /* std::uint8_t since each block of an ip address s form 0 to 255 */
@@ -27,12 +26,11 @@ class Server {
     public:
         Server();
         virtual ~Server();
+        Server(Server const & rhs);
 
         /** Methods */
-        unsigned short serverBlockCounter();
 
         /** Getters */
-        unsigned short getServerBlockCounter() const;
         std::string getServerName() const;
         unsigned int getListensTo() const;
         std::string getIpAddress() const;

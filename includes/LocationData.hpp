@@ -17,8 +17,7 @@
 namespace data {
 class Location {
     private:
-        // todo number of location blocks inside the current server block
-        unsigned short _location_block_counter;
+        bool _is_location_cgi;
         std::string _root_directory;
         std::vector<AllowMethods> _allow_methods;
         std::string _index_file;
@@ -32,10 +31,9 @@ class Location {
         virtual ~Location();
 
         /** Methods */
-        unsigned short locationBlockCounter();
+        bool is_location_cgi() const;
 
         /** Getters */
-        unsigned short getLocationBlockCounter() const;
         std::string getRootDirectory() const;
         std::vector<AllowMethods> getAllowMethods() const;
         std::string getIndexFile() const;
@@ -44,7 +42,7 @@ class Location {
         std::string getScriptExtension() const;
 
         /** Setters */
-        void setHasLocationBlock(bool next_server_block);
+        void setLocationAsCgi(bool isCgi);
         void setRootDirectory(std::string const & rootDirectory);
         void setAllowMethods(const std::vector<AllowMethods> & allowMethods);
         void setIndexFile(std::string const & indexFile);

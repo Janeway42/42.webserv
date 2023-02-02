@@ -2,25 +2,34 @@
 
 namespace data {
 /** Default constructor */
-Server::Server() {
+Server::Server()
     /** Initializing default values for the server block */
-    _server_block_counter = 0;
-    _server_name = "localhost";
-    _listens_to = 0;
-    _ip_address = "127.0.0.1";
-    _root_directory = "./localhost";
-    _index_file = "index.html";
-    _client_max_body_size = 1024;
+    : _server_name("localhost"),
+    _listens_to(0),
+    _ip_address("127.0.0.1"),
+    _root_directory("./localhost"),
+    _index_file("index.html"),
+    _client_max_body_size(1024),
     /* default: $root_directory/error_pages/$status_code.html -> $status_code.html will be set later */
-    _error_page = _root_directory + "/error_pages";
-    _port_redirection = _listens_to;
+    _error_page(_root_directory + "/error_pages"),
+    _port_redirection(_listens_to) {
+}
 
+/** Copy constructor */
+Server::Server(Server const & rhs)
+    : _server_name(rhs._server_name),
+    _listens_to(rhs._listens_to),
+    _ip_address(rhs._ip_address),
+    _root_directory(rhs._root_directory),
+    _index_file(rhs._index_file),
+    _client_max_body_size(rhs._client_max_body_size),
+    _error_page(rhs._error_page),
+    _port_redirection(rhs._port_redirection) {
 }
 
 /** Destructor */
 Server::~Server() {
     /** Cleaning default values for the server block */
-    _server_block_counter = 0;
     _server_name = "";
     _listens_to = 0;
     _ip_address = std::string();
@@ -33,15 +42,9 @@ Server::~Server() {
 
 /** #################################### Methods #################################### */
 
-unsigned short Server::serverBlockCounter() {
-    return _server_block_counter++;
-}
+
 
 /** #################################### Getters #################################### */
-
-unsigned short Server::getServerBlockCounter() const {
-    return _server_block_counter;
-}
 
 std::string Server::getServerName() const {
     return _server_name;
