@@ -14,7 +14,9 @@
 #include <iostream>
 #include <string>
 
-#define MAX_EVENTS 32
+#include "requestStorage.hpp"
+
+#define MAX_EVENTS 100
 
 class Server
 {
@@ -23,16 +25,21 @@ class Server
 		struct addrinfo *_addr;
 		int _listening_socket;
 
+		
+
 	public:
 		Server();
 		~Server(void);
 		void runServer();
 
-		void readRequest(struct kevent event);
-		void sendResponse(struct kevent event);
+		void readRequest(struct kevent& event);
+		void sendResponse(struct kevent& event);
 
 		int newClient(struct kevent event);
-		int closeClient(struct kevent event, int filter);
+		int removeEvent(struct kevent& event, int filter);
+		void closeClient(struct kevent& event);
+		
+		// int closeClient(struct kevent event, int filter);
 
 		int getSocket();
 		int getKq();
