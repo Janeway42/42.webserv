@@ -6,61 +6,85 @@ int main(int ac, char **av, char **env) {
         std::cout << std::boolalpha;
         std::cout << "Configuration file name: " << av[1] << std::endl;
         std::cout << "-----------------------------------------------------------------------------------" << std::endl;
-        data::ConfigFile configFileData(av[1]);
-        std::map<data::Server*, std::vector<data::Location> > const & serverDataMap = configFileData.getServerDataMap();
+        data::ConfigFile configFileData;
+        std::map<data::Server*, std::vector<data::Location> > const & serverDataMap = configFileData.parseFile(av[1]);
         std::cout << "-----------------------------------------------------------------------------------" << std::endl;
 
-        if (not serverDataMap.empty()) {
-            std::map<data::Server*, std::vector<data::Location> >::const_iterator it_server;
-            for (it_server = serverDataMap.begin(); it_server != serverDataMap.end(); it_server++) {//todo check cbegin
-                /****************************************** server block data *****************************************/
-                //        std::cout << CYN << "Has server block: [" << it_server->first->hasServerBlock() << "]" << BACK << std::endl << std::endl;
-                std::cout << std::endl << "Starting server block" << std::endl;
+        if (serverDataMap.empty()) {
+            std::cout << RED_BG << "Map is empty!" << BACK << std::endl;
+        }
 
-                /** Keep in mind that "first" is the key of the map (i.e. the server block data) */
+        /** begin() returns an iterator to beginning while cbegin() returns a const_iterator to beginning. */
+        std::map<data::Server*, std::vector<data::Location> >::const_iterator it_server;
+        for (it_server = serverDataMap.begin(); it_server != serverDataMap.cend(); ++it_server) {
+            std::cout << RED << "map size: [" << serverDataMap.size() << "]" << BACK << std::endl;
+            std::cout << RED << "location size: [" << it_server->second.size() << "]" << BACK << std::endl;
 
-                std::string serverName = it_server->first->getServerName();
-                std::cout << GRE << "Value for \"server_name\" on main: [" << serverName << "]" << BACK << std::endl;
+            /****************************************** server block data *****************************************/
+            std::cout << std::endl << "Starting server block " << std::endl;
+//            getServerBlockData();
 
-                unsigned int listensTo = it_server->first->getListensTo();
-                std::cout << GRE << "Value for \"listens_to\" on main: [" << listensTo << "]" << BACK << std::endl;
+            /** Keep in mind that "first" is the key of the map (i.e. the server block data) */
 
-                std::string ipAddress = it_server->first->getIpAddress();
-                std::cout << GRE << "Value for \"ip_address\" on main: [" << ipAddress << "]" << BACK << std::endl;
+            std::string serverName = it_server->first->getServerName();
+            std::cout << GRE << "Value for \"server_name\" on main: [" << serverName << "]" << BACK << std::endl;
 
-                std::string rootDirectory = it_server->first->getRootDirectory();
-                std::cout << GRE << "Value for \"root_directory\" on main: [" << rootDirectory << "]" << BACK << std::endl;
+            unsigned int listensTo = it_server->first->getListensTo();
+            std::cout << GRE << "Value for \"listens_to\" on main: [" << listensTo << "]" << BACK << std::endl;
 
-                std::string indexFile = it_server->first->getIndexFile();
-                std::cout << GRE << "Value for \"index_file\" on main: [" << indexFile << "]" << BACK << std::endl;
+            std::string ipAddress = it_server->first->getIpAddress();
+            std::cout << GRE << "Value for \"ip_address\" on main: [" << ipAddress << "]" << BACK << std::endl;
 
-                unsigned int clientMaxBodySize = it_server->first->getClientMaxBodySize();
-                std::cout << GRE << "Value for \"client_max_body_size\" on main: [" << clientMaxBodySize << "]" << BACK << std::endl;
+            std::string rootDirectory = it_server->first->getRootDirectory();
+            std::cout << GRE << "Value for \"root_directory\" on main: [" << rootDirectory << "]" << BACK << std::endl;
 
-                std::string errorPage = it_server->first->getErrorPage();
-                std::cout << GRE << "Value for \"error_page\" on main: [" << errorPage << "]" << BACK << std::endl;
+            std::string indexFile = it_server->first->getIndexFile();
+            std::cout << GRE << "Value for \"index_file\" on main: [" << indexFile << "]" << BACK << std::endl;
 
-                unsigned int portRedirection = it_server->first->getPortRedirection();
-                std::cout << GRE << "Value for \"port_redirection\" on main: [" << portRedirection << "]" << BACK << std::endl;
+            unsigned int clientMaxBodySize = it_server->first->getClientMaxBodySize();
+            std::cout << GRE << "Value for \"client_max_body_size\" on main: [" << clientMaxBodySize << "]" << BACK << std::endl;
 
-                /***************************************** location block data ****************************************/
-                //std::cout << std::endl << CYN << "Has location block: [" << configFile.getLocationData().hasLocationBlock() << "]" << BACK << std::endl << std::endl;
-                std::cout << std::endl << "Starting location block" << std::endl;
+            std::string errorPage = it_server->first->getErrorPage();
+            std::cout << GRE << "Value for \"error_page\" on main: [" << errorPage << "]" << BACK << std::endl;
 
-                /** Keep in mind that "second" is the value of the map (i.e. the data of the location block(s) inside
-                 * the current server block).
-                 * As it is a vector (so it can keep more than one server block if needed, we have to loop on this
-                 * vector to retrieve all location blocks (i.e. iterate on the it->second).
-                 * */
-                std::vector<data::Location>::const_iterator it_location = it_server->second.cbegin();//todo check cbegin
-                for (; it_location != it_server->second.end(); ++it_location) {
+            unsigned int portRedirection = it_server->first->getPortRedirection();
+            std::cout << GRE << "Value for \"port_redirection\" on main: [" << portRedirection << "]" << BACK << std::endl;
+
+            /** Keep in mind that "second" is the value of the map (i.e. the data of the location block(s) inside
+             * the current server block).
+             * As it is a vector (so it can keep more than one server block if needed, we have to loop on this
+             * vector to retrieve all location blocks (i.e. iterate on the it->second).
+             * */
+            std::vector<data::Location>::const_iterator it_location;
+
+            for (it_location = it_server->second.cbegin(); it_location != it_server->second.cend(); ++it_location) {
+
+                if (it_location->is_location_cgi()) {
+                    /************************************* cgi location block data ************************************/
+                    std::cout << std::endl << "Starting cgi location block " << std::endl;
+
+                    std::string cgiLocationRootDirectory = it_location->getRootDirectory();
+                    std::cout << BLU << "Value for \"root_directory\" on main: [" << cgiLocationRootDirectory << "]" << BACK << std::endl;
+
+                    std::string interpreterPath = it_location->getInterpreterPath();
+                    std::cout << BLU << "Value for \"interpreter_path\" on main: [" << interpreterPath << "]" << BACK << std::endl;
+
+                    std::string scriptExtension = it_location->getScriptExtension();
+                    std::cout << BLU << "Value for \"script_extension\" on main: [" << scriptExtension << "]" << BACK << std::endl;
+
+                    std::string cgiLocationIndexFile = it_location->getIndexFile();
+                    std::cout << BLU << "Value for \"index_file\" on main: [" << cgiLocationIndexFile << "]" << BACK << std::endl;
+                } else {
+                    /*************************************** location block data **************************************/
+                    std::cout << std::endl << "Starting location block " << std::endl;
+
                     std::string locationRootDirectory = it_location->getRootDirectory();
                     std::cout << BLU << "Value for \"root_directory\" on main: [" << locationRootDirectory << "]" << BACK << std::endl;
 
                     std::vector<AllowMethods> locationAllowMethods = it_location->getAllowMethods();
                     std::cout << BLU << "Value for \"allow_methods\" on main: [";
-                    std::vector<AllowMethods>::const_iterator i = locationAllowMethods.begin();//todo check cbegin
-                    for (; i != locationAllowMethods.end(); i++) {
+                    std::vector<AllowMethods>::const_iterator i;
+                    for (i = locationAllowMethods.cbegin(); i != locationAllowMethods.cend(); i++) {
                         switch (i.operator*()) {
                             case GET:
                                 std::cout << "GET";
@@ -83,12 +107,6 @@ int main(int ac, char **av, char **env) {
 
                     bool locationAutoIndex = it_location->getAutoIndex();
                     std::cout << BLU << "Value for \"auto_index\" on main: [" << locationAutoIndex << "]" << BACK << std::endl;
-
-                    /************************************* cgi location block data ************************************/
-                    std::cout << std::endl << "Starting cgi location block" << std::endl;
-                    // TODO GET CGI VALUES
-                    break;
-
                 }
             }
         }
