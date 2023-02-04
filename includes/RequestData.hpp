@@ -37,4 +37,4 @@ class HttpRequest {
 
 };
 } // data
-#endif // WEBSERV_REQUESTDATA_HPP
+#endif //WEBSERV_REQUESTDATA_HPP

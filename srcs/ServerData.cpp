@@ -5,7 +5,7 @@ namespace data {
 Server::Server()
     /** Initializing default values for the server block */
     : _server_name("localhost"),
-    _listens_to(0),
+    _listens_to(80),
     _ip_address("127.0.0.1"),
     _root_directory("./localhost"),
     _index_file("index.html"),
@@ -80,35 +80,62 @@ unsigned int Server::getPortRedirection() const {
 
 /** #################################### Setters #################################### */
 
-void Server::setServerName(const std::string &name) {
+void Server::setServerName(std::string const & name) {
+    //todo add error handling
     _server_name = name;
 }
 
-void Server::setListensTo(const unsigned int &port) {
-    _listens_to = port;
+void Server::setListensTo(unsigned short const & port) {
+    /* Available ports:
+     * - Port 80 (standard): a well-known system ports (they are assigned and controlled by IANA).
+     * - Port 591 (): a well-known system ports (they are assigned and controlled by IANA).
+     * - Port 8008: a user or registered port (they are not assigned and controlled but registered by IANA only).
+     * - Port 8080 (second most used): a user or registered port (they are not assigned and controlled but registered by IANA only).
+     * - Ports ranging from 49152 to 65536: are available for anyone to use.
+     *
+     * E.g.: If a web server is already running on the default port (80) and another web server needs to be hosted on
+     * the HTTP service, it's best practice to host it on port 8080 (but not mandatory, any other alternative or custom
+     * port can be used instead).
+     * https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml?search=http-alt
+     */
+
+
+    if (port == 80 || port == 591 || port == 8008 || port == 8080 || port > 49152) {
+        /* No need ot check port < 65536 since port is an unsigned short already */
+        _listens_to = port;
+//        parserError(parser_error[6]);
+    } else {
+        throw
+    }
 }
 
-void Server::setIpAddress(const std::string &ip) {
+void Server::setIpAddress(std::string const & ip) {
+    //todo add error handling
     _ip_address = ip;
 }
 
-void Server::setRootDirectory(const std::string &root_dir) {
+void Server::setRootDirectory(std::string const & root_dir) {
+    //todo add error handling
     _root_directory = root_dir;
 }
 
-void Server::setIndexFile(const std::string &idx_file) {
+void Server::setIndexFile(std::string const & idx_file) {
+    //todo add error handling
     _index_file = idx_file;
 }
 
-void Server::setClientMaxBodySize(const unsigned int &body_size) {
+void Server::setClientMaxBodySize(unsigned int const & body_size) {
+    //todo add error handling
     _client_max_body_size = body_size;
 }
 
-void Server::setErrorPage(const std::string &err_page) {
+void Server::setErrorPage(std::string const & err_page) {
+    //todo add error handling
     _error_page = err_page;
 }
 
-void Server::setPortRedirection(const unsigned int &port_redir) {
+void Server::setPortRedirection(unsigned int const & port_redir) {
+    //todo add error handling
     _port_redirection = port_redir;
 }
 } // data

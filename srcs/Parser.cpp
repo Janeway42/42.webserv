@@ -62,3 +62,4 @@ DataType Parser::getValueType(std::string & lineContent) {// Todo: Maybe not nee
 	return STRING;
 	// todo: add cgi location?
 }
+

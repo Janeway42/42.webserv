@@ -24,4 +24,4 @@ int		infoLog(const char *format, ...) {
 };
 
 
-#endif // WEBSERV_LOGGER_H
+#endif //WEBSERV_LOGGER_H

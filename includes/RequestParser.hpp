@@ -23,4 +23,4 @@ class Request : public Parser {
         int storeWordsFromFirstLine(const std::string& firstLine);
 };
 } // data
-#endif // WEBSERV_REQUESTFILEPARSER_HPP
+#endif //WEBSERV_REQUESTFILEPARSER_HPP

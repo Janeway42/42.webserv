@@ -5,6 +5,9 @@
 #include "includes/LocationData.hpp"
 
 /**
+ * An IP address identifies a machine in an IP network and is used to determine the destination of a data packet.
+ * Port numbers identify a particular application or service on a system.
+ *
  * Directory and file (full/relative) path:
  *      ./ means $path_to_web_server_executable/
  *      a directory or file with no path (i.e.: test_index.html) will be searched on ./
@@ -14,8 +17,10 @@ namespace data {
 class Server {
     private:
         std::string _server_name;
-        unsigned int _listens_to;
-        /* std::uint8_t since each block of an ip address s form 0 to 255 */
+        /* Port numbers consist of 16-bit numbers */
+        unsigned short _listens_to;
+        /* std::vector<std::uint8_t> since each block of an ip address is from 0 to 255. uint8_t to specify that the
+         * data type is unsigned 8bits (better than writing unsigned char knowing we will receive a number) */
         std::string _ip_address;// todo look for a better _data type?
         std::string _root_directory;
         std::string _index_file;
@@ -42,7 +47,7 @@ class Server {
 
         /** Setters */
         void setServerName(std::string const & name);
-        void setListensTo(unsigned int const & port);
+        void setListensTo(unsigned short const & port);
         void setIpAddress(std::string const & ip);
         void setRootDirectory(std::string const & root_dir);
         void setIndexFile(std::string const & idx_file);
@@ -52,4 +57,4 @@ class Server {
 
 };
 } // data
-#endif // WEBSERV_SERVERDATA_HPP
+#endif //WEBSERV_SERVERDATA_HPP

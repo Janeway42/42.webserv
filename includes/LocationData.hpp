@@ -7,7 +7,6 @@
 #include <string>
 #include <vector>
 
-
 /**
  * Directory and file (full/relative) path:
  *      ./ means $path_to_web_server_executable/
@@ -26,8 +25,8 @@ class Location {
         std::string _script_extension;
 
     public:
-        Location();// todo make it unacceptable to construct?
-        explicit Location(std::string const & server_root_directory, std::string const & server_index_file);// todo what is it: Clang-Tidy: Single-argument constructors must be marked explicit to avoid unintentional implicit conversions
+        Location() = delete;// delete makes it impossible to be used (anywhere by anyone) todo is it c++98?
+        Location(std::string const & server_root_directory, std::string const & server_index_file);
         virtual ~Location();
 
         /** Methods */
@@ -51,4 +50,4 @@ class Location {
         void setScriptExtension(std::string const & scriptExtension);
     };
 } // data
-#endif // WEBSERV_LOCATIONDATA_HPP
+#endif //WEBSERV_LOCATIONDATA_HPP

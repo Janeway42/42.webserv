@@ -40,10 +40,45 @@ enum DataType {// todo: Maybe not used
     BODY
 };
 
+/** If the error message will be useful for the http response then a $responseStatusCode will be set.
+ * Otherwise $responseStatusCode will be set to zero.
+ */
+struct parser_error {
+    unsigned short responseStatusCode;// todo change it just to errorCode?
+    std::string errorMessage;
+} parser_error[] = {
+        {   0,     "Key is not supported"},
+        {   0,     "Value is not a string"},
+        {   0,     "Value is not a relative or full path"},
+        {   0,     "Value is not a full path"},
+        {   0,     "Value is not a .html file"},
+        {   0,     "Value is not an allowed port"},
+        {   0,     "Value is not a string"},
+        {   0,     "Value is not a string"},
+        {   0,     "Value is not a string"},
+        {   400,   "Value is not a string"},
+        {  404,   "Key Location is not supported"},
+};
+
 class Parser {
     public:
         virtual std::string getOneCleanValueFromKey(std::string & contentLine, std::string const & key);
         virtual DataType getValueType(std::string & lineContent);
+
+        class ParserException: public std::exception {
+            private:
+                std::string _errorMessage;
+            public:
+                explicit ParserException(struct parser_error const & error) throw() {
+                    _errorMessage = std::string(std::to_string(error.responseStatusCode) + error.errorMessage);;
+                }
+                virtual const char* what() const throw() {
+                    return (_errorMessage.c_str());
+                }
+                virtual ~ParserException() throw() {}
+        };
+
+//        std::pair<std::string, unsigned short> parserError(struct parser_error const error);
 };
 
-#endif // WEBSERV_PARSER_HPP
+#endif //WEBSERV_PARSER_HPP

@@ -6,7 +6,7 @@ int main(int ac, char **av, char **env) {
         std::cout << std::boolalpha;
         std::cout << "Configuration file name: " << av[1] << std::endl;
         std::cout << "-----------------------------------------------------------------------------------" << std::endl;
-        data::ConfigFile configFileData;
+        ConfigFile configFileData;
         std::map<data::Server*, std::vector<data::Location> > const & serverDataMap = configFileData.parseFile(av[1]);
         std::cout << "-----------------------------------------------------------------------------------" << std::endl;
 
@@ -111,6 +111,9 @@ int main(int ac, char **av, char **env) {
             }
         }
     }
+
+    std::string n = "12345";
+    std::cout << stod(n,) << std::endl;
     return EXIT_SUCCESS;
 }
 /* TESTS

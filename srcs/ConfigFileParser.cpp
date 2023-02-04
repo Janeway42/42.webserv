@@ -2,7 +2,7 @@
 
 #include <fstream>
 
-namespace data {
+using namespace data;
 /** Default  */
 ConfigFile::ConfigFile()
     : _server_data(Server()),
@@ -252,5 +252,3 @@ std::string ConfigFile::keyParser(std::string & lineContent, std::string const &
     }
     return std::string();
 }
-} // data
-
