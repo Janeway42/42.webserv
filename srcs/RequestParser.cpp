@@ -1,125 +1,245 @@
-#include "includes/RequestParser.hpp"
+//
+// Created by Joyce Macksuele on 18/01/2023 
+// Addapted Jaka
+//
 
-#include <fstream>
-#include <sstream>
-#include <vector>
+
+#include "../includes/RequestParser.hpp"
 
 namespace data {
 
 /** Default constructor */
 Request::Request() {
-	_data = HttpRequest();
+	_data = RequestData();
+	_headerDone = false;
 }
 
 /** Destructor */
 Request::~Request() {
-    return;
+//   delete _data;
 }
 
-/** ########################################################################## */
 
 /** Getters */
-HttpRequest const & Request::getRequestData() const {
-   return _data;
+RequestData const & Request::getRequestData() const {
+	return _data;
 }
+
+
+std::string const & Request::getRequestBody() const {
+	return _body;
+}
+
 
 /** ########################################################################## */
 
-bool Request::handleFile(std::string const & requestFileName) {
-	/** Opening the file */
-	// std::ifstream destructor will close the file automatically, which is one of the perks of using this class.
-	std::ifstream requestFile;
-    // The IDE may compile the program on a child directory and so the file to open would be one path behind
-    requestFile.open(requestFileName);
 
-	if (requestFile.is_open()) {
-	   Request::parseFile(requestFile);
-	} else {
-		std::cerr << "Error: Not able to open the Request file" << std::endl;
-		return false;
+void storeBody(std::istringstream &iss)
+{
+	std::string lineContent;
+	std::string body;
+
+	while (std::getline(iss, lineContent)) {
+		body.append(lineContent);
 	}
-	requestFile.close();
-	return true;
+	std::cout << YEL "body [" << body << "]\n" RES;
 }
 
-void Request::parseFile(std::ifstream & requestFile) {
 
+void Request::parseHeader(std::string header) {
+	
 	std::string lineContent;
+	std::string body;
 	int i = 0;
 
-	/** Reading from the file (per word) */
-	while (requestFile) {
-		std::getline(requestFile, lineContent);
-		//std::cout << i << " lineContent: [" << lineContent << "]" << std::endl;
+	std::istringstream iss(header);
 
-		// FIRST LINE HEADER
-		if (i == 0) {
+	while (std::getline(iss, lineContent)) {
+		if (i == 0) {								// FIRST LINE HEADER
 			storeWordsFromFirstLine(lineContent);
 		}
-		else {
-		// OTHER HEADERS
-			std::string reqHost = keyParser(lineContent, "Host:");
-			if (!reqHost.empty()) {
-				std::cout << "ret from keyParser version [" << reqHost << "]" << std::endl;
-				_data.setRequestHost(reqHost);
-				continue;
-			}
-			std::string reqAccept = keyParser(lineContent, "Accept:");
-			if (!reqAccept.empty()) {
-				std::cout << "ret from keyParser accept [" << reqAccept << "]" << BACK << std::endl;
-				_data.setRequestAccept(reqAccept);
-				continue;
-			}
+		else if (i > 0 && lineContent != "\r") {	// OTHER HEADER LINES
+			storeWordsFromOtherLine(lineContent);
+		}
+													// START READING BODY
+		else if (i > 0 && lineContent == "\r") {	// Not sure if this \r is 100% good
+			storeBody(iss);	
+		//	std::cout << YEL << "Found end of header block, begin of Body\n" RES;
+			break ; 
 		}
 		i++;
 	}
 }
 
-std::string Request::keyParser(std::string & lineContent, std::string const & keyToFind) {
-	if (lineContent.find(keyToFind) != std::string::npos) {
-		std::string ret = getOneCleanValueFromKey(lineContent, keyToFind);  // jaka
-		std::cout << "ret from getOneCleanValue [" << ret << "]" << std::endl;
-		return ret;
-	}
-	return std::string();
-}
 
-int Request::storeWordsFromFirstLine(std::string const & firstLine) {
-    std::vector<std::string> arr;
-    std::istringstream iss(firstLine);
+
+// !!!!!!! need to remove the file and links
+int Request::storeWordsFromFirstLine(std::string firstLine)
+{
+	std::vector<std::string> arr;
+	std::istringstream iss(firstLine);
     std::string word;
 
-    while (iss >> word)
-        arr.push_back(word);
+    while(iss >> word)
+		arr.push_back(word);
 
-    int vecSize = arr.size();
-    if (vecSize > 3) { // Jaka: maybe not needed
-        std::cout << "Error: There are more then 3 items in the first line header\n";
-        return (1);
-    }
+	int vecSize = arr.size();
+	if (vecSize > 3) {				// maybe not needed
+		std::cout << "Error: There are more then 3 items in the first line header\n";
+		return (1);
+	}
 
-    std::vector<std::string>::iterator iter = arr.begin();
-    for (int i = 0; iter < arr.end(); iter++, i++) {
-        std::cout << BLU << *iter << RES << "\n";
-        if (i == 0) {
-            if (*iter == "GET" || *iter == "POST" || *iter == "DELETE")
-                _data.setRequestMethod(*iter);
-            else
-                std::cout << RED << "Error: This method is not recognized\n" << RES;
-        }
-        else if (i == 1)
-            _data.setRequestPath(*iter);
-        else if (i == 2) {
-            if (*iter != "HTTP/1.1")
-                std::cout << RED << "Error: wrong http version\n" << RES;
-            _data.setHttpVersion(*iter);
-        }
-    }
-    return (0);
+	std::vector<std::string>::iterator iter = arr.begin();
+	for (int i = 0; iter < arr.end(); iter++, i++) {
+		if (i == 0) {
+			if (*iter == "GET" || *iter == "POST" || *iter == "DELETE")
+				_data.setRequestMethod(*iter);
+			else
+				std::cout << RED << "Error: This method is not recognized\n" << RES;
+		}
+		else if (i == 1)
+			_data.setRequestPath(*iter);
+		else if (i == 2) {
+			if (*iter != "HTTP/1.1")		// maybe also HTTP/1.0 needed ??
+				std::cout << RED << "Error: wrong http version\n" << RES;
+			_data.setHttpVersion(*iter);
+		}
+	}
+	return (0);
 }
+
+
+
+int Request::storeWordsFromOtherLine(std::string otherLine) {
+	std::vector<std::string> arr;
+	std::istringstream is(otherLine);
+    std::string wordd;
+
+	while(is >> wordd) {	// maybe not needed, each line has to go to a map member key: value
+		//std::cout << "[" << wordd << "] ";
+		arr.push_back(wordd);
+	} 	//std::cout << "\n";
+
+	std::vector<std::string>::iterator iter = arr.begin();
+
+	for (int i = 0; iter < arr.end(); iter++, i++)
+	{
+		if (i == 0) {
+			// Maybe all *iters must change tolower(), because key is case insensitive			
+			if (*iter == "Accept:") {
+				iter++;
+				_data.setRequestAccept(*iter);
+				// std::cout << GRE "[" << *iter << "]\n";
+			}
+			else if (*iter == "Host:") {
+				iter++;
+				_data.setRequestHost(*iter);
+			}
+			else if (*iter == "Content-Length:") {
+				iter++;
+				_data.setRequestContentLength(*iter);
+			}
+			else if (*iter == "Content-Type:") {
+				iter++;
+				_data.setRequestContentType(*iter);
+			}
+			else
+				std::cout << RED << "Error: This method is not recognized\n" << RES;
+		}
+	}
+	return (0);
+}
+
+
+
+void Request::appendToRequest(const char *str) {
+	std::string 			chunk = std::string(str);
+	std::string::size_type 	it;
+
+	// std::cout << "ATR A)\n";
+	if (_headerDone == false) {
+		if (chunk.find("\r\n\r\n") == -1) {		// Sep. line not found
+			_header.append(chunk);
+		}
+		else if ((it = chunk.find("\r\n\r\n")) != std::string::npos) { // Found, but has more chars after it
+			_temp.append(chunk);
+			_header.append(chunk.substr(0, it));
+			_headerDone = true;
+			parseHeader(_header);
+			appendLastChunkToBody(it);
+
+		} else {								// found, and it's the end of string
+			it = _temp.find("\r\n\r\n");
+			_header = _temp.substr(0, it);
+			appendToBody(chunk);
+			_headerDone = true;
+		}
+	}
+	else if (_headerDone == true)
+		appendToBody(chunk);
+}
+
+
+int Request::appendLastChunkToBody(std::string::size_type it) {
+	_body = _temp.substr(it + 4);
+	
+	// Compare body lenght
+	if (_body.length() > _data.getRequestContentLength()) {
+		std::cout << RED "Error: Body-Length is bigger than expected Content-Length\n" RES;
+		return (1);
+	}
+	// time out etc etc etc
+	// set done 
+	// st errors
+	return (0);
+}
+
+
+int Request::appendToBody(std::string req) {
+	_body.append(req);
+	
+	if (_body.length() > _data.getRequestContentLength()) {		// Compare body lenght
+		std::cout << RED "Error: Body-Length is bigger than expected Content-Length\n" RES;
+		return (1);
+	}
+	// time out etc etc etc
+	// set done 
+	// st errors
+	// std::cout << YEL "ATB, bodyLenght " << _body.length() << "]\n" RES;
+	return (0);
+}
+
+
+int Request::checkStoredVars() {
+	if (_data.getRequestContentLength() == _body.length()) {
+		std::cout << GRE "OK: Body size == Content lenght\n" RES;
+	}
+	if (_data.getRequestContentLength() > _body.length()) {
+		std::cout << RED "Error: Body length is smaller than expected Content-Length\n" RES;
+		return (1);
+	}
+	return (0);
+}
+
+
+
+// JUST FOR CHECKING
+void Request::printStoredRequestData(data::Request &request) {
+	data::RequestData reqData = request.getRequestData();
+
+	// PRINT FIRST LINE HEADER
+	std::cout << "\nFIRST LINE:\n[" RED << reqData.getRequestMethod() << ", "
+										<< reqData.getHttpPath() << ", "
+										<< reqData.getHttpVersion() << RES "]\n";
+	// PRINT OTHER HEADERS	
+	std::cout << "HEADER FIELDS:\n" BLU;
+	std::cout << "Host:           [" << reqData.getRequestHost() << "]\n";
+	std::cout << "Accept:         [" << reqData.getRequestAccept() << "]\n";
+	std::cout << "Content-Length: [" << reqData.getRequestContentLength() << "]\n";
+	std::cout << "Content-Type:   [" << reqData.getRequestContentType() << "]\n" RES;
+
+	// PRINT BODY
+	std::cout << "REQUEST BODY:\n[" PUR << request.getRequestBody() << RES "]\n";
+}
+
 } // data
-
-
-
-
-
