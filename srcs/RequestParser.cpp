@@ -100,7 +100,7 @@ int Request::storeWordsFromFirstLine(std::string firstLine)
 		else if (i == 1)
 			_data.setRequestPath(*iter);
 		else if (i == 2) {
-			if (*iter != "HTTP/1.1")		// maybe also HTTP/1.0 needed ??
+			if (*iter != "HTTP/1.1" && *iter != "HTTP/1.0")		// maybe also HTTP/1.0 needed ??
 				std::cout << RED << "Error: wrong http version\n" << RES;
 			_data.setHttpVersion(*iter);
 		}
@@ -180,6 +180,7 @@ void Request::appendToRequest(const char *str) {
 }
 
 
+// Last chunk means, last chunk of header section, so first chunk of body
 int Request::appendLastChunkToBody(std::string::size_type it) {
 	_body = _temp.substr(it + 4);
 	
