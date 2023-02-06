@@ -1,4 +1,4 @@
-#include "includes/Parser.hpp"
+#include "../includes/Parser.hpp"
 
 //std::string Parser::removeSpaces(std::string content) {
 //    while (!content.empty()) {
