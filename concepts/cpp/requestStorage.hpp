@@ -7,15 +7,19 @@ class requestStorage
 {
 	private:
 		bool done;
-		bool errorRequest;
+		bool errorReq;
 		std::string buffer;
 
 	public:
 		requestStorage();
 		~requestStorage();
 
-	bool getDone();
-	void setDone(bool val);
+		void appendBuffer(char *temp);
+
+		bool getDone();
+		void setDone(bool val);
+		bool getError();
+		void setError(bool val);
 
 };
 

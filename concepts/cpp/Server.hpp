@@ -3,6 +3,7 @@
 
 // ---- C ----
 #include <unistd.h>
+#include <sys/time.h>
 
 // ---- kqueue ----
 #include <sys/socket.h>
@@ -10,11 +11,7 @@
 #include <fcntl.h>
 #include <sys/event.h>
 
-// ---- C++ ----
-#include <iostream>
-#include <string>
-
-#include "requestStorage.hpp"
+#include "includes/RequestParser.hpp"
 
 #define MAX_EVENTS 100
 
@@ -23,9 +20,7 @@ class Server
 	private:
 		int _kq;
 		struct addrinfo *_addr;
-		int _listening_socket;
-
-		
+		int _listening_socket;		
 
 	public:
 		Server();
@@ -34,8 +29,10 @@ class Server
 
 		void readRequest(struct kevent& event);
 		void sendResponse(struct kevent& event);
+		void handleTimeout(struct kevent& event);
 
-		int newClient(struct kevent event);
+
+		void newClient(struct kevent event);
 		int removeEvent(struct kevent& event, int filter);
 		void closeClient(struct kevent& event);
 		

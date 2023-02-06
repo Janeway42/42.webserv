@@ -59,40 +59,46 @@ void Server::runServer()
 		if (nr_events < 1)
 			throw ServerException("failed number events");
 
-		for (i = 0; i < nr_events; i++)
-		{
-			std::cout << "filter: " << evList[i].filter << std::endl; // test line 
+		else if (nr_events == 0)
+			handleTimeout(evList[0]);
 
-			if (evList[i].flags & EV_ERROR)
-				std::cout << "Event error\n";
-			else if (evList[i].ident == _listening_socket)
-				newClient(evList[i]);
-			else if (evList[i].filter == EVFILT_READ)
+		else
+		{
+			for (i = 0; i < nr_events; i++)
 			{
-				printf("READ\n");
-				if (evList[i].flags & EV_EOF)  // if client closes connection 
+				std::cout << "filter: " << evList[i].filter << std::endl; // test line 
+
+				if (evList[i].flags & EV_ERROR)
+					std::cout << "Event error\n";
+				else if (evList[i].ident == _listening_socket)
+					newClient(evList[i]);
+				else if (evList[i].filter == EVFILT_READ)
 				{
-					if (removeEvent(evList[i], EVFILT_READ) == 1)
-						throw ServerException("failed kevent eof - read");
-					closeClient(evList[i]);
+					printf("READ\n");
+					if (evList[i].flags & EV_EOF)  // if client closes connection 
+					{
+						if (removeEvent(evList[i], EVFILT_READ) == 1)
+							throw ServerException("failed kevent eof - read");
+						closeClient(evList[i]);
+					}
+					else
+						readRequest(evList[i]);
 				}
-				else
-					readRequest(evList[i]);
-			}
-			else if (evList[i].filter == EVFILT_WRITE)
-			{
-				printf("WRITE\n");
-				if (evList[i].flags & EV_EOF)
+				else if (evList[i].filter == EVFILT_WRITE)
 				{
-					if (removeEvent(evList[i], EVFILT_WRITE) == 1)
-						throw ServerException("failed kevent eof - write");
-					closeClient(evList[i]);
+					printf("WRITE\n");
+					if (evList[i].flags & EV_EOF)
+					{
+						if (removeEvent(evList[i], EVFILT_WRITE) == 1)
+							throw ServerException("failed kevent eof - write");
+						closeClient(evList[i]);
+					}
+					else
+						sendResponse(evList[i]);
 				}
-				else
-					sendResponse(evList[i]);
+				std::cout << std::endl;
 			}
-			std::cout << std::endl;
-		}
+		}	
 		std::cout << std::endl;
 		loop1++;
 	}
@@ -103,39 +109,36 @@ void Server::runServer()
 
 void Server::readRequest(struct kevent& event)
 {
-	char buffer[1024];
-	memset(&buffer, '\0', 1024);
-	requestStorage *storage;
-	storage = (requestStorage *)event.udata;
+	char buffer[100];
+	memset(&buffer, '\0', 100);
+	data::Request *storage;
+	storage = (data::Request *)event.udata;
 
-	int ret = recv(event.ident, &buffer, sizeof(buffer), 0);
+	int ret = recv(event.ident, &buffer, sizeof(buffer) - 1, 0);
 	std::cout << "fd: " << event.ident << std::endl;
 	std::cout << "bytes read: " << ret << std::endl;   // test line 
 	if (ret < 0)
 	{
+		storage->setDone(true);
+		storage->setError(true);
 		if (removeEvent(event, EVFILT_READ) == 1)
 			throw ServerException("failed EVFILT_READ removal\n");
-		storage->setDone(true);
-		storage->setError() = true;
-		// storage->setError(true);
-		// send error message back to the client 
 		std::cout << "send error message back to client\n";
 	}
-	// else if (ret == 0)
-	// {
-	// 	// parse body 
-	// 	std::cout << "parse body\n";  // test line 
-	// 	storage->setDone(true);
-	// }
-	else 
+	// for cgi ret might be 0 - might need to add later, but for kqueue it will never be 0 
+	else if (storage->getDone() == false && storage->getError() == false)
 	{
 		std::cout << "append buffer\n";
-		storage.appendBuffer(buffer);
+		std::cout << "buffer I send: " << buffer << std::endl;
+		storage->appendToRequest(buffer);
+		std::cout << "done after append: " << storage->getDone() << std::endl;
 
-		storage->setDone(true);
+		std::cout << "temp buffer: " << storage->getTemp() << std::endl;
+
+		// storage->setDone(true);
 		if (removeEvent(event, EVFILT_READ) == 1)
 			throw ServerException("failed kevent eof - read");
-		std::cout << "buffer read: " << buffer << std::endl;
+		// std::cout << "buffer read: " << buffer << std::endl;
 		// appendBuffer(buffer,data);   // append buffer needs to receive a refference of info  
 	}
 
@@ -144,21 +147,40 @@ void Server::readRequest(struct kevent& event)
 
 void Server::sendResponse(struct kevent& event)
 {
-	requestStorage *storage = (requestStorage *)event.udata;
+	data::Request *storage = (data::Request *)event.udata;
 
 	std::cout << "storage->done: " << storage->getDone() << std::endl;
 	if (storage->getDone() == true)
 	{
-		if (error)
+		if (storage->getError() == true)
 		{
-			send error reply 
-			remove filters 
-			close connection 
-		}
-		else 
-		{
-			std::cout << "fd: " << event.ident << std::endl;
+			std::string responseNoFav =	"<!DOCTYPE htlm>"
+							"<html>"
+							"<head>"
+							"<title>Favicon</title>"
+							"<link rel='icon' href='data:,'>"
+							"</head>"
+							"<body>"
+							"<h4>Failure!!!</h4>"
+							"</body>"
+							"</html>";
 
+			send(event.ident, "HTTP/1.1 200 OK\r\n", 17, 0);
+			send(event.ident, "Content-Length: 127\r\n", 20, 0);
+			send(event.ident, "Content-Type: text/html; charset=UTF-8\r\n", 40, 0);
+			send(event.ident, "\r\n\r\n", 4, 0);
+			int ret = send(event.ident, responseNoFav.c_str(), responseNoFav.length(), 0);
+			if (ret < 0)	
+				throw ServerException("failed send");
+			std::cout << "ret: " << ret << std::endl;
+
+			if (removeEvent(event, EVFILT_WRITE) == 1)
+				throw ServerException("failed kevent EV_DELETE client");
+			closeClient(event);
+			printf("closed connection from write error\n");   // test line 
+		}
+		else
+		{
 			std::string responseNoFav =	"<!DOCTYPE htlm>"
 							"<html>"
 							"<head>"
@@ -170,13 +192,12 @@ void Server::sendResponse(struct kevent& event)
 							"</body>"
 							"</html>";
 
-			std::cout << "size body: " << responseNoFav.length() << std::endl;
+			// std::cout << "size body: " << responseNoFav.length() << std::endl;
 								
 			send(event.ident, "HTTP/1.1 200 OK\r\n", 17, 0);
 			send(event.ident, "Content-Length: 122\r\n", 20, 0);
 			send(event.ident, "Content-Type: text/html; charset=UTF-8\r\n", 40, 0);
 			send(event.ident, "\r\n\r\n", 4, 0);
-			// int ret = send(event.ident, "Hello back from write!\n", 23, 0);
 			int ret = send(event.ident, responseNoFav.c_str(), responseNoFav.length(), 0);
 			if (ret < 0)	
 				throw ServerException("failed send");
@@ -186,9 +207,8 @@ void Server::sendResponse(struct kevent& event)
 			if (removeEvent(event, EVFILT_WRITE) == 1)
 				throw ServerException("failed kevent EV_DELETE client");
 			closeClient(event);
-			printf("closed connection from write\n");   // test line 
+			printf("closed connection from write success\n");   // test line 
 		}
-
 	}
 	// else 
 	// 	std::cout << "just passing by\n"; // test line 
@@ -196,12 +216,13 @@ void Server::sendResponse(struct kevent& event)
 
 // -------------------------------------- client functions 
 
-int Server::newClient(struct kevent event)
+void Server::newClient(struct kevent event)
 {
 	struct kevent evSet;
 	struct sockaddr_storage socket_addr;
 	socklen_t socklen = sizeof(socket_addr);
-	
+	struct timespec timeout = {30, 0};
+
 	printf("make new client connection\n");
 	
 	int opt_value = 1;
@@ -211,21 +232,20 @@ int Server::newClient(struct kevent event)
 	if (fd == -1)
 		throw ServerException("failed accept");
 
-	requestStorage *storage = new (requestStorage);	
+	data::Request *storage = new data::Request();
 	EV_SET(&evSet, fd, EVFILT_READ, EV_ADD, 0, 0, storage); 
-	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
+	if (kevent(_kq, &evSet, 1, NULL, 0, &timeout) == -1)
 		throw ServerException("failed kevent add EVFILT_READ");
 	EV_SET(&evSet, fd, EVFILT_WRITE, EV_ADD, 0, 0, storage); 
 	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 		throw ServerException("failed kevent add EVFILT_WRITE");
-	return (0);
 }
 
 int Server::removeEvent(struct kevent& event, int filter)
 {
 	struct kevent evSet;
-	requestStorage *storage;
-	storage = (requestStorage *)event.udata;   /// ? 
+	data::Request *storage;
+	storage = (data::Request *)event.udata;
 
 	EV_SET(&evSet, event.ident, filter, EV_DELETE, 0, 0, storage); 
 	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
@@ -236,10 +256,28 @@ int Server::removeEvent(struct kevent& event, int filter)
 	return (0);
 }
 
+void Server::handleTimeout(struct kevent& event)
+{
+	struct kevent evSet;
+	data::Request *storage;
+	storage = (data::Request *)event.udata;
+
+	std::cout << "Handle timeout!\n";
+	storage->setDone(true);
+	storage->setError(true);
+
+	EV_SET(&evSet, event.ident, EVFILT_READ, EV_DELETE, 0, 0, storage); 
+	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
+	{
+		std::cout << errno << std::endl;
+		throw ServerException("failed kevent EV_DELETE client");
+	}
+}
+
 void Server::closeClient(struct kevent& event)
 {
-	requestStorage *storage;
-	storage = (requestStorage *)event.udata; 
+	data::Request *storage;
+	storage = (data::Request *)event.udata; 
 
 	delete(storage);
 	std::cout << "connection closed\n";
