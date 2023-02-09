@@ -15,6 +15,7 @@
 #include <map>
 #include <string>
 #include <unistd.h>
+#include <ctime>
 
 #include "./Parser.hpp"
 #include "./RequestData.hpp"
@@ -35,6 +36,7 @@ namespace data {
 
 			bool _doneParsing;
 			bool _errorRequest;
+			std::time_t _startTime;
 
 
 		public:
@@ -59,6 +61,7 @@ namespace data {
 			void setDone(bool val);
 			bool getError();
 			void setError(bool val);
+			std::time_t getTime();
 
 			std::string getTemp();
 	};

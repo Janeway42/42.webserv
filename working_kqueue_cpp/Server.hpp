@@ -29,6 +29,8 @@ class Server
 
 		void readRequest(struct kevent& event);
 		void sendResponse(struct kevent& event);
+		void sendProcesssedResponse(struct kevent& event);
+		void sendError(struct kevent& event);
 		void handleTimeout(struct kevent& event);
 
 
