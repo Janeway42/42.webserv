@@ -69,5 +69,7 @@ namespace data {
 			std::string getTemp();
 	};
 
+	
+
 } // data
 #endif // WEBSERV_REQUEST_PARSER_HPP

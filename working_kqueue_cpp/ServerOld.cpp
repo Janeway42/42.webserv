@@ -39,7 +39,8 @@ Server::~Server()
 	freeaddrinfo(_addr);
 }
 
-// -------------------------------------- server 
+// --------------------------------------------------------- server main loop
+// --------------------------------------------------------------------------
 
 void Server::runServer()
 {
@@ -102,7 +103,8 @@ void Server::runServer()
 	}
 }
 
-// -------------------------------------- server functions 
+// --------------------------------------------------------- server functions 
+// --------------------------------------------------------------------------
 
 void Server::readRequest(struct kevent& event)
 {
@@ -161,7 +163,7 @@ void Server::sendResponse(struct kevent& event)
 	data::Request *storage = (data::Request *)event.udata;
 
 	std::time_t elapsedTime = std::time(NULL);
-	if (elapsedTime - storage->getTime() > 30)
+	if (elapsedTime - storage->getTime() > 3)
 	{
 		std::cout << "Unable to process request, it takes too long!\n";   // test line 
 		storage->setError(true);
@@ -172,26 +174,21 @@ void Server::sendResponse(struct kevent& event)
 	}
 
 	std::cout << "storage->done: " << storage->getDone() << std::endl;
+
 	if (storage->getError() == true)
 	{
-		std::string responseNoFav =	"<!DOCTYPE htlm>"
-						"<html>"
-						"<head>"
-						"<title>Favicon</title>"
-						"<link rel='icon' href='data:,'>"
-						"</head>"
-						"<body>"
-						"<h4>Failure!!!</h4>"
-						"</body>"
-						"</html>";
-		send(event.ident, "HTTP/1.1 200 OK\r\n", 17, 0);
-		send(event.ident, "Content-Length: 127\r\n", 20, 0);
+		std::string responseNoFav;
+		responseNoFav = streamFile("error404.html");
+
+		send(event.ident, "HTTP/1.1 404 KO\r\n", 17, 0);
+		send(event.ident, "Content-Length: 316\r\n", 21, 0);
 		send(event.ident, "Content-Type: text/html; charset=UTF-8\r\n", 40, 0);
 		send(event.ident, "\r\n\r\n", 4, 0);
 		int ret = send(event.ident, responseNoFav.c_str(), responseNoFav.length(), 0);
 		if (ret < 0)	
 			throw ServerException("failed send");
 		std::cout << "ret: " << ret << std::endl;
+	
 		if (removeEvent(event, EVFILT_WRITE) == 1)
 			throw ServerException("failed kevent EV_DELETE client");
 		closeClient(event);
@@ -199,27 +196,59 @@ void Server::sendResponse(struct kevent& event)
 	}
 	else if (storage->getDone() == true)
 	{
-		std::string responseNoFav =	"<!DOCTYPE htlm>"
-						"<html>"
-						"<head>"
-						"<title>Favicon</title>"
-						"<link rel='icon' href='data:,'>"
-						"</head>"
-						"<body>"
-						"<h4>Hello</h4>"
-						"</body>"
-						"</html>";
-		// std::cout << "size body: " << responseNoFav.length() << std::endl;
-								
-		send(event.ident, "HTTP/1.1 200 OK\r\n", 17, 0);
-		send(event.ident, "Content-Length: 122\r\n", 20, 0);
-		send(event.ident, "Content-Type: text/html; charset=UTF-8\r\n", 40, 0);
-		send(event.ident, "\r\n\r\n", 4, 0);
-		int ret = send(event.ident, responseNoFav.c_str(), responseNoFav.length(), 0);
-		if (ret < 0)	
-			throw ServerException("failed send");
-		std::cout << "ret: " << ret << std::endl;
+		// std::string responseNoFav;
+		// responseNoFav = streamFile("index_dummy.html");
+		// int size = responseNoFav.length();
+		// std::string sizeStr = std::to_string(size);
 
+		// send(event.ident, "HTTP/1.1 200 OK\r\n", 17, 0);
+		// // send(event.ident, "Content-Length: 1654\r\n", 20, 0);
+		// send(event.ident, "Content-Length: ", 16, 0);
+		// send(event.ident, &sizeStr, std::to_string(size).length(), 0);
+		// send(event.ident, " \r\n", 3, 0);
+		// send(event.ident, "Content-Type: text/html; charset=UTF-8\r\n", 40, 0);
+		// send(event.ident, "\r\n\r\n", 4, 0);
+		// int ret = send(event.ident, responseNoFav.c_str(), responseNoFav.length(), 0);
+		// if (ret < 0)	
+		// 	throw ServerException("failed send");
+		// std::cout << "ret: " << ret << std::endl;
+
+		std::string temp = (storage->getRequestData()).getHttpPath();
+
+		if (temp.find(".png") != std::string::npos)
+		{
+			int		ch;
+			int		i;
+			int 	buffer[1000000];
+			int 	socketfd = event.ident;
+	
+			FILE	*fptr;
+			fptr = fopen("immage.png", "r");
+			if (fptr == NULL)
+				std::cout << "Null pointer\n";
+			memset(buffer, '\0', 1000000);
+
+			//for (i = 0; (i < (100000) && ((ch = fgetc(fptr)) != EOF) && (ch != '\n')); i++)
+			for (i = 0; (i < (1000000) && ((ch = fgetc(fptr)) != EOF)); i++)
+			{
+				// printf("%d\n", i);
+				buffer[i] = ch; 
+			}
+			std::cout << "test immage ------------------\n";
+			printf("\nSIZE i: %d\n", i);
+			
+			fclose(fptr);
+
+			std::string responseHeader =	"HTTP/1.1 200 OK\r\n"
+											"Content-Type: image/jpg\r\n"
+											"Content-Length: 109894\r\n\r\n";
+			
+			send(socketfd, &responseHeader, responseHeader.length(), 0);
+			send(socketfd, &buffer, i, 0);
+			
+		}
+		else 
+			processResponse(event.ident, "index_dummy.html");
 		if (removeEvent(event, EVFILT_WRITE) == 1)
 			throw ServerException("failed kevent EV_DELETE client");
 		closeClient(event);
@@ -229,7 +258,40 @@ void Server::sendResponse(struct kevent& event)
 	// 	std::cout << "just passing by\n"; // test line 
 }
 
-// -------------------------------------- client functions 
+void Server::processResponse(int fd, std::string file)
+{
+	std::string responseNoFav;
+	responseNoFav = streamFile(file);
+	int size = responseNoFav.length();
+	std::cout << "size: " << size << std::endl;
+	std::string sizeStr = std::to_string(size);
+
+	std::string content = "Content-Length: ";
+	content.append(std::to_string(size));
+	content.append("\r\n");
+	int length = 18 + std::to_string(size).length();
+	std::cout << "content: " << content << std::endl;
+	std:: cout << "length: " << length << std::endl;
+
+	send(fd, "HTTP/1.1 200 OK\r\n", 17, 0);
+	// send(event.ident, "Content-Length: 1654\r\n", 20, 0);
+	
+	send(fd, &content, length, 0);
+
+	// send(fd, "Content-Length: " + &sizeStr, 16, 0);
+	// send(fd, &sizeStr, std::to_string(size).length(), 0);
+	// send(fd, "\r\n", 2, 0);
+
+	send(fd, "Content-Type: text/html; charset=UTF-8\r\n", 40, 0);
+	send(fd, "\r\n\r\n", 4, 0);
+	int ret = send(fd, responseNoFav.c_str(), responseNoFav.length(), 0);
+	if (ret < 0)
+		throw ServerException("failed send");
+	std::cout << "ret: " << ret << std::endl;
+}
+
+// --------------------------------------------------------- client functions 
+// --------------------------------------------------------------------------
 
 void Server::newClient(struct kevent event)
 {
@@ -256,6 +318,19 @@ void Server::newClient(struct kevent event)
 		throw ServerException("failed kevent add EVFILT_WRITE");
 }
 
+void Server::closeClient(struct kevent& event)
+{
+	data::Request *storage;
+	storage = (data::Request *)event.udata; 
+
+	delete(storage);
+	std::cout << "connection closed\n";
+	close(event.ident); 
+}
+
+// --------------------------------------------------------- utils functions
+// -------------------------------------------------------------------------
+
 int Server::removeEvent(struct kevent& event, int filter)
 {
 	struct kevent evSet;
@@ -270,6 +345,40 @@ int Server::removeEvent(struct kevent& event, int filter)
 	}
 	return (0);
 }
+
+std::string Server::streamFile(std::string file)
+{
+	std::string responseNoFav;
+	std::fstream    infile;
+
+	// infile.open(fileName, std::fstream::in | std::fstream::out | std::fstream::app);
+	infile.open(file, std::fstream::in);
+	if (!infile)
+		throw ServerException("Error: File not be opened for reading!");
+	while (infile)     // While there's still stuff left to read
+	{
+		std::string strInput;
+		std::getline(infile, strInput);
+		responseNoFav.append(strInput);
+		responseNoFav.append("\n");
+	}
+	infile.close();
+	return (responseNoFav);
+}
+
+// --------------------------------------------------------- get functions
+// -----------------------------------------------------------------------
+
+int Server::getSocket(void)
+{
+	return (_listening_socket);
+}
+
+int Server::getKq(void)
+{
+	return (_kq);
+}
+
 
 // void Server::handleTimeout(struct kevent& event)
 // {
@@ -288,25 +397,3 @@ int Server::removeEvent(struct kevent& event, int filter)
 // 		throw ServerException("failed kevent EV_DELETE client");
 // 	}
 // }
-
-void Server::closeClient(struct kevent& event)
-{
-	data::Request *storage;
-	storage = (data::Request *)event.udata; 
-
-	delete(storage);
-	std::cout << "connection closed\n";
-	close(event.ident); 
-}
-
-// -------------------------------------- get functions
-
-int Server::getSocket(void)
-{
-	return (_listening_socket);
-}
-
-int Server::getKq(void)
-{
-	return (_kq);
-}

@@ -172,7 +172,7 @@ void    Request::appendToRequest(const char *str) {
 	std::string::size_type	it;
 
 	std::cout << PUR "AppendToRequest()\n" RES; // sleep(1);
-	// sleep(5);
+	// sleep(2);
 
 	if (_headerDone == false) {
 		std::cout << PUR "     _headerDone == FALSE\n" RES;
@@ -346,6 +346,13 @@ std::time_t Request::getTime()
 {
 	return(_startTime);
 }
+
+
+
+
+
+
+
 
 } // data
 
