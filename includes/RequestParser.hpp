@@ -28,6 +28,10 @@ namespace data {
 			std::string _temp;
 			bool _headerDone;
 			std::string _body;
+
+			bool _doneParsing;
+			bool _errorRequest;
+
         	std::string keyParser(std::string & lineContent, std::string keyToFind);
 			int appendLastChunkToBody(std::string::size_type it);
 			int appendToBody(std::string request);
@@ -50,6 +54,13 @@ namespace data {
 
 			int     storeWordsFromFirstLine(std::string firstLine);
 			int     storeWordsFromOtherLine(std::string otherLine);
+
+			bool getDone();
+			void setDone(bool val);
+			bool getError();
+			void setError(bool val);
+
+			std::string getTemp();
 	};
 
 } // data
