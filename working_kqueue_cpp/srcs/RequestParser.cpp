@@ -20,6 +20,7 @@ Request::Request() {
 
 	_doneParsing = false;
 	_errorRequest = false;
+	_earlyClose = false;
 	_startTime = std::time(NULL);
 }
 
@@ -171,7 +172,7 @@ void    Request::appendToRequest(const char *str) {
 	std::string::size_type	it;
 
 	std::cout << PUR "AppendToRequest()\n" RES; // sleep(1);
-	// sleep(15);
+	// sleep(5);
 
 	if (_headerDone == false) {
 		std::cout << PUR "     _headerDone == FALSE\n" RES;
@@ -324,6 +325,16 @@ bool Request::getError()
 void Request::setError(bool val)
 {
 	_errorRequest = val;
+}
+
+bool Request::getEarlyClose()
+{
+	return (_earlyClose);
+}
+
+void Request::setEarlyClose(bool val)
+{
+	_earlyClose = val;
 }
 
 std::string Request::getTemp()

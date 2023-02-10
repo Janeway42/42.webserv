@@ -36,6 +36,7 @@ namespace data {
 
 			bool _doneParsing;
 			bool _errorRequest;
+			bool _earlyClose;
 			std::time_t _startTime;
 
 
@@ -61,6 +62,8 @@ namespace data {
 			void setDone(bool val);
 			bool getError();
 			void setError(bool val);
+			bool getEarlyClose();
+			void setEarlyClose(bool val);
 			std::time_t getTime();
 
 			std::string getTemp();
