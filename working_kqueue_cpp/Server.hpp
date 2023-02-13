@@ -29,7 +29,6 @@ class Server
 
 		void readRequest(struct kevent& event);
 		void sendResponse(struct kevent& event);
-		void processResponse(int fd, std::string file);
 
 		void sendProcesssedResponse(struct kevent& event);
 		void sendError(struct kevent& event);
@@ -41,6 +40,8 @@ class Server
 		void closeClient(struct kevent& event);
 
 		std::string streamFile(std::string file);
+		void sendResponseFile(struct kevent& event, std::string file);
+		void sendImmage(struct kevent& event, std::string imgFileName);
 		// int closeClient(struct kevent event, int filter);
 
 		int getSocket();

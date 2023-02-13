@@ -4,7 +4,7 @@ SRC = srcs/Parser.cpp\
 		srcs/RequestData.cpp\
 		srcs/RequestParser.cpp\
 		Kqueue.cpp\
-		ServerOld.cpp
+		ServerTest.cpp
 
 OBJ = $(SRC:%.cpp=%.o)
 

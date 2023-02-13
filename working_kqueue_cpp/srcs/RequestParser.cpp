@@ -172,7 +172,10 @@ void    Request::appendToRequest(const char *str) {
 	std::string::size_type	it;
 
 	std::cout << PUR "AppendToRequest()\n" RES; // sleep(1);
-	// sleep(2);
+
+	// _errorRequest = true;  // --------------------------------------------------error test
+	// return ;
+
 
 	if (_headerDone == false) {
 		std::cout << PUR "     _headerDone == FALSE\n" RES;
