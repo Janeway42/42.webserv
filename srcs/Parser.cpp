@@ -1,4 +1,39 @@
 #include "includes/Parser.hpp"
+#include <sys/stat.h>
+
+///** Default Constructor */
+//Parser::Parser() {
+//
+//}
+
+std::string Parser::keyParser(std::string & lineContent, std::string const & keyToFind) {
+    if (lineContent.empty() || keyToFind.empty())
+        return std::string();
+    if (lineContent.find(keyToFind) != std::string::npos) {
+        std::cout << YEL << "Found "<< keyToFind << " line [" << lineContent << "]" << BACK << std::endl;
+        return getOneCleanValueFromKey(lineContent, keyToFind);
+    }
+    return std::string();
+}
+
+/* define is path is file(1), folder(2) or something else(3) */
+// todo: can we use it? stat
+PathType Parser::pathType(std::string const & path) {
+    struct stat	buffer = {};
+
+    /* The & operator computes the logical AND of its operands. The result of x & y is true if both x and y
+     * evaluate to true. Otherwise, the result is false */
+    if (stat(path.c_str(), &buffer) == 0) {
+        if (buffer.st_mode & S_IFREG)
+            return (REG_FILE);
+        else if (buffer.st_mode & S_IFDIR)
+            return (DIR);
+        else
+            return (OTHER_PATH_TYPE);
+    } else {
+        return (PATH_TYPE_ERROR);
+    }
+}
 
 //std::string Parser::removeSpaces(std::string content) {
 //    while (!content.empty()) {

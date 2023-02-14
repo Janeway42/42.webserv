@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 project(http-parser)
 project(config-file-parser)
 
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++98")
 set(CMAKE_CXX_STANDARD 98)
 SET(GCC_CODAM_COMPILE_FLAGS "-Wall -Wextra -Werror -Wshadow -pedantic -std=c++98")
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${GCC_CODAM_COMPILE_FLAGS}")

@@ -1,8 +1,9 @@
 #include "includes/ServerData.hpp"
+#include "includes/Parser.hpp"
+#include <arpa/inet.h>
 
-namespace data {
 /** Default constructor */
-Server::Server()
+ServerData::ServerData()
     /** Initializing default values for the server block */
     : _server_name("localhost"),
     _listens_to(80),
@@ -16,7 +17,7 @@ Server::Server()
 }
 
 /** Copy constructor */
-Server::Server(Server const & rhs)
+ServerData::ServerData(ServerData const & rhs)
     : _server_name(rhs._server_name),
     _listens_to(rhs._listens_to),
     _ip_address(rhs._ip_address),
@@ -28,7 +29,7 @@ Server::Server(Server const & rhs)
 }
 
 /** Destructor */
-Server::~Server() {
+ServerData::~ServerData() {
     /** Cleaning default values for the server block */
     _server_name = "";
     _listens_to = 0;
@@ -46,46 +47,56 @@ Server::~Server() {
 
 /** #################################### Getters #################################### */
 
-std::string Server::getServerName() const {
+std::string ServerData::getServerName() const {
     return _server_name;
 }
 
-unsigned int Server::getListensTo() const {
+unsigned int ServerData::getListensTo() const {
     return _listens_to;
 }
 
-std::string Server::getIpAddress() const {
+std::string ServerData::getIpAddress() const {
     return _ip_address;
 }
 
-std::string Server::getRootDirectory() const {
+std::string ServerData::getRootDirectory() const {
     return _root_directory;
 }
 
-std::string Server::getIndexFile() const {
+std::string ServerData::getIndexFile() const {
     return _index_file;
 }
 
-unsigned int Server::getClientMaxBodySize() const {
+unsigned int ServerData::getClientMaxBodySize() const {
     return _client_max_body_size;
 }
 
-std::string Server::getErrorPage() const {
+std::string ServerData::getErrorPage() const {
     return _error_page;
 }
 
-unsigned int Server::getPortRedirection() const {
+unsigned int ServerData::getPortRedirection() const {
     return _port_redirection;
 }
 
 /** #################################### Setters #################################### */
 
-void Server::setServerName(std::string const & name) {
-    //todo add error handling
-    _server_name = name;
+static bool isServerNameValid(int ch) {
+    if (isalpha(ch) != 0 || ch == '.') {
+        return true;
+    }
+    return false;
 }
 
-void Server::setListensTo(unsigned short const & port) {
+void ServerData::setServerName(std::string const & name) {
+    if (std::all_of(name.begin(), name.end(), isServerNameValid)) {
+        _server_name = name;
+    } else {
+        throw Parser::ParserException(NAME_ERROR);
+    }
+}
+
+void ServerData::setListensTo(unsigned short const & port) {
     /* Available ports:
      * - Port 80 (standard): a well-known system ports (they are assigned and controlled by IANA).
      * - Port 591 (): a well-known system ports (they are assigned and controlled by IANA).
@@ -98,44 +109,80 @@ void Server::setListensTo(unsigned short const & port) {
      * port can be used instead).
      * https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml?search=http-alt
      */
-
-
-    if (port == 80 || port == 591 || port == 8008 || port == 8080 || port > 49152) {
-        /* No need ot check port < 65536 since port is an unsigned short already */
+    if (port == 80 || port == 591 || port == 8008 || port == 8080 || port >= 49152) {// todo:: add 65536 as acceptable? then change form short to int?
+        /* No need to check port < 65536 since port is an unsigned short already */
         _listens_to = port;
-//        parserError(parser_error[6]);
     } else {
-        throw
+        throw Parser::ParserException(PORT_ERROR);
     }
 }
 
-void Server::setIpAddress(std::string const & ip) {
-    //todo add error handling
-    _ip_address = ip;
+void ServerData::setIpAddress(std::string const & ip) {
+    struct sockaddr_in sockAddr = {};
+    if (inet_pton(AF_INET, ip.c_str(), &(sockAddr.sin_addr))) {
+        _ip_address = ip;
+    } else {
+        throw Parser::ParserException(IP_ERROR);
+    }
+//    WTF? LOL
+//    std::string::size_type it;
+//    int dots_quantity = 0;
+//    int ip_chunk = 0;
+//    std::string copy_ip = ip;
+//
+//    while (not copy_ip.empty()) {
+//        std::cout << RED_BG << "copy_ip: " << copy_ip << BACK << std::endl;
+//
+//        it = copy_ip.find('.');
+//        try {
+//            ip_chunk = std::stoi(copy_ip.substr(0, it));
+//        } catch (...) {
+//            throw Parser::ParserException(IP_ERROR);
+//        }
+//        if (ip_chunk < 0 || ip_chunk > 255) {
+//            throw Parser::ParserException(IP_ERROR);
+//        }
+//        if (it != std::string::npos) {
+//            dots_quantity++;
+//        } else {
+//            if (dots_quantity == 3) {
+//                break;
+//            } else if (dots_quantity > 3 || dots_quantity < 3) {
+//                throw Parser::ParserException(IP_ERROR);
+//            }
+//        }
+//        copy_ip = copy_ip.substr(it + 1);
+//        if (copy_ip.empty() && dots_quantity == 3) {
+//            throw Parser::ParserException(IP_ERROR);
+//        }
+//    }
+//    _ip_address = ip;
 }
 
-void Server::setRootDirectory(std::string const & root_dir) {
-    //todo add error handling
-    _root_directory = root_dir;
+void ServerData::setRootDirectory(std::string const & root_dir) {
+    if (pathType(root_dir) == DIR) {
+        _root_directory = root_dir;
+    } else {
+        throw Parser::ParserException(ROOT_PATH_ERROR);
+    }
 }
 
-void Server::setIndexFile(std::string const & idx_file) {
+void ServerData::setIndexFile(std::string const & idx_file) {
     //todo add error handling
     _index_file = idx_file;
 }
 
-void Server::setClientMaxBodySize(unsigned int const & body_size) {
+void ServerData::setClientMaxBodySize(unsigned int const & body_size) {
     //todo add error handling
     _client_max_body_size = body_size;
 }
 
-void Server::setErrorPage(std::string const & err_page) {
+void ServerData::setErrorPage(std::string const & err_page) {
     //todo add error handling
     _error_page = err_page;
 }
 
-void Server::setPortRedirection(unsigned int const & port_redir) {
+void ServerData::setPortRedirection(unsigned int const & port_redir) {
     //todo add error handling
     _port_redirection = port_redir;
 }
-} // data

@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iostream>
+#include <unistd.h>
 
 # define RED_BG  "\033[41m"
 # define RED     "\033[31m"
@@ -15,6 +16,14 @@
 # define BACK     "\033[0m"
 
 /** The Parser has no access to the data namespace so it does nt have access to any data */
+
+enum PathType {
+    DIR = 0,
+    REG_FILE,
+    SYM_LINK,
+    OTHER_PATH_TYPE,
+    PATH_TYPE_ERROR
+};
 
 enum AllowMethods {
     GET = 0,
@@ -43,42 +52,49 @@ enum DataType {// todo: Maybe not used
 /** If the error message will be useful for the http response then a $responseStatusCode will be set.
  * Otherwise $responseStatusCode will be set to zero.
  */
-struct parser_error {
-    unsigned short responseStatusCode;// todo change it just to errorCode?
-    std::string errorMessage;
-} parser_error[] = {
-        {   0,     "Key is not supported"},
-        {   0,     "Value is not a string"},
-        {   0,     "Value is not a relative or full path"},
-        {   0,     "Value is not a full path"},
-        {   0,     "Value is not a .html file"},
-        {   0,     "Value is not an allowed port"},
-        {   0,     "Value is not a string"},
-        {   0,     "Value is not a string"},
-        {   0,     "Value is not a string"},
-        {   400,   "Value is not a string"},
-        {  404,   "Key Location is not supported"},
-};
+//struct parser_error {
+//    unsigned short responseStatusCode;// todo change it just to errorCode?
+//    std::string errorMessage;
+//} parserError[] = {
+//        {   0,     "Key is not supported"},
+//        {   0,     "Value is not a string"},
+//        {   0,     "Value is not a relative or full path"},
+//        {   0,     "Value is not a full path"},
+//        {   0,     "Value is not a .html file"},
+//        {   0,     "Value is not an allowed port"},
+//        {   0,     "Value is not a string"},
+//        {   0,     "Value is not a string"},
+//        {   0,     "Value is not a string"},
+//        {   400,   "Value is not a string"},
+//        {  404,   "Key LocationData is not supported"},
+//};
+
+/** Error Macros */
+#define NAME_ERROR "server_name is not supported"
+#define PORT_ERROR "listens_to (port) is not supported"
+#define IP_ERROR "ip_address is not supported"
+#define ROOT_PATH_ERROR "root_directory is not supported"
 
 class Parser {
     public:
+//        Parser();
+        virtual std::string keyParser(std::string & lineContent, const std::string& keyToFind);
         virtual std::string getOneCleanValueFromKey(std::string & contentLine, std::string const & key);
         virtual DataType getValueType(std::string & lineContent);
+        virtual PathType pathType(std::string const & path);
 
         class ParserException: public std::exception {
             private:
                 std::string _errorMessage;
             public:
-                explicit ParserException(struct parser_error const & error) throw() {
-                    _errorMessage = std::string(std::to_string(error.responseStatusCode) + error.errorMessage);;
+                explicit ParserException(std::string const & errorMessage) throw() {
+                    _errorMessage = "Config file error: " + errorMessage;// todo: maybe add a number to it? and make it an array, std::pair map?
                 }
                 virtual const char* what() const throw() {
                     return (_errorMessage.c_str());
                 }
                 virtual ~ParserException() throw() {}
         };
-
-//        std::pair<std::string, unsigned short> parserError(struct parser_error const error);
 };
 
 #endif //WEBSERV_PARSER_HPP

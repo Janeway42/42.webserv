@@ -1,69 +1,64 @@
 #include "includes/ConfigFileParser.hpp"
 
-#include <fstream>
-
-using namespace data;
-/** Default  */
-ConfigFile::ConfigFile()
-    : _server_data(Server()),
+/** Default Constructor */
+ConfigFileParser::ConfigFileParser()
+    : _server_data(ServerData()),
     _server_block_counter(0),
-    _location_data(Location(_server_data.getRootDirectory(), _server_data.getIndexFile())),
+    _location_data(LocationData(_server_data.getRootDirectory(), _server_data.getIndexFile())),
     _location_block_counter(0),
-    _location_data_vector(std::vector<Location>()) {
+    _location_data_vector(std::vector<LocationData>()) {
 }
 
-//ConfigFile::ConfigFile(std::string const & configFileName) {
+//ConfigFileParser::ConfigFileParser(std::string const & configFileName) {
 //    /** Initializing default values for the config file */
-//   _server_data = new Server();??
-//    _server_data = Server();
+//   _server_data = new ServerData();??
+//    _server_data = ServerData();
 //    _server_block_counter = 0;
-//    _location_data = Location(_server_data.getRootDirectory(), _server_data.getIndexFile());
+//    _location_data = LocationData(_server_data.getRootDirectory(), _server_data.getIndexFile());
 //    _location_block_counter = 0;
-//    _location_data_vector = std::vector<Location>();
+//    _location_data_vector = std::vector<LocationData>();
 //}
 
 /** Destructor */
-ConfigFile::~ConfigFile() {
+ConfigFileParser::~ConfigFileParser() {
     /** Cleaning default values */
     _server_block_counter = 0;
     _location_block_counter = 0;
-    _location_data_vector = std::vector<Location>();
-//    _server_map = std::map<Server*, std::vector<Location> >();
+    _location_data_vector = std::vector<LocationData>();
+//    _server_map = std::map<ServerData*, std::vector<LocationData> >();
 //   delete _data;
 }
 
 /** #################################### Getters #################################### */
 
-std::map<Server*, std::vector<Location> > const & ConfigFile::getServerDataMap() const {
+std::map<ServerData*, std::vector<LocationData> > const & ConfigFileParser::getServerDataMap() const {
     return _server_map;
 }
 
-unsigned short ConfigFile::getServerBlockCounter() const {
+unsigned short ConfigFileParser::getServerBlockCounter() const {
     return _server_block_counter;
 }
 
-unsigned short ConfigFile::getLocationBlockCounter() const {
+unsigned short ConfigFileParser::getLocationBlockCounter() const {
     return _location_block_counter;
 }
 
 /** #################################### Methods #################################### */
 
-void ConfigFile::serverBlockCounter() {
+void ConfigFileParser::serverBlockCounter() {
     _server_block_counter++;
 }
 
-void ConfigFile::locationBlockCounter() {
+void ConfigFileParser::locationBlockCounter() {
     _location_block_counter++;
 }
 
-std::map<Server*, std::vector<Location> > ConfigFile::parseFile(std::string const & configFileName) {
-    if (handleFile(configFileName)) {
-        return _server_map;
-    }
+std::map<ServerData*, std::vector<LocationData> > ConfigFileParser::parseFile(std::string const & configFileName) {
+    handleFile(configFileName);
     return _server_map;
 }
 
-bool ConfigFile::handleFile(std::string const & configFileName) {
+bool ConfigFileParser::handleFile(std::string const & configFileName) {
     /** Opening the file */
     // std::ifstream destructor will close the file automatically, which is one of the perks of using this class.
     // The IDE may compile the program on a child directory and so the file to open would be one path behind
@@ -81,31 +76,31 @@ bool ConfigFile::handleFile(std::string const & configFileName) {
 
 
 // TODO CHECK FOR MANDATORY / NON MANDATORY FIELDS
-void ConfigFile::parseFileServerBlock(std::ifstream & configFile) {
+void ConfigFileParser::parseFileServerBlock(std::ifstream & configFile) {
     while (configFile) {
         std::string lineContent;
         std::getline(configFile, lineContent);
-        std::cout << RES << "  Server lineContent: " << lineContent << BACK << std::endl;
+        std::cout << RES << "  ServerData lineContent: " << lineContent << BACK << std::endl;
 
         if (lineContent.find('#') != std::string::npos || !lineContent[0]) {
             continue;
         } else if (lineContent.find('}') != std::string::npos) {
             /** Adding to the map whatever was inserted into _server_data and _location_data_vector */
 
-//            Server* serverBlock = new Server(_server_data);
-            _server_map.insert(std::make_pair(new Server(_server_data), _location_data_vector));// TODO check if it leaks
+            //            ServerData* serverBlock = new ServerData(_server_data);
+            _server_map.insert(
+                    std::make_pair(new ServerData(_server_data), _location_data_vector));// TODO check if it leaks
 
             /** Cleaning the _server_data and _location_data private members so it can receive new data if a new
              * server block is found
              */
-            _server_data = Server();
-            _location_data = Location(_server_data.getRootDirectory(), _server_data.getIndexFile());
+            _server_data = ServerData();
+            _location_data = LocationData(_server_data.getRootDirectory(), _server_data.getIndexFile());
             break;
         } else if (lineContent == "server {") {
             serverBlockCounter();
             std::cout << RED << "Number of server block(s): " << getServerBlockCounter() << BACK << std::endl;
-        }
-        else if (lineContent != "server {" && getServerBlockCounter() == 0) {
+        } else if (lineContent != "server {" && getServerBlockCounter() == 0) {
             std::cerr << RED << "A server block is needed in the configuration file" << BACK << std::endl;
             break;
         }
@@ -156,9 +151,11 @@ void ConfigFile::parseFileServerBlock(std::ifstream & configFile) {
             locationBlockCounter();
 
             parseFileLocationBlock(configFile);
-            std::cout << RED << "(cgi) Number of location block(s)? " << getLocationBlockCounter() << BACK << std::endl;
+            std::cout << RED << "(cgi) Number of location block(s)? " << getLocationBlockCounter() << BACK
+                      << std::endl;
             continue;
-        } else if (lineContent.find("location") != std::string::npos && lineContent.find('{') != std::string::npos) {
+        } else if (lineContent.find("location") != std::string::npos &&
+                   lineContent.find('{') != std::string::npos) {
             locationBlockCounter();
 
             parseFileLocationBlock(configFile);
@@ -169,13 +166,13 @@ void ConfigFile::parseFileServerBlock(std::ifstream & configFile) {
     }
 }
 
-void ConfigFile::parseFileLocationBlock(std::ifstream & configFile) {
+void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile) {
     std::string lineContent;
 
     /** Start reading and parsing a location block */
     while (configFile) {
         std::getline(configFile, lineContent);
-        std::cout << RES << "Location lineContent: " << lineContent << BACK << std::endl;
+        std::cout << RES << "LocationData lineContent: " << lineContent << BACK << std::endl;
         if (lineContent.find('#') != std::string::npos || !lineContent[0]) {
             continue;
         }
@@ -186,7 +183,7 @@ void ConfigFile::parseFileLocationBlock(std::ifstream & configFile) {
             /** Cleaning the _location_data private member so it can receive new data if a new location
              * block is found inside this current server block
              */
-            _location_data = Location(_server_data.getRootDirectory(), _server_data.getIndexFile());
+            _location_data = LocationData(_server_data.getRootDirectory(), _server_data.getIndexFile());
 
             /** Now we are going out if a possible cgi block */
             _location_data.setLocationAsCgi(false);
@@ -243,12 +240,12 @@ void ConfigFile::parseFileLocationBlock(std::ifstream & configFile) {
 }
 
 //template<typename T>
-std::string ConfigFile::keyParser(std::string & lineContent, std::string const & keyToFind) {
-    if (lineContent.empty() || keyToFind.empty())
-        return std::string();
-    if (lineContent.find(keyToFind) != std::string::npos) {
-        std::cout << YEL << "Found "<< keyToFind << " line [" << lineContent << "]" << BACK << std::endl;
-        return getOneCleanValueFromKey(lineContent, keyToFind);
-    }
-    return std::string();
-}
+//std::string ConfigFileParser::keyParser(std::string & lineContent, std::string const & keyToFind) {
+//    if (lineContent.empty() || keyToFind.empty())
+//        return std::string();
+//    if (lineContent.find(keyToFind) != std::string::npos) {
+//        std::cout << YEL << "Found "<< keyToFind << " line [" << lineContent << "]" << BACK << std::endl;
+//        return getOneCleanValueFromKey(lineContent, keyToFind);
+//    }
+//    return std::string();
+//}

@@ -2,7 +2,8 @@
 #define WEBSERV_SERVERDATA_HPP
 
 #include "Parser.hpp"
-#include "includes/LocationData.hpp"
+
+#include <string>
 
 /**
  * An IP address identifies a machine in an IP network and is used to determine the destination of a data packet.
@@ -13,15 +14,14 @@
  *      a directory or file with no path (i.e.: test_index.html) will be searched on ./
  */
 
-namespace data {
-class Server {
+class ServerData : public Parser {
     private:
         std::string _server_name;
         /* Port numbers consist of 16-bit numbers */
         unsigned short _listens_to;
         /* std::vector<std::uint8_t> since each block of an ip address is from 0 to 255. uint8_t to specify that the
          * data type is unsigned 8bits (better than writing unsigned char knowing we will receive a number) */
-        std::string _ip_address;// todo look for a better _data type?
+        std::string _ip_address;// todo: look for a better _data type?
         std::string _root_directory;
         std::string _index_file;
         unsigned int _client_max_body_size;
@@ -29,9 +29,9 @@ class Server {
         unsigned int _port_redirection;
 
     public:
-        Server();
-        virtual ~Server();
-        Server(Server const & rhs);
+        ServerData();
+        virtual ~ServerData();
+        ServerData(ServerData const & rhs);
 
         /** Methods */
 
@@ -54,7 +54,5 @@ class Server {
         void setClientMaxBodySize(unsigned int const & body_size);
         void setErrorPage(std::string const & err_page);
         void setPortRedirection(unsigned int const & port_redir);
-
 };
-} // data
 #endif //WEBSERV_SERVERDATA_HPP

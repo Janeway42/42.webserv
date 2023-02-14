@@ -2,7 +2,7 @@
 #define WEBSERV_LOCATIONDATA_HPP
 
 #include "Parser.hpp"
-#include "ServerData.hpp"
+//#include "ServerData.hpp"
 
 #include <string>
 #include <vector>
@@ -13,8 +13,8 @@
  *      a directory or file with no path (i.e.: test_index.html) will be searched on ./
  */
 
-namespace data {
-class Location {
+//namespace data {
+class LocationData {
     private:
         bool _is_location_cgi;
         std::string _root_directory;
@@ -25,9 +25,9 @@ class Location {
         std::string _script_extension;
 
     public:
-        Location() = delete;// delete makes it impossible to be used (anywhere by anyone) todo is it c++98?
-        Location(std::string const & server_root_directory, std::string const & server_index_file);
-        virtual ~Location();
+        LocationData();// = delete;// delete makes it impossible to be used (anywhere by anyone) todo is it c++98?
+        LocationData(std::string const & server_root_directory, std::string const & server_index_file);
+        virtual ~LocationData();
 
         /** Methods */
         bool is_location_cgi() const;
@@ -49,5 +49,5 @@ class Location {
         void setInterpreterPath(std::string const & interpreterPath);
         void setScriptExtension(std::string const & scriptExtension);
     };
-} // data
+//} // data
 #endif //WEBSERV_LOCATIONDATA_HPP
