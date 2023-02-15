@@ -74,6 +74,10 @@ enum DataType {// todo: Maybe not used
 #define PORT_ERROR "listens_to (port) is not supported"
 #define IP_ERROR "ip_address is not supported"
 #define ROOT_PATH_ERROR "root_directory is not supported"
+#define INDEX_FILE_ERROR "index_file is not supported"
+#define MAX_BODY_ERROR "client_max_body_size is not supported"
+#define ERROR_PAGE_ERROR "error_page is not supported"
+#define PORT_REDIR_ERROR "port_redirection is not supported"
 
 class Parser {
     public:

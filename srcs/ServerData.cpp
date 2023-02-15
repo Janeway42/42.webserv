@@ -160,6 +160,7 @@ void ServerData::setIpAddress(std::string const & ip) {
 }
 
 void ServerData::setRootDirectory(std::string const & root_dir) {
+    //TODO check if mandatory or not
     if (pathType(root_dir) == DIR) {
         _root_directory = root_dir;
     } else {
@@ -168,21 +169,53 @@ void ServerData::setRootDirectory(std::string const & root_dir) {
 }
 
 void ServerData::setIndexFile(std::string const & idx_file) {
-    //todo add error handling
-    _index_file = idx_file;
+    //TODO check if mandatory or not
+    std::string from_root_dir_or_has_path;
+    if (idx_file.find('/') == std::string::npos) {
+        from_root_dir_or_has_path = _root_directory + "/" + idx_file;
+    } else {
+        from_root_dir_or_has_path = idx_file;
+    }
+    if (pathType(from_root_dir_or_has_path) == REG_FILE) {
+        std::cout << BLU << "index_file: " << _root_directory + "/" + idx_file << BACK << std::endl;
+        _index_file = idx_file;
+    } else {
+        throw Parser::ParserException(INDEX_FILE_ERROR);
+    }
 }
 
 void ServerData::setClientMaxBodySize(unsigned int const & body_size) {
-    //todo add error handling
-    _client_max_body_size = body_size;
+    //TODO check if mandatory or not
+    if (body_size <= INT32_MAX) {
+        _client_max_body_size = body_size;
+    } else {
+        throw Parser::ParserException(MAX_BODY_ERROR);
+    }
 }
 
 void ServerData::setErrorPage(std::string const & err_page) {
-    //todo add error handling
+    //TODO check if mandatory or not
+    std::string from_root_dir_or_has_path;
+    if (err_page.find('/') == std::string::npos) {
+        from_root_dir_or_has_path = _root_directory + "error_pages/" + err_page;
+    } else {
+        from_root_dir_or_has_path = err_page;
+    }
+    if (pathType(from_root_dir_or_has_path) == REG_FILE) {
+        std::cout << BLU << "error_page: " << _root_directory + "/" + err_page << BACK << std::endl;
+        _index_file = err_page;
+    } else {
+        throw Parser::ParserException(ERROR_PAGE_ERROR);
+    }
     _error_page = err_page;
 }
 
 void ServerData::setPortRedirection(unsigned int const & port_redir) {
-    //todo add error handling
-    _port_redirection = port_redir;
+    //TODO check if mandatory or not
+    if (port_redir != _listens_to && (port_redir == 80 || port_redir == 591 || port_redir == 8008 || port_redir == 8080 || port_redir >= 49152)) {// todo:: add 65536 as acceptable? then change form short to int?
+        /* No need to check port < 65536 since port is an unsigned short already */
+        _port_redirection = port_redir;
+    } else {
+        throw Parser::ParserException(PORT_REDIR_ERROR);
+    }
 }
