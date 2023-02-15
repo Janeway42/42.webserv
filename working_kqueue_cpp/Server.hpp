@@ -15,6 +15,9 @@
 
 #define MAX_EVENTS 100
 
+#ifndef DEBUG
+#define DEBUG 0
+#endif
 class Server
 {
 	private:

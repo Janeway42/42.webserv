@@ -1,10 +1,10 @@
 NAME = webserv
 
-SRC = srcs/Parser.cpp\
-		srcs/RequestData.cpp\
-		srcs/RequestParser.cpp\
+SRC = Server.cpp\
 		Kqueue.cpp\
-		ServerTest.cpp
+		srcs/Parser.cpp\
+		srcs/RequestData.cpp\
+		srcs/RequestParser.cpp
 
 OBJ = $(SRC:%.cpp=%.o)
 
