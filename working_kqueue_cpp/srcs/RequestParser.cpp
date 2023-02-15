@@ -111,7 +111,10 @@ int Request::storeWordsFromFirstLine(std::string firstLine)
 			_data.setRequestPath(*iter);
 		else if (i == 2) {
 			if (*iter != "HTTP/1.1" && *iter != "HTTP/1.0")		// maybe also HTTP/1.0 needed ??
+			{
 				std::cout << RED << "Error: wrong http version\n" << RES;
+				_errorRequest = true;
+			}
 			_data.setHttpVersion(*iter);
 		}
 	}
@@ -166,16 +169,17 @@ int Request::storeWordsFromOtherLine(std::string otherLine) {
 
 void    Request::appendToRequest(const char *str) {
 	std::string 			chunk = std::string(str);
-	// std::string				strToFind = "image/avif";
 	std::string				strToFind = "\r\n\r\n";
-	//std::string				strToFind = "xxx";
 	std::string::size_type	it;
 
 	std::cout << PUR "AppendToRequest()\n" RES; // sleep(1);
 
+	//test error: 
 	// _errorRequest = true;  // --------------------------------------------------error test
 	// return ;
 
+	//test request takes too long: 
+	// sleep(3);
 
 	if (_headerDone == false) {
 		std::cout << PUR "     _headerDone == FALSE\n" RES;
