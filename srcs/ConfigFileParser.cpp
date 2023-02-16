@@ -61,13 +61,13 @@ std::map<ServerData*, std::vector<LocationData> > ConfigFileParser::parseFile(st
 bool ConfigFileParser::handleFile(std::string const & configFileName) {
     /** Opening the file */
     // std::ifstream destructor will close the file automatically, which is one of the perks of using this class.
-    // The IDE may compile the program on a child directory and so the file to open would be one path behind
+    // An IDE may compile the program on another directory and so the file to open would be on a different path.
     std::ifstream configFile;
     configFile.open("./" + configFileName);
     if (configFile.is_open()) {
         parseFileServerBlock(configFile);
     } else {
-        std::cerr << "Not able to open the configuration file" << std::endl;
+        std::cerr << "Not able to open the configuration file" << std::endl;// TODO: throw exception
         return false;
     }
     configFile.close();
@@ -80,7 +80,7 @@ void ConfigFileParser::parseFileServerBlock(std::ifstream & configFile) {
     while (configFile) {
         std::string lineContent;
         std::getline(configFile, lineContent);
-        std::cout << RES << "  ServerData lineContent: " << lineContent << BACK << std::endl;
+//        std::cout << RES << "  ServerData lineContent: " << lineContent << BACK << std::endl;
 
         if (lineContent.find('#') != std::string::npos || !lineContent[0]) {
             continue;
@@ -106,43 +106,39 @@ void ConfigFileParser::parseFileServerBlock(std::ifstream & configFile) {
         }
 
         /** Start reading and parsing the server block */
-        std::string serverName = keyParser(lineContent, "server_name");
-        if (!serverName.empty()) {
-            _server_data.setServerName(serverName);
+        if (_server_data.setServerName(keyParser(lineContent, "server_name"))) {
             continue;
         }
-        std::string listensTo = keyParser(lineContent, "listens_to");
-        if (!listensTo.empty()) {
-            _server_data.setListensTo(std::strtol(listensTo.c_str(), nullptr, 10));
+        if (_server_data.setListensTo(keyParser(lineContent, "listens_to"))) {
             continue;
         }
         std::string ipAddress = keyParser(lineContent, "ip_address");
-        if (!ipAddress.empty()) {
+        if (not ipAddress.empty()) {
             _server_data.setIpAddress(ipAddress);
             continue;
         }
         std::string rootDirectory = keyParser(lineContent, "root_directory");
-        if (!rootDirectory.empty()) {
+        if (not rootDirectory.empty()) {
             _server_data.setRootDirectory(rootDirectory);
             continue;
         }
         std::string indexFile = keyParser(lineContent, "index_file");
-        if (!indexFile.empty()) {
+        if (not indexFile.empty()) {
             _server_data.setIndexFile(indexFile);
             continue;
         }
         std::string clientMaxBodySize = keyParser(lineContent, "client_max_body_size");
-        if (!clientMaxBodySize.empty()) {
+        if (not clientMaxBodySize.empty()) {
             _server_data.setClientMaxBodySize(std::strtol(clientMaxBodySize.c_str(), nullptr, 10));
             continue;
         }
         std::string errorPage = keyParser(lineContent, "error_page");
-        if (!errorPage.empty()) {
+        if (not errorPage.empty()) {
             _server_data.setErrorPage(errorPage);
             continue;
         }
         std::string portRedirection = keyParser(lineContent, "port_redirection");
-        if (!portRedirection.empty()) {
+        if (not portRedirection.empty()) {
             _server_data.setPortRedirection(std::strtol(portRedirection.c_str(), nullptr, 10));
             continue;
         }
@@ -172,7 +168,7 @@ void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile) {
     /** Start reading and parsing a location block */
     while (configFile) {
         std::getline(configFile, lineContent);
-        std::cout << RES << "LocationData lineContent: " << lineContent << BACK << std::endl;
+//        std::cout << RES << "LocationData lineContent: " << lineContent << BACK << std::endl;
         if (lineContent.find('#') != std::string::npos || !lineContent[0]) {
             continue;
         }
@@ -190,12 +186,12 @@ void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile) {
             break;
         }
         std::string locationRootDirectory = keyParser(lineContent, "root_directory");
-        if (!locationRootDirectory.empty()) {
+        if (not locationRootDirectory.empty()) {
             _location_data.setRootDirectory(locationRootDirectory);
             continue;
         }
         std::string locationAllow_methodsString = keyParser(lineContent, "allow_methods");
-        if (!locationAllow_methodsString.empty()) {
+        if (not locationAllow_methodsString.empty()) {
             std::vector<AllowMethods> locationAllow_methods;
             if (locationAllow_methodsString.find("GET") != std::string::npos) {
                 locationAllow_methods.push_back(GET);
@@ -210,12 +206,12 @@ void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile) {
             continue;
         }
         std::string locationIndexFile = keyParser(lineContent, "index_file");
-        if (!locationIndexFile.empty()) {
+        if (not locationIndexFile.empty()) {
             _location_data.setIndexFile(locationIndexFile);
             continue;
         }
         std::string autoIndex = keyParser(lineContent, "auto_index");
-        if (!autoIndex.empty()) {
+        if (not autoIndex.empty()) {
             if (autoIndex.find("on") != std::string::npos) {
                 _location_data.setAutoIndex(true);
             } else if (autoIndex.find("off") != std::string::npos) {
@@ -224,7 +220,7 @@ void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile) {
             continue;
         }
         std::string interpreterPath = keyParser(lineContent, "interpreter_path");
-        if (!interpreterPath.empty()) {
+        if (not interpreterPath.empty()) {
             if (interpreterPath[0] != '/') {
                 std::cerr << RED << "interpreter_path has to have a full path" << BACK << std::endl;
             }
@@ -232,7 +228,7 @@ void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile) {
             continue;
         }
         std::string scriptExtension = keyParser(lineContent, "script_extension");
-        if (!scriptExtension.empty()) {
+        if (not scriptExtension.empty()) {
             _location_data.setScriptExtension(scriptExtension);
             continue;
         }

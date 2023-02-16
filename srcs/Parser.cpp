@@ -1,5 +1,6 @@
 #include "includes/Parser.hpp"
 #include <sys/stat.h>
+#include <iomanip>
 
 ///** Default Constructor */
 //Parser::Parser() {
@@ -10,7 +11,7 @@ std::string Parser::keyParser(std::string & lineContent, std::string const & key
     if (lineContent.empty() || keyToFind.empty())
         return std::string();
     if (lineContent.find(keyToFind) != std::string::npos) {
-        std::cout << YEL << "Found "<< keyToFind << " line [" << lineContent << "]" << BACK << std::endl;
+        std::cout << YEL << lineContent << BACK << std::endl;
         return getOneCleanValueFromKey(lineContent, keyToFind);
     }
     return std::string();
@@ -24,15 +25,15 @@ PathType Parser::pathType(std::string const & path) {
     /* The & operator computes the logical AND of its operands. The result of x & y is true if both x and y
      * evaluate to true. Otherwise, the result is false */
     if (stat(path.c_str(), &buffer) == 0) {
-        if (buffer.st_mode & S_IFREG)
+        if (buffer.st_mode & S_IFREG) {
             return (REG_FILE);
-        else if (buffer.st_mode & S_IFDIR)
-            return (DIR);
-        else
+        } else if (buffer.st_mode & S_IFDIR) {
+            return (DIRECTORY);
+        } else
             return (OTHER_PATH_TYPE);
-    } else {
-        return (PATH_TYPE_ERROR);
     }
+    std::cout << "JOYCE ERROR" << std::endl;
+    return (PATH_TYPE_ERROR);
 }
 
 //std::string Parser::removeSpaces(std::string content) {

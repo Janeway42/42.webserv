@@ -28,6 +28,9 @@ class ServerData : public Parser {
         std::string _error_page;
         unsigned int _port_redirection;
 
+        /** Private Methods */
+        std::string isPath(std::string const & possiblePath);
+
     public:
         ServerData();
         virtual ~ServerData();
@@ -46,13 +49,13 @@ class ServerData : public Parser {
         unsigned int getPortRedirection() const;
 
         /** Setters */
-        void setServerName(std::string const & name);
-        void setListensTo(unsigned short const & port);
-        void setIpAddress(std::string const & ip);
-        void setRootDirectory(std::string const & root_dir);
-        void setIndexFile(std::string const & idx_file);
-        void setClientMaxBodySize(unsigned int const & body_size);
-        void setErrorPage(std::string const & err_page);
-        void setPortRedirection(unsigned int const & port_redir);
+        bool setServerName(std::string const & name);
+        bool setListensTo(std::string const & port);
+        bool setIpAddress(std::string const & ip);
+        bool setRootDirectory(std::string const & root_dir);
+        bool setIndexFile(std::string const & idx_file);
+        bool setClientMaxBodySize(unsigned int const & body_size);
+        bool setErrorPage(std::string const & err_page);
+        bool setPortRedirection(unsigned int const & port_redir);
 };
 #endif //WEBSERV_SERVERDATA_HPP

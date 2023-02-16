@@ -18,7 +18,7 @@
 /** The Parser has no access to the data namespace so it does nt have access to any data */
 
 enum PathType {
-    DIR = 0,
+    DIRECTORY = 0,
     REG_FILE,
     SYM_LINK,
     OTHER_PATH_TYPE,
@@ -70,11 +70,13 @@ enum DataType {// todo: Maybe not used
 //};
 
 /** Error Macros */
-#define NAME_ERROR "server_name is not supported"
-#define PORT_ERROR "listens_to (port) is not supported"
-#define IP_ERROR "ip_address is not supported"
-#define ROOT_PATH_ERROR "root_directory is not supported"
-#define INDEX_FILE_ERROR "index_file is not supported"
+#define NOT_MANDATORY 0
+#define MANDATORY 1
+#define MISSING 2
+#define CONFIG_FILE_ERROR(key, error_message) ((error_message == MANDATORY) ? (BACK key RED " is mandatory") \
+                                                : (error_message == NOT_MANDATORY) ? (BACK key RED" is not supported") \
+                                                : (BACK key RED" is missing"))
+
 #define MAX_BODY_ERROR "client_max_body_size is not supported"
 #define ERROR_PAGE_ERROR "error_page is not supported"
 #define PORT_REDIR_ERROR "port_redirection is not supported"
