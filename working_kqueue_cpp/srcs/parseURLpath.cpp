@@ -29,6 +29,33 @@ void printPathParts(std::string str, std::string strTrim, std::string path,
 
 
 
+int checkIfFileExists (const std::string& path) {
+    std::ifstream file(path.c_str());
+
+	if (!(file.is_open())) {
+		std::cout << RED "File " << path << " not found\n" RES;
+		return (-1);
+	}
+	std::cout << GRN "File " << path << " exists\n" RES;
+    return 0;
+}
+
+
+
+int checkTypeOfFile(const std::string & path) {
+	
+	std::size_t found = path.find_last_of(".");
+	std::string extention = path.substr(found, std::string::npos);
+	
+	std::cout << GRN "Found Extension: [" << path << "]\n" RES;
+	
+	return (0);
+}
+
+
+
+
+
 std::string removeDuplicateSlash(std::string pathOld) {
   
 	char *temp = (char *)malloc(pathOld.length() * sizeof(char) + 1);
@@ -49,6 +76,12 @@ std::string removeDuplicateSlash(std::string pathOld) {
 	temp[j] = '\0';
 	std::string pathNew(temp);
 	free(temp);
+
+	if (pathNew[0] == '/')	{
+		std::string prefix = ".";
+		prefix.append(pathNew);
+		return prefix;
+	}
 	return pathNew;
 }
 
@@ -142,12 +175,24 @@ int Request::parsePath(std::string str)
 		queryMap = storePathQuery(pathQuery);
 		printPathParts(str, path, pathFirstPart, pathLastName, queryMap);
 	}
+
+	checkIfFileExists(path);
+	checkTypeOfFile(path);
+
+
+
 	return (0);
 }
 
 } // namespace data
 
-int main_OLD()
+
+
+
+
+
+int main()
+// int main()
 {
 	// parsePath("/");
 	// parsePath("/home/");						// must be folder
@@ -168,5 +213,15 @@ int main_OLD()
 	// parsePath("/home/folder/response.php?street=Singel&city=London");
 
 	// parsePath("kostja.se////folder//folder/folder/folder///folder/folder//index.html?city=tokio&street=singel");
+	
+	
+
+	std::cout << checkIfFileExists("test.html") << "\n";
+	std::cout << checkIfFileExists("_testFolder") << "\n";
+	
+	
 	return (0);
 }
+
+
+
