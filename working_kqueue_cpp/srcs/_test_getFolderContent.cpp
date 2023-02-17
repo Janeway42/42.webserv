@@ -2,6 +2,7 @@
 #include <sstream>
 #include <unistd.h>
 #include <string.h>
+#include "../includes/Parser.hpp"
 
 std::string appendHTMLhead(std::string path, std::string & htmlStr) {
 
@@ -15,6 +16,21 @@ std::string appendHTMLhead(std::string path, std::string & htmlStr) {
 }
 
 
+std::string removeLastFolderFromPath(std::string path) {
+	std::string parentPath;
+
+	size_t len = path.length() - 1;
+	for ( ; path[len] == '/' ; len--);
+	for (; path[len] != '/' ; len--);
+
+	parentPath = path.substr(0, len);
+
+	std::cout << GRN "parentPath: [" << parentPath << "]\n" RES;
+	return (parentPath);
+}
+
+
+
 std::string appendHTMLbody(std::string line, std::string path, std::string & htmlStr) {
 	int	found;
 
@@ -23,14 +39,20 @@ std::string appendHTMLbody(std::string line, std::string path, std::string & htm
 	std::string lastName = line.substr(found + 1, std::string::npos);
 	
 	htmlStr.append("<li><a href='");
-	htmlStr.append(path);
+	if (lastName != "..")
+		htmlStr.append(path);
+	else
+		htmlStr.append(removeLastFolderFromPath(path)); // remove last folder from the path
+
 	htmlStr.append("/");
-	htmlStr.append(line, found + 1, std::string::npos);
+	if (lastName != "." && lastName != "..")
+		htmlStr.append(lastName);
+
 	htmlStr.append("'>  ");
 	if (lastName == "..")
 		htmlStr.append("Parent Directory");
 	else
-		htmlStr.append(line, found + 1, std::string::npos);
+		htmlStr.append(lastName);
 	htmlStr.append("  </a></li>\n");
 	return (htmlStr);
 }
@@ -44,7 +66,7 @@ void	makeHtmlString(std::string folderContent, std::string path) {
 	std::string			htmlStr;
 	// std::string			lastWord;
 
-	//appendHTMLhead(path, htmlStr);
+	appendHTMLhead(path, htmlStr);
 
 	while (std::getline(iss, line)) {
 		if (line[0] == 'd') {
@@ -57,7 +79,7 @@ void	makeHtmlString(std::string folderContent, std::string path) {
 		}
 	}
 	htmlStr.append("</ul></body></html>");
-	std::cout << "\nFolder content as HTML:\n" << htmlStr << "\n";
+	std::cout << "\nFolder content as HTML:\n" BLU << htmlStr << RES "\n";
 }
 
 
@@ -80,7 +102,7 @@ std::string storeFolderContent(char *path) {
 
 		char *arr[4] = {(char*)"/bin/ls", (char*)"-la", path, NULL};
 		int ret = execve(arr[0], arr, NULL);
-		std::cout << "Error: Execve failed\n";
+		std::cout << "Error: Execve failed: " << ret << "\n";
 	}
 	else {
 		close(fd[1]);
@@ -103,7 +125,7 @@ std::string storeFolderContent(char *path) {
 
 int main()
 {
-	std::string path = "./_folderA/folderB";
+	std::string path = "./_folderA/folderB/";
 	std::string folderContentStr = storeFolderContent((char*)path.c_str());
 	makeHtmlString(folderContentStr, path);
 
