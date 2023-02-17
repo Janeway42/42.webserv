@@ -1,40 +1,101 @@
 #include <iostream>
+#include <sstream>
 #include <unistd.h>
+#include <string.h>
 
-int storeFolderContent(char *path)
-{
-	int     fd[2];
-	pid_t   retFork;
+std::string appendHTMLhead(std::string path, std::string & htmlStr) {
+
+	htmlStr.append("<html>\n<head>\n<title><title>Index of ");
+	htmlStr.append(path);
+	htmlStr.append("</title>\n</head>\n");
+	htmlStr.append("<body><h1>Index of ");
+	htmlStr.append(path);
+	htmlStr.append("</h1>\n<ul>\n");
+	return (htmlStr);
+}
+
+
+std::string appendHTMLbody(std::string line, std::string path, std::string & htmlStr) {
+	int	found;
+
+
+	found = line.find_last_of(" ");
+	std::string lastName = line.substr(found + 1, std::string::npos);
+	
+	htmlStr.append("<li><a href='");
+	htmlStr.append(path);
+	htmlStr.append("/");
+	htmlStr.append(line, found + 1, std::string::npos);
+	htmlStr.append("'>  ");
+	if (lastName == "..")
+		htmlStr.append("Parent Directory");
+	else
+		htmlStr.append(line, found + 1, std::string::npos);
+	htmlStr.append("  </a></li>\n");
+	return (htmlStr);
+}
+
+
+void	makeHtmlString(std::string folderContent, std::string path) {
+
+	// int					found;
+	std::string			line;
+	std::istringstream	iss(folderContent);
+	std::string			htmlStr;
+	// std::string			lastWord;
+
+	//appendHTMLhead(path, htmlStr);
+
+	while (std::getline(iss, line)) {
+		if (line[0] == 'd') {
+			// std::cout << "Is DIR  [" << line << "]\n";
+			appendHTMLbody(line, path, htmlStr);
+		}
+		else if (line[0] == '-') {
+			// std::cout << "Not DIR [" << line << "]\n";
+			htmlStr = appendHTMLbody(line, path, htmlStr);
+		}
+	}
+	htmlStr.append("</ul></body></html>");
+	std::cout << "\nFolder content as HTML:\n" << htmlStr << "\n";
+}
+
+
+// Check if maybe fds are leaking
+std::string storeFolderContent(char *path) {
+	int    		fd[2];
+	pid_t		retFork;
+	std::string	incomingStr;
 
 	if (pipe(fd) == -1)
-		std::cout << "Pipe failed\n";
-
+		std::cout << "Error: Pipe failed\n";
 	retFork = fork();
 
 	if (retFork == 0) {
-		sleep(2);
-		std::cout << "Start CHILD\n";
-		retFork = fork();
+		//std::cout << "Start CHILD\n";
 		if (retFork < 0)
-			std::cout << "Fork failed\n";
-		dup2(1, fd[0]);
-		close(fd[1]);
+			std::cout << "Error: Fork failed\n";
+		dup2(fd[1], 1);
+		close(fd[0]);
 
 		char *arr[4] = {(char*)"/bin/ls", (char*)"-la", path, NULL};
 		int ret = execve(arr[0], arr, NULL);
-		std::cout << "Execve failed\n";
+		std::cout << "Error: Execve failed\n";
 	}
 	else {
-		close(fd[0]);
+		close(fd[1]);
+		char buff[100];
+		dup2(fd[0], 0);
 
-		// sleep(3);
-		char buff[100000];
-
-		read(fd[1], buff, 1000);
-
-		std::cout << "\n\n\n\nReturned buffer: [" << "]\n";
+		for (int ret = 1; ret != 0; ) {
+			memset(buff, '\0', 100);
+			ret = read(fd[0], buff, 99);
+			//std::cout << "Returned buffer, ret " << ret << "\n";
+			incomingStr.append(buff);
+		}
+		//std::cout << "\nIncoming [" << incomingStr << "]\n";
 	}    
-	return (0);
+	return (incomingStr);
 }
 
 
@@ -42,9 +103,9 @@ int storeFolderContent(char *path)
 
 int main()
 {
-
-	storeFolderContent((char*)"../");
-
+	std::string path = "./_folderA/folderB";
+	std::string folderContentStr = storeFolderContent((char*)path.c_str());
+	makeHtmlString(folderContentStr, path);
 
 	return (0);
 }
