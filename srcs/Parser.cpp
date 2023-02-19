@@ -1,6 +1,7 @@
 #include "includes/Parser.hpp"
 #include <sys/stat.h>
 #include <iomanip>
+#include <dirent.h>
 
 ///** Default Constructor */
 //Parser::Parser() {
@@ -8,11 +9,11 @@
 //}
 
 std::string Parser::keyParser(std::string & lineContent, std::string const & keyToFind) {
-    if (lineContent.empty() || keyToFind.empty())
-        return std::string();
-    if (lineContent.find(keyToFind) != std::string::npos) {
-        std::cout << YEL << lineContent << BACK << std::endl;
-        return getOneCleanValueFromKey(lineContent, keyToFind);
+    if (not lineContent.empty() || not keyToFind.empty()) {
+        if (lineContent.find(keyToFind) != std::string::npos) {
+            std::cout << YEL << lineContent << BACK << std::endl;
+            return getOneCleanValueFromKey(lineContent, keyToFind);
+        }
     }
     return std::string();
 }
@@ -24,16 +25,41 @@ PathType Parser::pathType(std::string const & path) {
 
     /* The & operator computes the logical AND of its operands. The result of x & y is true if both x and y
      * evaluate to true. Otherwise, the result is false */
+    DIR* dir = opendir(path.c_str());
     if (stat(path.c_str(), &buffer) == 0) {
         if (buffer.st_mode & S_IFREG) {
             return (REG_FILE);
-        } else if (buffer.st_mode & S_IFDIR) {
+        } else if (buffer.st_mode & S_IFDIR || dir != NULL) {
+            (void)closedir(dir);
             return (DIRECTORY);
         } else
             return (OTHER_PATH_TYPE);
     }
-//    std::cout << "JOYCE ERROR" << std::endl;
     return (PATH_TYPE_ERROR);
+}
+
+std::string Parser::addCurrentDirPath(std::string const & fileOrDir) const {
+    if (fileOrDir.at(0) != '.') {
+        return "./";
+    }
+    return std::string();
+}
+
+std::string Parser::isPath(std::string const & rootDirectory, std::string const & possiblePath) {
+    std::string is_root_dir_or_has_path = possiblePath;
+    if (possiblePath.find('/') == std::string::npos) {
+        std::string::size_type lastIndex = rootDirectory.size() - 1;
+        if (rootDirectory[lastIndex] == '/') {
+            is_root_dir_or_has_path = rootDirectory + possiblePath;
+        } else {
+            is_root_dir_or_has_path = rootDirectory + "/" + possiblePath;
+        }
+    }
+    return is_root_dir_or_has_path;
+}
+
+bool Parser::isSpace(char ch) {
+    return std::isspace(static_cast<unsigned char>(ch));
 }
 
 //std::string Parser::removeSpaces(std::string content) {
@@ -47,7 +73,6 @@ std::string Parser::getOneCleanValueFromKey(std::string & contentLine, std::stri
 	std::string content = contentLine.substr(contentLine.find(key) + key.size());
 	if (content.empty())	// added jaka, it was giving error abort, when the content was empty string
 		return "Key is empty!\n";
-
 	size_t i = 0;
 	for (; content.at(i) == ' '; i++) {}
 	std::string trimmed_content = content.substr(i);

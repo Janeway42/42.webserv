@@ -11,12 +11,8 @@ include_directories(.)
 
 add_executable(http-parser
         includes/Parser.hpp
-        includes/RequestParser.hpp
-        includes/RequestData.hpp
-        srcs/mainHttpRequest.cpp
         srcs/Parser.cpp
-        srcs/RequestData.cpp
-        srcs/RequestParser.cpp)
+        )
 
 add_executable(config-file-parser
         includes/ConfigFileParser.hpp

@@ -3,8 +3,6 @@
 
 #include "Parser.hpp"
 
-#include <string>
-
 /**
  * An IP address identifies a machine in an IP network and is used to determine the destination of a data packet.
  * Port numbers identify a particular application or service on a system.
@@ -27,9 +25,6 @@ class ServerData : public Parser {
         unsigned int _client_max_body_size;
         std::string _error_page;
         unsigned int _port_redirection;
-
-        /** Private Methods */
-        std::string isPath(std::string const & possiblePath);
 
     public:
         ServerData();

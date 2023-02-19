@@ -70,14 +70,12 @@ enum DataType {// todo: Maybe not used
 //};
 
 /** Error Macros */
-#define NOT_MANDATORY 0
+#define NOT_SUPPORTED 0
 #define MANDATORY 1
 #define MISSING 2
 #define CONFIG_FILE_ERROR(key, error_message) ((error_message == MANDATORY) ? (BACK key RED " is mandatory") \
-                                                : (error_message == NOT_MANDATORY) ? (BACK key RED" is not supported") \
+                                                : (error_message == NOT_SUPPORTED) ? (BACK key RED" is not supported") \
                                                 : (BACK key RED" is missing"))
-
-#define PORT_REDIR_ERROR "port_redirection is not supported"
 
 class Parser {
     public:
@@ -86,6 +84,9 @@ class Parser {
         virtual std::string getOneCleanValueFromKey(std::string & contentLine, std::string const & key);
         virtual DataType getValueType(std::string & lineContent);
         virtual PathType pathType(std::string const & path);
+        virtual std::string addCurrentDirPath(std::string const & fileOrDir) const;
+        virtual std::string isPath(std::string const & rootDirectory, std::string const & possiblePath);
+        virtual bool isSpace(char ch);
 
         class ParserException: public std::exception {
             private:

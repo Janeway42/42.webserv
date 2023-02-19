@@ -2,9 +2,7 @@
 #define WEBSERV_LOCATIONDATA_HPP
 
 #include "Parser.hpp"
-//#include "ServerData.hpp"
 
-#include <string>
 #include <vector>
 
 /**
@@ -13,8 +11,7 @@
  *      a directory or file with no path (i.e.: test_index.html) will be searched on ./
  */
 
-//namespace data {
-class LocationData {
+class LocationData : public Parser {
     private:
         bool _is_location_cgi;
         std::string _root_directory;
@@ -30,7 +27,7 @@ class LocationData {
         virtual ~LocationData();
 
         /** Methods */
-        bool is_location_cgi() const;
+        bool isLocationCgi() const;
 
         /** Getters */
         std::string getRootDirectory() const;
@@ -42,12 +39,11 @@ class LocationData {
 
         /** Setters */
         void setLocationAsCgi(bool isCgi);
-        void setRootDirectory(std::string const & rootDirectory);
-        void setAllowMethods(const std::vector<AllowMethods> & allowMethods);
-        void setIndexFile(std::string const & indexFile);
-        void setAutoIndex(bool autoIndex);
-        void setInterpreterPath(std::string const & interpreterPath);
-        void setScriptExtension(std::string const & scriptExtension);
-    };
-//} // data
+        bool setRootDirectory(std::string const & rootDirectory);
+        bool setAllowMethods(std::string const & allowMethods);
+        bool setIndexFile(std::string const & indexFile);
+        bool setAutoIndex(std::string const & autoIndex);
+        bool setInterpreterPath(std::string const & interpreterPath);
+        bool setScriptExtension(std::string const & scriptExtension);
+};
 #endif //WEBSERV_LOCATIONDATA_HPP

@@ -1,5 +1,4 @@
 #include "includes/ServerData.hpp"
-#include "includes/Parser.hpp"
 #include <arpa/inet.h>
 #include <sys/types.h>
 #include <dirent.h>
@@ -96,7 +95,7 @@ bool ServerData::setServerName(std::string const & name) {
             _server_name = name;
             return true;
         } else {
-            throw Parser::ParserException(CONFIG_FILE_ERROR("server_name", NOT_MANDATORY));
+            throw ParserException(CONFIG_FILE_ERROR("server_name", NOT_SUPPORTED));
         }
     }
     return false;
@@ -125,10 +124,10 @@ bool ServerData::setListensTo(std::string const & port) {
                 _listens_to = listensToPort;
                 return true;
             } else {
-                throw Parser::ParserException(CONFIG_FILE_ERROR("listens_to", NOT_MANDATORY));
+                throw ParserException(CONFIG_FILE_ERROR("listens_to", NOT_SUPPORTED));
             }
         } catch (...) {
-            throw Parser::ParserException(CONFIG_FILE_ERROR("listens_to", NOT_MANDATORY));
+            throw ParserException(CONFIG_FILE_ERROR("listens_to", NOT_SUPPORTED));
         }
     }
     return false;
@@ -142,7 +141,7 @@ bool ServerData::setIpAddress(std::string const & ip) {
             _ip_address = ip;
             return true;
         } else {
-            throw Parser::ParserException(CONFIG_FILE_ERROR("ip_address", NOT_MANDATORY));
+            throw ParserException(CONFIG_FILE_ERROR("ip_address", NOT_SUPPORTED));
         }
     }
     return false;
@@ -159,10 +158,10 @@ bool ServerData::setIpAddress(std::string const & ip) {
 //        try {
 //            ip_chunk = std::stoi(copy_ip.substr(0, it));
 //        } catch (...) {
-//            throw Parser::ParserException(IP_ERROR);
+//            throw ParserException(IP_ERROR);
 //        }
 //        if (ip_chunk < 0 || ip_chunk > 255) {
-//            throw Parser::ParserException(IP_ERROR);
+//            throw ParserException(IP_ERROR);
 //        }
 //        if (it != std::string::npos) {
 //            dots_quantity++;
@@ -170,64 +169,42 @@ bool ServerData::setIpAddress(std::string const & ip) {
 //            if (dots_quantity == 3) {
 //                break;
 //            } else if (dots_quantity > 3 || dots_quantity < 3) {
-//                throw Parser::ParserException(IP_ERROR);
+//                throw ParserException(IP_ERROR);
 //            }
 //        }
 //        copy_ip = copy_ip.substr(it + 1);
 //        if (copy_ip.empty() && dots_quantity == 3) {
-//            throw Parser::ParserException(IP_ERROR);
+//            throw ParserException(IP_ERROR);
 //        }
 //    }
 //    _ip_address = ip;
 }
 
-static std::string addCurrentDirPath(std::string const & fileOrDir) {
-    if (fileOrDir.at(0) != '.') {
-        return "./";
-    }
-    return std::string();
-}
 bool ServerData::setRootDirectory(std::string const & root_dir) {
     /* not mandatory | default: ./$server_name */
     if (not root_dir.empty()) {
         PathType type = pathType(root_dir);
-        DIR* dir = opendir(root_dir.c_str());
-        if (type == DIRECTORY || dir != NULL) {
+        if (type == DIRECTORY) {
             _root_directory = addCurrentDirPath(root_dir) + root_dir;
-            (void)closedir(dir);
-            std::cout << BLU << "index_file: " << _root_directory << BACK << std::endl;
             return true;
         } else if (type == PATH_TYPE_ERROR) {
-            throw Parser::ParserException(CONFIG_FILE_ERROR("root_directory", MISSING));
+            throw ParserException(CONFIG_FILE_ERROR("root_directory", MISSING));
         } else {
-            throw Parser::ParserException(CONFIG_FILE_ERROR("root_directory", NOT_MANDATORY));
+            throw ParserException(CONFIG_FILE_ERROR("root_directory", NOT_SUPPORTED));
         }
     }
     return false;
 }
 
-std::string ServerData::isPath(std::string const & possiblePath) {
-    std::string is_root_dir_or_has_path = possiblePath;
-    if (possiblePath.find('/') == std::string::npos) {
-        std::string::size_type lastIndex = _root_directory.size() - 1;
-        if (_root_directory[lastIndex] == '/') {
-            is_root_dir_or_has_path = _root_directory + possiblePath;
-        } else {
-            is_root_dir_or_has_path = _root_directory + "/" + possiblePath;
-        }
-    }
-    return is_root_dir_or_has_path;
-}
-
 bool ServerData::setIndexFile(std::string const & idx_file) {
     /* not mandatory | default: $root_directory/index.html */
     if (not idx_file.empty()) {
-        std::string indexFile = isPath(idx_file);
+        std::string indexFile = isPath(_root_directory, idx_file);
         if (pathType(indexFile) == REG_FILE) {
             _index_file = addCurrentDirPath(indexFile) + indexFile;
             return true;
         } else {
-            throw Parser::ParserException(CONFIG_FILE_ERROR("index_file", NOT_MANDATORY));
+            throw ParserException(CONFIG_FILE_ERROR("index_file", NOT_SUPPORTED));
         }
     }
     return false;
@@ -242,10 +219,10 @@ bool ServerData::setClientMaxBodySize(std::string const & body_size) {
                 _client_max_body_size = bodySize;
                 return true;
             } else {
-                throw Parser::ParserException(CONFIG_FILE_ERROR("client_max_body_size", NOT_MANDATORY));
+                throw ParserException(CONFIG_FILE_ERROR("client_max_body_size", NOT_SUPPORTED));
             }
         } catch (...) {
-            throw Parser::ParserException(CONFIG_FILE_ERROR("client_max_body_size", NOT_MANDATORY));
+            throw ParserException(CONFIG_FILE_ERROR("client_max_body_size", NOT_SUPPORTED));
         }
     }
     return false;
@@ -254,12 +231,12 @@ bool ServerData::setClientMaxBodySize(std::string const & body_size) {
 bool ServerData::setErrorPage(std::string const & err_page) {
     /* not mandatory | default: empty, no set error page, webserver will decide */
     if (not err_page.empty()) {
-        std::string errorPage = isPath(err_page);
+        std::string errorPage = isPath(_root_directory, err_page);
         if (pathType(errorPage) == REG_FILE) {
             _error_page = addCurrentDirPath(errorPage) + errorPage;
             return true;
         } else {
-            throw Parser::ParserException(CONFIG_FILE_ERROR("error_page", NOT_MANDATORY));
+            throw ParserException(CONFIG_FILE_ERROR("error_page", NOT_SUPPORTED));
         }
     }
     return false;
@@ -269,7 +246,6 @@ bool ServerData::setPortRedirection(std::string const & port_redir) {
     /* not mandatory | default: zero, no redirection */
     if (not port_redir.empty()) {
         unsigned int portRedirection = std::strtol(port_redir.c_str(), nullptr, 10);
-        std::cout << "JOYCE: " << portRedirection << std::endl;
         if (portRedirection != _listens_to &&
             (portRedirection == 80 || portRedirection == 591 || portRedirection == 8008 || portRedirection == 8080 ||
                     portRedirection >= 49152)) {// todo:: add 65536 as acceptable? then change form short to int?
@@ -277,7 +253,7 @@ bool ServerData::setPortRedirection(std::string const & port_redir) {
             _port_redirection = portRedirection;
             return true;
         } else {
-            throw Parser::ParserException(CONFIG_FILE_ERROR("port_redirection", NOT_MANDATORY));
+            throw ParserException(CONFIG_FILE_ERROR("port_redirection", NOT_SUPPORTED));
         }
     }
     return false;

@@ -18,38 +18,36 @@ int main(int ac, char **av, char **env) {
             /** begin() returns an iterator to beginning while cbegin() returns a const_iterator to beginning. */
             std::map<ServerData*, std::vector<LocationData> >::const_iterator it_server;
             for (it_server = serverDataMap.begin(); it_server != serverDataMap.cend(); ++it_server) {
-                std::cout << RED << "map size: [" << serverDataMap.size() << "]" << BACK << std::endl;
-                std::cout << RED << "location size: [" << it_server->second.size() << "]" << BACK << std::endl;
+                std::cout << RED << "Number of server block(s): " << serverDataMap.size() << BACK << std::endl;
+                std::cout << RED << "Number of location + cgi block(s): " << it_server->second.size() << BACK << std::endl;
 
                 /****************************************** server block data *****************************************/
                 std::cout << std::endl << "Starting server block " << std::endl;
-    //            getServerBlockData();
-
                 /** Keep in mind that "first" is the key of the map (i.e. the server block data) */
 
                 std::string serverName = it_server->first->getServerName();
-                std::cout << GRE << "Value for \"server_name\" on main: [" << serverName << "]" << BACK << std::endl;
+                std::cout << GRE << std::left << std::setw(30) << std::left << std::setw(30) << "\"server_name\": " << serverName << BACK << std::endl;
 
                 unsigned int listensTo = it_server->first->getListensTo();
-                std::cout << GRE << "Value for \"listens_to\" on main: [" << listensTo << "]" << BACK << std::endl;
+                std::cout << GRE << std::left << std::setw(30) << "\"listens_to\": " << listensTo << BACK << std::endl;
 
                 std::string ipAddress = it_server->first->getIpAddress();
-                std::cout << GRE << "Value for \"ip_address\" on main: [" << ipAddress << "]" << BACK << std::endl;
+                std::cout << GRE << std::left << std::setw(30) << "\"ip_address\": " << ipAddress << BACK << std::endl;
 
                 std::string rootDirectory = it_server->first->getRootDirectory();
-                std::cout << GRE << "Value for \"root_directory\" on main: [" << rootDirectory << "]" << BACK << std::endl;
+                std::cout << GRE << std::left << std::setw(30) << "\"root_directory\": " << rootDirectory << BACK << std::endl;
 
                 std::string indexFile = it_server->first->getIndexFile();
-                std::cout << GRE << "Value for \"index_file\" on main: [" << indexFile << "]" << BACK << std::endl;
+                std::cout << GRE << std::left << std::setw(30) << "\"index_file\": " << indexFile << BACK << std::endl;
 
                 unsigned int clientMaxBodySize = it_server->first->getClientMaxBodySize();
-                std::cout << GRE << "Value for \"client_max_body_size\" on main: [" << clientMaxBodySize << "]" << BACK << std::endl;
+                std::cout << GRE << std::left << std::setw(30) << "\"client_max_body_size\": " << clientMaxBodySize << BACK << std::endl;
 
                 std::string errorPage = it_server->first->getErrorPage();
-                std::cout << GRE << "Value for \"error_page\" on main: [" << errorPage << "]" << BACK << std::endl;
+                std::cout << GRE << std::left << std::setw(30) << "\"error_page\": " << errorPage << BACK << std::endl;
 
                 unsigned int portRedirection = it_server->first->getPortRedirection();
-                std::cout << GRE << "Value for \"port_redirection\" on main: [" << portRedirection << "]" << BACK << std::endl;
+                std::cout << GRE << std::left << std::setw(30) << "\"port_redirection\": " << portRedirection << BACK << std::endl;
 
                 /** Keep in mind that "second" is the value of the map (i.e. the data of the location block(s) inside
                  * the current server block).
@@ -60,30 +58,32 @@ int main(int ac, char **av, char **env) {
 
                 for (it_location = it_server->second.cbegin(); it_location != it_server->second.cend(); ++it_location) {
 
-                    if (it_location->is_location_cgi()) {
+                    if (it_location->isLocationCgi()) {
                         /************************************* cgi location block data ************************************/
-                        std::cout << std::endl << "Starting cgi location block " << std::endl;
+                        std::cout << std::endl << "Starting location block" << std::endl;
+                        std::cout << "Is this location a CGI location: " << it_location->isLocationCgi() << std::endl;
 
                         std::string cgiLocationRootDirectory = it_location->getRootDirectory();
-                        std::cout << BLU << "Value for \"root_directory\" on main: [" << cgiLocationRootDirectory << "]" << BACK << std::endl;
+                        std::cout << GRE << std::left << std::setw(30) << "\"root_directory\": " << cgiLocationRootDirectory << BACK << std::endl;
 
                         std::string interpreterPath = it_location->getInterpreterPath();
-                        std::cout << BLU << "Value for \"interpreter_path\" on main: [" << interpreterPath << "]" << BACK << std::endl;
+                        std::cout << GRE << std::left << std::setw(30) << "\"interpreter_path\": " << interpreterPath << BACK << std::endl;
 
                         std::string scriptExtension = it_location->getScriptExtension();
-                        std::cout << BLU << "Value for \"script_extension\" on main: [" << scriptExtension << "]" << BACK << std::endl;
+                        std::cout << GRE << std::left << std::setw(30) << "\"script_extension\": " << scriptExtension << BACK << std::endl;
 
                         std::string cgiLocationIndexFile = it_location->getIndexFile();
-                        std::cout << BLU << "Value for \"index_file\" on main: [" << cgiLocationIndexFile << "]" << BACK << std::endl;
+                        std::cout << GRE << std::left << std::setw(30) << "\"index_file\": " << cgiLocationIndexFile << BACK << std::endl;
                     } else {
                         /*************************************** location block data **************************************/
                         std::cout << std::endl << "Starting location block " << std::endl;
+                        std::cout << "Is this location a CGI location: " << it_location->isLocationCgi() << std::endl;
 
                         std::string locationRootDirectory = it_location->getRootDirectory();
-                        std::cout << BLU << "Value for \"root_directory\" on main: [" << locationRootDirectory << "]" << BACK << std::endl;
+                        std::cout << GRE << std::left << std::setw(30) << "\"root_directory\": " << locationRootDirectory << BACK << std::endl;
 
                         std::vector<AllowMethods> locationAllowMethods = it_location->getAllowMethods();
-                        std::cout << BLU << "Value for \"allow_methods\" on main: [";
+                        std::cout << GRE << std::left << std::setw(30) << "\"allow_methods\": ";
                         std::vector<AllowMethods>::const_iterator i;
                         for (i = locationAllowMethods.cbegin(); i != locationAllowMethods.cend(); i++) {
                             switch (i.operator*()) {
@@ -101,13 +101,13 @@ int main(int ac, char **av, char **env) {
                             }
                             std::cout << " ";
                         }
-                        std::cout << "]" << BACK << std::endl;
+                        std::cout << BACK << std::endl;
 
                         std::string locationIndexFile = it_location->getIndexFile();
-                        std::cout << BLU << "Value for \"index_file\" on main: [" << locationIndexFile << "]" << BACK << std::endl;
+                        std::cout << GRE << std::left << std::setw(30) << "\"index_file\": " << locationIndexFile << BACK << std::endl;
 
                         bool locationAutoIndex = it_location->getAutoIndex();
-                        std::cout << BLU << "Value for \"auto_index\" on main: [" << locationAutoIndex << "]" << BACK << std::endl;
+                        std::cout << GRE << std::left << std::setw(30) << "\"auto_index\": " << locationAutoIndex << BACK << std::endl;
                     }
                 }
             }
