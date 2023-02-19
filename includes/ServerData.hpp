@@ -54,8 +54,8 @@ class ServerData : public Parser {
         bool setIpAddress(std::string const & ip);
         bool setRootDirectory(std::string const & root_dir);
         bool setIndexFile(std::string const & idx_file);
-        bool setClientMaxBodySize(unsigned int const & body_size);
+        bool setClientMaxBodySize(std::string const & body_size);
         bool setErrorPage(std::string const & err_page);
-        bool setPortRedirection(unsigned int const & port_redir);
+        bool setPortRedirection(std::string const & port_redir);
 };
 #endif //WEBSERV_SERVERDATA_HPP

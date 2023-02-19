@@ -11,11 +11,10 @@ ServerData::ServerData()
     _listens_to(80),
     _ip_address("127.0.0.1"),
     _root_directory("./" + _server_name),
-    _index_file("./index.html"),
+    _index_file(_root_directory + "/" + "index.html"),
     _client_max_body_size(1024),
-    /* default: $root_directory/error_pages/$status_code.html -> $status_code.html will be set later */
-    _error_page(_root_directory + "/error_pages"),
-    _port_redirection(_listens_to) {
+    _error_page(""),
+    _port_redirection(0) {
 }
 
 /** Copy constructor */
@@ -120,7 +119,8 @@ bool ServerData::setListensTo(std::string const & port) {
     if (not port.empty()) {
         try {
             unsigned short const & listensToPort = std::strtol(port.c_str(), nullptr, 10);
-            if (listensToPort == 80 || listensToPort == 591 || listensToPort == 8008 || listensToPort == 8080 || listensToPort >= 49152) {// todo:: add 65536 as acceptable? then change form short to int?
+            if (listensToPort == 80 || listensToPort == 591 || listensToPort == 8008 || listensToPort == 8080 ||
+                    listensToPort >= 49152) {// todo:: add 65536 as acceptable? then change form short to int?
                 /* No need to check port < 65536 since port is an unsigned short already */
                 _listens_to = listensToPort;
                 return true;
@@ -189,15 +189,13 @@ static std::string addCurrentDirPath(std::string const & fileOrDir) {
 }
 bool ServerData::setRootDirectory(std::string const & root_dir) {
     /* not mandatory | default: ./$server_name */
-    std::cout << root_dir << std::endl;
-
     if (not root_dir.empty()) {
         PathType type = pathType(root_dir);
         DIR* dir = opendir(root_dir.c_str());
-        // TODO error - is not working
         if (type == DIRECTORY || dir != NULL) {
             _root_directory = addCurrentDirPath(root_dir) + root_dir;
             (void)closedir(dir);
+            std::cout << BLU << "index_file: " << _root_directory << BACK << std::endl;
             return true;
         } else if (type == PATH_TYPE_ERROR) {
             throw Parser::ParserException(CONFIG_FILE_ERROR("root_directory", MISSING));
@@ -211,57 +209,76 @@ bool ServerData::setRootDirectory(std::string const & root_dir) {
 std::string ServerData::isPath(std::string const & possiblePath) {
     std::string is_root_dir_or_has_path = possiblePath;
     if (possiblePath.find('/') == std::string::npos) {
-        is_root_dir_or_has_path = _root_directory + "/" + possiblePath;
+        std::string::size_type lastIndex = _root_directory.size() - 1;
+        if (_root_directory[lastIndex] == '/') {
+            is_root_dir_or_has_path = _root_directory + possiblePath;
+        } else {
+            is_root_dir_or_has_path = _root_directory + "/" + possiblePath;
+        }
     }
     return is_root_dir_or_has_path;
 }
 
 bool ServerData::setIndexFile(std::string const & idx_file) {
-    /* Set to either $root_directory/file.html or the uri specific path */
-    std::string indexFile = isPath(idx_file);
-
-    if (pathType(indexFile) == REG_FILE) {
-        std::cout << BLU << "index_file: " << _root_directory + "/" + idx_file << BACK << std::endl;
-        _index_file = indexFile;
-    } else {
-        throw Parser::ParserException(CONFIG_FILE_ERROR("index_file", NOT_MANDATORY));
+    /* not mandatory | default: $root_directory/index.html */
+    if (not idx_file.empty()) {
+        std::string indexFile = isPath(idx_file);
+        if (pathType(indexFile) == REG_FILE) {
+            _index_file = addCurrentDirPath(indexFile) + indexFile;
+            return true;
+        } else {
+            throw Parser::ParserException(CONFIG_FILE_ERROR("index_file", NOT_MANDATORY));
+        }
     }
-    return true;
+    return false;
 }
 
-bool ServerData::setClientMaxBodySize(unsigned int const & body_size) {
-    //TODO check if mandatory or not
-    if (body_size <= INT32_MAX) {
-        _client_max_body_size = body_size;
-    } else {
-        throw Parser::ParserException(MAX_BODY_ERROR);
+bool ServerData::setClientMaxBodySize(std::string const & body_size) {
+    /* not mandatory | default: 1024 (1KB) -> Max: INT_MAX (2GB) */
+    if (not body_size.empty()) {
+        try {
+            unsigned int const & bodySize = std::strtol(body_size.c_str(), nullptr, 10);
+            if (bodySize <= INT32_MAX) {
+                _client_max_body_size = bodySize;
+                return true;
+            } else {
+                throw Parser::ParserException(CONFIG_FILE_ERROR("client_max_body_size", NOT_MANDATORY));
+            }
+        } catch (...) {
+            throw Parser::ParserException(CONFIG_FILE_ERROR("client_max_body_size", NOT_MANDATORY));
+        }
     }
-    return true;
+    return false;
 }
 
 bool ServerData::setErrorPage(std::string const & err_page) {
-    //TODO check if mandatory or not
-    std::string from_root_dir_or_has_path = err_page;
-    if (err_page.find('/') == std::string::npos) {
-        from_root_dir_or_has_path = _root_directory + "error_pages/" + err_page;
+    /* not mandatory | default: empty, no set error page, webserver will decide */
+    if (not err_page.empty()) {
+        std::string errorPage = isPath(err_page);
+        if (pathType(errorPage) == REG_FILE) {
+            _error_page = addCurrentDirPath(errorPage) + errorPage;
+            return true;
+        } else {
+            throw Parser::ParserException(CONFIG_FILE_ERROR("error_page", NOT_MANDATORY));
+        }
     }
-    if (pathType(from_root_dir_or_has_path) == REG_FILE) {
-        std::cout << BLU << "error_page: " << _root_directory + "/" + err_page << BACK << std::endl;
-        _index_file = err_page;
-    } else {
-        throw Parser::ParserException(ERROR_PAGE_ERROR);
-    }
-    _error_page = err_page;
-    return true;
+    return false;
 }
 
-bool ServerData::setPortRedirection(unsigned int const & port_redir) {
-    //TODO check if mandatory or not
-    if (port_redir != _listens_to && (port_redir == 80 || port_redir == 591 || port_redir == 8008 || port_redir == 8080 || port_redir >= 49152)) {// todo:: add 65536 as acceptable? then change form short to int?
-        /* No need to check port < 65536 since port is an unsigned short already */
-        _port_redirection = port_redir;
-    } else {
-        throw Parser::ParserException(PORT_REDIR_ERROR);
+bool ServerData::setPortRedirection(std::string const & port_redir) {
+    /* not mandatory | default: zero, no redirection */
+    if (not port_redir.empty()) {
+        unsigned int portRedirection = std::strtol(port_redir.c_str(), nullptr, 10);
+        std::cout << "JOYCE: " << portRedirection << std::endl;
+        if (portRedirection != _listens_to &&
+            (portRedirection == 80 || portRedirection == 591 || portRedirection == 8008 || portRedirection == 8080 ||
+                    portRedirection >= 49152)) {// todo:: add 65536 as acceptable? then change form short to int?
+            /* No need to check port < 65536 since port is an unsigned short already */
+            _port_redirection = portRedirection;
+            return true;
+        } else {
+            throw Parser::ParserException(CONFIG_FILE_ERROR("port_redirection", NOT_MANDATORY));
+        }
     }
-    return true;
+    return false;
 }

@@ -77,8 +77,6 @@ enum DataType {// todo: Maybe not used
                                                 : (error_message == NOT_MANDATORY) ? (BACK key RED" is not supported") \
                                                 : (BACK key RED" is missing"))
 
-#define MAX_BODY_ERROR "client_max_body_size is not supported"
-#define ERROR_PAGE_ERROR "error_page is not supported"
 #define PORT_REDIR_ERROR "port_redirection is not supported"
 
 class Parser {

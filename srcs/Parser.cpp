@@ -32,7 +32,7 @@ PathType Parser::pathType(std::string const & path) {
         } else
             return (OTHER_PATH_TYPE);
     }
-    std::cout << "JOYCE ERROR" << std::endl;
+//    std::cout << "JOYCE ERROR" << std::endl;
     return (PATH_TYPE_ERROR);
 }
 

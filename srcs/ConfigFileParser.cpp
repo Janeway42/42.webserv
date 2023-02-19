@@ -86,10 +86,8 @@ void ConfigFileParser::parseFileServerBlock(std::ifstream & configFile) {
             continue;
         } else if (lineContent.find('}') != std::string::npos) {
             /** Adding to the map whatever was inserted into _server_data and _location_data_vector */
-
-            //            ServerData* serverBlock = new ServerData(_server_data);
-            _server_map.insert(
-                    std::make_pair(new ServerData(_server_data), _location_data_vector));// TODO check if it leaks
+            //ServerData* serverBlock = new ServerData(_server_data);
+            _server_map.insert(std::make_pair(new ServerData(_server_data), _location_data_vector));// TODO check if it leaks
 
             /** Cleaning the _server_data and _location_data private members so it can receive new data if a new
              * server block is found
@@ -105,58 +103,43 @@ void ConfigFileParser::parseFileServerBlock(std::ifstream & configFile) {
             break;
         }
 
-        /** Start reading and parsing the server block */
+        /** Handling the server block key values */
         if (_server_data.setServerName(keyParser(lineContent, "server_name"))) {
             continue;
         }
         if (_server_data.setListensTo(keyParser(lineContent, "listens_to"))) {
             continue;
         }
-        std::string ipAddress = keyParser(lineContent, "ip_address");
-        if (not ipAddress.empty()) {
-            _server_data.setIpAddress(ipAddress);
+        if (_server_data.setIpAddress(keyParser(lineContent, "ip_address"))) {
             continue;
         }
-        std::string rootDirectory = keyParser(lineContent, "root_directory");
-        if (not rootDirectory.empty()) {
-            _server_data.setRootDirectory(rootDirectory);
+        if (_server_data.setRootDirectory(keyParser(lineContent, "root_directory"))) {
             continue;
         }
-        std::string indexFile = keyParser(lineContent, "index_file");
-        if (not indexFile.empty()) {
-            _server_data.setIndexFile(indexFile);
+        if (_server_data.setIndexFile(keyParser(lineContent, "index_file"))) {
             continue;
         }
-        std::string clientMaxBodySize = keyParser(lineContent, "client_max_body_size");
-        if (not clientMaxBodySize.empty()) {
-            _server_data.setClientMaxBodySize(std::strtol(clientMaxBodySize.c_str(), nullptr, 10));
+        if (_server_data.setClientMaxBodySize(keyParser(lineContent, "client_max_body_size"))) {
             continue;
         }
-        std::string errorPage = keyParser(lineContent, "error_page");
-        if (not errorPage.empty()) {
-            _server_data.setErrorPage(errorPage);
+        if (_server_data.setErrorPage(keyParser(lineContent, "error_page"))) {
             continue;
         }
-        std::string portRedirection = keyParser(lineContent, "port_redirection");
-        if (not portRedirection.empty()) {
-            _server_data.setPortRedirection(std::strtol(portRedirection.c_str(), nullptr, 10));
+        if (_server_data.setPortRedirection(keyParser(lineContent, "port_redirection"))) {
             continue;
         }
+
+        /** Checking for cgi or location blocks */
         if (lineContent.find("cgi {") != std::string::npos) {
             _location_data.setLocationAsCgi(true);
             locationBlockCounter();
-
             parseFileLocationBlock(configFile);
-            std::cout << RED << "(cgi) Number of location block(s)? " << getLocationBlockCounter() << BACK
-                      << std::endl;
+            std::cout << RED << "(cgi) Number of location block(s)? " << getLocationBlockCounter() << BACK << std::endl;
             continue;
-        } else if (lineContent.find("location") != std::string::npos &&
-                   lineContent.find('{') != std::string::npos) {
+        } else if (lineContent.find("location") != std::string::npos && lineContent.find('{') != std::string::npos) {
             locationBlockCounter();
-
             parseFileLocationBlock(configFile);
             std::cout << RED << "Number of location block(s)? " << getLocationBlockCounter() << BACK << std::endl;
-
             continue;
         }
     }
@@ -165,7 +148,7 @@ void ConfigFileParser::parseFileServerBlock(std::ifstream & configFile) {
 void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile) {
     std::string lineContent;
 
-    /** Start reading and parsing a location block */
+    /** Handling the location or cgi block key values */
     while (configFile) {
         std::getline(configFile, lineContent);
 //        std::cout << RES << "LocationData lineContent: " << lineContent << BACK << std::endl;
@@ -173,10 +156,10 @@ void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile) {
             continue;
         }
         if (lineContent.find('}') != std::string::npos) {
-            /** Adding the location block to the vector so it can be later on added to the server map */
+            /* Adding the location block to the vector so it can be later on added to the server map */
             _location_data_vector.push_back(_location_data);
 
-            /** Cleaning the _location_data private member so it can receive new data if a new location
+            /* Cleaning the _location_data private member so it can receive new data if a new location
              * block is found inside this current server block
              */
             _location_data = LocationData(_server_data.getRootDirectory(), _server_data.getIndexFile());
@@ -235,13 +218,3 @@ void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile) {
     }
 }
 
-//template<typename T>
-//std::string ConfigFileParser::keyParser(std::string & lineContent, std::string const & keyToFind) {
-//    if (lineContent.empty() || keyToFind.empty())
-//        return std::string();
-//    if (lineContent.find(keyToFind) != std::string::npos) {
-//        std::cout << YEL << "Found "<< keyToFind << " line [" << lineContent << "]" << BACK << std::endl;
-//        return getOneCleanValueFromKey(lineContent, keyToFind);
-//    }
-//    return std::string();
-//}
