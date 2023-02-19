@@ -61,6 +61,16 @@ const std::string RequestData::getRequestContentType() const {
 }
 
 
+// PATH PARTS AND FORM DATA
+const std::string RequestData::getPathFirstPart() const {
+	return _pathFirstPart;
+}
+const std::string RequestData::getPathLastWord() const {
+	return _pathLastWord;
+}
+const std::map<std::string, std::string> RequestData::getFormData() const {
+	return _formData;
+}
 
 
 /** ########################################################################## */
@@ -99,6 +109,24 @@ void RequestData::setRequestContentType(std::string reqContentType)
 {
 	_reqContentType = reqContentType;
 }
+
+
+
+
+// PATH PARTS AND FORM DATA
+void RequestData::setPathFirstPart(std::string pathFirstPart) {
+	_pathFirstPart = pathFirstPart;
+}
+void RequestData::setPathLastWord(std::string pathLastWord) {
+	_pathLastWord = pathLastWord;
+}
+void RequestData::setFormData(std::map<std::string, std::string> formData) {
+	_formData = formData;
+}
+
+
+
+
 
 
 } // data

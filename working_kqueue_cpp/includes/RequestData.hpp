@@ -27,9 +27,8 @@ class RequestData {
 
 		// PARTS OF THE URL PATH
 		std::string _pathFirstPart;                      // ie: /kostja.se/folderA/folderB/
-		std::string _pathLastName;                       // ie: index.html  OR   folderC
-		std::string _pathQuery;                          // maybe not needed
-		std::map<std::string, std::string> queryMap;     // maybe not needed
+		std::string _pathLastWord;                       // ie: index.html  OR   folderC
+		std::map<std::string, std::string> _formData;     // maybe not needed
 
 
 	public:
@@ -48,8 +47,12 @@ class RequestData {
 		const int         getRequestContentLength() const;
 		const std::string getRequestContentType() const;
 
+		const std::string 							getPathFirstPart( )const;
+		const std::string							getPathLastWord() const;
+		const std::map<std::string, std::string>	getFormData() const;
 
-		/** Request Setters */
+
+	/** Request Setters */
 		// First line
 		void setRequestMethod(std::string reqMethod);
 		void setRequestPath(std::string reqPath);
@@ -60,6 +63,12 @@ class RequestData {
 		void setRequestAccept(std::string reqAccept);
 		void setRequestContentLength(std::string reqAccept);
 		void setRequestContentType(std::string reqAccept);
+
+		// Path parts and Form Data
+		void setPathFirstPart(std::string path);
+		void setPathLastWord(std::string path);
+		void setFormData(std::map<std::string, std::string>);
+
 };
 
 } // data

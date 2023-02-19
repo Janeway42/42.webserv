@@ -41,25 +41,29 @@ std::string const & Request::getRequestBody() const {
 }
 
 
-/** ########################################################################## */
+/** METHODS ################################################################# */
 
 
-void storeBody(std::istringstream &iss)
+void Request::storeBody(std::istringstream &iss)
 {
 	std::string lineContent;
-	std::string body;
+//	std::string body;
 
 	while (std::getline(iss, lineContent)) {
-		body.append(lineContent);
+		_body.append(lineContent);
 	}
-	std::cout << YEL "body [" << body << "]\n" RES;
+	std::cout << YEL "body [" << _body << "]\n" RES;
+
+	// IF METHOD == POST AND IF Content-Type 	application/x-www-form-urlencoded
+	//	Store key:value pars in map<>
+	storeFormData(_body);
 }
 
 
 void Request::parseHeader(std::string header) {
 	
+//	std::string body;
 	std::string lineContent;
-	std::string body;
 	int i = 0;
 
 	std::istringstream iss(header);
@@ -73,8 +77,8 @@ void Request::parseHeader(std::string header) {
 		}
 													// START READING BODY
 		else if (i > 0 && lineContent == "\r") {	// Not sure if this \r is 100% good
-			storeBody(iss);	
 		//	std::cout << YEL << "Found end of header block, begin of Body\n" RES;
+			storeBody(iss);	
 			break ; 
 		}
 		i++;

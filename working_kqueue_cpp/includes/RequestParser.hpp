@@ -27,9 +27,9 @@ namespace data {
 		private:
 			RequestData _data;
 			std::string _header;
+			std::string _body;
 			std::string _temp;
 			bool		_headerDone;
-			std::string _body;
         	std::string keyParser(std::string & lineContent, std::string keyToFind);
 			int 		appendLastChunkToBody(std::string::size_type it);
 			int 		appendToBody(std::string request);
@@ -49,9 +49,13 @@ namespace data {
 			std::string const & getRequestBody() const;
 
 			/** Methods */
-			void    parseHeader(std::string header);
-			int		parsePath(std::string str);
-			void    appendToRequest(const char *str);
+			void    							parseHeader(std::string header);
+			int									parsePath(std::string str);
+			void    							appendToRequest(const char *str);
+			void								storeBody(std::istringstream &iss);
+			std::map<std::string, std::string>	storeFormData(std::string &pq);
+			void	storePathParts_and_FormData(std::string path, std::string pathFirstPart, std::string pathLastWord);
+
 
 			int     checkStoredVars();
 			void    printStoredRequestData(data::Request &request); // Just for checking
