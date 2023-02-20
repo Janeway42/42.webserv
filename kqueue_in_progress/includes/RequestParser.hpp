@@ -19,7 +19,7 @@
 
 #include "./Parser.hpp"
 #include "./RequestData.hpp"
-#include "./ServerResponse.hpp"
+#include "./RequestResponse.hpp"
 
 namespace data {
 

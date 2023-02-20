@@ -11,7 +11,6 @@
 #include <fcntl.h>
 #include <sys/event.h>
 
-#include "./ServerResponse.hpp"
 #include "./RequestParser.hpp"
 
 #define MAX_EVENTS 100

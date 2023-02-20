@@ -1,4 +1,4 @@
-#include "includes/ServerResponse.hpp"
+#include "includes/RequestResponse.hpp"
 
 namespace data {
 

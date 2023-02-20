@@ -5,7 +5,7 @@ SRC = Server.cpp\
 		srcs/Parser.cpp\
 		srcs/RequestData.cpp\
 		srcs/RequestParser.cpp\
-		ServerResponse.cpp
+		RequestResponse.cpp
 
 OBJ = $(SRC:%.cpp=%.o)
 

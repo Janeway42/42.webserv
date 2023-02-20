@@ -1,8 +1,9 @@
-#ifndef SERVERRESPONSE_HPP
-#define SERVERRESPONSE_HPP
+#ifndef REQUESTRESPONSE_HPP
+#define REQUESTRESPONSE_HPP
 
 #include "./Parser.hpp"
 #include "./RequestData.hpp"
+#include "./RequestParser.hpp"
 #include "./Server.hpp"
 
 namespace data {
