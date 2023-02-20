@@ -56,7 +56,7 @@ void Request::storeBody(std::istringstream &iss)
 
 	// IF METHOD == POST AND IF Content-Type 	application/x-www-form-urlencoded
 	//	Store key:value pars in map<>
-	storeFormData(_body);
+	// storeFormData(_body); // here too early
 }
 
 
@@ -176,7 +176,7 @@ void    Request::appendToRequest(const char *str) {
 	std::string				strToFind = "\r\n\r\n";
 	std::string::size_type	it;
 
-	std::cout << PUR "AppendToRequest()\n" RES; // sleep(1);
+	//std::cout << PUR "AppendToRequest()\n" RES; // sleep(1);
 
 	//test error: 
 	// _errorRequest = true;  // --------------------------------------------------error test
@@ -186,13 +186,13 @@ void    Request::appendToRequest(const char *str) {
 	// sleep(3);
 
 	if (_headerDone == false) {
-		std::cout << PUR "     _headerDone == FALSE\n" RES;
+		//std::cout << PUR "     _headerDone == FALSE\n" RES;
 		
 		_temp.append(chunk);
-		std::cout << PUR "     chunk appended to _temp\n" RES;	// sleep(1);
+		//std::cout << PUR "     chunk appended to _temp\n" RES;	// sleep(1);
 
 		if ((it = _temp.find(strToFind)) != std::string::npos) {
-			std::cout << PUR "     a)  Found header ending /r/n, maybe there is body\n" RES;	// sleep(1);
+			//std::cout << PUR "     a)  Found header ending /r/n, maybe there is body\n" RES;	// sleep(1);
 			_header.append(_temp.substr(0, it));
 			_headerDone = true;
 			std::cout << "HEADER: [" BLU << _header << RES "]\n";	// sleep(1);
@@ -219,7 +219,7 @@ void    Request::appendToRequest(const char *str) {
 			std::cout << PUR "     _headerDone == TRUE\n" RES;	// sleep(1);
 			appendToBody(chunk);
 	}
-	std::cout << PUR "End of AppendToRequest()\n" RES; // sleep(1);
+	//std::cout << PUR "End of AppendToRequest()\n" RES; // sleep(1);
 }
 
 
@@ -267,6 +267,10 @@ int Request::appendToBody(std::string req) {
 	}
 	else if (_body.length() == _data.getRequestContentLength()) {		// Compare body lenght
 		std::cout << GRE "OK: Done parsing.\n" RES; // sleep(2);
+
+		if (_data.getRequestMethod() == "POST")
+			storeFormData(_body);
+
 		_doneParsing = true;
 		std::cout << "HEADER: [" BLU << _header << RES "]\n";	// sleep(1);
 		std::cout << "BODY:   [" BLU << _body   << RES "]\n\n";	// sleep(1);
@@ -278,7 +282,6 @@ int Request::appendToBody(std::string req) {
 	// 	_doneParsing = true;
 	// 	return (0);
 	// }
-	// // time out etc etc etc
 	return (0);
 }
 
@@ -360,10 +363,6 @@ std::time_t Request::getTime()
 {
 	return(_startTime);
 }
-
-
-
-
 
 
 

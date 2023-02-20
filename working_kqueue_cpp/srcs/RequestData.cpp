@@ -16,13 +16,14 @@ RequestData::RequestData() {
     _reqHttpVersion 	= "default Version";
     _reqHost 			= "default Host";	// not sure if all these are needed
     _reqContentLength	= 0;
-	// bool for the flag Done
-	// also getters and setters for Done 
+	
+	_pathFirstPart		= "default";
+	_pathLastWord		= "default";
+//	_formData			= NULL;	// ???
 }
 
 /** Destructor */
 RequestData::~RequestData() {
-
 	/** Cleaning default values for the request block */
 	_reqMethod 		= "";
 	_reqHttpPath 	= "";
@@ -53,7 +54,7 @@ const std::string RequestData::getRequestHost() const {
 const std::string RequestData::getRequestAccept() const {
 	return _reqAccept;
 }
-const int RequestData::getRequestContentLength() const {
+size_t RequestData::getRequestContentLength() const {
 	return _reqContentLength;
 }
 const std::string RequestData::getRequestContentType() const {
@@ -68,8 +69,8 @@ const std::string RequestData::getPathFirstPart() const {
 const std::string RequestData::getPathLastWord() const {
 	return _pathLastWord;
 }
-const std::map<std::string, std::string> RequestData::getFormData() const {
-	return _formData;
+std::map<std::string, std::string> RequestData::getFormData() const {	// Cannot return const
+	return _formData;													// because iterator won't work
 }
 
 
@@ -123,10 +124,6 @@ void RequestData::setPathLastWord(std::string pathLastWord) {
 void RequestData::setFormData(std::map<std::string, std::string> formData) {
 	_formData = formData;
 }
-
-
-
-
 
 
 } // data

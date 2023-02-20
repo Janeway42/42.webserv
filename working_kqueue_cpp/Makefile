@@ -9,7 +9,7 @@ SRC = Server.cpp\
 
 OBJ = $(SRC:%.cpp=%.o)
 
-FLAGS = #-Wall -Werror -Wextra -std=c++98 -g
+FLAGS = -Wall -Werror -Wextra -std=c++98 -g
 
 CPP = c++
 

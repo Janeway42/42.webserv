@@ -23,7 +23,7 @@ class Server
 	private:
 		int _kq;
 		struct addrinfo *_addr;
-		int _listening_socket;		
+		size_t _listening_socket;		
 
 	public:
 		Server();

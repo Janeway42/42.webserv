@@ -12,7 +12,7 @@ Server::Server()
 		throw ServerException(("failed addr"));
 
 	_listening_socket = socket(_addr->ai_family, _addr->ai_socktype, _addr->ai_protocol);
-	if (_listening_socket == -1)
+	if (_listening_socket < 0)
 		throw ServerException(("failed socket"));
 	fcntl(_listening_socket, F_SETFL, O_NONBLOCK);
 
@@ -45,17 +45,17 @@ Server::~Server()
 void Server::runServer()
 {
 	struct kevent evList[MAX_EVENTS];
-	struct kevent evSet;
+//	struct kevent evSet;
 	int i;
-	struct sockaddr_storage socket_addr;
-	socklen_t socklen = sizeof(socket_addr);
+//	struct sockaddr_storage socket_addr;
+//	socklen_t socklen = sizeof(socket_addr);
 
 	int loop1 = 0;
 	while (1)
 	{
-		std::cout << "WHILE LOOP ------------------------------" << loop1 << std::endl;
+	//	std::cout << "WHILE LOOP ------------------------------" << loop1 << std::endl;
 		int nr_events = kevent(_kq, NULL, 0, evList, MAX_EVENTS, NULL);
-		std::cout << "NR EVENTS: " << nr_events << std::endl;
+	//	std::cout << "NR EVENTS: " << nr_events << std::endl;
 
 		if (nr_events < 1)
 			throw ServerException("failed number events");
@@ -63,7 +63,7 @@ void Server::runServer()
 		{
 			for (i = 0; i < nr_events; i++)
 			{
-				std::cout << "filter: " << evList[i].filter << std::endl; // test line 
+			//	std::cout << "filter: " << evList[i].filter << std::endl; // test line 
 
 				if (evList[i].flags & EV_ERROR)
 					std::cout << "Event error\n";
@@ -71,7 +71,7 @@ void Server::runServer()
 					newClient(evList[i]);
 				else if (evList[i].filter == EVFILT_READ)
 				{
-					std::cout << "READ\n";
+				//	std::cout << "READ\n";
 					if (evList[i].flags & EV_EOF)  // if client closes connection 
 					{
 						if (removeEvent(evList[i], EVFILT_READ) == 1)
@@ -83,7 +83,7 @@ void Server::runServer()
 				}
 				else if (evList[i].filter == EVFILT_WRITE)
 				{
-					std::cout << "WRITE\n";
+				//	std::cout << "WRITE\n";
 					if (evList[i].flags & EV_EOF)
 					{
 						if (removeEvent(evList[i], EVFILT_WRITE) == 1)
@@ -93,10 +93,10 @@ void Server::runServer()
 					else
 						sendResponse(evList[i]);
 				}
-				std::cout << std::endl;
+				// std::cout << std::endl;
 			}
 		}	
-		std::cout << std::endl;
+		// std::cout << std::endl;
 		loop1++;
 	}
 }
@@ -111,7 +111,7 @@ void Server::readRequest(struct kevent& event)
 	data::Request *storage = (data::Request *)event.udata;
 
 	int ret = recv(event.ident, &buffer, sizeof(buffer) - 1, 0);
-	std::cout << "bytes read: " << ret << std::endl;                 // test line 
+//	std::cout << "bytes read: " << ret << std::endl;                 // test line 
 	if (ret < 0)
 	{
 		if (storage->getEarlyClose() == false) // if it fails 
@@ -130,7 +130,7 @@ void Server::readRequest(struct kevent& event)
 
 	else if (storage->getEarlyClose() == false && storage->getDone() == false)
 	{
-		std::cout << "append buffer\n";
+	//	std::cout << "append buffer\n";
 		storage->appendToRequest(buffer);
 
 		if (storage->getError() == true)
@@ -156,7 +156,7 @@ void Server::sendResponse(struct kevent& event)
 	data::Request *storage = (data::Request *)event.udata;
 
 	std::time_t elapsedTime = std::time(NULL);
-	if (elapsedTime - storage->getTime() > 1)
+	if (elapsedTime - storage->getTime() > 5)
 	{
 		std::cout << "Unable to process request, it takes too long!\n";
 		storage->setError(true);
@@ -180,7 +180,11 @@ void Server::sendResponse(struct kevent& event)
 		if (temp.find(".png") != std::string::npos)
 			sendImmage(event, "immage.png");
 		else 
-			sendResponseFile(event, "index_dummy.html");
+			sendResponseFile(event, "index_just_text.html");
+			//sendResponseFile(event, "index_just_image.html");
+			// sendResponseFile(event, "index_post_form.html");
+			// sendResponseFile(event, "index_get_form.html");
+			//	sendResponseFile(event, "index_dummy.html");
 
 		if (removeEvent(event, EVFILT_WRITE) == 1)
 			throw ServerException("failed kevent EV_DELETE client - send success");
@@ -279,6 +283,7 @@ void Server::sendResponseFile(struct kevent& event, std::string file)
 
 	headerBlock = 	"HTTP/1.1 200 OK\n"
 					"Content-Type: text/html\n";
+					// "Content-Type: image/png\n";
 	if (storage->getError() == true)
 		headerBlock = 	"HTTP/1.1 404 Not Found\n"
 						"Content-Type: text/html\n";
@@ -317,7 +322,7 @@ void Server::sendImmage(struct kevent& event, std::string imgFileName)
 	contentLen.append(temp);
 	contentLen.append("\r\n");
 
-	std::string headerBlock = 	"HTTP/1.1 202 OK\r\n"
+	std::string headerBlock = 	"HTTP/1.1 200 OK\r\n"
 								"accept-ranges: bytes\r\n"
 								"Content-Type: image/jpg\r\n";
 	headerBlock.append(contentLen);

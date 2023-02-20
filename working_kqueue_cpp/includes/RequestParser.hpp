@@ -21,6 +21,16 @@
 #include "./RequestData.hpp"
 
 
+	// std::string temp = path;
+	// if (path[0] == '.')
+	// 	temp = path.substr(1, std::string::npos);
+	// std::size_t found = temp.find_last_of(".");
+	// std::string extention = temp.substr(found, std::string::npos);
+	
+	//std::cout << GRN "Found Extension: [" << temp << "]\n" RES;
+	//std::cout << GRN "Found Extension: [" << extention << "]\n" RES;
+	
+
 namespace data {
 
 	class Request : public Parser {
@@ -29,11 +39,11 @@ namespace data {
 			std::string _header;
 			std::string _body;
 			std::string _temp;
-			bool		_headerDone;
         	std::string keyParser(std::string & lineContent, std::string keyToFind);
 			int 		appendLastChunkToBody(std::string::size_type it);
 			int 		appendToBody(std::string request);
 
+			bool		_headerDone;
 			bool		_doneParsing;
 			bool 		_errorRequest;
 			bool 		_earlyClose;
@@ -54,7 +64,8 @@ namespace data {
 			void    							appendToRequest(const char *str);
 			void								storeBody(std::istringstream &iss);
 			std::map<std::string, std::string>	storeFormData(std::string &pq);
-			void	storePathParts_and_FormData(std::string path, std::string pathFirstPart, std::string pathLastWord);
+			void	storePathParts_and_FormData(std::string path);
+			void	storePath_and_FolderName(std::string path);
 
 
 			int     checkStoredVars();
