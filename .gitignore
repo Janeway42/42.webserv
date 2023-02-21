@@ -57,8 +57,8 @@ dkms.conf
 # Clion
 .idea
 CMakeLists.txt
-cmake-build-release
-cmake-build-debug
+cmake-build-release/
+cmake-build-debug/
 
 # VsCode
 .vscode/

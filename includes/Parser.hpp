@@ -15,8 +15,6 @@
 # define RES     "\033[37m"
 # define BACK     "\033[0m"
 
-/** The Parser has no access to the data namespace so it does nt have access to any data */
-
 enum PathType {
     DIRECTORY = 0,
     REG_FILE,
