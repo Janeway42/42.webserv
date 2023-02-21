@@ -12,6 +12,8 @@
 # define PUR     "\033[35m"
 # define CYN     "\033[36m"
 # define RES     "\033[37m"
+# define MAG   	 "\e[0;35m"
+# define GRN     "\x1B[32m"
 # define BACK    "\033[0m"
 
 /** The Parser has no access to the data namespace so it does nt have access to any data */

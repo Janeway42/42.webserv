@@ -35,7 +35,7 @@ int main(int ac, char **av, char **env) {
 						"Accept: te";
 	std::string str2 = 	"xt/html\n"
 						"Content-Type: text/plain\n"
-						"Content-Length: 50\r\n\r\n"
+						"Content-Length: 54\r\n\r\n"
 						"This is re";
 	std::string str3 = "quest body block\nThis is request body block\n";
 
