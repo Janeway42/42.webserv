@@ -16,6 +16,7 @@ namespace data {
 /** Default constructor */
 Request::Request() {
 	_data = RequestData();
+	_answer = Response();
 	_headerDone = false;
 
 	_doneParsing = false;
@@ -330,7 +331,7 @@ bool Request::getEarlyClose()
 	return (_earlyClose);
 }
 
-Response Request::getAnswer(void)
+Response & Request::getAnswer(void)
 {
 	return (_answer);
 }

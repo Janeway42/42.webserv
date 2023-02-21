@@ -1,10 +1,13 @@
 #ifndef REQUESTRESPONSE_HPP
 #define REQUESTRESPONSE_HPP
 
+#include <sys/socket.h>
+#include <netdb.h>
+#include <fcntl.h>
+#include <sys/event.h>
+#include <sys/time.h>
+
 #include "./Parser.hpp"
-#include "./RequestData.hpp"
-#include "./RequestParser.hpp"
-#include "./Server.hpp"
 
 namespace data {
 	

@@ -286,6 +286,8 @@ void Server::sendResponseFile(struct kevent& event, std::string file)
 	headerBlock.append("\r\n\r\n");
 	headerBlock.append(response);
 
+	
+
 	int ret = send(event.ident, headerBlock.c_str(), headerBlock.length(), 0);
 	if (ret == -1)
 		throw ServerException("Send failed\n");

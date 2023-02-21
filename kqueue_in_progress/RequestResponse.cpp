@@ -1,4 +1,6 @@
 #include "includes/RequestResponse.hpp"
+#include "includes/Server.hpp"
+#include "includes/RequestData.hpp"
 
 namespace data {
 
@@ -16,9 +18,12 @@ void Response::setResponse(struct kevent& event)
 	_responseHeader += setResponseStatus(event);
 
 	if (storage->getRequestData().getRequestContentType().compare("txt") == 0)
-		_responseBody = streamFile(storage->getAnswer().getResponsePath());
+		_responseBody = streamFile(_responsePath);
 	else
 		_responseBody = setImage(storage->getAnswer().getResponsePath());
+
+	std::cout << "_fullBody: " << _responseBody << std::endl;
+
 
 	int temp = _responseBody.length();
 	std::string fileLen = std::to_string(temp);
@@ -30,6 +35,7 @@ void Response::setResponse(struct kevent& event)
 	_responseHeader += "\r\n\r\n";
 
 	_fullResponse += _responseHeader + _responseBody;
+	// std::cout << "_fullResponse: " << _fullResponse << std::endl;
 }
 
 std::string Response::setResponseStatus(struct kevent& event)
@@ -68,7 +74,8 @@ std::string Response::setResponseStatus(struct kevent& event)
 		default:
 			status = "HTTP/1.1 200 OK\n"
 						"Content-Type: text/html\n";
-			(storage->getAnswer()).setResponsePath(storage->getRequestData().getHttpPath());
+			_responsePath = "index_dummy.html";
+			// (storage->getAnswer()).setResponsePath("index_dummy.html");
 			break;
 	}
 	return (status);
@@ -133,6 +140,8 @@ std::string Response::streamFile(std::string file)
 	std::string responseNoFav;
 	std::fstream    infile;
 
+	std::cout << "file: " << file << std::endl; 
+
 
 	infile.open(file, std::fstream::in);
 	// if (!infile)
@@ -145,6 +154,8 @@ std::string Response::streamFile(std::string file)
 		responseNoFav.append("\n");
 	}
 	infile.close();
+
+	std::cout << "streamed: " << responseNoFav << std::endl;
 	return (responseNoFav);
 }
 

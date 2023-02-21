@@ -284,9 +284,11 @@ void Server::sendFile(struct kevent& event)
 {
 	data::Request *storage = (data::Request *)event.udata;
 
-	std::string message = storage->getAnswer().getFullResponse();
+	std::string message = (storage->getAnswer()).getFullResponse();
+
+	// std::cout << "message: " << (storage->getAnswer()).getFullResponse() << std::endl;
 	int length = message.length();
-	int ret = send(event.ident, &message, length, 0);
+	int ret = send(event.ident, message.c_str(), length, 0);
 	if (ret == -1)
 		throw ServerException("Send failed\n");
 	std::cout << "ret: " << ret << std::endl;

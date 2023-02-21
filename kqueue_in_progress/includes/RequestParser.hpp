@@ -71,7 +71,7 @@ namespace data {
 
 			// Getters ----------------------------------------------------------------
 
-			Response getAnswer(void);
+			Response & getAnswer(void);
 
 			std::string getTemp();
 
