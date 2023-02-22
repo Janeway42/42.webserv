@@ -1,17 +1,13 @@
+#include <unistd.h> // sleep
+
+#include "RequestParser.hpp"
 
 // c++ kqueue.cpp Server.cpp srcs/Parser.cpp srcs/RequestData.cpp srcs/RequestParser.cpp && ./a.out
-
 
 // CALLING CURL 
 // curl -X POST localhost:8080  -H "Content-Type: text/html" -d '{"Id": 79, "status": 3}'
 // curl -X POST localhost:8080  -H "Content-Type: text/html" -d 'abc'
 // curl -X POST localhost:8080  -H "Content-Length: 444"  -H "Content-Type: text/html" -d 'abc'
-
-#include <unistd.h> // sleep
-
-#include "../includes/RequestParser.hpp"
-
-namespace data {
 
 /** Default constructor */
 Request::Request() {
@@ -29,20 +25,16 @@ Request::~Request() {
 //   delete _data;
 }
 
-
 /** Getters */
-RequestData const & Request::getRequestData() const {
+RequestData Request::getRequestData() const {
 	return _data;
 }
 
-
-std::string const & Request::getRequestBody() const {
+std::string Request::getRequestBody() const {
 	return _body;
 }
 
-
 /** METHODS ################################################################# */
-
 
 void Request::storeBody(std::istringstream &iss)
 {
@@ -58,7 +50,6 @@ void Request::storeBody(std::istringstream &iss)
 	//	Store key:value pars in map<>
 	// storeFormData(_body); // here too early
 }
-
 
 void Request::parseHeader(std::string header) {
 	
@@ -84,8 +75,6 @@ void Request::parseHeader(std::string header) {
 		i++;
 	}
 }
-
-
 
 // !!!!!!! need to remove the file and links
 int Request::storeWordsFromFirstLine(std::string firstLine)
@@ -125,8 +114,6 @@ int Request::storeWordsFromFirstLine(std::string firstLine)
 	return (0);
 }
 
-
-
 int Request::storeWordsFromOtherLine(std::string otherLine) {
 	std::vector<std::string> arr;
 	std::istringstream is(otherLine);
@@ -165,6 +152,120 @@ int Request::storeWordsFromOtherLine(std::string otherLine) {
 		}
 	}
 	return (0);
+}
+
+/* 	Split string at '&' and store each line into vector<>
+	Then split each line in vector into map<> key:value */
+std::map<std::string, std::string> Request::storeFormData(std::string pathForm)
+{
+    //std::cout << GRE << "Start store form data()\n" << RES;
+    std::cout << GRE << "   BODY:        [" << _body << "]\n" << RES;
+    std::cout << GRE << "   FORM PATH:   [" << pathForm << "]\n" << RES;
+
+    std::string					line;
+    std::vector<std::string>	formList;
+
+    std::stringstream iss(pathForm);
+    while (std::getline(iss, line, '&'))
+        formList.push_back(line);
+
+    std::string							key, val;
+    std::map<std::string, std::string>	formDataMap;
+    std::vector<std::string>::iterator	it;
+
+    for (it = formList.begin(); it != formList.end(); it++) {
+        std::stringstream inss(*it);
+        std::getline(inss, key, '=') >> val;
+        formDataMap[key] = val;
+    }
+    _data.setFormData(formDataMap);
+    return (formDataMap);
+}
+
+// Found GET Method with '?' Form Data
+void	Request::storePathParts_and_FormData(std::string path) {
+
+    int temp				= path.find_first_of("?");
+    std::string tempStr		= path.substr(0, temp);
+    int posLastSlash 		= tempStr.find_last_of("/");
+    int	posFirstQuestMark	= path.find_first_of("?");
+    std::string	pathForm	= path.substr(temp, std::string::npos);
+
+    _data.setPathFirstPart(tempStr.substr(0, posLastSlash));
+    _data.setPathLastWord(path.substr(posLastSlash, posFirstQuestMark - posLastSlash));
+
+    if (pathForm[0] == '?') 	// Skip the '?' in the path
+        pathForm = &pathForm[1];
+    storeFormData(pathForm);
+}
+
+// Last word in path must be a folder (last '/' found)
+// The 2nd and 3rd args not needed anymore
+// void	Request::storePath_and_FolderName(std::string path, std::string pathFirstPart, std::string pathLastWord, RequestData reqData) {
+void	Request::storePath_and_FolderName(std::string path) {
+
+    int 	pos1	= 0;
+    int		pos2	= 0;
+    size_t 	count	= 0;
+    pos2 			= path.find_first_of("/");
+
+    while (count < path.length()) {
+        if ((count = path.find("/", count)) != std::string::npos) {
+            pos1 = pos2;
+            pos2 = count;
+        }
+        if ( count == std::string::npos )
+            break ;
+        count++;
+    }
+    //	pathFirstPart	= path.substr(0, pos1 + 1);
+    //	pathLastWord	= path.substr(pos1 + 1, pos2);
+
+    _data.setPathFirstPart(path.substr(0, pos1 + 1));
+    _data.setPathLastWord(path.substr(pos1 + 1, pos2));
+    //	reqData.setPathLastWord(path.substr(pos1 + 1, pos2));
+}
+
+int Request::parsePath(std::string str) {
+    // maybe also trim white spaces front and back
+//	Request		req;
+    std::string path			= removeDuplicateSlash(str);
+    size_t		ret				= 0;
+    std::string pathLastWord	= "";
+
+    if (path == "")
+        return (-1);
+    else if (path == "/") {
+        std::cout << GRE << "The path has no GET-Form data. Path is the root '/'\n" << RES;
+    }
+    else if (path.back() == '/'  && (path.find("?") == std::string::npos)) {
+        std::cout << GRE << "The path has no GET-Form data. Last char is '/', it must be a folder.\n" << RES;
+        storePath_and_FolderName(path);
+        printPathParts(str, path, "", "", getRequestData());
+    }
+
+        // if the last char is not slash /   then look for question mark
+    else if ((ret = path.find("?")) == std::string::npos ) {
+        std::cout << GRE << "There is no Form data, the '?' not found\n" << RES;
+        int pos			= 0;
+        pos				= path.find_last_of("/");
+
+        _data.setPathFirstPart(path.substr(0, pos));
+        _data.setPathLastWord(path.substr(pos, std::string::npos));
+        printPathParts(str, path, "", "", getRequestData());
+    }
+
+    else if ((ret = path.find("?")) != std::string::npos) {			// Found '?' in the path
+        std::cout << GRE << "There is GET Form data, the '?' is found\n" << RES;
+        storePathParts_and_FormData(path);
+        printPathParts(str, path, "", "", getRequestData());
+    }
+
+    checkIfFileExists(path);	// What in case of root only "/"  ???
+    checkTypeOfFile(path);
+    //checkTypeOfFile(_data.getPathLastWord());
+    //std::cout << RED << "Last word " << _data.getPathLastWord() << RES << "\n";
+    return (0);
 }
 
 /*	- What if method is GET (normaly without body) AND content-length is not zero ???
@@ -222,9 +323,6 @@ void    Request::appendToRequest(const char *str) {
 	//std::cout << PUR "End of AppendToRequest()\n" RES; // sleep(1);
 }
 
-
-
-
 // Last chunk means, last chunk of header section, so first chunk of body
 int Request::appendLastChunkToBody(std::string::size_type it) {
 	_body = _temp.substr(it);
@@ -251,8 +349,6 @@ int Request::appendLastChunkToBody(std::string::size_type it) {
 
 	return (0);
 }
-
-
 
 int Request::appendToBody(std::string req) {
 	std::cout << GRE "AppendToBody()\n" RES;
@@ -285,7 +381,6 @@ int Request::appendToBody(std::string req) {
 	return (0);
 }
 
-
 int Request::checkStoredVars() {
 	if (_data.getRequestContentLength() == _body.length()) {
 		// if (_body.length() == 0 && _data.getRequestContentLength() == 0) {		// Compare body lenght
@@ -302,11 +397,9 @@ int Request::checkStoredVars() {
 	return (0);
 }
 
-
-
 // JUST FOR CHECKING
-void Request::printStoredRequestData(data::Request &request) {
-	data::RequestData reqData = request.getRequestData();
+void Request::printStoredRequestData(Request &request) {
+	RequestData reqData = request.getRequestData();
 
 	// PRINT FIRST LINE HEADER
 	std::cout << "\nFIRST LINE:\n[" RED << reqData.getRequestMethod() << ", "
@@ -322,7 +415,6 @@ void Request::printStoredRequestData(data::Request &request) {
 	// PRINT BODY
 	std::cout << "REQUEST BODY:\n[" PUR << request.getRequestBody() << RES "]\n";
 }
-
 
 bool Request::getDone()
 {
@@ -363,9 +455,3 @@ std::time_t Request::getTime()
 {
 	return(_startTime);
 }
-
-
-
-
-} // data
-

@@ -1,5 +1,5 @@
-#ifndef WEBSERV_PARSER_HPP
-#define WEBSERV_PARSER_HPP
+#ifndef PARSER_HPP
+#define PARSER_HPP
 
 #include <string>
 #include <iostream>
@@ -78,7 +78,7 @@ enum DataType {// todo: Maybe not used
 class Parser {
     public:
 //        Parser();
-        virtual std::string keyParser(std::string & lineContent, const std::string& keyToFind);
+        virtual std::string keyParser(std::string & lineContent, std::string const & keyToFind);
         virtual std::string getOneCleanValueFromKey(std::string & contentLine, std::string const & key);
         virtual DataType getValueType(std::string & lineContent);
         virtual PathType pathType(std::string const & path);
@@ -100,4 +100,4 @@ class Parser {
         };
 };
 
-#endif //WEBSERV_PARSER_HPP
+#endif //PARSER_HPP

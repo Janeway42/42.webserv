@@ -1,5 +1,5 @@
-#ifndef WEBSERV_SERVERDATA_HPP
-#define WEBSERV_SERVERDATA_HPP
+#ifndef SERVERDATA_HPP
+#define SERVERDATA_HPP
 
 #include "Parser.hpp"
 
@@ -53,4 +53,4 @@ class ServerData : public Parser {
         bool setErrorPage(std::string const & err_page);
         bool setPortRedirection(std::string const & port_redir);
 };
-#endif //WEBSERV_SERVERDATA_HPP
+#endif //SERVERDATA_HPP

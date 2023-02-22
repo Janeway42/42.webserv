@@ -1,4 +1,4 @@
-#include "includes/LocationData.hpp"
+#include "LocationData.hpp"
 
 /** Default constructor */
 LocationData::LocationData()// todo private???
@@ -77,14 +77,10 @@ void LocationData::setLocationAsCgi(bool isCgi) {
 
 bool LocationData::setRootDirectory(std::string const & rootDirectory) {
     /* location -> not mandatory | default: $server.root_directory */
-    std::cout << "JOYCE rootDirectory: " << rootDirectory << std::endl;
-
     if (not rootDirectory.empty()) {
         PathType type = pathType(rootDirectory);
         if (type == DIRECTORY) {
             _root_directory = addCurrentDirPath(rootDirectory) + rootDirectory;
-            std::cout << "JOYCE _root_directory: " << _root_directory << std::endl;
-
             return true;
         } else if (type == PATH_TYPE_ERROR) {
             throw ParserException(CONFIG_FILE_ERROR("root_directory", MISSING));

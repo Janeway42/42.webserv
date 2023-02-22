@@ -1,18 +1,12 @@
-//
-// Created by Joyce Macksuele on 1/22/23.
-// Adapted by JAKA
-//
-
-#ifndef WEBSERV_REQUESTDATA_HPP
-#define WEBSERV_REQUESTDATA_HPP
-
-#include "Parser.hpp"
+#ifndef REQUESTDATA_HPP
+#define REQUESTDATA_HPP
 
 #include <string>
 #include <vector>
 #include <map>
 
-namespace data {
+#include "Parser.hpp"
+
 class RequestData {
 	private:
 		// FIRST LINE HEADER
@@ -38,22 +32,23 @@ class RequestData {
 		bool doneParsingRequest;
 		bool errorRequest;
 
-		/** Request Getters */
-		const std::string getRequestMethod() const;
-		const std::string getHttpPath() const;
-		const std::string getHttpVersion() const;
-		const std::string getRequestHost() const;
-		const std::string getRequestAccept() const;
-		size_t         	  getRequestContentLength() const;
-		const std::string getRequestContentType() const;
+		/** Getters */
+		std::string getRequestMethod() const;
+		std::string getHttpPath() const;
+		std::string getHttpVersion() const;
+		std::string getRequestHost() const;
+		std::string getRequestAccept() const;
+		size_t      getRequestContentLength() const;
+		std::string getRequestContentType() const;
 
-		const std::string 							getPathFirstPart( )const;
-		const std::string							getPathLastWord() const;
+		std::string 						getPathFirstPart( )const;
+		std::string							getPathLastWord() const;
 		std::map<std::string, std::string>	getFormData() const;
 		// const std::map<std::string, std::string>	getFormData() const;
 
 
-	/** Request Setters */
+	    /** Setters */
+        // TODO all setters can receive a const & EX std::string const & reqMethod
 		// First line
 		void setRequestMethod(std::string reqMethod);
 		void setRequestPath(std::string reqPath);
@@ -72,5 +67,4 @@ class RequestData {
 
 };
 
-} // data
-#endif //WEBSERV_REQUESTDATA_HPP
+#endif //REQUESTDATA_HPP

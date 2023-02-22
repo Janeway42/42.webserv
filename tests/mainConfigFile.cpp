@@ -1,4 +1,4 @@
-#include "includes/ConfigFileParser.hpp"
+#include "ConfigFileParser.hpp"
 
 int main(int ac, char **av, char **env) {
     (void)env;

@@ -2,7 +2,7 @@
 #include <sstream>
 #include <unistd.h>
 #include <string.h>
-#include "../includes/Parser.hpp"
+#include "parsers/Parser.hpp"
 
 std::string appendHTMLhead(std::string path, std::string & htmlStr) {
 
@@ -25,7 +25,7 @@ std::string removeLastFolderFromPath(std::string path) {
 
 	parentPath = path.substr(0, len);
 
-	std::cout << GRN "parentPath: [" << parentPath << "]\n" RES;
+	std::cout << GRE << "parentPath: [" << parentPath << "]\n" << RES;
 	return (parentPath);
 }
 
@@ -79,7 +79,7 @@ void	makeHtmlString(std::string folderContent, std::string path) {
 		}
 	}
 	htmlStr.append("</ul></body></html>");
-	std::cout << "\nFolder content as HTML:\n" BLU << htmlStr << RES "\n";
+	std::cout << "\nFolder content as HTML:\n" << BLU << htmlStr << RES "\n";
 }
 
 
@@ -120,12 +120,9 @@ std::string storeFolderContent(char *path) {
 	return (incomingStr);
 }
 
-
-
-
 int main()
 {
-	std::string path = "../_folderA/folderB/";
+	std::string path = "../resources/_folderA/folderB/";
 	std::string folderContentStr = storeFolderContent((char*)path.c_str());
 	makeHtmlString(folderContentStr, path);
 

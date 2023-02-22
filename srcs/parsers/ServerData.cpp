@@ -1,7 +1,8 @@
-#include "includes/ServerData.hpp"
 #include <arpa/inet.h>
 #include <sys/types.h>
 #include <dirent.h>
+
+#include "ServerData.hpp"
 
 /** Default constructor */
 ServerData::ServerData()

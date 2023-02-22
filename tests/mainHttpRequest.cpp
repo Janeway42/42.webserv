@@ -1,10 +1,10 @@
 
-#include "../includes/RequestParser.hpp"
+#include "RequestParser.hpp"
 
-void printStoredRequestData(data::Request &request)
+void printStoredRequestData(Request &request)
 {
 
-	data::RequestData reqData = request.getRequestData();
+	RequestData reqData = request.getRequestData();
 
 	// PRINT FIRST LINE HEADER
 	std::cout << "\nFIRST LINE:  [" RED << reqData.getRequestMethod() << ", "
@@ -44,7 +44,7 @@ int main(int ac, char **av, char **env) {
 	const char *CorinasBuffer2 = str2.c_str();
 	const char *CorinasBuffer3 = str3.c_str();
 
-	data::Request	request;
+	Request	request;
 	request.appendToRequest(CorinasBuffer1); // main
 	request.appendToRequest(CorinasBuffer2); // main
 	request.appendToRequest(CorinasBuffer3); // main

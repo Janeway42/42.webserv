@@ -1,13 +1,13 @@
-#ifndef WEBSERV_CONFIGFILEPARSER_HPP
-#define WEBSERV_CONFIGFILEPARSER_HPP
-
-#include "Parser.hpp"
-#include "ServerData.hpp"
-#include "LocationData.hpp"
+#ifndef CONFIGFILEPARSER_HPP
+#define CONFIGFILEPARSER_HPP
 
 #include <fstream>
 #include <iostream>
 #include <map>
+
+#include "Parser.hpp"
+#include "ServerData.hpp"
+#include "LocationData.hpp"
 
 class ConfigFileParser : public Parser {
     private:
@@ -44,4 +44,4 @@ class ConfigFileParser : public Parser {
         unsigned short getLocationBlockCounter() const;
 
 };
-#endif //WEBSERV_CONFIGFILEPARSER_HPP
+#endif //CONFIGFILEPARSER_HPP

@@ -1,11 +1,4 @@
-//
-// Created by Joyce Macksuele on 1/22/23.
-// Adapted Jaka
-//
-
-#include "../includes/RequestData.hpp"
-
-namespace data {
+#include "RequestData.hpp"
 
 /** Default constructor */
 RequestData::RequestData() {
@@ -32,98 +25,90 @@ RequestData::~RequestData() {
 	// _next = nullptr;
 }
 
-
-
 /** ########################################################################## */
 /** Request Getters */
 
-
-const std::string RequestData::getRequestMethod() const {
+std::string RequestData::getRequestMethod() const {
 	return _reqMethod;
 }
-const std::string RequestData::getHttpPath() const {
+
+std::string RequestData::getHttpPath() const {
 	return _reqHttpPath;
 }
-const std::string RequestData::getHttpVersion() const {
+
+std::string RequestData::getHttpVersion() const {
 	return _reqHttpVersion;
 }
 
-const std::string RequestData::getRequestHost() const {
+std::string RequestData::getRequestHost() const {
 	return _reqHost;
 }
-const std::string RequestData::getRequestAccept() const {
+
+std::string RequestData::getRequestAccept() const {
 	return _reqAccept;
 }
+
 size_t RequestData::getRequestContentLength() const {
 	return _reqContentLength;
 }
-const std::string RequestData::getRequestContentType() const {
+
+std::string RequestData::getRequestContentType() const {
 	return _reqContentType;
 }
 
-
 // PATH PARTS AND FORM DATA
-const std::string RequestData::getPathFirstPart() const {
+std::string RequestData::getPathFirstPart() const {
 	return _pathFirstPart;
 }
-const std::string RequestData::getPathLastWord() const {
+
+std::string RequestData::getPathLastWord() const {
 	return _pathLastWord;
 }
+
 std::map<std::string, std::string> RequestData::getFormData() const {	// Cannot return const
 	return _formData;													// because iterator won't work
 }
 
-
 /** ########################################################################## */
 /** Request Setters */
 
-void RequestData::setRequestMethod(std::string reqMethod)
-{
+void RequestData::setRequestMethod(std::string reqMethod) {
 	_reqMethod = reqMethod;
 }
-void RequestData::setRequestPath(std::string reqPath)
-{
+
+void RequestData::setRequestPath(std::string reqPath) {
 	_reqHttpPath = reqPath;
 }
-void RequestData::setHttpVersion(std::string reqHttpVersion)
-{
+
+void RequestData::setHttpVersion(std::string reqHttpVersion) {
 	_reqHttpVersion = reqHttpVersion;
 }
 
-
-void RequestData::setRequestHost(std::string reqHost)
-{
+void RequestData::setRequestHost(std::string reqHost) {
 	_reqHost = reqHost;
 }
 
-void RequestData::setRequestAccept(std::string reqAccept)
-{
+void RequestData::setRequestAccept(std::string reqAccept) {
 	_reqAccept = reqAccept;
 }
 
-void RequestData::setRequestContentLength(std::string reqContentLength)
-{
+void RequestData::setRequestContentLength(std::string reqContentLength) {
 	_reqContentLength = stoi(reqContentLength); // is STOI allowed ???
 }
 
-void RequestData::setRequestContentType(std::string reqContentType)
-{
+void RequestData::setRequestContentType(std::string reqContentType) {
 	_reqContentType = reqContentType;
 }
-
-
-
 
 // PATH PARTS AND FORM DATA
 void RequestData::setPathFirstPart(std::string pathFirstPart) {
 	_pathFirstPart = pathFirstPart;
 }
+
 void RequestData::setPathLastWord(std::string pathLastWord) {
 	_pathLastWord = pathLastWord;
 }
+
 void RequestData::setFormData(std::map<std::string, std::string> formData) {
 	_formData = formData;
 }
-
-
-} // data

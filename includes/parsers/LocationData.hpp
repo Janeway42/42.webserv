@@ -1,9 +1,9 @@
-#ifndef WEBSERV_LOCATIONDATA_HPP
-#define WEBSERV_LOCATIONDATA_HPP
-
-#include "Parser.hpp"
+#ifndef LOCATIONDATA_HPP
+#define LOCATIONDATA_HPP
 
 #include <vector>
+
+#include "Parser.hpp"
 
 /**
  * Directory and file (full/relative) path:
@@ -46,4 +46,4 @@ class LocationData : public Parser {
         bool setInterpreterPath(std::string const & interpreterPath);
         bool setScriptExtension(std::string const & scriptExtension);
 };
-#endif //WEBSERV_LOCATIONDATA_HPP
+#endif //LOCATIONDATA_HPP

@@ -2,7 +2,7 @@
 
 Server::Server()
 {
-	struct addrinfo *_addr = new struct addrinfo();
+	_addr = new struct addrinfo();
 	struct addrinfo hints;
 
 	hints.ai_family = PF_UNSPEC; 
@@ -50,7 +50,7 @@ void Server::runServer()
 //	struct sockaddr_storage socket_addr;
 //	socklen_t socklen = sizeof(socket_addr);
 
-	int loop1 = 0;
+//	int loop1 = 0;
 	while (1)
 	{
 	//	std::cout << "WHILE LOOP ------------------------------" << loop1 << std::endl;
@@ -97,7 +97,7 @@ void Server::runServer()
 			}
 		}	
 		// std::cout << std::endl;
-		loop1++;
+//		loop1++;
 	}
 }
 
@@ -108,7 +108,7 @@ void Server::readRequest(struct kevent& event)
 {
 	char buffer[50];
 	memset(&buffer, '\0', 50);
-	data::Request *storage = (data::Request *)event.udata;
+	Request* storage = (Request*)event.udata;
 
 	int ret = recv(event.ident, &buffer, sizeof(buffer) - 1, 0);
 //	std::cout << "bytes read: " << ret << std::endl;                 // test line 
@@ -153,7 +153,7 @@ void Server::readRequest(struct kevent& event)
 
 void Server::sendResponse(struct kevent& event)
 {
-	data::Request *storage = (data::Request *)event.udata;
+	Request *storage = (Request *)event.udata;
 
 	std::time_t elapsedTime = std::time(NULL);
 	if (elapsedTime - storage->getTime() > 5)
@@ -165,9 +165,9 @@ void Server::sendResponse(struct kevent& event)
 			throw ServerException("failed EVFILT_READ removal\n"); 
 	}
 
-	if (storage->getError() == true)
+	if (storage->getError())
 	{
-		sendResponseFile(event, "../error404.html");
+		sendResponseFile(event, "../resources/error404.html");
 		if (removeEvent(event, EVFILT_WRITE) == 1)
 			throw ServerException("failed kevent EV_DELETE client - send error");
 		closeClient(event);
@@ -178,13 +178,13 @@ void Server::sendResponse(struct kevent& event)
 		std::string temp = (storage->getRequestData()).getHttpPath();
 
 		if (temp.find(".png") != std::string::npos)
-			sendImmage(event, "../immage.png");
+			sendImmage(event, "../resources/immage.png");
 		else 
-			sendResponseFile(event, "../index_just_text.html");
-			//sendResponseFile(event, "index_just_image.html");
-			// sendResponseFile(event, "index_post_form.html");
-			// sendResponseFile(event, "index_get_form.html");
-			//	sendResponseFile(event, "index_dummy.html");
+			sendResponseFile(event, "../resources/index_just_text.html");
+			//sendResponseFile(event, "../resources/index_just_image.html");
+			// sendResponseFile(event, "../resources/index_post_form.html");
+			// sendResponseFile(event, "../resources/index_get_form.html");
+			//	sendResponseFile(event, "../resources/index_dummy.html");
 
 		if (removeEvent(event, EVFILT_WRITE) == 1)
 			throw ServerException("failed kevent EV_DELETE client - send success");
@@ -211,7 +211,7 @@ void Server::newClient(struct kevent event)
 	if (fd == -1)
 		throw ServerException("failed accept");
 
-	data::Request *storage = new data::Request();
+	Request *storage = new Request();
 	EV_SET(&evSet, fd, EVFILT_READ, EV_ADD, 0, 0, storage); 
 	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 		throw ServerException("failed kevent add EVFILT_READ");
@@ -222,8 +222,8 @@ void Server::newClient(struct kevent event)
 
 void Server::closeClient(struct kevent& event)
 {
-	data::Request *storage;
-	storage = (data::Request *)event.udata; 
+	Request *storage;
+	storage = (Request *)event.udata;
 
 	close(event.ident); 
 	std::cout << "connection closed\n";
@@ -236,7 +236,7 @@ void Server::closeClient(struct kevent& event)
 int Server::removeEvent(struct kevent& event, int filter)
 {
 	struct kevent evSet;
-	data::Request *storage = (data::Request *)event.udata;
+	Request *storage = (Request *)event.udata;
 
 	EV_SET(&evSet, event.ident, filter, EV_DELETE, 0, 0, storage); 
 	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
@@ -269,7 +269,7 @@ std::string Server::streamFile(std::string file)
 
 void Server::sendResponseFile(struct kevent& event, std::string file)
 {
-	data::Request *storage = (data::Request *)event.udata;
+	Request *storage = (Request *)event.udata;
 	std::string response;
 	std::string headerBlock;
 	response = streamFile(file);
