@@ -37,7 +37,7 @@ FLAGS = -Iincludes/comms -Iincludes/parsers -Wall -Werror -Wextra -pedantic -std
 #  is issued when variables are being shadowed.
 
 # Any modify to a .hpp file will alert Makefile's rules and recompile
-INCLUDES_DEPENDENCY = ./includes/*/*.hpp
+INCLUDES_DEPENDENCY = ./includes/*/*.hpp standard_complete.conf
 
 SRC =   srcs/comms/Server.cpp\
 		srcs/parsers/ConfigFileParser.cpp\
@@ -88,6 +88,7 @@ all: $(NAME)
 $(NAME): $(OBJ) $(INCLUDES_DEPENDENCY)
 	$(CPP) $(FLAGS) -o $@ $(OBJ)
 	@echo "$(GREEN)server loaded$(RESET)"
+	@echo "$(GREEN)run ./webserv <file.conf>$(RESET)"
 
 # - Pattern rules contain a '%' in the target: creates a stem by matching
 #   any nonempty string (the other character(s) have to match themselves).

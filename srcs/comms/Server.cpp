@@ -1,15 +1,26 @@
 #include "Server.hpp"
 
-Server::Server()
+Server::Server(std::string const & configFileName)
 {
 	_addr = new struct addrinfo();
 	struct addrinfo hints;
+    ConfigFileParser configFileData;
+    _configFileData = configFileData.parseFile(configFileName);
 
 	hints.ai_family = PF_UNSPEC; 
 	hints.ai_flags = AI_PASSIVE; 
 	hints.ai_socktype = SOCK_STREAM;
-	if (getaddrinfo("127.0.0.1", "8080", &hints, &_addr) != 0)
-		throw ServerException(("failed addr"));
+    /* begin() returns an iterator to beginning while cbegin() returns a const_iterator to beginning. */
+    std::map<ConfigFileServerData*, std::vector<ConfigFileLocationData> >::const_iterator it_server;
+    for (it_server = _configFileData.begin(); it_server != _configFileData.cend(); ++it_server) {
+        std::cout << RED << "JOYCE: " << it_server->first->getIpAddress() << BACK << std::endl;
+        /* Keep in mind that "first" is the server block data */
+        if (it_server->first->getListensTo() && not it_server->first->getIpAddress().empty()) {
+            if (getaddrinfo(it_server->first->getIpAddress().c_str(),
+                            std::to_string(it_server->first->getListensTo()).c_str(), &hints, &_addr) != 0)
+                throw ServerException(("failed addr"));
+        }
+    }
 
 	_listening_socket = socket(_addr->ai_family, _addr->ai_socktype, _addr->ai_protocol);
 	if (_listening_socket < 0)

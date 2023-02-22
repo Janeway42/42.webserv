@@ -1,14 +1,16 @@
 #include "Server.hpp"
 
-int main()
+int main(int ac, char **av)
 {
-	try {
-        Server* webserv = new Server();
-        webserv->runServer();
-        delete webserv;
-	}
-	catch (const std::exception& e) {
-		std::cerr << e.what() << '\n';
-	}
+    if (ac == 2) {
+        try {
+            Server *webserv = new Server(av[1]);
+            webserv->runServer();
+            delete webserv;
+        }
+        catch (std::exception const & e) {
+            std::cout << RED << e.what() << BACK << std::endl;
+        }
+    }
 	return (EXIT_SUCCESS);
 }

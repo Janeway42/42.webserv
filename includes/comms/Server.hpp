@@ -12,6 +12,7 @@
 #include <sys/event.h>
 
 #include "RequestParser.hpp"
+#include "ConfigFileParser.hpp"
 
 #define MAX_EVENTS 100
 
@@ -24,10 +25,12 @@ class Server
 	private:
 		int _kq;
 		struct addrinfo *_addr;
-		size_t _listening_socket;		
+		size_t _listening_socket;
+        std::map<ConfigFileServerData*, std::vector<ConfigFileLocationData> > _configFileData;
 
 	public:
-		Server();
+        // todo add a default constructor -> maybe private so no one can call it
+		Server(std::string const & configFileName);
 		~Server(void);
 
 		void runServer();

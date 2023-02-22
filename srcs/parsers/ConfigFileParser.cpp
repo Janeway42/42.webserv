@@ -2,21 +2,21 @@
 
 /** Default Constructor */
 ConfigFileParser::ConfigFileParser()
-    : _server_data(ServerData()),
+    : _server_data(ConfigFileServerData()),
     _server_block_counter(0),
-    _location_data(LocationData(_server_data.getRootDirectory(), _server_data.getIndexFile())),
+    _location_data(ConfigFileLocationData(_server_data.getRootDirectory(), _server_data.getIndexFile())),
     _location_block_counter(0),
-    _location_data_vector(std::vector<LocationData>()) {
+    _location_data_vector(std::vector<ConfigFileLocationData>()) {
 }
 
 //ConfigFileParser::ConfigFileParser(std::string const & configFileName) {
 //    /** Initializing default values for the config file */
-//   _server_data = new ServerData();??
-//    _server_data = ServerData();
+//   _server_data = new ConfigFileServerData();??
+//    _server_data = ConfigFileServerData();
 //    _server_block_counter = 0;
-//    _location_data = LocationData(_server_data.getRootDirectory(), _server_data.getIndexFile());
+//    _location_data = ConfigFileLocationData(_server_data.getRootDirectory(), _server_data.getIndexFile());
 //    _location_block_counter = 0;
-//    _location_data_vector = std::vector<LocationData>();
+//    _location_data_vector = std::vector<ConfigFileLocationData>();
 //}
 
 /** Destructor */
@@ -24,14 +24,14 @@ ConfigFileParser::~ConfigFileParser() {
     /** Cleaning default values */
     _server_block_counter = 0;
     _location_block_counter = 0;
-    _location_data_vector = std::vector<LocationData>();
-//    _server_map = std::map<ServerData*, std::vector<LocationData> >();
+    _location_data_vector = std::vector<ConfigFileLocationData>();
+//    _server_map = std::map<ConfigFileServerData*, std::vector<ConfigFileLocationData> >();
 //   delete _data;
 }
 
 /** #################################### Getters #################################### */
 
-std::map<ServerData*, std::vector<LocationData> > const & ConfigFileParser::getServerDataMap() const {
+std::map<ConfigFileServerData*, std::vector<ConfigFileLocationData> > const & ConfigFileParser::getServerDataMap() const {
     return _server_map;
 }
 
@@ -53,8 +53,11 @@ void ConfigFileParser::locationBlockCounter() {
     _location_block_counter++;
 }
 
-std::map<ServerData*, std::vector<LocationData> > ConfigFileParser::parseFile(std::string const & configFileName) {
+std::map<ConfigFileServerData*, std::vector<ConfigFileLocationData> > ConfigFileParser::parseFile(std::string const & configFileName) {
     handleFile(configFileName);
+    if (_server_map.empty()) {
+        throw ParserException(CONFIG_FILE_ERROR("Configuration File", MISSING));
+    }
     return _server_map;
 }
 
@@ -85,13 +88,13 @@ void ConfigFileParser::parseFileServerBlock(std::ifstream & configFile) {
             continue;
         } else if (lineContent.find('}') != std::string::npos) {
             /* Adding to the map whatever was inserted into _server_data and _location_data_vector */
-            //ServerData* serverBlock = new ServerData(_server_data);
-            _server_map.insert(std::make_pair(new ServerData(_server_data), _location_data_vector));// TODO check if it leaks
+            //ConfigFileServerData* serverBlock = new ConfigFileServerData(_server_data);
+            _server_map.insert(std::make_pair(new ConfigFileServerData(_server_data), _location_data_vector));// TODO check if it leaks
 
             /* Cleaning the _server_data and _location_data private members so it can receive new data if a new
              * server block is found */
-            _server_data = ServerData();
-            _location_data = LocationData(_server_data.getRootDirectory(), _server_data.getIndexFile());
+            _server_data = ConfigFileServerData();
+            _location_data = ConfigFileLocationData(_server_data.getRootDirectory(), _server_data.getIndexFile());
             break;
         } else if (lineContent == "server {") {
             std::cout << "server block:" << std::endl;
@@ -159,7 +162,7 @@ void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile) {
 
             /* Cleaning the _location_data private member, so it can receive new data if a new location
              * block is found inside this current server block */
-            _location_data = LocationData(_server_data.getRootDirectory(), _server_data.getIndexFile());
+            _location_data = ConfigFileLocationData(_server_data.getRootDirectory(), _server_data.getIndexFile());
 
             /* Now we are going out of a possible cgi block */
             _location_data.setLocationAsCgi(false);

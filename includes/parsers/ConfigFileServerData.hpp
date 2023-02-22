@@ -12,7 +12,7 @@
  *      a directory or file with no path (i.e.: test_index.html) will be searched on ./
  */
 
-class ServerData : public Parser {
+class ConfigFileServerData : public Parser {
     private:
         std::string _server_name;
         /* Port numbers consist of 16-bit numbers */
@@ -27,9 +27,9 @@ class ServerData : public Parser {
         unsigned int _port_redirection;
 
     public:
-        ServerData();
-        virtual ~ServerData();
-        ServerData(ServerData const & rhs);
+        ConfigFileServerData();
+        virtual ~ConfigFileServerData();
+        ConfigFileServerData(ConfigFileServerData const & rhs);
 
         /** Methods */
 

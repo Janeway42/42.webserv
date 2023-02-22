@@ -6,19 +6,19 @@
 #include <map>
 
 #include "Parser.hpp"
-#include "ServerData.hpp"
-#include "LocationData.hpp"
+#include "ConfigFileServerData.hpp"
+#include "ConfigFileLocationData.hpp"
 
 class ConfigFileParser : public Parser {
     private:
-        ServerData _server_data;
+        ConfigFileServerData _server_data;
         unsigned short _server_block_counter;
-        LocationData _location_data;
+        ConfigFileLocationData _location_data;
         unsigned short _location_block_counter;
         /* As more than 1 location block can be added */
-        std::vector<LocationData> _location_data_vector;
+        std::vector<ConfigFileLocationData> _location_data_vector;
         /* As more than 1 server block can be added (with one or more location blocks inside) */
-        std::map<ServerData*, std::vector<LocationData> > _server_map;
+        std::map<ConfigFileServerData*, std::vector<ConfigFileLocationData> > _server_map;
 
         /** Private Methods */
 //        std::string keyParser(std::string & lineContent, const std::string& keyToFind);
@@ -34,12 +34,12 @@ class ConfigFileParser : public Parser {
         virtual ~ConfigFileParser();
 
         /** Methods */
-        std::map<ServerData*, std::vector<LocationData> > parseFile(std::string const & configFileName);
+        std::map<ConfigFileServerData*, std::vector<ConfigFileLocationData> > parseFile(std::string const & configFileName);
         void serverBlockCounter();
         void locationBlockCounter();
 
         /** Getters */
-        std::map<ServerData*, std::vector<LocationData> > const & getServerDataMap() const;
+        std::map<ConfigFileServerData*, std::vector<ConfigFileLocationData> > const & getServerDataMap() const;
         unsigned short getServerBlockCounter() const;
         unsigned short getLocationBlockCounter() const;
 

@@ -8,25 +8,21 @@ int main(int ac, char **av, char **env) {
         std::cout << "-----------------------------------------------------------------------------------" << std::endl;
         ConfigFileParser configFileData;
         try {
-            std::map<ServerData*, std::vector<LocationData> > const & serverDataMap = configFileData.parseFile(av[1]);
+            std::map<ConfigFileServerData*, std::vector<ConfigFileLocationData> > const & serverDataMap = configFileData.parseFile(av[1]);
             std::cout << "-----------------------------------------------------------------------------------" << std::endl;
 
-            if (serverDataMap.empty()) {
-                std::cout << RED_BG << "Map is empty!" << BACK << std::endl;
-            }
-
-            /** begin() returns an iterator to beginning while cbegin() returns a const_iterator to beginning. */
-            std::map<ServerData*, std::vector<LocationData> >::const_iterator it_server;
+            /* begin() returns an iterator to beginning while cbegin() returns a const_iterator to beginning. */
+            std::map<ConfigFileServerData*, std::vector<ConfigFileLocationData> >::const_iterator it_server;
             for (it_server = serverDataMap.begin(); it_server != serverDataMap.cend(); ++it_server) {
                 std::cout << RED << "Number of server block(s): " << serverDataMap.size() << BACK << std::endl;
                 std::cout << RED << "Number of location + cgi block(s): " << it_server->second.size() << BACK << std::endl;
 
                 /****************************************** server block data *****************************************/
                 std::cout << std::endl << "Starting server block " << std::endl;
-                /** Keep in mind that "first" is the key of the map (i.e. the server block data) */
+                /* Keep in mind that "first" is the server block data */
 
                 std::string serverName = it_server->first->getServerName();
-                std::cout << GRE << std::left << std::setw(30) << std::left << std::setw(30) << "\"server_name\": " << serverName << BACK << std::endl;
+                std::cout << GRE << std::left << std::setw(30) << "\"server_name\": " << serverName << BACK << std::endl;
 
                 unsigned int listensTo = it_server->first->getListensTo();
                 std::cout << GRE << std::left << std::setw(30) << "\"listens_to\": " << listensTo << BACK << std::endl;
@@ -54,7 +50,7 @@ int main(int ac, char **av, char **env) {
                  * As it is a vector (so it can keep more than one server block if needed, we have to loop on this
                  * vector to retrieve all location blocks (i.e. iterate on the it->second).
                  * */
-                std::vector<LocationData>::const_iterator it_location;
+                std::vector<ConfigFileLocationData>::const_iterator it_location;
 
                 for (it_location = it_server->second.cbegin(); it_location != it_server->second.cend(); ++it_location) {
 

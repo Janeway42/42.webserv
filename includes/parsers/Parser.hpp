@@ -64,7 +64,7 @@ enum DataType {// todo: Maybe not used
 //        {   0,     "Value is not a string"},
 //        {   0,     "Value is not a string"},
 //        {   400,   "Value is not a string"},
-//        {  404,   "Key LocationData is not supported"},
+//        {  404,   "Key ConfigFileLocationData is not supported"},
 //};
 
 /** Error Macros */

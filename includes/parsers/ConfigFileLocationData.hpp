@@ -11,7 +11,7 @@
  *      a directory or file with no path (i.e.: test_index.html) will be searched on ./
  */
 
-class LocationData : public Parser {
+class ConfigFileLocationData : public Parser {
     private:
         bool _is_location_cgi;
         std::string _root_directory;
@@ -22,9 +22,9 @@ class LocationData : public Parser {
         std::string _script_extension;
 
     public:
-        LocationData();// = delete;// delete makes it impossible to be used (anywhere by anyone) todo is it c++98?
-        LocationData(std::string const & server_root_directory, std::string const & server_index_file);
-        virtual ~LocationData();
+        ConfigFileLocationData();// = delete;// delete makes it impossible to be used (anywhere by anyone) todo is it c++98?
+        ConfigFileLocationData(std::string const & server_root_directory, std::string const & server_index_file);
+        virtual ~ConfigFileLocationData();
 
         /** Methods */
         bool isLocationCgi() const;
