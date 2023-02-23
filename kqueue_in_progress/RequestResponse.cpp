@@ -140,7 +140,7 @@ std::string Response::streamFile(std::string file)
 	std::string responseNoFav;
 	std::fstream    infile;
 
-	std::cout << "file: " << file << std::endl; 
+	// std::cout << "file: " << file << std::endl; 
 
 
 	infile.open(file, std::fstream::in);
@@ -155,7 +155,7 @@ std::string Response::streamFile(std::string file)
 	}
 	infile.close();
 
-	std::cout << "streamed: " << responseNoFav << std::endl;
+	// std::cout << "streamed: " << responseNoFav << std::endl;
 	return (responseNoFav);
 }
 

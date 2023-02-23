@@ -5,6 +5,9 @@
 #include <unistd.h>
 #include <sys/time.h>
 
+// ---- C++ ----
+#include <iostream>
+
 // ---- kqueue ----
 #include <sys/socket.h>
 #include <netdb.h>

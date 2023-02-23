@@ -2,7 +2,7 @@
 
 Server::Server()
 {
-	struct addrinfo *_addr = new struct addrinfo();
+	_addr = new struct addrinfo();
 	struct addrinfo hints;
 
 	hints.ai_family = PF_UNSPEC; 
@@ -56,6 +56,7 @@ void Server::runServer()
 		std::cout << "WHILE LOOP ------------------------------" << loop1 << std::endl;
 		int nr_events = kevent(_kq, NULL, 0, evList, MAX_EVENTS, NULL);
 		std::cout << "NR EVENTS: " << nr_events << std::endl;
+
 
 		if (nr_events < 1)
 			throw ServerException("failed number events");
@@ -114,16 +115,16 @@ void Server::readRequest(struct kevent& event)
 	std::cout << "bytes read: " << ret << std::endl;                 // test line 
 	if (ret < 0)
 	{
-		if (storage->getEarlyClose() == false) // if it fails 
-		{
+		// if (storage->getEarlyClose() == false) // if it fails 
+		// {
 			std::cout << "failed recv\n";
 			storage->setError(true);
 			if (removeEvent(event, EVFILT_READ) == 1)
 				throw ServerException("failed EVFILT_READ removal\n");
 			std::cout << "send error message back to client\n";
-		}
-		else
-			std::cout << "EVFILT_READ already closed\n";  // if it has been closed in write due to timeout  - test line
+		// }
+		// else
+		// 	std::cout << "EVFILT_READ already closed\n";  // if it has been closed in write due to timeout  - test line
 	}
 
 	// for cgi ret might be 0 - might need to add later, but for kqueue it will never be 0 
@@ -162,8 +163,8 @@ void Server::writeResponse(struct kevent& event)
 		std::cout << "Unable to process request, it takes too long!\n";
 		storage->setError(3); 										// 408 Request Timeout ---------
 		storage->setEarlyClose(true);
-		if (removeEvent(event, EVFILT_READ) == 1)
-			throw ServerException("failed EVFILT_READ removal\n"); 
+		// if (removeEvent(event, EVFILT_READ) == 1)
+		// 	throw ServerException("failed EVFILT_READ removal\n"); 
 	}
 
 	if (storage->getError() != 0)
@@ -192,10 +193,10 @@ void Server::processResponse(struct kevent& event)
 	if (((storage->getRequestData()).getRequestMethod()).compare("GET") == 0)
 		doGet(event);
 	// else if (((storage->getRequestData()).getRequestMethod()).compare("POST") == 0)
-	// 	doPost(event);
+	// 	doPost(event);  -- send to CGI
 	// else if (((storage->getRequestData()).getRequestMethod()).compare("DELETE") == 0)
 	// 	doDelete(event);
-	else
+	else  
 		doNotAllowed(event);
 }
 
@@ -274,6 +275,7 @@ int Server::removeEvent(struct kevent& event, int filter)
 	EV_SET(&evSet, event.ident, filter, EV_DELETE, 0, 0, storage); 
 	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 	{
+		std::cout << "filter remove: " << filter << std::endl;
 		std::cout << "erno: " << errno << std::endl;                         // test line - to be removed 
 		throw ServerException("failed kevent EV_DELETE client");
 	}
@@ -286,7 +288,6 @@ void Server::sendFile(struct kevent& event)
 
 	std::string message = (storage->getAnswer()).getFullResponse();
 
-	// std::cout << "message: " << (storage->getAnswer()).getFullResponse() << std::endl;
 	int length = message.length();
 	int ret = send(event.ident, message.c_str(), length, 0);
 	if (ret == -1)

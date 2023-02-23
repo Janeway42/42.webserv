@@ -7,8 +7,6 @@
 // curl -X POST localhost:8080  -H "Content-Type: text/html" -d 'abc'
 // curl -X POST localhost:8080  -H "Content-Length: 444"  -H "Content-Type: text/html" -d 'abc'
 
-#include <unistd.h> // sleep
-
 #include "../includes/RequestParser.hpp"
 
 namespace data {
@@ -110,6 +108,7 @@ int Request::storeWordsFromFirstLine(std::string firstLine)
 		}
 		else if (i == 1)
 			_data.setRequestPath(*iter);
+
 		else if (i == 2) {
 			if (*iter != "HTTP/1.1" && *iter != "HTTP/1.0")		// maybe also HTTP/1.0 needed ??
 			{
@@ -180,7 +179,7 @@ void    Request::appendToRequest(const char *str) {
 	// return ;
 
 	//test request takes too long: 
-	// sleep(3);
+	sleep(1);
 
 	if (_headerDone == false) {
 		std::cout << PUR "     _headerDone == FALSE\n" RES;
@@ -194,6 +193,7 @@ void    Request::appendToRequest(const char *str) {
 			_headerDone = true;
 			std::cout << "HEADER: [" BLU << _header << RES "]\n";	// sleep(1);
 			parseHeader(_header);
+			std::cout << "path parser: " << _data.getHttpPath() << std::endl;  /// ----------------------------------
 			if (_data.getRequestContentLength() == 0){
 				_doneParsing = true;
 				return ;
@@ -361,6 +361,11 @@ void Request::setError(int val)
 void Request::setEarlyClose(bool val)
 {
 	_earlyClose = val;
+}
+
+void Request::setAnswerPath(std::string file)
+{
+	_answer.getResponsePath() = file;
 }
 
 

@@ -72,6 +72,7 @@ namespace data {
 			// Getters ----------------------------------------------------------------
 
 			Response & getAnswer(void);
+			void setAnswerPath(std::string file);
 
 			std::string getTemp();
 

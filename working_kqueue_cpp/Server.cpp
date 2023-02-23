@@ -2,7 +2,7 @@
 
 Server::Server()
 {
-	struct addrinfo *_addr = new struct addrinfo();
+	_addr = new struct addrinfo();
 	struct addrinfo hints;
 
 	hints.ai_family = PF_UNSPEC; 
