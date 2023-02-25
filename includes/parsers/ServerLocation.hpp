@@ -1,5 +1,5 @@
-#ifndef LOCATIONDATA_HPP
-#define LOCATIONDATA_HPP
+#ifndef SERVERLOCATION_HPP
+#define SERVERLOCATION_HPP
 
 #include <vector>
 
@@ -11,7 +11,7 @@
  *      a directory or file with no path (i.e.: test_index.html) will be searched on ./
  */
 
-class ConfigFileLocationData : public Parser {
+class ServerLocation : public Parser {
     private:
         bool _is_location_cgi;
         std::string _root_directory;
@@ -22,9 +22,9 @@ class ConfigFileLocationData : public Parser {
         std::string _script_extension;
 
     public:
-        ConfigFileLocationData();// = delete;// delete makes it impossible to be used (anywhere by anyone) todo is it c++98?
-        ConfigFileLocationData(std::string const & server_root_directory, std::string const & server_index_file);
-        virtual ~ConfigFileLocationData();
+        ServerLocation();// = delete;// delete makes it impossible to be used (anywhere by anyone) todo is it c++98?
+        ServerLocation(std::string const & server_root_directory, std::string const & server_index_file);
+        virtual ~ServerLocation();
 
         /** Methods */
         bool isLocationCgi() const;
@@ -46,4 +46,4 @@ class ConfigFileLocationData : public Parser {
         bool setInterpreterPath(std::string const & interpreterPath);
         bool setScriptExtension(std::string const & scriptExtension);
 };
-#endif //LOCATIONDATA_HPP
+#endif //SERVERLOCATION_HPP

@@ -2,73 +2,57 @@
 
 /** Default Constructor */
 ConfigFileParser::ConfigFileParser()
-    : _server_data(ConfigFileServerData()),
+    : _server_data(ServerData()),
     _server_block_counter(0),
-    _location_data(ConfigFileLocationData(_server_data.getRootDirectory(), _server_data.getIndexFile())),
     _location_block_counter(0),
-    _location_data_vector(std::vector<ConfigFileLocationData>()) {
+    _server_vector(std::vector<ServerData>()) {
 }
 
-//ConfigFileParser::ConfigFileParser(std::string const & configFileName) {
-//    /** Initializing default values for the config file */
-//   _server_data = new ConfigFileServerData();??
-//    _server_data = ConfigFileServerData();
-//    _server_block_counter = 0;
-//    _location_data = ConfigFileLocationData(_server_data.getRootDirectory(), _server_data.getIndexFile());
-//    _location_block_counter = 0;
-//    _location_data_vector = std::vector<ConfigFileLocationData>();
-//}
+ConfigFileParser::ConfigFileParser(std::string const & configFileName) {
+    /** Initializing default values for the config file */
+    _server_data = ServerData();
+    _server_block_counter = 0;
+    _location_data = ServerLocation(_server_data.getRootDirectory(), _server_data.getIndexFile());
+    _location_block_counter = 0;
+    _server_vector = std::vector<ServerData>();
+    handleFile(configFileName);
+}
 
 /** Destructor */
 ConfigFileParser::~ConfigFileParser() {
     /** Cleaning default values */
     _server_block_counter = 0;
     _location_block_counter = 0;
-    _location_data_vector = std::vector<ConfigFileLocationData>();
-//    _server_map = std::map<ConfigFileServerData*, std::vector<ConfigFileLocationData> >();
-//   delete _data;
+//    _server_data and _location_data??
+    _server_vector = std::vector<ServerData>();
 }
 
 /** #################################### Getters #################################### */
 
-std::map<ConfigFileServerData*, std::vector<ConfigFileLocationData> > const & ConfigFileParser::getServerDataMap() const {
-    return _server_map;
+std::vector<ServerData> ConfigFileParser::getServers() const {
+    return _server_vector;
 }
 
-unsigned short ConfigFileParser::getServerBlockCounter() const {
+unsigned short ConfigFileParser::numberOfServerBlocks() const {
     return _server_block_counter;
 }
 
-unsigned short ConfigFileParser::getLocationBlockCounter() const {
+unsigned short ConfigFileParser::numberOfLocationBlocks() const {
     return _location_block_counter;
 }
 
 /** #################################### Methods #################################### */
 
-void ConfigFileParser::serverBlockCounter() {
-    _server_block_counter++;
-}
-
-void ConfigFileParser::locationBlockCounter() {
-    _location_block_counter++;
-}
-
-std::map<ConfigFileServerData*, std::vector<ConfigFileLocationData> > ConfigFileParser::parseFile(std::string const & configFileName) {
-    handleFile(configFileName);
-    if (_server_map.empty()) {
-        throw ParserException(CONFIG_FILE_ERROR("Configuration File", MISSING));
-    }
-    return _server_map;
-}
-
 bool ConfigFileParser::handleFile(std::string const & configFileName) {
-    /** Opening the file */
     // std::ifstream destructor will close the file automatically, which is one of the perks of using this class.
     // An IDE may compile the program on another directory and so the file to open would be on a different path.
     std::ifstream configFile;
     configFile.open("./" + configFileName);
     if (configFile.is_open()) {
         parseFileServerBlock(configFile);
+        if (_server_vector.empty()) {
+            throw ParserException(CONFIG_FILE_ERROR("Configuration File", MISSING));
+        }
     } else {
         std::cerr << "Not able to open the configuration file" << std::endl;// TODO: throw exception
         return false;
@@ -87,19 +71,18 @@ void ConfigFileParser::parseFileServerBlock(std::ifstream & configFile) {
         if (lineContent.find('#') != std::string::npos || !lineContent[0]) {
             continue;
         } else if (lineContent.find('}') != std::string::npos) {
-            /* Adding to the map whatever was inserted into _server_data and _location_data_vector */
-            //ConfigFileServerData* serverBlock = new ConfigFileServerData(_server_data);
-            _server_map.insert(std::make_pair(new ConfigFileServerData(_server_data), _location_data_vector));// TODO check if it leaks
+            /* Adding to the vector whatever was inserted into _server_data */
+            _server_vector.push_back(ServerData(_server_data));
 
-            /* Cleaning the _server_data and _location_data private members so it can receive new data if a new
+            /* Cleaning the _server_data and _location_data private members, so it can receive new data if a new
              * server block is found */
-            _server_data = ConfigFileServerData();
-            _location_data = ConfigFileLocationData(_server_data.getRootDirectory(), _server_data.getIndexFile());
+            _server_data = ServerData();
+            _location_data = ServerLocation(_server_data.getRootDirectory(), _server_data.getIndexFile());
             break;
         } else if (lineContent == "server {") {
             std::cout << "server block:" << std::endl;
-            serverBlockCounter();
-        } else if (lineContent != "server {" && getServerBlockCounter() == 0) {
+            _server_block_counter++;
+        } else if (lineContent != "server {" && numberOfServerBlocks() == 0) {
             std::cerr << RED << "A server block is needed in the configuration file" << BACK << std::endl;// TODO: throw exception
             break;
         }
@@ -132,12 +115,12 @@ void ConfigFileParser::parseFileServerBlock(std::ifstream & configFile) {
         if (lineContent.find("cgi {") != std::string::npos) {
             std::cout << "cgi block:" << std::endl;
             _location_data.setLocationAsCgi(true);
-            locationBlockCounter();
+            _location_block_counter++;
             parseFileLocationBlock(configFile);
             continue;
         } else if (lineContent.find("location") != std::string::npos && lineContent.find('{') != std::string::npos) {
             std::cout << "location block:" << std::endl;
-            locationBlockCounter();
+            _location_block_counter++;
             parseFileLocationBlock(configFile);
             continue;
         }
@@ -162,7 +145,7 @@ void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile) {
 
             /* Cleaning the _location_data private member, so it can receive new data if a new location
              * block is found inside this current server block */
-            _location_data = ConfigFileLocationData(_server_data.getRootDirectory(), _server_data.getIndexFile());
+            _location_data = ServerLocation(_server_data.getRootDirectory(), _server_data.getIndexFile());
 
             /* Now we are going out of a possible cgi block */
             _location_data.setLocationAsCgi(false);

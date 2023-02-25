@@ -1,12 +1,12 @@
-#include "Server.hpp"
+#include "WebServer.hpp"
 
 int main(int ac, char **av)
 {
     if (ac == 2) {
         try {
-            Server *webserv = new Server(av[1]);
-            webserv->runServer();
-            delete webserv;
+            WebServer *webServ = new WebServer(av[1]);
+            webServ->runServer();
+            delete webServ;
         }
         catch (std::exception const & e) {
             std::cout << RED << e.what() << BACK << std::endl;

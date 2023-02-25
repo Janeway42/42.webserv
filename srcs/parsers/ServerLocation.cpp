@@ -1,7 +1,7 @@
-#include "ConfigFileLocationData.hpp"
+#include "ServerLocation.hpp"
 
 /** Default constructor */
-ConfigFileLocationData::ConfigFileLocationData()// todo private???
+ServerLocation::ServerLocation()// todo private???
     /** Initializing default values for the location block */
     : _is_location_cgi(false),
     _root_directory(""),
@@ -13,7 +13,7 @@ ConfigFileLocationData::ConfigFileLocationData()// todo private???
 }
 
 /** Overloaded constructor */
-ConfigFileLocationData::ConfigFileLocationData(std::string const & server_root_directory, std::string const & server_index_file)
+ServerLocation::ServerLocation(std::string const & server_root_directory, std::string const & server_index_file)
     /** Initializing default values for the location block */
     : _is_location_cgi(false),
     _root_directory(server_root_directory),
@@ -25,7 +25,7 @@ ConfigFileLocationData::ConfigFileLocationData(std::string const & server_root_d
 }
 
 /** Destructor */
-ConfigFileLocationData::~ConfigFileLocationData() {
+ServerLocation::~ServerLocation() {
     /** Cleaning default values for the location block */
     _is_location_cgi = false;
     _root_directory = std::string();
@@ -38,44 +38,44 @@ ConfigFileLocationData::~ConfigFileLocationData() {
 
 /** #################################### Methods #################################### */
 
-bool ConfigFileLocationData::isLocationCgi() const {
+bool ServerLocation::isLocationCgi() const {
     return _is_location_cgi;
 }
 
 /** #################################### Getters #################################### */
 
-std::string ConfigFileLocationData::getRootDirectory() const {
+std::string ServerLocation::getRootDirectory() const {
     return _root_directory;
 }
 
-std::vector<AllowMethods> ConfigFileLocationData::getAllowMethods() const {
+std::vector<AllowMethods> ServerLocation::getAllowMethods() const {
     return _allow_methods;
 }
 
-std::string ConfigFileLocationData::getIndexFile() const {
+std::string ServerLocation::getIndexFile() const {
     return _index_file;
 }
 
-bool ConfigFileLocationData::getAutoIndex() const {
+bool ServerLocation::getAutoIndex() const {
     return _auto_index;
 }
 
-std::string ConfigFileLocationData::getInterpreterPath() const {
+std::string ServerLocation::getInterpreterPath() const {
     return _interpreter_path;
 }
 
-std::string ConfigFileLocationData::getScriptExtension() const {
+std::string ServerLocation::getScriptExtension() const {
     return _script_extension;
 }
 
 /** #################################### Setters #################################### */
 
-void ConfigFileLocationData::setLocationAsCgi(bool isCgi) {
+void ServerLocation::setLocationAsCgi(bool isCgi) {
     /* not mandatory | default: python cgi with a default index.html inside */
     _is_location_cgi = isCgi;
 }
 
-bool ConfigFileLocationData::setRootDirectory(std::string const & rootDirectory) {
+bool ServerLocation::setRootDirectory(std::string const & rootDirectory) {
     /* location -> not mandatory | default: $server.root_directory */
     if (not rootDirectory.empty()) {
         PathType type = pathType(rootDirectory);
@@ -96,7 +96,7 @@ bool ConfigFileLocationData::setRootDirectory(std::string const & rootDirectory)
     return false;
 }
 
-bool ConfigFileLocationData::setAllowMethods(std::string const & allowMethods) {
+bool ServerLocation::setAllowMethods(std::string const & allowMethods) {
     /* not mandatory | default: GET */
     if (not allowMethods.empty()) {
         std::vector<AllowMethods> locationAllowMethods;
@@ -124,7 +124,7 @@ bool ConfigFileLocationData::setAllowMethods(std::string const & allowMethods) {
     return false;
 }
 
-bool ConfigFileLocationData::setIndexFile(std::string const & indexFile) {
+bool ServerLocation::setIndexFile(std::string const & indexFile) {
     /* location -> not mandatory | default: $server.index_file */
     /* cgi -> not mandatory | default: stays in the same page */
     if (not indexFile.empty()) {
@@ -140,7 +140,7 @@ bool ConfigFileLocationData::setIndexFile(std::string const & indexFile) {
     return false;
 }
 
-bool ConfigFileLocationData::setAutoIndex(std::string const & autoIndex) {
+bool ServerLocation::setAutoIndex(std::string const & autoIndex) {
     /* not mandatory | default: off */
     if (not autoIndex.empty()) {
         if (autoIndex.find("on") != std::string::npos) {
@@ -155,7 +155,7 @@ bool ConfigFileLocationData::setAutoIndex(std::string const & autoIndex) {
     return false;
 }
 
-bool ConfigFileLocationData::setInterpreterPath(std::string const & interpreterPath) {
+bool ServerLocation::setInterpreterPath(std::string const & interpreterPath) {
     /* mandatory */
     if (not interpreterPath.empty()) {
         if (interpreterPath[0] != '/') {
@@ -172,7 +172,7 @@ bool ConfigFileLocationData::setInterpreterPath(std::string const & interpreterP
     return false;
 }
 
-bool ConfigFileLocationData::setScriptExtension(std::string const & scriptExtension) {
+bool ServerLocation::setScriptExtension(std::string const & scriptExtension) {
     /* mandatory */
     if (not scriptExtension.empty()) {
         if (scriptExtension == ".py") {

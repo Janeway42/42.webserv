@@ -1,58 +1,50 @@
 #include "ConfigFileParser.hpp"
 
-int main(int ac, char **av, char **env) {
-    (void)env;
+int main(int ac, char **av) {
     if (ac == 2) {
         std::cout << std::boolalpha;
         std::cout << "Configuration file name: " << av[1] << std::endl;
         std::cout << "-----------------------------------------------------------------------------------" << std::endl;
-        ConfigFileParser configFileData;
+        ConfigFileParser configFileData = ConfigFileParser(av[1]);
         try {
-            std::map<ConfigFileServerData*, std::vector<ConfigFileLocationData> > const & serverDataMap = configFileData.parseFile(av[1]);
             std::cout << "-----------------------------------------------------------------------------------" << std::endl;
+            std::cout << RED << "Number of server block(s): " << configFileData.numberOfServerBlocks() << BACK << std::endl;
+            std::cout << RED << "Number of location + cgi block(s): " << configFileData.numberOfLocationBlocks() << BACK << std::endl;
 
             /* begin() returns an iterator to beginning while cbegin() returns a const_iterator to beginning. */
-            std::map<ConfigFileServerData*, std::vector<ConfigFileLocationData> >::const_iterator it_server;
-            for (it_server = serverDataMap.begin(); it_server != serverDataMap.cend(); ++it_server) {
-                std::cout << RED << "Number of server block(s): " << serverDataMap.size() << BACK << std::endl;
-                std::cout << RED << "Number of location + cgi block(s): " << it_server->second.size() << BACK << std::endl;
+            std::vector<ServerData>::const_iterator it_server;
+            for (it_server = configFileData.getServers().begin(); it_server != configFileData.getServers().cend(); ++it_server) {
 
                 /****************************************** server block data *****************************************/
                 std::cout << std::endl << "Starting server block " << std::endl;
-                /* Keep in mind that "first" is the server block data */
 
-                std::string serverName = it_server->first->getServerName();
+                std::string serverName = it_server->getServerName();
                 std::cout << GRE << std::left << std::setw(30) << "\"server_name\": " << serverName << BACK << std::endl;
 
-                unsigned int listensTo = it_server->first->getListensTo();
+                unsigned int listensTo = it_server->getListensTo();
                 std::cout << GRE << std::left << std::setw(30) << "\"listens_to\": " << listensTo << BACK << std::endl;
 
-                std::string ipAddress = it_server->first->getIpAddress();
+                std::string ipAddress = it_server->getIpAddress();
                 std::cout << GRE << std::left << std::setw(30) << "\"ip_address\": " << ipAddress << BACK << std::endl;
 
-                std::string rootDirectory = it_server->first->getRootDirectory();
+                std::string rootDirectory = it_server->getRootDirectory();
                 std::cout << GRE << std::left << std::setw(30) << "\"root_directory\": " << rootDirectory << BACK << std::endl;
 
-                std::string indexFile = it_server->first->getIndexFile();
+                std::string indexFile = it_server->getIndexFile();
                 std::cout << GRE << std::left << std::setw(30) << "\"index_file\": " << indexFile << BACK << std::endl;
 
-                unsigned int clientMaxBodySize = it_server->first->getClientMaxBodySize();
+                unsigned int clientMaxBodySize = it_server->getClientMaxBodySize();
                 std::cout << GRE << std::left << std::setw(30) << "\"client_max_body_size\": " << clientMaxBodySize << BACK << std::endl;
 
-                std::string errorPage = it_server->first->getErrorPage();
+                std::string errorPage = it_server->getErrorPage();
                 std::cout << GRE << std::left << std::setw(30) << "\"error_page\": " << errorPage << BACK << std::endl;
 
-                unsigned int portRedirection = it_server->first->getPortRedirection();
+                unsigned int portRedirection = it_server->getPortRedirection();
                 std::cout << GRE << std::left << std::setw(30) << "\"port_redirection\": " << portRedirection << BACK << std::endl;
 
-                /** Keep in mind that "second" is the value of the map (i.e. the data of the location block(s) inside
-                 * the current server block).
-                 * As it is a vector (so it can keep more than one server block if needed, we have to loop on this
-                 * vector to retrieve all location blocks (i.e. iterate on the it->second).
-                 * */
-                std::vector<ConfigFileLocationData>::const_iterator it_location;
 
-                for (it_location = it_server->second.cbegin(); it_location != it_server->second.cend(); ++it_location) {
+                std::vector<ServerLocation>::const_iterator it_location;
+                for (it_location = it_server->getLocationBlocks().cbegin(); it_location != it_server->getLocationBlocks().cend(); ++it_location) {
 
                     if (it_location->isLocationCgi()) {
                         /************************************* cgi location block data ************************************/

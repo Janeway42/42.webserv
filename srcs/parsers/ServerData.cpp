@@ -2,23 +2,24 @@
 #include <sys/types.h>
 #include <dirent.h>
 
-#include "ConfigFileServerData.hpp"
+#include "ServerData.hpp"
 
 /** Default constructor */
-ConfigFileServerData::ConfigFileServerData()
+ServerData::ServerData()
     /** Initializing default values for the server block */
     : _server_name("localhost"),
-    _listens_to(80),
+    _listens_to("80"),
     _ip_address("127.0.0.1"),
     _root_directory("./" + _server_name),
     _index_file(_root_directory + "/" + "index.html"),
     _client_max_body_size(1024),
     _error_page(""),
     _port_redirection(0) {
+    _location_data_vector.push_back(ServerLocation(_root_directory, _index_file));
 }
 
 /** Copy constructor */
-ConfigFileServerData::ConfigFileServerData(ConfigFileServerData const & rhs)
+ServerData::ServerData(ServerData const & rhs)
     : _server_name(rhs._server_name),
     _listens_to(rhs._listens_to),
     _ip_address(rhs._ip_address),
@@ -26,20 +27,22 @@ ConfigFileServerData::ConfigFileServerData(ConfigFileServerData const & rhs)
     _index_file(rhs._index_file),
     _client_max_body_size(rhs._client_max_body_size),
     _error_page(rhs._error_page),
-    _port_redirection(rhs._port_redirection) {
+    _port_redirection(rhs._port_redirection),
+    _location_data_vector(rhs._location_data_vector) {
 }
 
 /** Destructor */
-ConfigFileServerData::~ConfigFileServerData() {
+ServerData::~ServerData() {
     /** Cleaning default values for the server block */
     _server_name = "";
-    _listens_to = 0;
+    _listens_to = "";
     _ip_address = std::string();
     _root_directory = std::string();
     _index_file = std::string();
     _client_max_body_size = 0;
     _error_page = std::string();
     _port_redirection = 0;
+    _location_data_vector = std::vector<ServerLocation>();
 }
 
 /** #################################### Methods #################################### */
@@ -48,36 +51,44 @@ ConfigFileServerData::~ConfigFileServerData() {
 
 /** #################################### Getters #################################### */
 
-std::string ConfigFileServerData::getServerName() const {
+std::string ServerData::getServerName() const {
     return _server_name;
 }
 
-unsigned int ConfigFileServerData::getListensTo() const {
+std::string ServerData::getListensTo() const {
     return _listens_to;
 }
 
-std::string ConfigFileServerData::getIpAddress() const {
+std::string ServerData::getIpAddress() const {
     return _ip_address;
 }
 
-std::string ConfigFileServerData::getRootDirectory() const {
+std::string ServerData::getRootDirectory() const {
     return _root_directory;
 }
 
-std::string ConfigFileServerData::getIndexFile() const {
+std::string ServerData::getIndexFile() const {
     return _index_file;
 }
 
-unsigned int ConfigFileServerData::getClientMaxBodySize() const {
+unsigned int ServerData::getClientMaxBodySize() const {
     return _client_max_body_size;
 }
 
-std::string ConfigFileServerData::getErrorPage() const {
+std::string ServerData::getErrorPage() const {
     return _error_page;
 }
 
-unsigned int ConfigFileServerData::getPortRedirection() const {
+unsigned int ServerData::getPortRedirection() const {
     return _port_redirection;
+}
+
+std::vector<ServerLocation> ServerData::getLocationBlocks() const {
+    return _location_data_vector;
+}
+
+int ServerData::getListeningSocket() const {
+    return _listening_socket;
 }
 
 /** #################################### Setters #################################### */
@@ -89,7 +100,7 @@ static bool isServerNameValid(int ch) {
     return false;
 }
 
-bool ConfigFileServerData::setServerName(std::string const & name) {
+bool ServerData::setServerName(std::string const & name) {
     /* not mandatory | default: localhost */
     if (not name.empty()) {
         if (std::all_of(name.begin(), name.end(), isServerNameValid)) {
@@ -114,7 +125,7 @@ bool ConfigFileServerData::setServerName(std::string const & name) {
  * port can be used instead).
  * https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml?search=http-alt
  */
-bool ConfigFileServerData::setListensTo(std::string const & port) {
+bool ServerData::setListensTo(std::string const & port) {
     /* not mandatory | default 80 */
     if (not port.empty()) {
         try {
@@ -122,7 +133,7 @@ bool ConfigFileServerData::setListensTo(std::string const & port) {
             if (listensToPort == 80 || listensToPort == 591 || listensToPort == 8008 || listensToPort == 8080 ||
                     listensToPort >= 49152) {// todo:: add 65536 as acceptable? then change form short to int?
                 /* No need to check port < 65536 since port is an unsigned short already */
-                _listens_to = listensToPort;
+                _listens_to = port;
                 return true;
             } else {
                 throw ParserException(CONFIG_FILE_ERROR("listens_to", NOT_SUPPORTED));
@@ -134,7 +145,7 @@ bool ConfigFileServerData::setListensTo(std::string const & port) {
     return false;
 }
 
-bool ConfigFileServerData::setIpAddress(std::string const & ip) {
+bool ServerData::setIpAddress(std::string const & ip) {
     /* not mandatory | default: 127.0.0.1 */
     if (not ip.empty()) {
         struct sockaddr_in sockAddr = {};
@@ -181,7 +192,7 @@ bool ConfigFileServerData::setIpAddress(std::string const & ip) {
 //    _ip_address = ip;
 }
 
-bool ConfigFileServerData::setRootDirectory(std::string const & root_dir) {
+bool ServerData::setRootDirectory(std::string const & root_dir) {
     /* not mandatory | default: ./$server_name */
     if (not root_dir.empty()) {
         PathType type = pathType(root_dir);
@@ -197,7 +208,7 @@ bool ConfigFileServerData::setRootDirectory(std::string const & root_dir) {
     return false;
 }
 
-bool ConfigFileServerData::setIndexFile(std::string const & idx_file) {
+bool ServerData::setIndexFile(std::string const & idx_file) {
     /* not mandatory | default: $root_directory/index.html */
     if (not idx_file.empty()) {
         std::string indexFile = isPath(_root_directory, idx_file);
@@ -211,7 +222,7 @@ bool ConfigFileServerData::setIndexFile(std::string const & idx_file) {
     return false;
 }
 
-bool ConfigFileServerData::setClientMaxBodySize(std::string const & body_size) {
+bool ServerData::setClientMaxBodySize(std::string const & body_size) {
     /* not mandatory | default: 1024 (1KB) -> Max: INT_MAX (2GB) */
     if (not body_size.empty()) {
         try {
@@ -229,7 +240,7 @@ bool ConfigFileServerData::setClientMaxBodySize(std::string const & body_size) {
     return false;
 }
 
-bool ConfigFileServerData::setErrorPage(std::string const & err_page) {
+bool ServerData::setErrorPage(std::string const & err_page) {
     /* not mandatory | default: empty, no set error page, webserver will decide */
     if (not err_page.empty()) {
         std::string errorPage = isPath(_root_directory, err_page);
@@ -243,11 +254,11 @@ bool ConfigFileServerData::setErrorPage(std::string const & err_page) {
     return false;
 }
 
-bool ConfigFileServerData::setPortRedirection(std::string const & port_redir) {
+bool ServerData::setPortRedirection(std::string const & port_redir) {
     /* not mandatory | default: zero, no redirection */
     if (not port_redir.empty()) {
         unsigned int portRedirection = std::strtol(port_redir.c_str(), nullptr, 10);
-        if (portRedirection != _listens_to &&
+        if (port_redir != _listens_to &&
             (portRedirection == 80 || portRedirection == 591 || portRedirection == 8008 || portRedirection == 8080 ||
                     portRedirection >= 49152)) {// todo:: add 65536 as acceptable? then change form short to int?
             /* No need to check port < 65536 since port is an unsigned short already */
@@ -258,4 +269,8 @@ bool ConfigFileServerData::setPortRedirection(std::string const & port_redir) {
         }
     }
     return false;
+}
+
+void ServerData::setListeningSocket(int const & listening_socket) {
+    _listening_socket = listening_socket;
 }

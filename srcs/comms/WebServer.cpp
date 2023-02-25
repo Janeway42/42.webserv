@@ -1,28 +1,26 @@
-#include "Server.hpp"
+#include "WebServer.hpp"
 
-Server::Server(std::string const & configFileName)
+WebServer::WebServer(std::string const & configFileName)
 {
 	_addr = new struct addrinfo();
 	struct addrinfo hints;
-    ConfigFileParser configFileData;
-    _configFileData = configFileData.parseFile(configFileName);
+    ConfigFileParser configFileData = ConfigFileParser(configFileName);
 
 	hints.ai_family = PF_UNSPEC; 
 	hints.ai_flags = AI_PASSIVE; 
 	hints.ai_socktype = SOCK_STREAM;
-    /* begin() returns an iterator to beginning while cbegin() returns a const_iterator to beginning. */
-    std::map<ConfigFileServerData*, std::vector<ConfigFileLocationData> >::const_iterator it_server;
-    for (it_server = _configFileData.begin(); it_server != _configFileData.cend(); ++it_server) {
-        std::cout << RED << "JOYCE: " << it_server->first->getIpAddress() << BACK << std::endl;
-        /* Keep in mind that "first" is the server block data */
-        if (it_server->first->getListensTo() && not it_server->first->getIpAddress().empty()) {
-            if (getaddrinfo(it_server->first->getIpAddress().c_str(),
-                            std::to_string(it_server->first->getListensTo()).c_str(), &hints, &_addr) != 0)
+
+    std::vector<ServerData>::iterator it_server = configFileData.getServers().begin();;
+    for (; it_server != configFileData.getServers().cend(); ++it_server) {
+        std::cout << RED << "JOYCE: " << it_server->getIpAddress() << BACK << std::endl;
+        if (not it_server->getListensTo().empty() && not it_server->getIpAddress().empty()) {// todo check if they can be empty
+            if (getaddrinfo(it_server->getIpAddress().c_str(), it_server->getListensTo().c_str(), &hints, &_addr) != 0)
                 throw ServerException(("failed addr"));
         }
+        _listening_socket = socket(_addr->ai_family, _addr->ai_socktype, _addr->ai_protocol);
+        it_server->setListeningSocket(_listening_socket);
     }
 
-	_listening_socket = socket(_addr->ai_family, _addr->ai_socktype, _addr->ai_protocol);
 	if (_listening_socket < 0)
 		throw ServerException(("failed socket"));
 	fcntl(_listening_socket, F_SETFL, O_NONBLOCK);
@@ -44,7 +42,7 @@ Server::Server(std::string const & configFileName)
 		throw ServerException(("failed kevent start"));
 }
 
-Server::~Server()
+WebServer::~WebServer()
 {
 	close(_kq);
 	freeaddrinfo(_addr);
@@ -53,7 +51,7 @@ Server::~Server()
 // --------------------------------------------------------- server main loop
 // --------------------------------------------------------------------------
 
-void Server::runServer()
+void WebServer::runServer()
 {
 	struct kevent evList[MAX_EVENTS];
 //	struct kevent evSet;
@@ -90,7 +88,7 @@ void Server::runServer()
 						closeClient(evList[i]);
 					}
 					else
-						readRequest(evList[i]);
+						readRequest(evList[i], );
 				}
 				else if (evList[i].filter == EVFILT_WRITE)
 				{
@@ -115,7 +113,7 @@ void Server::runServer()
 // --------------------------------------------------------- server functions 
 // --------------------------------------------------------------------------
 
-void Server::readRequest(struct kevent& event)
+void WebServer::readRequest(struct kevent& event)
 {
 	char buffer[50];
 	memset(&buffer, '\0', 50);
@@ -162,7 +160,7 @@ void Server::readRequest(struct kevent& event)
 		std::cout << "just passing by\n";
 }
 
-void Server::sendResponse(struct kevent& event)
+void WebServer::sendResponse(struct kevent& event)
 {
 	Request *storage = (Request *)event.udata;
 
@@ -207,7 +205,7 @@ void Server::sendResponse(struct kevent& event)
 // --------------------------------------------------------- client functions 
 // --------------------------------------------------------------------------
 
-void Server::newClient(struct kevent event)
+void WebServer::newClient(struct kevent event)
 {
 	struct kevent evSet;
 	struct sockaddr_storage socket_addr;
@@ -231,7 +229,7 @@ void Server::newClient(struct kevent event)
 		throw ServerException("failed kevent add EVFILT_WRITE");
 }
 
-void Server::closeClient(struct kevent& event)
+void WebServer::closeClient(struct kevent& event)
 {
 	Request *storage;
 	storage = (Request *)event.udata;
@@ -244,7 +242,7 @@ void Server::closeClient(struct kevent& event)
 // --------------------------------------------------------- utils functions
 // -------------------------------------------------------------------------
 
-int Server::removeEvent(struct kevent& event, int filter)
+int WebServer::removeEvent(struct kevent& event, int filter)
 {
 	struct kevent evSet;
 	Request *storage = (Request *)event.udata;
@@ -258,7 +256,7 @@ int Server::removeEvent(struct kevent& event, int filter)
 	return (0);
 }
 
-std::string Server::streamFile(std::string file)
+std::string WebServer::streamFile(std::string file)
 {
 	std::string responseNoFav;
 	std::fstream    infile;
@@ -278,7 +276,7 @@ std::string Server::streamFile(std::string file)
 	return (responseNoFav);
 }
 
-void Server::sendResponseFile(struct kevent& event, std::string file)
+void WebServer::sendResponseFile(struct kevent& event, std::string file)
 {
 	Request *storage = (Request *)event.udata;
 	std::string response;
@@ -309,7 +307,7 @@ void Server::sendResponseFile(struct kevent& event, std::string file)
 
 }
 
-void Server::sendImmage(struct kevent& event, std::string imgFileName)
+void WebServer::sendImmage(struct kevent& event, std::string imgFileName)
 {
 	std::cout << RED "FOUND extention .jpg or .png\n" RES;
 
@@ -357,12 +355,12 @@ void Server::sendImmage(struct kevent& event, std::string imgFileName)
 // --------------------------------------------------------- get functions
 // -----------------------------------------------------------------------
 
-int Server::getSocket(void)
-{
-	return (_listening_socket);
-}
+//int WebServer::getSocket(void)
+//{
+//	return (_listening_socket);
+//}
 
-int Server::getKq(void)
+int WebServer::getKq(void)
 {
 	return (_kq);
 }

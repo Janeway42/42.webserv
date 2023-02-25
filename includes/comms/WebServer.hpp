@@ -1,5 +1,5 @@
-#ifndef SERVER_CPP
-#define SERVER_CPP
+#ifndef WEBSERVER_CPP
+#define WEBSERVER_CPP
 
 // ---- C ----
 #include <unistd.h>
@@ -20,18 +20,18 @@
     #define DEBUG 0
 #endif
 
-class Server
+class WebServer
 {
 	private:
 		int _kq;
 		struct addrinfo *_addr;
-		size_t _listening_socket;
-        std::map<ConfigFileServerData*, std::vector<ConfigFileLocationData> > _configFileData;
+		size_t _listening_socket;// todo delete? it is now on the ServerLocation
+        std::vector<ServerData> _servers;
 
 	public:
         // todo add a default constructor -> maybe private so no one can call it
-		Server(std::string const & configFileName);
-		~Server(void);
+        WebServer(std::string const & configFileName);
+		~WebServer(void);
 
 		void runServer();
 
@@ -72,4 +72,4 @@ class Server
         };
 };
 
-#endif //SERVER_CPP
+#endif //WEBSERVER_CPP
