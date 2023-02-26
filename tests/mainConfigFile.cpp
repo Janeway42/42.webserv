@@ -3,7 +3,7 @@
 void func() {
     system("leaks a.out");
 }
-// c++ -Iincludes/parsers -Wall -Werror -Wextra -pedantic -std=c++98 -Wshadow -fsanitize=address -g3 srcs/parsers/ConfigFileParser.cpp srcs/parsers/ServerData.cpp srcs/parsers/ServerLocation.cpp srcs/parsers/Parser.cpp tests/mainConfigFile.cpp
+// c++ -Iincludes -Wall -Werror -Wextra -pedantic -std=c++98 -Wshadow -fsanitize=address -g3 srcs/ConfigFileParser.cpp srcs/ServerData.cpp srcs/ServerLocation.cpp srcs/Parser.cpp tests/mainConfigFile.cpp
 
 int main(int ac, char **av) {
     //atexit(func);
@@ -11,18 +11,15 @@ int main(int ac, char **av) {
         std::cout << std::boolalpha;
         std::cout << "Configuration file name: " << av[1] << std::endl;
         std::cout << "-----------------------------------------------------------------------------------" << std::endl;
-        ConfigFileParser configFileData;
-        std::cout << "-------------------------------------" << std::endl;
-
         try {
+            ConfigFileParser configFileData(av[1]);
             std::cout << "-----------------------------------------------------------------------------------" << std::endl;
             std::cout << RED << "Number of server block(s): " << configFileData.numberOfServerBlocks() << BACK << std::endl;
             std::cout << RED << "Number of location + cgi block(s): " << configFileData.numberOfLocationBlocks() << BACK << std::endl;
 
-            std::vector<ServerData> servers = configFileData.handleFile(av[1]);
             /* begin() returns an iterator to beginning while cbegin() returns a const_iterator to beginning. */
-            std::vector<ServerData>::const_iterator it_server;
-            for (it_server = servers.begin(); it_server != servers.cend(); ++it_server) {
+            std::vector<ServerData>::iterator it_server;
+            for (it_server = configFileData.servers.begin(); it_server != configFileData.servers.cend(); ++it_server) {
 
                 /****************************************** server block data *****************************************/
                 std::cout << std::endl << "Starting server block " << std::endl;
@@ -55,8 +52,6 @@ int main(int ac, char **av) {
                 std::vector<ServerLocation>::const_iterator it_location;
                 for (it_location = it_server->getLocationBlocks().cbegin(); it_location != it_server->getLocationBlocks().cend(); ++it_location) {
 
-                    std::cout << RED_BG << "JOYC size: " << it_server->getLocationBlocks().size() << BACK << std::endl;
-
                     if (it_location->isLocationCgi()) {
                         /************************************* cgi location block data ************************************/
                         std::cout << std::endl << "Starting location block" << std::endl;
@@ -77,7 +72,6 @@ int main(int ac, char **av) {
                         /*************************************** location block data **************************************/
                         std::cout << std::endl << "Starting location block " << std::endl;
                         std::cout << "Is this location a CGI location: " << it_location->isLocationCgi() << std::endl;
-                        std::cout << RED_BG << "JOYCE: " << it_location->getRootDirectory() << BACK << std::endl;
 
                         std::string locationRootDirectory = it_location->getRootDirectory();
                         std::cout << GRE << std::left << std::setw(30) << "\"root_directory\": " << locationRootDirectory << BACK << std::endl;
@@ -111,6 +105,7 @@ int main(int ac, char **av) {
                     }
                 }
             }
+            std::cout << std::endl;
         } catch(std::exception const & ex) {
             std::cout << RED << ex.what() << BACK << std::endl;
         }

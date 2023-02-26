@@ -1,6 +1,4 @@
 #include <arpa/inet.h>
-#include <sys/types.h>
-#include <dirent.h>
 
 #include "ServerData.hpp"
 
@@ -15,8 +13,8 @@ ServerData::ServerData()
     _client_max_body_size(1024),
     _error_page(""),
     _port_redirection(0) {
-    std::cout << BLU << "JOYCE CREATING Default ServerData: " << BACK << std::endl;
-//    _location_data_vector.push_back(ServerLocation(_root_directory, _index_file));
+    std::cout << PUR << "JOYCE CREATING Default ServerData: " << BACK << std::endl;
+//    _location_data_vector.push_back(ServerLocation(_root_directory, _index_file));//TODO WILL IT CALL THE ServerLocation CONSTRUCTOR???
 }
 
 /** Copy constructor */
@@ -28,12 +26,9 @@ ServerData::ServerData(ServerData const & rhs)
     _index_file(rhs._index_file),
     _client_max_body_size(rhs._client_max_body_size),
     _error_page(rhs._error_page),
-    _port_redirection(rhs._port_redirection) {
-    std::cout << BLU << "JOYCE rhs._location_data_vector.size(): " << rhs._location_data_vector.size() << BACK << std::endl;
-    _location_data_vector = rhs._location_data_vector;
-    std::cout << BLU << "JOYCE _location_data_vector.size(): " << _location_data_vector.size() << BACK << std::endl;
-
-    std::cout << BLU << "JOYCE Copied ServerData: " << BACK << std::endl;
+    _port_redirection(rhs._port_redirection),
+    _location_data_vector(rhs._location_data_vector) {
+    std::cout << PUR << "JOYCE _location_data_vector.size(): " << _location_data_vector.size() << BACK << std::endl;
 }
 
 /** Destructor */
@@ -48,7 +43,7 @@ ServerData::~ServerData() {
     _error_page = std::string();
     _port_redirection = 0;
 //    _location_data_vector = std::vector<ServerLocation>();//TODO WILL IT CALL THE ServerLocation CONSTRUCTOR???
-    std::cout << RED_BG << "JOYCE deleting ServerData" << BACK << std::endl;
+    std::cout << PUR << "JOYCE deleting ServerData" << BACK << std::endl;
 }
 
 /** #################################### Methods #################################### */
@@ -89,7 +84,7 @@ unsigned int ServerData::getPortRedirection() const {
     return _port_redirection;
 }
 
-std::vector<ServerLocation> ServerData::getLocationBlocks() const {
+std::vector<ServerLocation> & ServerData::getLocationBlocks() {
     return _location_data_vector;
 }
 
@@ -277,9 +272,9 @@ bool ServerData::setPortRedirection(std::string const & port_redir) {
     return false;
 }
 
-void ServerData::addToLocationVector(std::vector<ServerLocation> const & location_data) {
-    _location_data_vector = location_data;
-}
+//void ServerData::addToLocationVector(std::vector<ServerLocation> const & location_data) {
+//    _location_data_vector = location_data;
+//}
 
 void ServerData::setListeningSocket(int const & listening_socket) {
     _listening_socket = listening_socket;

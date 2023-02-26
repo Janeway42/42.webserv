@@ -13,6 +13,8 @@ WebServer::WebServer(std::string const & configFileName)
     _servers =  configFileData.servers;
     std::vector<ServerData>::iterator it_server = _servers.begin();
     for (; it_server != configFileData.servers.cend(); ++it_server) {
+        std::cout << "IP ADDRESS: " << it_server->getIpAddress().c_str() << std::endl;
+        std::cout << "PORT: " << it_server->getListensTo().c_str() << std::endl;
         if (getaddrinfo(it_server->getIpAddress().c_str(), it_server->getListensTo().c_str(), &hints, &_addr) != 0)
             throw ServerException(("failed addr"));
         _listening_socket = socket(_addr->ai_family, _addr->ai_socktype, _addr->ai_protocol);
@@ -86,7 +88,7 @@ void WebServer::runServer()
 						closeClient(evList[i]);
 					}
 					else
-						readRequest(evList[i], );
+						readRequest(evList[i]);
 				}
 				else if (evList[i].filter == EVFILT_WRITE)
 				{

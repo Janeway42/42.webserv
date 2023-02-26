@@ -27,7 +27,7 @@ NAME = webserv
 
 CPP = c++
 
-FLAGS = -Iincludes/comms -Iincludes/parsers -Wall -Werror -Wextra -pedantic -std=c++98 -Wshadow -fsanitize=address -g3
+FLAGS = -Iincludes -Wall -Werror -Wextra -pedantic -std=c++98 -Wshadow -fsanitize=address -g3
 # other debug options: -fsanitize=address -g3
 # -pedantic -> Issue all the warnings demanded by strict ISO, it follows the
 #  version of the ISO standard specified by any -std option.
@@ -39,14 +39,14 @@ FLAGS = -Iincludes/comms -Iincludes/parsers -Wall -Werror -Wextra -pedantic -std
 # Any modify to a .hpp file will alert Makefile's rules and recompile
 INCLUDES_DEPENDENCY = ./includes/*/*.hpp standard_complete.conf
 
-SRC =   srcs/comms/Server.cpp\
-		srcs/parsers/ConfigFileParser.cpp\
-		srcs/parsers/LocationData.cpp\
-		srcs/parsers/Parser.cpp\
-		srcs/parsers/ParseURLpath.cpp\
-		srcs/parsers/RequestData.cpp\
-		srcs/parsers/RequestParser.cpp\
-		srcs/parsers/ServerData.cpp\
+SRC =   srcs/WebServer.cpp\
+		srcs/ConfigFileParser.cpp\
+		srcs/ServerLocation.cpp\
+		srcs/Parser.cpp\
+		srcs/ParseURLpath.cpp\
+		srcs/RequestData.cpp\
+		srcs/RequestParser.cpp\
+		srcs/ServerData.cpp\
 		tests/Kqueue_main.cpp
 
 OBJ = $(SRC:%.cpp=%.o)

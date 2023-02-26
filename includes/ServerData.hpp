@@ -43,7 +43,7 @@ class ServerData : public Parser {
         unsigned int getClientMaxBodySize() const;
         std::string getErrorPage() const;
         unsigned int getPortRedirection() const;
-        std::vector<ServerLocation> getLocationBlocks() const;
+        std::vector<ServerLocation> & getLocationBlocks();
         int getListeningSocket() const;
 
         /** Setters */
@@ -55,7 +55,7 @@ class ServerData : public Parser {
         bool setClientMaxBodySize(std::string const & body_size);
         bool setErrorPage(std::string const & err_page);
         bool setPortRedirection(std::string const & port_redir);
-        void addToLocationVector(std::vector<ServerLocation> const & location_data);
+//        void addToLocationVector(std::vector<ServerLocation> const & location_data);
         void setListeningSocket(int const & listening_socket);
 };
 #endif //SERVERDATA_HPP

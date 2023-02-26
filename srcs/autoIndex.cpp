@@ -2,7 +2,7 @@
 #include <sstream>
 #include <unistd.h>
 #include <string.h>
-#include "parsers/Parser.hpp"
+#include "Parser.hpp"
 
 std::string appendHTMLhead(std::string path, std::string & htmlStr) {
 
@@ -120,11 +120,11 @@ std::string storeFolderContent(char *path) {
 	return (incomingStr);
 }
 
-int main()
-{
-	std::string path = "../resources/_folderA/folderB/";
-	std::string folderContentStr = storeFolderContent((char*)path.c_str());
-	makeHtmlString(folderContentStr, path);
-
-	return (0);
-}
+//int main()
+//{
+//	std::string path = "../resources/_folderA/folderB/";
+//	std::string folderContentStr = storeFolderContent((char*)path.c_str());
+//	makeHtmlString(folderContentStr, path);
+//
+//	return (0);
+//}
