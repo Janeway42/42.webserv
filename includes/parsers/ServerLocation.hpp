@@ -22,8 +22,8 @@ class ServerLocation : public Parser {
         std::string _script_extension;
 
     public:
-        ServerLocation();// = delete;// delete makes it impossible to be used (anywhere by anyone) todo is it c++98?
-        ServerLocation(std::string const & server_root_directory, std::string const & server_index_file);
+//        ServerLocation() {    std::cout << BLU << "JOYCE CREATING DEFAULT ServerLocation " << BACK << std::endl;}
+        explicit ServerLocation(std::string const & server_root_directory, std::string const & server_index_file);
         virtual ~ServerLocation();
 
         /** Methods */

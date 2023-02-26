@@ -1,32 +1,29 @@
 #include "ConfigFileParser.hpp"
 
 /** Private Default Constructor */
+//ConfigFileParser::ConfigFileParser()
+//    : _server_data(ServerData()),
+//    _location_data(ServerLocation()),
+//    _server_block_counter(0),
+//    _location_block_counter(0),
+//    servers(std::vector<ServerData>()) {
+//}
+
+/** Overloaded constructor */
 ConfigFileParser::ConfigFileParser()
     : _server_data(ServerData()),
-    _location_data(ServerLocation()),
-    _server_block_counter(0),
-    _location_block_counter(0),
-    servers(std::vector<ServerData>()) {
-}
-
-ConfigFileParser::ConfigFileParser(std::string const & configFileName) {
-    /** Initializing default values for the config file */
-    _server_data = ServerData();
-    _location_data = ServerLocation(_server_data.getRootDirectory(), _server_data.getIndexFile());
-    _server_block_counter = 0;
-    _location_block_counter = 0;
-    servers = std::vector<ServerData>();
-    handleFile(configFileName);
+      _server_location(ServerLocation(_server_data.getRootDirectory(), _server_data.getIndexFile())),
+      _server_block_counter(0),
+      _location_block_counter(0) {
+    std::cout << BLU << "JOYCE CREATING ConfigFileParser " << BACK << std::endl;
+//    handleFile(configFileName);
 }
 
 /** Destructor */
 ConfigFileParser::~ConfigFileParser() {
     /** Cleaning default values */
-//    _server_data = ServerData();
-//    _location_data = ServerLocation();
     _server_block_counter = 0;
     _location_block_counter = 0;
-    servers = std::vector<ServerData>();
 }
 
 /** #################################### Getters #################################### */
@@ -41,7 +38,7 @@ unsigned short ConfigFileParser::numberOfLocationBlocks() const {
 
 /** #################################### Methods #################################### */
 
-bool ConfigFileParser::handleFile(std::string const & configFileName) {
+std::vector<ServerData> ConfigFileParser::handleFile(std::string const & configFileName) {
     // std::ifstream destructor will close the file automatically, which is one of the perks of using this class.
     // An IDE may compile the program on another directory and so the file to open would be on a different path.
     std::ifstream configFile;
@@ -53,14 +50,12 @@ bool ConfigFileParser::handleFile(std::string const & configFileName) {
         }
     } else {
         std::cerr << "Not able to open the configuration file" << std::endl;// TODO: throw exception
-        return false;
+        return std::vector<ServerData>();
     }
     configFile.close();
-    return true;
+    return servers;
 }
 
-
-// TODO CHECK FOR MANDATORY / NON MANDATORY FIELDS
 void ConfigFileParser::parseFileServerBlock(std::ifstream & configFile) {
     while (configFile) {
         std::string lineContent;
@@ -70,12 +65,16 @@ void ConfigFileParser::parseFileServerBlock(std::ifstream & configFile) {
             continue;
         } else if (lineContent.find('}') != std::string::npos) {
             /* Adding to the vector whatever was inserted into _server_data */
+            std::cout << "####################" << std::endl;
+//            _server_data.addToLocationVector(serverData);
             servers.push_back(_server_data);
+            std::cout << "####################" << std::endl;
+
 
             /* Cleaning the _server_data and _location_data private members, so it can receive new data if a new
              * server block is found */
-            _server_data = ServerData();
-            _location_data = ServerLocation(_server_data.getRootDirectory(), _server_data.getIndexFile());
+//            _server_data = ServerData();
+//            _location_data = ServerLocation(_server_data.getRootDirectory(), _server_data.getIndexFile());
             break;
         } else if (lineContent == "server {") {
             std::cout << "server block:" << std::endl;
@@ -112,7 +111,7 @@ void ConfigFileParser::parseFileServerBlock(std::ifstream & configFile) {
         /** Checking for cgi or location blocks */
         if (lineContent.find("cgi {") != std::string::npos) {
             std::cout << "cgi block:" << std::endl;
-            _location_data.setLocationAsCgi(true);
+            _server_location.setLocationAsCgi(true);
             _location_block_counter++;
             parseFileLocationBlock(configFile);
             continue;
@@ -139,39 +138,40 @@ void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile) {
         }
         if (lineContent.find('}') != std::string::npos) {
             /* Adding a location block to the location vector */
-            _server_data.addToLocationVector(_location_data);
-            std::cout << RED_BG << "JOYCEeeeee: " << _server_data.getRootDirectory() << BACK << std::endl;
+            std::cout << "_server_location.isLocationCgi(): " << _server_location.isLocationCgi() << std::endl;
+            _location_data_vector.push_back(_server_location);
 
+            std::cout << "_server_location.isLocationCgi(): " << _server_location.isLocationCgi() << std::endl;
 
             /* Cleaning the _location_data private member, so it can receive new data if a new location
              * block is found inside this current server block */
-            _location_data = ServerLocation(_server_data.getRootDirectory(), _server_data.getIndexFile());
+//            _location_data = ServerLocation(_server_data.getRootDirectory(), _server_data.getIndexFile());
 
             /* Now we are going out of a possible cgi block */
 //            _location_data.setLocationAsCgi(false);
             break;
         }
         /** Handling the location or cgi block key values */
-        if (not rootDirectoryAlreadyChecked && _location_data.setRootDirectory(keyParser(lineContent, "root_directory"))) {
+        if (not rootDirectoryAlreadyChecked && _server_location.setRootDirectory(keyParser(lineContent, "root_directory"))) {
             rootDirectoryAlreadyChecked = true;
             continue;
         }
-        if (_location_data.setAllowMethods(keyParser(lineContent, "allow_methods"))) {
+        if (_server_location.setAllowMethods(keyParser(lineContent, "allow_methods"))) {
             continue;
         }
-        if (_location_data.setIndexFile(keyParser(lineContent, "index_file"))) {
+        if (_server_location.setIndexFile(keyParser(lineContent, "index_file"))) {
             continue;
         }
-        if (_location_data.setAutoIndex(keyParser(lineContent, "auto_index"))) {
+        if (_server_location.setAutoIndex(keyParser(lineContent, "auto_index"))) {
             continue;
         }
         if (not interpreterPathAlreadyChecked &&
-                _location_data.setInterpreterPath(keyParser(lineContent, "interpreter_path"))) {
+            _server_location.setInterpreterPath(keyParser(lineContent, "interpreter_path"))) {
             interpreterPathAlreadyChecked = true;
             continue;
         }
         if (not scriptExtensionAlreadyChecked &&
-            _location_data.setScriptExtension(keyParser(lineContent, "script_extension"))) {
+            _server_location.setScriptExtension(keyParser(lineContent, "script_extension"))) {
             scriptExtensionAlreadyChecked = true;
             continue;
         }
