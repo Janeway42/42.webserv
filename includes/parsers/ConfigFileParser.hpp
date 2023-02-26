@@ -11,11 +11,9 @@
 class ConfigFileParser : public Parser {
     private:
         ServerData _server_data;
-        unsigned short _server_block_counter;
         ServerLocation _location_data;
+        unsigned short _server_block_counter;
         unsigned short _location_block_counter;
-        /* As more than 1 server block can be added (with one or more location blocks inside) */
-        std::vector<ServerData> _server_vector;
 
         ConfigFileParser();
 
@@ -30,8 +28,10 @@ class ConfigFileParser : public Parser {
         explicit ConfigFileParser(std::string const & configFileName);
         virtual ~ConfigFileParser();
 
+        /* As more than 1 server block can be added (with one or more location blocks inside) */
+        std::vector<ServerData> servers;
+
         /** Getters */
-        std::vector<ServerData> getServers() const;
         unsigned short numberOfServerBlocks() const;
         unsigned short numberOfLocationBlocks() const;
 };

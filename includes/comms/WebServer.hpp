@@ -29,7 +29,7 @@ class WebServer
         std::vector<ServerData> _servers;
 
 	public:
-        // todo add a default constructor -> maybe private so no one can call it
+        // todo add a default constructor? -> maybe private so no one can call it
         WebServer(std::string const & configFileName);
 		~WebServer(void);
 

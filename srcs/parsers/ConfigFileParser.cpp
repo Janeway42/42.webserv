@@ -1,37 +1,35 @@
 #include "ConfigFileParser.hpp"
 
-/** Default Constructor */
+/** Private Default Constructor */
 ConfigFileParser::ConfigFileParser()
     : _server_data(ServerData()),
+    _location_data(ServerLocation()),
     _server_block_counter(0),
     _location_block_counter(0),
-    _server_vector(std::vector<ServerData>()) {
+    servers(std::vector<ServerData>()) {
 }
 
 ConfigFileParser::ConfigFileParser(std::string const & configFileName) {
     /** Initializing default values for the config file */
     _server_data = ServerData();
-    _server_block_counter = 0;
     _location_data = ServerLocation(_server_data.getRootDirectory(), _server_data.getIndexFile());
+    _server_block_counter = 0;
     _location_block_counter = 0;
-    _server_vector = std::vector<ServerData>();
+    servers = std::vector<ServerData>();
     handleFile(configFileName);
 }
 
 /** Destructor */
 ConfigFileParser::~ConfigFileParser() {
     /** Cleaning default values */
+//    _server_data = ServerData();
+//    _location_data = ServerLocation();
     _server_block_counter = 0;
     _location_block_counter = 0;
-//    _server_data and _location_data??
-    _server_vector = std::vector<ServerData>();
+    servers = std::vector<ServerData>();
 }
 
 /** #################################### Getters #################################### */
-
-std::vector<ServerData> ConfigFileParser::getServers() const {
-    return _server_vector;
-}
 
 unsigned short ConfigFileParser::numberOfServerBlocks() const {
     return _server_block_counter;
@@ -50,7 +48,7 @@ bool ConfigFileParser::handleFile(std::string const & configFileName) {
     configFile.open("./" + configFileName);
     if (configFile.is_open()) {
         parseFileServerBlock(configFile);
-        if (_server_vector.empty()) {
+        if (servers.empty()) {
             throw ParserException(CONFIG_FILE_ERROR("Configuration File", MISSING));
         }
     } else {
@@ -72,7 +70,7 @@ void ConfigFileParser::parseFileServerBlock(std::ifstream & configFile) {
             continue;
         } else if (lineContent.find('}') != std::string::npos) {
             /* Adding to the vector whatever was inserted into _server_data */
-            _server_vector.push_back(ServerData(_server_data));
+            servers.push_back(_server_data);
 
             /* Cleaning the _server_data and _location_data private members, so it can receive new data if a new
              * server block is found */
@@ -140,20 +138,21 @@ void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile) {
             continue;
         }
         if (lineContent.find('}') != std::string::npos) {
-            /* Adding the location block to the vector, so it can be later on added to the server map */
-            _location_data_vector.push_back(_location_data);
+            /* Adding a location block to the location vector */
+            _server_data.addToLocationVector(_location_data);
+            std::cout << RED_BG << "JOYCEeeeee: " << _server_data.getRootDirectory() << BACK << std::endl;
+
 
             /* Cleaning the _location_data private member, so it can receive new data if a new location
              * block is found inside this current server block */
             _location_data = ServerLocation(_server_data.getRootDirectory(), _server_data.getIndexFile());
 
             /* Now we are going out of a possible cgi block */
-            _location_data.setLocationAsCgi(false);
+//            _location_data.setLocationAsCgi(false);
             break;
         }
         /** Handling the location or cgi block key values */
-        if (not rootDirectoryAlreadyChecked &&
-                _location_data.setRootDirectory(keyParser(lineContent, "root_directory"))) {
+        if (not rootDirectoryAlreadyChecked && _location_data.setRootDirectory(keyParser(lineContent, "root_directory"))) {
             rootDirectoryAlreadyChecked = true;
             continue;
         }

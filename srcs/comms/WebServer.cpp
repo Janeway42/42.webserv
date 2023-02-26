@@ -4,19 +4,17 @@ WebServer::WebServer(std::string const & configFileName)
 {
 	_addr = new struct addrinfo();
 	struct addrinfo hints;
-    ConfigFileParser configFileData = ConfigFileParser(configFileName);
 
 	hints.ai_family = PF_UNSPEC; 
 	hints.ai_flags = AI_PASSIVE; 
 	hints.ai_socktype = SOCK_STREAM;
 
-    std::vector<ServerData>::iterator it_server = configFileData.getServers().begin();;
-    for (; it_server != configFileData.getServers().cend(); ++it_server) {
-        std::cout << RED << "JOYCE: " << it_server->getIpAddress() << BACK << std::endl;
-        if (not it_server->getListensTo().empty() && not it_server->getIpAddress().empty()) {// todo check if they can be empty
-            if (getaddrinfo(it_server->getIpAddress().c_str(), it_server->getListensTo().c_str(), &hints, &_addr) != 0)
-                throw ServerException(("failed addr"));
-        }
+    ConfigFileParser configFileData = ConfigFileParser(configFileName);
+    _servers =  configFileData.servers;
+    std::vector<ServerData>::iterator it_server = _servers.begin();
+    for (; it_server != configFileData.servers.cend(); ++it_server) {
+        if (getaddrinfo(it_server->getIpAddress().c_str(), it_server->getListensTo().c_str(), &hints, &_addr) != 0)
+            throw ServerException(("failed addr"));
         _listening_socket = socket(_addr->ai_family, _addr->ai_socktype, _addr->ai_protocol);
         it_server->setListeningSocket(_listening_socket);
     }

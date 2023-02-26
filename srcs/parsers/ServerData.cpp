@@ -271,6 +271,10 @@ bool ServerData::setPortRedirection(std::string const & port_redir) {
     return false;
 }
 
+void ServerData::addToLocationVector(ServerLocation location_data) {
+    _location_data_vector.push_back(location_data);
+}
+
 void ServerData::setListeningSocket(int const & listening_socket) {
     _listening_socket = listening_socket;
 }

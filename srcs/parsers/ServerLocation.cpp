@@ -4,12 +4,12 @@
 ServerLocation::ServerLocation()// todo private???
     /** Initializing default values for the location block */
     : _is_location_cgi(false),
-    _root_directory(""),
+    _root_directory(std::string()),
     _allow_methods(),
-    _index_file(""),
+    _index_file(std::string()),
     _auto_index(false),
-    _interpreter_path(""),
-    _script_extension("") {
+    _interpreter_path(std::string()),
+    _script_extension(std::string()) {
 }
 
 /** Overloaded constructor */
@@ -19,8 +19,8 @@ ServerLocation::ServerLocation(std::string const & server_root_directory, std::s
     _root_directory(server_root_directory),
     _index_file(server_index_file),
     _auto_index(false),
-    _interpreter_path(""),
-    _script_extension("") {
+    _interpreter_path(std::string()),
+    _script_extension(std::string()) {
     _allow_methods.push_back(GET);
 }
 

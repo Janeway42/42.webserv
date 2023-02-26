@@ -1,5 +1,7 @@
 #include "ConfigFileParser.hpp"
 
+// c++ -Iincludes/parsers -Wall -Werror -Wextra -pedantic -std=c++98 -Wshadow -fsanitize=address -g3 srcs/parsers/ConfigFileParser.cpp srcs/parsers/ServerData.cpp srcs/parsers/ServerLocation.cpp srcs/parsers/Parser.cpp tests/mainConfigFile.cpp
+
 int main(int ac, char **av) {
     if (ac == 2) {
         std::cout << std::boolalpha;
@@ -13,7 +15,7 @@ int main(int ac, char **av) {
 
             /* begin() returns an iterator to beginning while cbegin() returns a const_iterator to beginning. */
             std::vector<ServerData>::const_iterator it_server;
-            for (it_server = configFileData.getServers().begin(); it_server != configFileData.getServers().cend(); ++it_server) {
+            for (it_server = configFileData.servers.begin(); it_server != configFileData.servers.cend(); ++it_server) {
 
                 /****************************************** server block data *****************************************/
                 std::cout << std::endl << "Starting server block " << std::endl;
@@ -21,7 +23,7 @@ int main(int ac, char **av) {
                 std::string serverName = it_server->getServerName();
                 std::cout << GRE << std::left << std::setw(30) << "\"server_name\": " << serverName << BACK << std::endl;
 
-                unsigned int listensTo = it_server->getListensTo();
+                std::string listensTo = it_server->getListensTo();
                 std::cout << GRE << std::left << std::setw(30) << "\"listens_to\": " << listensTo << BACK << std::endl;
 
                 std::string ipAddress = it_server->getIpAddress();
@@ -46,6 +48,9 @@ int main(int ac, char **av) {
                 std::vector<ServerLocation>::const_iterator it_location;
                 for (it_location = it_server->getLocationBlocks().cbegin(); it_location != it_server->getLocationBlocks().cend(); ++it_location) {
 
+                    std::cout << RED_BG << "JOYC: " << (it_location->getRootDirectory().empty() ? "true" : "false") << BACK << std::endl;// todo why this is empty
+
+
                     if (it_location->isLocationCgi()) {
                         /************************************* cgi location block data ************************************/
                         std::cout << std::endl << "Starting location block" << std::endl;
@@ -66,6 +71,7 @@ int main(int ac, char **av) {
                         /*************************************** location block data **************************************/
                         std::cout << std::endl << "Starting location block " << std::endl;
                         std::cout << "Is this location a CGI location: " << it_location->isLocationCgi() << std::endl;
+                        std::cout << RED_BG << "JOYCE: " << it_location->getRootDirectory() << BACK << std::endl;
 
                         std::string locationRootDirectory = it_location->getRootDirectory();
                         std::cout << GRE << std::left << std::setw(30) << "\"root_directory\": " << locationRootDirectory << BACK << std::endl;

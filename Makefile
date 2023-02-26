@@ -27,7 +27,7 @@ NAME = webserv
 
 CPP = c++
 
-FLAGS = -Iincludes/comms -Iincludes/parsers -Wall -Werror -Wextra -pedantic -std=c++98 -Wshadow -g
+FLAGS = -Iincludes/comms -Iincludes/parsers -Wall -Werror -Wextra -pedantic -std=c++98 -Wshadow -fsanitize=address -g3
 # other debug options: -fsanitize=address -g3
 # -pedantic -> Issue all the warnings demanded by strict ISO, it follows the
 #  version of the ISO standard specified by any -std option.

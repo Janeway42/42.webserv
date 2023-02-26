@@ -23,7 +23,7 @@ class ServerData : public Parser {
         unsigned int _client_max_body_size;
         std::string _error_page;
         unsigned int _port_redirection;
-        /* As more than 1 location block can be added to a server block*/
+        /* As more than 1 location block can be added to a server block */
         std::vector<ServerLocation> _location_data_vector;
         int _listening_socket;
 
@@ -55,6 +55,7 @@ class ServerData : public Parser {
         bool setClientMaxBodySize(std::string const & body_size);
         bool setErrorPage(std::string const & err_page);
         bool setPortRedirection(std::string const & port_redir);
+        void addToLocationVector(ServerLocation location_data);
         void setListeningSocket(int const & listening_socket);
 };
 #endif //SERVERDATA_HPP
