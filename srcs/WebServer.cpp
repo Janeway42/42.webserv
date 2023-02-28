@@ -196,6 +196,10 @@ void WebServer::sendResponse(struct kevent& event)
 			// sendImmage(event, "./resources/img_938kb.jpg");
 			// sendImmage(event, "./resources/img_5000kb.jpg");
 			 sendImmage(event, "./resources/img_13000kb.jpg");
+
+			 !!!
+			 If the image path in html file is too long, it started, then address sanitizer 
+			 gives error 'heap buffer overflow' !!!
 		}
 		else 
 			// sendResponseFile(event, "./resources/index_just_text.html");
@@ -318,14 +322,14 @@ void WebServer::sendResponseFile(struct kevent& event, std::string file)
 
 
 // NEW SEND_IMAGE
-void WebServer::sendImmage(struct kevent& event, std::string imgFileName) {
+void WebServer::sendImmage(struct kevent& event, std::string imagePath) {
 	std::cout << RED "FOUND IMAGE extention .jpg or .png\n" RES;
 	unsigned long ret = 0;
 
 	// Stream image and store it into a string
 	std::fstream imageFile;
 	std::string content;
-	imageFile.open(imgFileName);
+	imageFile.open(imagePath);
 	content.assign(std::istreambuf_iterator<char>(imageFile), std::istreambuf_iterator<char>());
 	content += "\r\n";
 	imageFile.close();
@@ -360,7 +364,7 @@ void WebServer::sendImmage(struct kevent& event, std::string imgFileName) {
 }
 
 /* OLD SEND_IMAGE
-void WebServer::sendImmage(struct kevent& event, std::string imgFileName)
+void WebServer::sendImmage(struct kevent& event, std::string imagePath)
 {
 	std::cout << RED "FOUND extention .jpg or .png\n" RES;
 
@@ -368,7 +372,7 @@ void WebServer::sendImmage(struct kevent& event, std::string imgFileName)
 	unsigned char *buffer;
 	unsigned long imageSize;
 
-	file = fopen(imgFileName.c_str(), "rb");
+	file = fopen(imagePath.c_str(), "rb");
 	if (!file)
 	{
 		std::cerr << "Unable to open file\n";
