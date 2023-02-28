@@ -17,8 +17,11 @@ WebServer::WebServer(std::string const & configFileName)
         std::cout << "PORT: " << it_server->getListensTo().c_str() << std::endl;
         if (getaddrinfo(it_server->getIpAddress().c_str(), it_server->getListensTo().c_str(), &hints, &_addr) != 0)
             throw ServerException(("failed addr"));
-        _listening_socket = socket(_addr->ai_family, _addr->ai_socktype, _addr->ai_protocol);
-        it_server->setListeningSocket(_listening_socket);
+		else {
+			_listening_socket = socket(_addr->ai_family, _addr->ai_socktype, _addr->ai_protocol);
+			// it_server->setListeningSocket(_listening_socket);
+			break;
+		}
     }
 
 	if (_listening_socket < 0)
