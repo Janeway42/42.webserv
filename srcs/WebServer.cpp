@@ -179,7 +179,7 @@ void WebServer::sendResponse(struct kevent& event)
 
 	if (storage->getError())
 	{
-		sendResponseFile(event, "../resources/error404.html");
+		sendResponseFile(event, "./resources/error404.html");
 		if (removeEvent(event, EVFILT_WRITE) == 1)
 			throw ServerException("failed kevent EV_DELETE client - send error");
 		closeClient(event);
@@ -189,14 +189,20 @@ void WebServer::sendResponse(struct kevent& event)
 	{
 		std::string temp = (storage->getRequestData()).getHttpPath();
 
-		if (temp.find(".png") != std::string::npos)
-			sendImmage(event, "../resources/immage.png");
+		if (temp.find(".png") != std::string::npos) {
+			// sendImmage(event, "./resources/immage.png");
+			//sendImmage(event, "./resources/img_36kb.jpg");
+			// sendImmage(event, "./resources/img_109kb.jpg");
+			// sendImmage(event, "./resources/img_938kb.jpg");
+			// sendImmage(event, "./resources/img_5000kb.jpg");
+			 sendImmage(event, "./resources/img_13000kb.jpg");
+		}
 		else 
-			sendResponseFile(event, "../resources/index_just_text.html");
-			//sendResponseFile(event, "../resources/index_just_image.html");
-			// sendResponseFile(event, "../resources/index_post_form.html");
-			// sendResponseFile(event, "../resources/index_get_form.html");
-			//	sendResponseFile(event, "../resources/index_dummy.html");
+			// sendResponseFile(event, "./resources/index_just_text.html");
+			// sendResponseFile(event, "./resources/index_just_image.html");
+			// sendResponseFile(event, "./resources/index_post_form.html");
+			// sendResponseFile(event, "./resources/index_get_form.html");
+			sendResponseFile(event, "./resources/index_dummy.html");
 
 		if (removeEvent(event, EVFILT_WRITE) == 1)
 			throw ServerException("failed kevent EV_DELETE client - send success");
@@ -310,6 +316,50 @@ void WebServer::sendResponseFile(struct kevent& event, std::string file)
 
 }
 
+
+// NEW SEND_IMAGE
+void WebServer::sendImmage(struct kevent& event, std::string imgFileName) {
+	std::cout << RED "FOUND IMAGE extention .jpg or .png\n" RES;
+	unsigned long ret = 0;
+
+	// Stream image and store it into a string
+	std::fstream imageFile;
+	std::string content;
+	imageFile.open(imgFileName);
+	content.assign(std::istreambuf_iterator<char>(imageFile), std::istreambuf_iterator<char>());
+	content += "\r\n";
+	imageFile.close();
+
+	// Send header block
+	std::string headerBlock = 	"HTTP/1.1 200 OK\r\n"
+								"Content-Type: image/jpg\r\n";
+	headerBlock.append("accept-ranges: bytes\r\n");
+	std::string contentLen = "Content-Length: ";
+	std::string temp = std::to_string(content.size());
+	headerBlock.append(contentLen);
+	contentLen.append(temp);
+	headerBlock.append("\r\n\r\n");
+	ret = send(event.ident, headerBlock.c_str(), headerBlock.length(), 0);
+	//std::cout << YEL "Image header block sent, ret: " << ret << RES "\n";
+
+	// Send image content and each time reduce the original by ret
+	size_t sentSoFar = 0;
+	size_t imageSize = content.size();
+	for (int i = 0; sentSoFar < imageSize; i++) {
+		ret = send(event.ident, content.c_str(), content.size(), 0);
+		if (ret == std::string::npos) {
+			//std::cout << RED << i << "    Nothing sent (" << ret << RES "),  sentSoFar " << sentSoFar << "\n";
+			continue ;
+		}
+		else {
+			content.erase(0, ret);
+			sentSoFar += ret;
+			//std::cout << YEL << i << "    Sent chunk " << ret << RES ",  sentSoFar " << sentSoFar << "\n";
+		}
+	}
+}
+
+/* OLD SEND_IMAGE
 void WebServer::sendImmage(struct kevent& event, std::string imgFileName)
 {
 	std::cout << RED "FOUND extention .jpg or .png\n" RES;
@@ -354,6 +404,8 @@ void WebServer::sendImmage(struct kevent& event, std::string imgFileName)
 	fclose(file);
 	free(buffer);
 }
+*/
+
 
 // --------------------------------------------------------- get functions
 // -----------------------------------------------------------------------
