@@ -1,12 +1,13 @@
 #ifndef REQUESTDATA_HPP
 #define REQUESTDATA_HPP
 
+#include "Parser.hpp"
+
 #include <string>
 #include <vector>
 #include <map>
 
-#include "Parser.hpp"
-
+namespace data {
 class RequestData {
 	private:
 		// FIRST LINE HEADER
@@ -19,10 +20,16 @@ class RequestData {
 		int         _reqContentLength;
 		std::string _reqContentType;
 
-		// PARTS OF PATH AND FORM DATA
-		std::string _pathFirstPart;                      // ie: /kostja.se/folderA/folderB/
-		std::string _pathLastWord;                       // ie: /index.html  OR   /folderC/
-		std::map<std::string, std::string> _formData;
+		// PARTS OF URL PATH AND FORM DATA
+		std::string _path;                      	// ie: /kostja.se/folderA/folderB/index.html
+		std::string _pathFirstPart;                 // ie: /kostja.se/folderA/folderB/
+		std::string _pathLastWord;                  // ie: /index.html  OR   /folderC/
+		std::string _fileExtention;                 // ie: /index.html  OR   /folderC/
+		std::string	_queryString;
+		std::string	_cgiBody;
+		std::map<std::string, std::string>	_formData;	 // maybe not needed, maybe Vector list will be enough
+		std::vector<std::string>			_formList;
+
 
 
 	public:
@@ -32,23 +39,27 @@ class RequestData {
 		bool doneParsingRequest;
 		bool errorRequest;
 
-		/** Getters */
-		std::string getRequestMethod() const;
-		std::string getHttpPath() const;
-		std::string getHttpVersion() const;
-		std::string getRequestHost() const;
-		std::string getRequestAccept() const;
-		size_t      getRequestContentLength() const;
-		std::string getRequestContentType() const;
+		/** Request Getters */
+		const std::string getRequestMethod() const;
+		const std::string getHttpPath() const;
+		const std::string getHttpVersion() const;
+		const std::string getRequestHost() const;
+		const std::string getRequestAccept() const;
+		size_t         	  getRequestContentLength() const;
+		const std::string getRequestContentType() const;
 
-		std::string 						getPathFirstPart( )const;
-		std::string							getPathLastWord() const;
-		std::map<std::string, std::string>	getFormData() const;
-		// const std::map<std::string, std::string>	getFormData() const;
+		const std::string 							getPath( )const;
+		const std::string 							getPathFirstPart( )const;	// maybe not needed
+		const std::string							getPathLastWord() const;	// maybe not needed
+		const std::string							getFileExtention() const;
+		const std::string							getQueryString() const;
+		const std::string							getCgiBody() const;
+
+		std::vector<std::string>					getFormList() const;	// maybe not needed
+		std::map<std::string, std::string>			getFormData() const;	// maybe not needed
 
 
-	    /** Setters */
-        // TODO all setters can receive a const & EX std::string const & reqMethod
+	/** Request Setters */
 		// First line
 		void setRequestMethod(std::string reqMethod);
 		void setRequestPath(std::string reqPath);
@@ -61,10 +72,16 @@ class RequestData {
 		void setRequestContentType(std::string reqAccept);
 
 		// Path parts and Form Data
-		void setPathFirstPart(std::string path);
-		void setPathLastWord(std::string path);
-		void setFormData(std::map<std::string, std::string>);
+		void setPath(std::string path);
+		void setPathFirstPart(std::string path);				// maybe not needed
+		void setPathLastWord(std::string path);					// maybe not needed
+		void setFileExtention(std::string path);
+		void setQueryString(std::string path);
+		void setCgiBody(std::string cgiBody);
+		void setFormList(std::vector<std::string>);				// maybe not needed
+		void setFormData(std::map<std::string, std::string>);	// maybe not needed
 
 };
 
-#endif //REQUESTDATA_HPP
+} // data
+#endif // REQUESTDATA_HPP

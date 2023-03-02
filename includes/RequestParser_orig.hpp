@@ -1,5 +1,10 @@
-#ifndef REQUESTPARSER_HPP
-#define REQUESTPARSER_HPP
+//
+// Created by Joyce Macksuele on 18/01/2023.
+// Adapted Jaka
+//
+
+#ifndef WEBSERV_REQUEST_PARSER_HPP
+#define WEBSERV_REQUEST_PARSER_HPP
 
 #include <cctype> // tolower()
 #include <string.h>	// for memset
@@ -14,7 +19,6 @@
 
 #include "./Parser.hpp"
 #include "./RequestData.hpp"
-#include "./ParseURLpath.hpp"
 
 
 	// std::string temp = path;
@@ -35,7 +39,7 @@ namespace data {
 			std::string _header;
 			std::string _body;
 			std::string _temp;
-        //	std::string keyParser(std::string & lineContent, std::string keyToFind);
+        	std::string keyParser(std::string & lineContent, std::string keyToFind);
 			int 		appendLastChunkToBody(std::string::size_type it, int fdClient);
 			int 		appendToBody(std::string request);
 
@@ -87,4 +91,4 @@ namespace data {
 
 
 } // data
-#endif // REQUEST_PARSER_HPP
+#endif // WEBSERV_REQUEST_PARSER_HPP

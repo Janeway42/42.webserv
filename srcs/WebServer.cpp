@@ -1,4 +1,4 @@
-#include "WebServer.hpp"
+#include "WebServer.hpp"  // jaka
 
 WebServer::WebServer(std::string const & configFileName)
 {
@@ -31,7 +31,10 @@ WebServer::WebServer(std::string const & configFileName)
 	int socket_on = 1;
 	setsockopt(_listening_socket, SOL_SOCKET, SO_REUSEADDR, &socket_on, sizeof(socket_on));
 	if (bind(_listening_socket, _addr->ai_addr, _addr->ai_addrlen) == -1)
+	{
+		perror("... bind error: ");
 		throw ServerException(("failed bind"));
+	}
 	if (listen(_listening_socket, SOMAXCONN) == -1)  // max nr of accepted connections 
 		throw ServerException(("failed listen"));
 
@@ -120,7 +123,8 @@ void WebServer::readRequest(struct kevent& event)
 {
 	char buffer[50];
 	memset(&buffer, '\0', 50);
-	Request* storage = (Request*)event.udata;
+	data::Request* storage = (data::Request*)event.udata;
+	//Request* storage = (Request*)event.udata;
 
 	int ret = recv(event.ident, &buffer, sizeof(buffer) - 1, 0);
 //	std::cout << "bytes read: " << ret << std::endl;                 // test line 
@@ -143,7 +147,7 @@ void WebServer::readRequest(struct kevent& event)
 	else if (storage->getEarlyClose() == false && storage->getDone() == false)
 	{
 	//	std::cout << "append buffer\n";
-		storage->appendToRequest(buffer);
+		storage->appendToRequest(buffer, event.ident);
 
 		if (storage->getError() == true)
 		{
@@ -165,7 +169,7 @@ void WebServer::readRequest(struct kevent& event)
 
 void WebServer::sendResponse(struct kevent& event)
 {
-	Request *storage = (Request *)event.udata;
+	data::Request *storage = (data::Request *)event.udata;
 
 	std::time_t elapsedTime = std::time(NULL);
 	if (elapsedTime - storage->getTime() > 5)
@@ -191,22 +195,22 @@ void WebServer::sendResponse(struct kevent& event)
 
 		if (temp.find(".png") != std::string::npos) {
 			// sendImmage(event, "./resources/immage.png");
-			//sendImmage(event, "./resources/img_36kb.jpg");
+			sendImmage(event, "./resources/img_36kb.jpg");
 			// sendImmage(event, "./resources/img_109kb.jpg");
 			// sendImmage(event, "./resources/img_938kb.jpg");
 			// sendImmage(event, "./resources/img_5000kb.jpg");
-			 sendImmage(event, "./resources/img_13000kb.jpg");
+			// sendImmage(event, "./resources/img_13000kb.jpg");
 
-			 !!!
-			 If the image path in html file is too long, it started, then address sanitizer 
-			 gives error 'heap buffer overflow' !!!
+			//  !!!
+			//  If the image path in html file is too long, it started, then address sanitizer 
+			//  gives error 'heap buffer overflow' !!!
 		}
 		else 
 			// sendResponseFile(event, "./resources/index_just_text.html");
 			// sendResponseFile(event, "./resources/index_just_image.html");
-			// sendResponseFile(event, "./resources/index_post_form.html");
+			sendResponseFile(event, "./resources/index_post_form.html");
 			// sendResponseFile(event, "./resources/index_get_form.html");
-			sendResponseFile(event, "./resources/index_dummy.html");
+			// sendResponseFile(event, "./resources/index_dummy.html");
 
 		if (removeEvent(event, EVFILT_WRITE) == 1)
 			throw ServerException("failed kevent EV_DELETE client - send success");
@@ -233,7 +237,7 @@ void WebServer::newClient(struct kevent event)
 	if (fd == -1)
 		throw ServerException("failed accept");
 
-	Request *storage = new Request();
+	data::Request *storage = new data::Request();
 	EV_SET(&evSet, fd, EVFILT_READ, EV_ADD, 0, 0, storage); 
 	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 		throw ServerException("failed kevent add EVFILT_READ");
@@ -244,8 +248,8 @@ void WebServer::newClient(struct kevent event)
 
 void WebServer::closeClient(struct kevent& event)
 {
-	Request *storage;
-	storage = (Request *)event.udata;
+	data::Request *storage;
+	storage = (data::Request *)event.udata;
 
 	close(event.ident); 
 	std::cout << "connection closed\n";
@@ -258,7 +262,7 @@ void WebServer::closeClient(struct kevent& event)
 int WebServer::removeEvent(struct kevent& event, int filter)
 {
 	struct kevent evSet;
-	Request *storage = (Request *)event.udata;
+	data::Request *storage = (data::Request *)event.udata;
 
 	EV_SET(&evSet, event.ident, filter, EV_DELETE, 0, 0, storage); 
 	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
@@ -291,7 +295,7 @@ std::string WebServer::streamFile(std::string file)
 
 void WebServer::sendResponseFile(struct kevent& event, std::string file)
 {
-	Request *storage = (Request *)event.udata;
+	data::Request *storage = (data::Request *)event.udata;
 	std::string response;
 	std::string headerBlock;
 	response = streamFile(file);

@@ -12,6 +12,7 @@
 # define BLU     "\033[34m"
 # define PUR     "\033[35m"
 # define CYN     "\033[36m"
+# define GRN     "\x1B[32m"
 # define RES     "\033[37m"
 # define BACK     "\033[0m"
 

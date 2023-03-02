@@ -4,21 +4,187 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <unistd.h>
 
-#include "RequestParser.hpp"
+/*
+	What happens if you dont have a form on your page, but you directly write ?city=aaa in the URL?
+	In this case, no action file is specified ???
 
-// #include "_colors.h"
+
+*/
+
+
+
+// #include <sys/types.h>
+#include <sys/wait.h>	// for wait() on Linux
+
+#include "../includes/Parser.hpp" // for colors
+#include "../includes/RequestParser.hpp"
+
+/*
+char* ENV[25] = {
+	(char*)"COMSPEC=", (char*)"DOCUMENT_ROOT=", (char*)"GATEWAY_INTERFACE=", (char*)"HTTP_ACCEPT=", (char*)"HTTP_ACCEPT_ENCODING=",             
+	(char*)"HTTP_ACCEPT_LANGUAGE=", (char*)"HTTP_CONNECTION=", (char*)"HTTP_HOST=", (char*)"HTTP_USER_AGENT=", (char*)"PATH=",            
+	(char*)"QUERY_STRING=", (char*)"REMOTE_ADDR=", (char*)"REMOTE_PORT=", request_method2, (char*)"REQUEST_URI=", (char*)"SCRIPT_FILENAME=",
+	(char*)"SCRIPT_NAME=", (char*)"SERVER_ADDR=", (char*)"SERVER_ADMIN=", (char*)"SERVER_NAME=",(char*)"SERVER_PORT=",(char*)"SERVER_PROTOCOL=",     
+	(char*)"SERVER_SIGNATURE=", (char*)"SERVER_SOFTWARE=", NULL
+};
+*/
+
+namespace data {
+
+std::string runExecve(char *ENV[], char *args[], int fdClient) {
+	//std::cout << BLU "START runExeve\n" RES;
+	//std::cout << "ENV: " << ENV[0] << "\n";
+
+	int    		fd[2];
+	
+	int    		fdSendBody[2];
+	
+	pid_t		retFork;
+	std::string	incomingStr;
+
+	if (pipe(fd) == -1)
+		std::cout << "Error: Pipe failed\n";
+	
+	//std::cout << "pipe fd[0] " << fd[0] << ", pipe fd[1] " << fd[1] << " \n";
+	//dup2(fdClient, fd[1]);
+	//std::cout << BLU "POST BODY ENV : " << ENV[2] << "\n" RES;
+	// BY HERE, THE HUGE TEXTFILE IS STORED OK
+
+
+	retFork = fork();
+
+	if (retFork == 0) {
+		std::cout << "    Start CHILD execve()\n";
+		if (retFork < 0)
+			std::cout << "Error: Fork failed\n";
+
+		dup2(fd[1], 1);
+		(void)fdClient;
+		//dup2(fdClient, fd[1]);
+		close(fd[0]);
+
+		// BIG BODY NEEDS TO BE SENT TO THE CGI BY WRITE TO PIPE
+		close(fdSendBody[0]);	// close stdout reading from
+		dup2(fdSendBody[1], 1);
+		int ret2 = write(fdSendBody[1], "Something ..." , 13);
+		std::cout << YEL "ret from write to CGI : " << ret2 << "\n" RES;
+
+
+		// std::cout << YEL "POST BODY ENV : " << ENV[2] << "\n" RES;
+
+
+
+		int ret = execve(args[0], args, ENV);
+		std::cout << RED "Error: Execve failed: " << ret << "\n" RES;
+	}
+	else {
+		wait(NULL);
+		//std::cout << "    Start Parent\n";
+		char buff[100];
+
+		close(fd[1]);
+		dup2(fd[0], 0);
+		//dup2(fdClient, fd[0]);
+
+		close(fdSendBody[1]);
+		close(fdSendBody[0]);
+		//dup2(fdSendBody[0], 0);
+
+		//std::cout << RED "        Start loop reading from child\n" RES;
+		for (int ret = 1; ret != 0; ) {
+			memset(buff, '\0', 100);
+			ret = read(fd[0], buff, 99);
+			incomingStr.append(buff);
+		}
+		//std::cout << BLU "\n       All content read from CGI\n[" << incomingStr << "]\n" RES;
+	}
+	return (incomingStr);
+}
+
+
+
+
+void Request::callCGI(RequestData reqData, int fdClient) {
+	std::cout << RED "START CALL_CGI\n" RES;
+
+	(void)reqData;
+	// Declare all necessary variables
+	std::string comspec			= "COMSPEC=";
+	std::string request_method	= "REQUEST_METHOD=";
+	std::string query_string	= "QUERY_STRING=";
+	std::string server_name		= "SERVER_NAME=";
+
+	// Declare a vector and fill it with variables, with attached =values
+	std::vector<std::string> temp;
+	temp.push_back(comspec.append("default"));
+	temp.push_back(request_method.append(_data.getRequestMethod()));
+	temp.push_back(query_string.append(_data.getQueryString()));
+	temp.push_back(server_name.append("default"));
+
+	//std::cout << "Size of vector temp: "<< temp.size() << "\n";
+	// std::cout << YEL "POST BODY: " << temp[2] << "\n" RES;
+	// BY HERE, THE HUGE BODY IS STORED OK
+
+	// Make a char** array and copy all content of the above vector
+	char **env = new char*[temp.size()  + 1];
+
+	size_t i = 0;
+	for (i = 0; i < temp.size(); i++) {
+	    env[i] = new char[temp[i].length() + 1];
+	    strcpy(env[i], temp[i].c_str());
+	}
+	env[i] = NULL;
+	//std::cout << YEL "POST BODY ENV : " << env[2] << "\n" RES;
+	// BY HERE, THE HUGE BODY IS STORED OK
+
+	// Just for printing
+	//for (i = 0; env[i]; i++) {
+	//   std::cout << env[i] << std::endl;
+	//}
+
+	// Prepare the array of the correct command/cgi file to be executed
+	// The path of the executable must be according to the 'action file' from the URL
+	// char *args[2];
+	// args[0] = (char *)"./jaka_cgi/cpp_cgi";   // Make sure the path is correct on Mac/Linux
+	// args[1] = NULL;
+
+
+	// char *args[3];
+	// args[0] = (char *)"/usr/bin/php";   // Make sure the path is correct on Mac/Linux
+	// args[1] = (char *)"./jaka_cgi/_somePhp.php"; // MUST BE WITH A DOT !!
+	// args[2] = NULL;
+
+	char *args[3];
+	args[0] = (char *)"/usr/bin/python";   // Make sure the path is correct on Mac/Linux
+	args[1] = (char *)"./resources/cgi/python_cgi.py"; // MUST BE WITH A DOT !!
+	args[2] = NULL;
+
+	// (void)ENV;
+	// (void)fdClient;
+	_data.setCgiBody(runExecve(env, args, fdClient));
+
+	std::cout << "Stored CGI Body: [\n" BLU << _data.getCgiBody() << RES "]\n";
+
+	// Cleanup
+	for (size_t j = 0; j < temp.size(); j++) {
+	    delete env[j];
+	}
+	delete[] env;
+}
+
+
 
 // Some of arguments not used
-void printPathParts(std::string str, std::string strTrim, std::string path,
-					std::string fileName, RequestData reqData) {
-	(void)path;
-	(void)fileName;
+void printPathParts(std::string str, RequestData reqData) {
 
-	std::cout << "Found path:   [" << BLU << str << RES << "]\n";
-	std::cout << "Path trimmed: [" << BLU << strTrim << RES << "]\n";
-	std::cout << "Path part:    [" << PUR << reqData.getPathFirstPart() << RES << "]\n";
-	std::cout << "File/Folder:  [" << PUR << reqData.getPathLastWord() << RES << "]\n";
+	std::cout << "Found path:      [" << BLU << str << RES "]\n";
+//	std::cout << "Path trimmed:    [" << BLU << strTrim << RES "]\n";
+	std::cout << "Path:            [" << PUR << reqData.getPath() << RES "]\n";
+	std::cout << "Path first part: [" << PUR << reqData.getPathFirstPart() << RES "]\n";
+	std::cout << "File/Folder:     [" << PUR << reqData.getPathLastWord() << RES "]\n";
+	std::cout << "File extention:  [" << PUR << reqData.getFileExtention() << RES "]\n";
 
 	std::map<std::string, std::string> formData;
 	formData = reqData.getFormData();
@@ -27,41 +193,52 @@ void printPathParts(std::string str, std::string strTrim, std::string path,
 		std::cout << "\nSTORED FORM DATA PAIRS:\n";// Print the map
 		std::map<std::string, std::string>::iterator it;
 		for (it = formData.begin(); it != formData.end(); it++)
-			std::cout << PUR << "   " << it->first << RES << " ---> " << PUR << it->second << "\n" << RES;
+			std::cout << PUR "   " << it->first << RES " ---> " PUR << it->second << "\n" RES;
 	}
 	else	
-		std::cout << "Form Data:    " << GRE << "(not present)\n" << RES;
+		std::cout << "Form Data:    " << GRE "(not present)\n" RES;
 	std::cout << "\n";
 }
 
+
+
 int checkIfFileExists (const std::string& path) {
-    std::ifstream file(path.c_str());
+	std::ifstream file(path.c_str());
 
 	if (!(file.is_open())) {
-		std::cout << RED << "File " << path << " not found\n" << RES;
+		std::cout << RED "Error: File " << path << " not found\n" RES;
 		return (-1);
 	}
-	std::cout << GRE << "File " << path << " exists\n" << RES;
-    return 0;
+	std::cout << GRN "File/folder " << path << " exists\n" RES;
+	return 0;
 }
 
-int checkTypeOfFile(const std::string path) {
+
+
+int Request::checkTypeOfFile() {
+	std::cout << GRN "Start checkTypeofFile(), path [" << _data.getPath() << "\n" RES;
 	
-	std::string temp = path;
+	std::string path = _data.getPath();
+	std::string temp = _data.getPath();
+
 	if (path[0] == '.')
 		temp = path.substr(1, std::string::npos);
 
 	std::size_t found = temp.find_last_of(".");
 
 	if (found != std::string::npos) {
-		std::string extention = temp.substr(found, std::string::npos);
-		std::cout << GRE << "Found Extension: [" << extention << "]\n" << RES;
+		// std::string extention = temp.substr(found, std::string::npos);
+		_data.setFileExtention(temp.substr(found, std::string::npos));
 	}
 	else
-		std::cout << GRE << "There is no extention in the last name\n" << RES;
+		std::cout << GRN "There is no extention in the last name\n" RES;
 	return (0);
 }
 
+
+
+// Not in use
+// There is a read buffer overflow
 std::string removeDuplicateSlash(std::string pathOld) {
   
 	char *temp = (char *)malloc(pathOld.length() * sizeof(char) + 1);
@@ -91,35 +268,160 @@ std::string removeDuplicateSlash(std::string pathOld) {
 	return pathNew;
 }
 
-/*
-localhost:8080/folder//////folder/something.html?city=Tokio&street=Singel
-*/
 
-//int mainXXX()
-// int main()
-//{
-	// parsePath("/");
-	// parsePath("/home/");						// must be folder
-	// parsePath("/home");							// check if folder or file
+
+/* 	Split string at '&' and store each line into vector<>
+	Then split each line in vector into map<> key:value */
+std::map<std::string, std::string> Request::storeFormData(std::string &queryString)
+{
+	std::cout << GRN "Start store form data()\n" RES;
+	//std::cout << GRN "    BODY:        ["   << _body << "]\n" RES;
+	//std::cout << GRN "    queryString:   [" <<  queryString << "]\n" RES;
+	//std::cout << GRN "   _queryString:   [" << _data.getQueryString() << "]\n" RES;
+
+	std::string					line;
+	std::vector<std::string>	formList;
+
+	std::stringstream iss(queryString);
+	while (std::getline(iss, line, '&'))
+		formList.push_back(line);
+
+	_data.setFormList(formList);
+
+	// MAYBE THE FORM MAP WILL NOT BE NEEDED
+	std::string							key, val;
+	std::map<std::string, std::string>	formDataMap;
+	std::vector<std::string>::iterator	it;
+
+	for (it = formList.begin(); it != formList.end(); it++) {
+		std::stringstream iss2(*it);								// maybe change name, or reuse the above variable
+	 	std::getline(iss2, key, '=') >> val;
+		formDataMap[key] = val;
+		//std::cout << YEL "  ... vector [" << *it << "]\n" RES;
+	}
+	_data.setFormData(formDataMap);
+	return (formDataMap);
+}
+
+
+// !!! Not storing correctly the path part and file name!
+// If last '/' is found in path, then this is a folder, not file
+void	Request::storePath_and_FolderName(std::string path) {
+
+	size_t 	pos1	= 0;
+	size_t	pos2	= 0;
+	size_t 	count	= 0;
+
+	std::cout << CYN "Start storePath_and_FolderName(}" << path << "\n" RES;
+
+	// Check if there is query '?' and store path before it
+	// Probably not needed searching for query here, because the path is folder/,  so query not possible
+	_data.setPath(path);
+	pos1 = path.find_first_of("?");
+	if (pos1 != std::string::npos)
+		_data.setPath(path.substr(0, pos1));
+
+	pos1	= 0;
+	pos2	= path.find_first_of("/");
+	while (count < path.length()) {
+		if ((count = path.find("/", count)) != std::string::npos) {
+			pos1 = pos2;
+			pos2 = count;
+		}
+		if ( count == std::string::npos )
+			break ;
+		count++;
+	}
+	_data.setPathFirstPart(path.substr(0, pos1 + 1));
+	_data.setPathLastWord(path.substr(pos1 + 1, pos2));
+}
+
+
+
+// Found GET Method with '?' Form Data
+void	Request::storePathParts_and_FormData(std::string path) {
+
+	int			temp		= path.find_first_of("?");
+	std::string tempStr		= path.substr(0, temp);
+
+	_data.setPath(path.substr(0, temp));
+	//std::cout << CYN "StorePathParts() " << _data.getPath() << "\n" RES;
+	int posLastSlash 		= tempStr.find_last_of("/");
+	int	posFirstQuestMark	= path.find_first_of("?");
+	std::string	queryString	= path.substr(temp, std::string::npos);
+
+	_data.setPathFirstPart(tempStr.substr(0, posLastSlash));
+	_data.setPathLastWord(path.substr(posLastSlash, posFirstQuestMark - posLastSlash));
+
+	if (queryString[0] == '?') 	// Skip the '?' in the path
+		queryString = &queryString[1];
+
+	if (_data.getRequestMethod() == "GET")
+		_data.setQueryString(queryString);
+
+	std::cout << "Stored GET _queryString [\n" << BLU << _data.getQueryString() << RES "]\n";
+	std::cout << "Stored GET _body [\n" << BLU << _body << RES "]\n" RES;
 	
-	// parsePath("//////home/////folderA/");                	// must be folder
-	// parsePath("/home////folderB/");                	// must be folder
-	// parsePath("/home/folderC/////");                 	// check if folder or file
-	// parsePath("/home/folderD");                 	// check if folder or file
+	storeFormData(queryString);	// maybe not needed (the whole vector and map)
+								// if the cgi script can handle the whole queryString
+}
+
+
+
+int Request::parsePath(std::string str, int fdClient) {
+
+	std::cout << "    start parse path: [" << str << "]\n";	// sleep(1);
+//	std::string path			= removeDuplicateSlash(str);	// here error: read buffer overflow
+	std::string path			= str;
+	size_t		ret				= 0;
+//	std::string pathLastWord	= "";
 	
+
+	if (path == "")
+		return (-1);
+	if (path[0] == '/')
+		path = "." + path;
+
+	if (path == "./") {
+		std::cout << GRN "Path is the root '/'\n" RES;
+	}
+	if (path.back() == '/'  && (path.find("?") == std::string::npos)) {
+		std::cout << GRN "The path has no GET-Form data. Last char is '/', it must be a folder.\n" RES;
+		storePath_and_FolderName(path);
+	}
+
+	// if the last char is not slash /   then look for question mark 
+	// else if ((ret = path.find("?")) == std::string::npos ) {
+	else if ((ret = path.find("?")) == std::string::npos && _data.getRequestMethod() != "POST") {
+		std::cout << GRN "There is no GET or POST method, also the '?' not found\n" RES;
+		_data.setPath(path);
+		int pos			= 0;
+		pos				= path.find_last_of("/");	
+		_data.setPathFirstPart(path.substr(0, pos));
+		_data.setPathLastWord(path.substr(pos, std::string::npos));
+	}
 	
-	// parsePath("/home/index.html");                 	// check if folder or file
-	// parsePath("/home/folderD/index.html?street=///singel///");                 	// check if folder or file
+	else if ((ret = path.find("?")) != std::string::npos) {			// Found '?' in the path, maybe also check != "POST"
+		std::cout << GRN "There is GET Form data, the '?' is found\n" RES;
+		storePathParts_and_FormData(path);
+	}
 
-	// parsePath("/home/index.html/");             	// check if folder or file
-	// parsePath("/home/folder/index.html");		// check if folder or file
-	// parsePath("/home/folder/response.php");		// check if folder or file
-	// parsePath("/home/folder/response.php?street=Singel&city=London");
+	else if (_data.getRequestMethod() == "POST") {
+		std::cout << GRN "There is POST Form data\n" RES;
+		storePath_and_FolderName(path);	// Not sur if this good here ???
+		_data.setQueryString(getRequestBody());
+	}
 
-	// parsePath("kostja.se////folder//folder/folder/folder///folder/folder//index.html?city=tokio&street=singel");
+	//std::cout << GRN "XXX)\n" RES;
+	checkIfFileExists(_data.getPath());	// What in case of root only "/"  ???
+								// What is case of GET??
+	checkTypeOfFile();
+	
+	printPathParts(str, getRequestData());
 
-//	std::cout << checkIfFileExists("../test.html") << "\n";
-//	std::cout << checkIfFileExists("_testFolder") << "\n";
-//
-//	return (0);
-//}
+	(void)fdClient;
+	//callCGI(getRequestData(), fdClient);
+	return (0);
+}
+
+} // namespace data
