@@ -1,0 +1,58 @@
+<head>
+    <link rel="icon" href="data:,">
+</head>
+
+
+<body>
+<p> This is the file index.html</p>
+
+
+<br><br><br>
+<p> METHOD GET:</p>
+<form action="response_get.php" method="get">
+ <!--<form action="response_get.html" method="get">     -->
+  <label for="street">Street:</label>
+  <input type="text" id="street" name="street"><br>
+  <label for="city">City:</label>
+  <input type="text" id="city" name="city"><br><br>
+  <input type="submit" value="Submit">
+</form> <br><br><br>
+
+
+
+<p> METHOD POST:</p>
+<form action="response_post.php" method="post">
+<!--<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">-->
+
+
+  <fieldset style="background: #f6f8ff; border: 2px solid #4238ca;">
+    <legend>Customer Information</legend>
+    <label for="street">Street:</label>
+    <input type="text" name="street" placeholder="street"><br>
+    <label for="city">City:</label>
+    <input type="text" name="city" placeholder="city"><br><br>
+    <!--<input type="text" name="lastname" placeholder="Last name"><br /><br />-->
+    <button type="submit">Submit</button>
+  </fieldset>
+</form> <br><br><br>
+
+
+
+ <!--<form action="/action_page.php">-->
+ <!-- <label for="img">Select image:</label>-->
+ <!-- <input type="file" id="img" name="img" accept="image/*">-->
+ <!-- <input type="submit">-->
+  
+ <form action="upload.php" method="post" enctype="multipart/form-data">
+  Select image to upload:
+  <input type="file" name="fileToUpload" id="fileToUpload">
+  <input type="submit" value="Upload Image" name="submit">
+</form>
+  
+  
+  
+</form> <br><br><br>
+
+<p> SOME PHOTO</p>
+<img src="immage.png" alt="immage" style="width:20%; height:20%; ">
+</body>
