@@ -25,67 +25,62 @@
 	
 	//std::cout << GRN "Found Extension: [" << temp << "]\n" RES;
 	//std::cout << GRN "Found Extension: [" << extention << "]\n" RES;
-	
 
-namespace data {
+class Request : public Parser {
+    private:
+        RequestData _data;
+    //	std::string _header;
+    //	std::string _body;
+    //	std::string _temp;
+    //	std::string keyParser(std::string & lineContent, std::string keyToFind);
+        int 		appendLastChunkToBody(std::string::size_type it, int fdClient);
+        int 		appendToBody(std::string request);
 
-	class Request : public Parser {
-		private:
-			RequestData _data;
-		//	std::string _header;
-		//	std::string _body;
-		//	std::string _temp;
-        //	std::string keyParser(std::string & lineContent, std::string keyToFind);
-			int 		appendLastChunkToBody(std::string::size_type it, int fdClient);
-			int 		appendToBody(std::string request);
-
-			bool		_headerDone;
-			bool		_doneParsing;
-			bool 		_errorRequest;
-			bool 		_earlyClose;
-			std::time_t _startTime;
+        bool		_headerDone;
+        bool		_doneParsing;
+        bool 		_errorRequest;
+        bool 		_earlyClose;
+        std::time_t _startTime;
 
 
-		public:
-			Request();
-			virtual ~Request();
+    public:
+        Request();
+        virtual ~Request();
 
-			/** Getters */
-			RequestData const & getRequestData() const;
-			// std::string const & getRequestBody() const;  // moved to RequestData
+        /** Getters */
+        RequestData const & getRequestData() const;
+        // std::string const & getRequestBody() const;  // moved to RequestData
 
-			/** Methods */
-			void    							parseHeader(std::string header);
-			int									parsePath(std::string str, int fdClient);
-			void    							appendToRequest(const char *str, int fdClient);
-			void								storeBody(std::istringstream &iss);
-			// std::map<std::string, std::string>	storeFormData(std::string & pq);
-			std::map<std::string, std::string>	storeFormData(std::string pq);
-			void	storePathParts_and_FormData(std::string path);
-			void	storePath_and_FolderName(std::string path);
-			void 	callCGI(RequestData reqData, int fdClient);
-			int		checkTypeOfFile();
-
-			
+        /** Methods */
+        void    							parseHeader(std::string header);
+        int									parsePath(std::string str, int fdClient);
+        void    							appendToRequest(const char *str, int fdClient);
+        void								storeBody(std::istringstream &iss);
+        // std::map<std::string, std::string>	storeFormData(std::string & pq);
+        std::map<std::string, std::string>	storeFormData(std::string pq);
+        void	storePathParts_and_FormData(std::string path);
+        void	storePath_and_FolderName(std::string path);
+        void 	callCGI(RequestData reqData, int fdClient);
+        int		checkTypeOfFile();
 
 
-		//	int     checkStoredVars();
-			void    printStoredRequestData(data::Request &request); // Just for checking
-
-			int     storeWordsFromFirstLine(std::string firstLine);
-			int     storeWordsFromOtherLine(std::string otherLine);
-
-			bool getDone();
-			void setDone(bool val);
-			bool getError();
-			void setError(bool val);
-			bool getEarlyClose();
-			void setEarlyClose(bool val);
-			std::time_t getTime();
-
-		//	std::string getTemp();	moved to RequestData
-	};
 
 
-} // data
+    //	int     checkStoredVars();
+        void    printStoredRequestData(Request &request); // Just for checking
+
+        int     storeWordsFromFirstLine(std::string firstLine);
+        int     storeWordsFromOtherLine(std::string otherLine);
+
+        bool getDone();
+        void setDone(bool val);
+        bool getError();
+        void setError(bool val);
+        bool getEarlyClose();
+        void setEarlyClose(bool val);
+        std::time_t getTime();
+
+    //	std::string getTemp();	moved to RequestData
+};
+
 #endif // REQUEST_PARSER_HPP

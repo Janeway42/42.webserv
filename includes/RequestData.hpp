@@ -7,7 +7,6 @@
 #include <vector>
 #include <map>
 
-namespace data {
 class RequestData {
 	private:
 		// FIRST LINE HEADER
@@ -104,5 +103,4 @@ class RequestData {
 
 };
 
-} // data
 #endif // REQUESTDATA_HPP

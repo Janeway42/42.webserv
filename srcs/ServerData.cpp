@@ -13,7 +13,7 @@ ServerData::ServerData()
     _client_max_body_size(1024),
     _error_page(""),
     _port_redirection(0) {
-    std::cout << PUR << "JOYCE CREATING Default ServerData: " << BACK << std::endl;
+    std::cout << PUR << "ServerData Default constructor" << RES << std::endl;
 //    _location_data_vector.push_back(ServerLocation(_root_directory, _index_file));//TODO WILL IT CALL THE ServerLocation CONSTRUCTOR???
 }
 
@@ -28,7 +28,7 @@ ServerData::ServerData(ServerData const & rhs)
     _error_page(rhs._error_page),
     _port_redirection(rhs._port_redirection),
     _location_data_vector(rhs._location_data_vector) {
-    std::cout << PUR << "JOYCE _location_data_vector.size(): " << _location_data_vector.size() << BACK << std::endl;
+    std::cout << PUR << "ServerData Copy constructor" << RES << std::endl;
 }
 
 /** Destructor */
@@ -43,7 +43,7 @@ ServerData::~ServerData() {
     _error_page = std::string();
     _port_redirection = 0;
 //    _location_data_vector = std::vector<ServerLocation>();//TODO WILL IT CALL THE ServerLocation CONSTRUCTOR???
-    std::cout << PUR << "JOYCE deleting ServerData" << BACK << std::endl;
+    std::cout << PUR << "ServerData Destructor" << RES << std::endl;
 }
 
 /** #################################### Methods #################################### */
@@ -165,7 +165,7 @@ bool ServerData::setIpAddress(std::string const & ip) {
 //    std::string copy_ip = ip;
 //
 //    while (not copy_ip.empty()) {
-//        std::cout << RED_BG << "copy_ip: " << copy_ip << BACK << std::endl;
+//        std::cout << RED_BG << "copy_ip: " << copy_ip << RES << std::endl;
 //
 //        it = copy_ip.find('.');
 //        try {

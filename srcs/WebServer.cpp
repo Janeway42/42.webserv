@@ -123,7 +123,7 @@ void WebServer::readRequest(struct kevent& event)
 {
 	char buffer[50];
 	memset(&buffer, '\0', 50);
-	data::Request* storage = (data::Request*)event.udata;
+	Request* storage = (Request*)event.udata;
 	//Request* storage = (Request*)event.udata;
 
 	int ret = recv(event.ident, &buffer, sizeof(buffer) - 1, 0);
@@ -169,10 +169,19 @@ void WebServer::readRequest(struct kevent& event)
 
 void WebServer::sendResponse(struct kevent& event)
 {
-	data::Request *storage = (data::Request *)event.udata;
+    if (not event.udata) {
+        // JOYCE I got a heap-use-after-free from AddressSanitizer
+        // READ of size 8 at 0x615000001140 thread T0
+        //    #0 0x10c0a1980 in Request::getTime() RequestParser.cpp:349
+        //    ...
+        // i think it's in case  storage->getTime() tries runs but event.udata does not exist
+        // with this if I did not see the error again but we can keep an eye on it
+        throw ServerException("Empty event.udata");
+    }
+	Request *storage = (Request *)event.udata;
 
 	std::time_t elapsedTime = std::time(NULL);
-	if (elapsedTime - storage->getTime() > 5)
+	if (elapsedTime - storage->getTime() > 5)// JOYCE QUESTION -> TODO this one is supposed to wait for 5 seconds to get a connection, if it does not ir closes the connection and closes write with error? (see logs)
 	{
 		std::cout << "Unable to process request, it takes too long!\n";
 		storage->setError(true);
@@ -221,8 +230,9 @@ void WebServer::sendResponse(struct kevent& event)
 		if (removeEvent(event, EVFILT_WRITE) == 1)
 			throw ServerException("failed kevent EV_DELETE client - send success");
 		closeClient(event);
-		std::cout << "closed connection from write - done\n";
-	}
+		std::cout << "closed connection from write - done" << RES << std::endl;
+        std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
+    }
 }
 
 // --------------------------------------------------------- client functions 
@@ -234,7 +244,7 @@ void WebServer::newClient(struct kevent event)
 	struct sockaddr_storage socket_addr;
 	socklen_t socklen = sizeof(socket_addr);
 
-	std::cout << "make new client connection\n";
+    std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ New client connection ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
 	
 	int opt_value = 1;
 	int fd = accept(event.ident, (struct sockaddr *)&socket_addr, &socklen);
@@ -243,7 +253,7 @@ void WebServer::newClient(struct kevent event)
 	if (fd == -1)
 		throw ServerException("failed accept");
 
-	data::Request *storage = new data::Request();
+	Request *storage = new Request();
 	EV_SET(&evSet, fd, EVFILT_READ, EV_ADD, 0, 0, storage); 
 	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 		throw ServerException("failed kevent add EVFILT_READ");
@@ -254,8 +264,8 @@ void WebServer::newClient(struct kevent event)
 
 void WebServer::closeClient(struct kevent& event)
 {
-	data::Request *storage;
-	storage = (data::Request *)event.udata;
+	Request *storage;
+	storage = (Request *)event.udata;
 
 	close(event.ident); 
 	std::cout << "connection closed\n";
@@ -268,7 +278,7 @@ void WebServer::closeClient(struct kevent& event)
 int WebServer::removeEvent(struct kevent& event, int filter)
 {
 	struct kevent evSet;
-	data::Request *storage = (data::Request *)event.udata;
+	Request *storage = (Request *)event.udata;
 
 	EV_SET(&evSet, event.ident, filter, EV_DELETE, 0, 0, storage); 
 	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
@@ -301,7 +311,7 @@ std::string WebServer::streamFile(std::string file)
 
 void WebServer::sendResponseFile(struct kevent& event, std::string file)
 {
-	data::Request *storage = (data::Request *)event.udata;
+	Request *storage = (Request *)event.udata;
 	std::string response;
 	std::string headerBlock;
 	response = streamFile(file);

@@ -36,17 +36,17 @@ FLAGS = -Iincludes -Wall -Werror -Wextra -pedantic -std=c++98 -Wshadow -fsanitiz
 # -Wno-shadow -> is the default for the compiler, determinating that no warning
 #  is issued when variables are being shadowed.
 
-# Any modify to a .hpp file will alert Makefile's rules and recompile
-INCLUDES_DEPENDENCY = ./includes/*/*.hpp standard_complete.conf
+# Any modify to those files will alert Makefile's rules and recompile
+INCLUDES_DEPENDENCY = ./includes/*.hpp
 
-SRC =   srcs/WebServer.cpp\
-		srcs/ConfigFileParser.cpp\
-		srcs/ServerLocation.cpp\
+SRC =   srcs/ConfigFileParser.cpp\
 		srcs/Parser.cpp\
 		srcs/ParseURLpath.cpp\
 		srcs/RequestData.cpp\
 		srcs/RequestParser.cpp\
 		srcs/ServerData.cpp\
+		srcs/ServerLocation.cpp\
+		srcs/WebServer.cpp\
 		tests/Kqueue_main.cpp
 
 OBJ = $(SRC:%.cpp=%.o)

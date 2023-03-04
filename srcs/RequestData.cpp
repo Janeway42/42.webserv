@@ -1,7 +1,5 @@
 #include "../includes/RequestData.hpp"
 
-namespace data {
-
 /** Default constructor */
 RequestData::RequestData() {
 
@@ -181,6 +179,3 @@ void RequestData::setFormData(std::map<std::string, std::string> formData) {
 void RequestData::setFormList(std::vector<std::string> formList) {
 	_formList = formList;
 }
-
-
-} // data

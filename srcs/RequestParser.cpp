@@ -11,8 +11,6 @@
 
 #include "../includes/RequestParser.hpp"
 
-namespace data {
-
 /** Default constructor */
 Request::Request() {
 	_data = RequestData();
@@ -292,7 +290,7 @@ int Request::appendToBody(std::string req) {
 
 
 // JUST FOR CHECKING
-void Request::printStoredRequestData(data::Request &request) {
+void Request::printStoredRequestData(Request &request) {
 	RequestData reqData = request.getRequestData();
 
 	// PRINT FIRST LINE HEADER
@@ -350,9 +348,3 @@ std::time_t Request::getTime()
 {
 	return(_startTime);
 }
-
-
-
-
-} // data
-

@@ -9,7 +9,7 @@ int main(int ac, char **av)
             delete webServ;
         }
         catch (std::exception const & e) {
-            std::cout << RED << e.what() << BACK << std::endl;
+            std::cout << RED << e.what() << RES << std::endl;
         }
     }
 	return (EXIT_SUCCESS);
