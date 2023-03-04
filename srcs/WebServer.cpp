@@ -13,15 +13,14 @@ WebServer::WebServer(std::string const & configFileName)
     _servers =  configFileData.servers;
     std::vector<ServerData>::iterator it_server = _servers.begin();
     for (; it_server != _servers.cend(); ++it_server) {
-        std::cout << "IP ADDRESS: " << it_server->getIpAddress().c_str() << std::endl;
-        std::cout << "PORT: " << it_server->getListensTo().c_str() << std::endl;
-        if (getaddrinfo(it_server->getIpAddress().c_str(), it_server->getListensTo().c_str(), &hints, &_addr) != 0)
+        std::cout  << "IP ADDRESS: " << it_server->getIpAddress() << std::endl;
+        std::cout  << "PORT: " << it_server->getListensTo() << std::endl;
+        if (getaddrinfo(it_server->getIpAddress().c_str(), it_server->getListensTo().c_str(), &hints, &_addr) != 0) {
             throw ServerException(("failed addr"));
-		else {
-			_listening_socket = socket(_addr->ai_family, _addr->ai_socktype, _addr->ai_protocol);
-			// it_server->setListeningSocket(_listening_socket);
-			break;
-		}
+        }
+        _listening_socket = socket(_addr->ai_family, _addr->ai_socktype, _addr->ai_protocol);
+        //it_server->setListeningSocket(_listening_socket);// todo I get a "failed addr" when I try this (or anything else, even a log line)
+        break;// todo for now, I am breaking, but we intend to keep looping to the other server blocks!
     }
 
 	if (_listening_socket < 0)
@@ -167,8 +166,7 @@ void WebServer::readRequest(struct kevent& event)
 		std::cout << "just passing by\n";
 }
 
-void WebServer::sendResponse(struct kevent& event)
-{
+void WebServer::sendResponse(struct kevent& event) {
     if (not event.udata) {
         // JOYCE I got a heap-use-after-free from AddressSanitizer
         // READ of size 8 at 0x615000001140 thread T0
@@ -178,60 +176,53 @@ void WebServer::sendResponse(struct kevent& event)
         // with this if I did not see the error again but we can keep an eye on it
         throw ServerException("Empty event.udata");
     }
-	Request *storage = (Request *)event.udata;
+    Request *storage = (Request *) event.udata;
 
-	std::time_t elapsedTime = std::time(NULL);
-	if (elapsedTime - storage->getTime() > 5)// JOYCE QUESTION -> TODO this one is supposed to wait for 5 seconds to get a connection, if it does not ir closes the connection and closes write with error? (see logs)
-	{
-		std::cout << "Unable to process request, it takes too long!\n";
-		storage->setError(true);
-		storage->setEarlyClose(true);
-		if (removeEvent(event, EVFILT_READ) == 1)
-			throw ServerException("failed EVFILT_READ removal\n"); 
-	}
+    std::time_t elapsedTime = std::time(NULL);
+    if (elapsedTime - storage->getTime() > 5)// JOYCE QUESTION -> TODO this one is supposed to wait for 5 seconds to get a connection, if it does not ir closes the connection and closes write with error? (see logs)
+    {
+        std::cout << "Unable to process request, it takes too long!\n";
+        storage->setError(true);
+        storage->setEarlyClose(true);
+        if (removeEvent(event, EVFILT_READ) == 1)
+            throw ServerException("failed EVFILT_READ removal\n");
+    }
 
-	if (storage->getError())
-	{
-		sendResponseFile(event, "./resources/error404.html");
-		if (removeEvent(event, EVFILT_WRITE) == 1)
-			throw ServerException("failed kevent EV_DELETE client - send error");
-		closeClient(event);
-		std::cout << "closed connection from write - error\n";
-	}
-	else if (storage->getError() == false && storage->getDone() == true)
-	{
-		std::string temp = (storage->getRequestData()).getHttpPath();
+    std::vector<ServerData>::iterator it_server = _servers.begin();
+    for (; it_server != _servers.cend(); ++it_server) {
+        if (storage->getError()) {
+            sendResponseFile(event, "./resources/error404.html");
+            if (removeEvent(event, EVFILT_WRITE) == 1)
+                throw ServerException("failed kevent EV_DELETE client - send error");
+            closeClient(event);
+            std::cout << "closed connection from write - error\n";
+        } else if (storage->getError() == false && storage->getDone() == true) {
+            std::string temp = (storage->getRequestData()).getHttpPath();
 
-		if (temp.find(".png") != std::string::npos) {
-			// sendImmage(event, "./resources/immage.png");
-			// sendImmage(event, "./resources/img_36kb.jpg");
-			// sendImmage(event, "./resources/img_109kb.jpg");
-			// sendImmage(event, "./resources/img_938kb.jpg");
-			// sendImmage(event, "./resources/img_5000kb.jpg");
-			 sendImmage(event, "./resources/img_13000kb.jpg");
+            if (temp.find(".png") != std::string::npos) {
+                // sendImmage(event, "./resources/immage.png");
+                // sendImmage(event, "./resources/img_36kb.jpg");
+                // sendImmage(event, "./resources/img_109kb.jpg");
+                // sendImmage(event, "./resources/img_938kb.jpg");
+                // sendImmage(event, "./resources/img_5000kb.jpg");
+//                std::cout << "ROOT DIRECTORY: " << it_server->getRootDirectory() << std::endl;
+//                sendResponseFile(event, it_server->getIndexFile());
+                sendImmage(event, "resources/img_13000kb.jpg");
 
-			//  !!!
-			//  If the image path in html file is too long, it started, then address sanitizer 
-			//  gives error 'heap buffer overflow' !!!
-		}
-		else {
-			std::vector<ServerData>::iterator it_server = _servers.begin();
-    		for (; it_server != _servers.cend(); ++it_server) {
-				std::cout << "Index file: " << it_server->getIndexFile().c_str() << std::endl;
-				sendResponseFile(event, it_server->getIndexFile());
-				break;
-			}
-			//sendResponseFile(event, "./resources/index_just_text.html");
-			// sendResponseFile(event, "./resources/index_just_image.html");
-			// sendResponseFile(event, "./resources/index_post_form.html");
-			// sendResponseFile(event, "./resources/index_get_form.html");
-			// sendResponseFile(event, "./resources/index_dummy.html");
-		}
-		if (removeEvent(event, EVFILT_WRITE) == 1)
-			throw ServerException("failed kevent EV_DELETE client - send success");
-		closeClient(event);
-		std::cout << "closed connection from write - done" << RES << std::endl;
-        std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
+                //  !!!
+                //  If the image path in html file is too long, it started, then address sanitizer
+                //  gives error 'heap buffer overflow' !!!
+            } else {
+                std::cout << "INDEX FILE: " << it_server->getIndexFile() << std::endl;
+                sendResponseFile(event, it_server->getIndexFile());
+            }
+            if (removeEvent(event, EVFILT_WRITE) == 1)
+                throw ServerException("failed kevent EV_DELETE client - send success");
+            closeClient(event);
+            std::cout << "closed connection from write - done" << RES << std::endl;
+            std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
+        }
+        break;// todo for now, I am breaking, but we intend to keep looping to the other server blocks data!
     }
 }
 
@@ -343,7 +334,7 @@ void WebServer::sendResponseFile(struct kevent& event, std::string file)
 
 // NEW SEND_IMAGE
 void WebServer::sendImmage(struct kevent& event, std::string imagePath) {
-	std::cout << RED "FOUND IMAGE extention .jpg or .png\n" RES;
+	std::cout << GRN "FOUND IMAGE extention .jpg or .png\n" RES;
 	unsigned long ret = 0;
 
 	// Stream image and store it into a string

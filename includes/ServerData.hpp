@@ -25,7 +25,7 @@ class ServerData : public Parser {
         unsigned int _port_redirection;
         /* As more than 1 location block can be added to a server block */
         std::vector<ServerLocation> _location_data_vector;
-        int _listening_socket;
+        size_t _listening_socket;
 
     public:
         ServerData();
@@ -56,6 +56,6 @@ class ServerData : public Parser {
         bool setErrorPage(std::string const & err_page);
         bool setPortRedirection(std::string const & port_redir);
 //        void addToLocationVector(std::vector<ServerLocation> const & location_data);
-        void setListeningSocket(int const & listening_socket);
+        void setListeningSocket(size_t listening_socket);
 };
 #endif //SERVERDATA_HPP

@@ -6,6 +6,7 @@
 #include <unistd.h>
 
 # define RED_BG  "\033[41m"
+# define GRN_BG  "\033[42m"
 # define RED     "\033[31m"
 # define GRE     "\033[32m"
 # define GRN     "\x1B[32m"
