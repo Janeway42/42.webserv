@@ -14,6 +14,13 @@ class RequestData {
 		std::string _reqMethod;
 		std::string _reqHttpPath;
 		std::string _reqHttpVersion;
+
+		// added
+		std::string _reqHeader;
+		std::string _reqBody;		// There is a function storeBody??? in RequestParser!
+									// Check if it prints Yellow _data.getBody in funciton storeBody()
+		std::string _reqTemp;				
+
 		// OTHER HEADERS
 		std::string _reqHost;
 		std::string _reqAccept;
@@ -43,6 +50,14 @@ class RequestData {
 		const std::string getRequestMethod() const;
 		const std::string getHttpPath() const;
 		const std::string getHttpVersion() const;
+
+
+		const std::string getHeader() const;
+		const std::string getBody() const;
+		const std::string getTemp() const;
+
+
+
 		const std::string getRequestHost() const;
 		const std::string getRequestAccept() const;
 		size_t         	  getRequestContentLength() const;
@@ -64,6 +79,12 @@ class RequestData {
 		void setRequestMethod(std::string reqMethod);
 		void setRequestPath(std::string reqPath);
 		void setHttpVersion(std::string reqHttpVersion);
+		
+		void setHeader(std::string reqHttpVersion);
+		void setBody(std::string reqHttpVersion);
+		void setTemp(std::string reqHttpVersion);
+
+
 
 		// Other lines
 		void setRequestHost(std::string reqHost);

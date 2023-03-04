@@ -12,7 +12,7 @@ WebServer::WebServer(std::string const & configFileName)
     ConfigFileParser configFileData = ConfigFileParser(configFileName);
     _servers =  configFileData.servers;
     std::vector<ServerData>::iterator it_server = _servers.begin();
-    for (; it_server != configFileData.servers.cend(); ++it_server) {
+    for (; it_server != _servers.cend(); ++it_server) {
         std::cout << "IP ADDRESS: " << it_server->getIpAddress().c_str() << std::endl;
         std::cout << "PORT: " << it_server->getListensTo().c_str() << std::endl;
         if (getaddrinfo(it_server->getIpAddress().c_str(), it_server->getListensTo().c_str(), &hints, &_addr) != 0)
@@ -195,23 +195,29 @@ void WebServer::sendResponse(struct kevent& event)
 
 		if (temp.find(".png") != std::string::npos) {
 			// sendImmage(event, "./resources/immage.png");
-			sendImmage(event, "./resources/img_36kb.jpg");
+			// sendImmage(event, "./resources/img_36kb.jpg");
 			// sendImmage(event, "./resources/img_109kb.jpg");
 			// sendImmage(event, "./resources/img_938kb.jpg");
 			// sendImmage(event, "./resources/img_5000kb.jpg");
-			// sendImmage(event, "./resources/img_13000kb.jpg");
+			 sendImmage(event, "./resources/img_13000kb.jpg");
 
 			//  !!!
 			//  If the image path in html file is too long, it started, then address sanitizer 
 			//  gives error 'heap buffer overflow' !!!
 		}
-		else 
-			// sendResponseFile(event, "./resources/index_just_text.html");
+		else {
+			std::vector<ServerData>::iterator it_server = _servers.begin();
+    		for (; it_server != _servers.cend(); ++it_server) {
+				std::cout << "Index file: " << it_server->getIndexFile().c_str() << std::endl;
+				sendResponseFile(event, it_server->getIndexFile());
+				break;
+			}
+			//sendResponseFile(event, "./resources/index_just_text.html");
 			// sendResponseFile(event, "./resources/index_just_image.html");
-			sendResponseFile(event, "./resources/index_post_form.html");
+			// sendResponseFile(event, "./resources/index_post_form.html");
 			// sendResponseFile(event, "./resources/index_get_form.html");
 			// sendResponseFile(event, "./resources/index_dummy.html");
-
+		}
 		if (removeEvent(event, EVFILT_WRITE) == 1)
 			throw ServerException("failed kevent EV_DELETE client - send success");
 		closeClient(event);

@@ -272,7 +272,8 @@ std::string removeDuplicateSlash(std::string pathOld) {
 
 /* 	Split string at '&' and store each line into vector<>
 	Then split each line in vector into map<> key:value */
-std::map<std::string, std::string> Request::storeFormData(std::string &queryString)
+// std::map<std::string, std::string> Request::storeFormData(std::string &queryString)
+std::map<std::string, std::string> Request::storeFormData(std::string queryString)
 {
 	std::cout << GRN "Start store form data()\n" RES;
 	//std::cout << GRN "    BODY:        ["   << _body << "]\n" RES;
@@ -315,7 +316,7 @@ void	Request::storePath_and_FolderName(std::string path) {
 	std::cout << CYN "Start storePath_and_FolderName(}" << path << "\n" RES;
 
 	// Check if there is query '?' and store path before it
-	// Probably not needed searching for query here, because the path is folder/,  so query not possible
+	// Probably not needed searching for query here, because the method is POST,  so query not possible
 	_data.setPath(path);
 	pos1 = path.find_first_of("?");
 	if (pos1 != std::string::npos)
@@ -323,6 +324,7 @@ void	Request::storePath_and_FolderName(std::string path) {
 
 	pos1	= 0;
 	pos2	= path.find_first_of("/");
+//	pos2	= path.find_last_of("/");
 	while (count < path.length()) {
 		if ((count = path.find("/", count)) != std::string::npos) {
 			pos1 = pos2;
@@ -360,7 +362,7 @@ void	Request::storePathParts_and_FormData(std::string path) {
 		_data.setQueryString(queryString);
 
 	std::cout << "Stored GET _queryString [\n" << BLU << _data.getQueryString() << RES "]\n";
-	std::cout << "Stored GET _body [\n" << BLU << _body << RES "]\n" RES;
+	std::cout << "Stored GET _body [\n" << BLU << _data.getBody() << RES "]\n" RES;
 	
 	storeFormData(queryString);	// maybe not needed (the whole vector and map)
 								// if the cgi script can handle the whole queryString
@@ -409,7 +411,9 @@ int Request::parsePath(std::string str, int fdClient) {
 	else if (_data.getRequestMethod() == "POST") {
 		std::cout << GRN "There is POST Form data\n" RES;
 		storePath_and_FolderName(path);	// Not sur if this good here ???
-		_data.setQueryString(getRequestBody());
+										// path is not extracted correctly
+		// _data.setQueryString(getRequestBody());
+		_data.setQueryString(_data.getBody());
 	}
 
 	//std::cout << GRN "XXX)\n" RES;

@@ -11,6 +11,8 @@ RequestData::RequestData() {
     _reqHttpVersion 	= "default Version";
     _reqHost 			= "default Host";	// not sure if all these are needed
     _reqContentLength	= 0;
+	_reqHeader			= "";
+	_reqBody			= "";
 	
 	_path				= "default";
 	_pathFirstPart		= "default";
@@ -47,6 +49,17 @@ const std::string RequestData::getHttpPath() const {
 const std::string RequestData::getHttpVersion() const {
 	return _reqHttpVersion;
 }
+
+const std::string RequestData::getHeader() const {
+	return _reqHeader;
+}
+const std::string RequestData::getBody() const {
+	return _reqBody;
+}
+const std::string RequestData::getTemp() const {
+	return _reqTemp;
+}
+
 
 const std::string RequestData::getRequestHost() const {
 	return _reqHost;
@@ -106,6 +119,19 @@ void RequestData::setHttpVersion(std::string reqHttpVersion)
 	_reqHttpVersion = reqHttpVersion;
 }
 
+void RequestData::setBody(std::string reqBody)
+{
+	_reqBody = reqBody;
+}
+void RequestData::setTemp(std::string reqTemp)
+{
+	_reqTemp = reqTemp;
+}
+
+void RequestData::setHeader(std::string reqHeader)
+{
+	_reqHeader = reqHeader;
+}
 
 void RequestData::setRequestHost(std::string reqHost)
 {

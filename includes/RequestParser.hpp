@@ -32,9 +32,9 @@ namespace data {
 	class Request : public Parser {
 		private:
 			RequestData _data;
-			std::string _header;
-			std::string _body;
-			std::string _temp;
+		//	std::string _header;
+		//	std::string _body;
+		//	std::string _temp;
         //	std::string keyParser(std::string & lineContent, std::string keyToFind);
 			int 		appendLastChunkToBody(std::string::size_type it, int fdClient);
 			int 		appendToBody(std::string request);
@@ -52,14 +52,15 @@ namespace data {
 
 			/** Getters */
 			RequestData const & getRequestData() const;
-			std::string const & getRequestBody() const;
+			// std::string const & getRequestBody() const;  // moved to RequestData
 
 			/** Methods */
 			void    							parseHeader(std::string header);
 			int									parsePath(std::string str, int fdClient);
 			void    							appendToRequest(const char *str, int fdClient);
 			void								storeBody(std::istringstream &iss);
-			std::map<std::string, std::string>	storeFormData(std::string &pq);
+			// std::map<std::string, std::string>	storeFormData(std::string & pq);
+			std::map<std::string, std::string>	storeFormData(std::string pq);
 			void	storePathParts_and_FormData(std::string path);
 			void	storePath_and_FolderName(std::string path);
 			void 	callCGI(RequestData reqData, int fdClient);
@@ -82,7 +83,7 @@ namespace data {
 			void setEarlyClose(bool val);
 			std::time_t getTime();
 
-			std::string getTemp();
+		//	std::string getTemp();	moved to RequestData
 	};
 
 
