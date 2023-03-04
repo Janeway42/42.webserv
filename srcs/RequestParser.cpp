@@ -174,6 +174,86 @@ void Request::storePath_and_FolderName(std::string path) {
     _data.setPathLastWord(path.substr(pos1 + 1, pos2));
 }
 
+/*
+char* ENV[25] = {
+	(char*)"COMSPEC=", (char*)"DOCUMENT_ROOT=", (char*)"GATEWAY_INTERFACE=", (char*)"HTTP_ACCEPT=", (char*)"HTTP_ACCEPT_ENCODING=",
+	(char*)"HTTP_ACCEPT_LANGUAGE=", (char*)"HTTP_CONNECTION=", (char*)"HTTP_HOST=", (char*)"HTTP_USER_AGENT=", (char*)"PATH=",
+	(char*)"QUERY_STRING=", (char*)"REMOTE_ADDR=", (char*)"REMOTE_PORT=", request_method2, (char*)"REQUEST_URI=", (char*)"SCRIPT_FILENAME=",
+	(char*)"SCRIPT_NAME=", (char*)"SERVER_ADDR=", (char*)"SERVER_ADMIN=", (char*)"SERVER_NAME=",(char*)"SERVER_PORT=",(char*)"SERVER_PROTOCOL=",
+	(char*)"SERVER_SIGNATURE=", (char*)"SERVER_SOFTWARE=", NULL
+};
+*/
+
+static std::string runExecve(char *ENV[], char *args[], int fdClient) {
+    //std::cout << BLU << "START runExeve\n" << RES;
+    //std::cout << "ENV: " << ENV[0] << "\n";
+
+    int    		fd[2];
+
+    int    		fdSendBody[2];
+
+    pid_t		retFork;
+    std::string	incomingStr;
+
+    if (pipe(fd) == -1)
+        std::cout << "Error: Pipe failed\n";
+
+    //std::cout << "pipe fd[0] " << fd[0] << ", pipe fd[1] " << fd[1] << " \n";
+    //dup2(fdClient, fd[1]);
+    //std::cout << BLU << "POST BODY ENV : " << ENV[2] << "\n" << RES;
+    // BY HERE, THE HUGE TEXTFILE IS STORED OK
+
+
+    retFork = fork();
+
+    if (retFork == 0) {
+        std::cout << "    Start CHILD execve()\n";
+        if (retFork < 0)
+            std::cout << "Error: Fork failed\n";
+
+        dup2(fd[1], 1);
+        (void)fdClient;
+        //dup2(fdClient, fd[1]);
+        close(fd[0]);
+
+        // BIG BODY NEEDS TO BE SENT TO THE CGI BY WRITE TO PIPE
+        close(fdSendBody[0]);	// close stdout reading from
+        dup2(fdSendBody[1], 1);
+        int ret2 = write(fdSendBody[1], "Something ..." , 13);
+        std::cout << YEL << "ret from write to CGI : " << ret2 << "\n" << RES;
+
+
+        // std::cout << YEL << "POST BODY ENV : " << ENV[2] << "\n" << RES;
+
+
+
+        int ret = execve(args[0], args, ENV);
+        std::cout << RED << "Error: Execve failed: " << ret << "\n" << RES;
+    }
+    else {
+        wait(NULL);
+        //std::cout << "    Start Parent\n";
+        char buff[100];
+
+        close(fd[1]);
+        dup2(fd[0], 0);
+        //dup2(fdClient, fd[0]);
+
+        close(fdSendBody[1]);
+        close(fdSendBody[0]);
+        //dup2(fdSendBody[0], 0);
+
+        //std::cout << RED << "        Start loop reading from child\n" << RES;
+        for (int ret = 1; ret != 0; ) {
+            memset(buff, '\0', 100);
+            ret = read(fd[0], buff, 99);
+            incomingStr.append(buff);
+        }
+        //std::cout << BLU "\n       All content read from CGI\n[" << incomingStr << "]\n" << RES;
+    }
+    return (incomingStr);
+}
+
 void Request::callCGI(RequestData reqData, int fdClient) {
     std::cout << RED << "START CALL_CGI\n" << RES;
 
@@ -260,6 +340,30 @@ int Request::checkTypeOfFile() {
     else
         std::cout << GRN << "There is no extention in the last name\n" << RES;
     return (0);
+}
+
+// Some arguments not used
+static void printPathParts(std::string str, RequestData reqData) {
+
+    std::cout << "Found path:      [" << BLU << str << RES << "]\n";
+//	std::cout << "Path trimmed:    [" << BLU << strTrim << << RES "]\n";
+    std::cout << "Path:            [" << PUR << reqData.getPath() << RES << "]\n";
+    std::cout << "Path first part: [" << PUR << reqData.getPathFirstPart() << RES << "]\n";
+    std::cout << "File/Folder:     [" << PUR << reqData.getPathLastWord() << RES << "]\n";
+    std::cout << "File extention:  [" << PUR << reqData.getFileExtention() << RES << "]\n";
+
+    std::map<std::string, std::string> formData;
+    formData = reqData.getFormData();
+
+    if (! formData.empty()) {
+        std::cout << "\nSTORED FORM DATA PAIRS:\n";// Print the map
+        std::map<std::string, std::string>::iterator it;
+        for (it = formData.begin(); it != formData.end(); it++)
+            std::cout << PUR << "   " << it->first << RES << " ---> " << PUR << it->second << "\n" << RES;
+    }
+    else
+        std::cout << "Form Data:    " << YEL << "(not present)\n" << RES;
+    std::cout << "\n";
 }
 
 int Request::parsePath(std::string str, int fdClient) {

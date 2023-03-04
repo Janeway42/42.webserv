@@ -9,19 +9,20 @@ WebServer::WebServer(std::string const & configFileName)
 	hints.ai_flags = AI_PASSIVE; 
 	hints.ai_socktype = SOCK_STREAM;
 
-    ConfigFileParser configFileData = ConfigFileParser(configFileName);
-    _servers =  configFileData.servers;
-    std::vector<ServerData>::iterator it_server = _servers.begin();
-    for (; it_server != _servers.cend(); ++it_server) {
-        std::cout  << "IP ADDRESS: " << it_server->getIpAddress() << std::endl;
-        std::cout  << "PORT: " << it_server->getListensTo() << std::endl;
-        if (getaddrinfo(it_server->getIpAddress().c_str(), it_server->getListensTo().c_str(), &hints, &_addr) != 0) {
-            throw ServerException(("failed addr"));
-        }
-        _listening_socket = socket(_addr->ai_family, _addr->ai_socktype, _addr->ai_protocol);
-        //it_server->setListeningSocket(_listening_socket);// todo I get a "failed addr" when I try this (or anything else, even a log line)
-        break;// todo for now, I am breaking, but we intend to keep looping to the other server blocks!
+    (void)configFileName;
+//    ConfigFileParser configFileData = ConfigFileParser(configFileName);
+//    _servers = configFileData.servers;
+    //std::vector<ServerData>::iterator it_server = _servers.begin();
+    //for (; it_server != _servers.cend(); ++it_server) {
+//        std::cout  << "IP ADDRESS: " << it_server->getIpAddress() << std::endl;
+//        std::cout  << "PORT: " << it_server->getListensTo() << std::endl;
+    if (getaddrinfo("127.0.0.1", "8008", &hints, &_addr) != 0) {
+        throw ServerException(("failed addr"));
     }
+    _listening_socket = socket(_addr->ai_family, _addr->ai_socktype, _addr->ai_protocol);
+        //it_server->setListeningSocket(_listening_socket);// todo I get a "failed addr" when I try this (or anything else, even a log line)
+        //break;// todo for now, I am breaking, but we intend to keep looping to the other server blocks!
+    //}
 
 	if (_listening_socket < 0)
 		throw ServerException(("failed socket"));
@@ -179,7 +180,7 @@ void WebServer::sendResponse(struct kevent& event) {
     Request *storage = (Request *) event.udata;
 
     std::time_t elapsedTime = std::time(NULL);
-    if (elapsedTime - storage->getTime() > 5)// JOYCE QUESTION -> TODO this one is supposed to wait for 5 seconds to get a connection, if it does not ir closes the connection and closes write with error? (see logs)
+    if (elapsedTime - storage->getTime() > 15)// JOYCE QUESTION -> TODO this one is supposed to wait for 5 seconds to get a connection, if it does not ir closes the connection and closes write with error? (see logs)
     {
         std::cout << "Unable to process request, it takes too long!\n";
         storage->setError(true);
