@@ -10,15 +10,15 @@ WebServer::WebServer(std::string const & configFileName)
 	hints.ai_socktype = SOCK_STREAM;
 
     ConfigFileParser configFileData = ConfigFileParser(configFileName);
-    _servers =  configFileData.servers;
+    _servers = configFileData.servers;
     std::vector<ServerData>::iterator it_server = _servers.begin();
     for (; it_server != _servers.cend(); ++it_server) {
-        std::cout  << "IP ADDRESS: " << it_server->getIpAddress() << std::endl;
-        std::cout  << "PORT: " << it_server->getListensTo() << std::endl;
+        std::cout << GRN_BG << "IP ADDRESS: " << it_server->getIpAddress() << RES << std::endl;
+        std::cout << GRN_BG << "PORT: " << it_server->getListensTo() << RES << std::endl;
         if (getaddrinfo(it_server->getIpAddress().c_str(), it_server->getListensTo().c_str(), &hints, &_addr) != 0) {
             throw ServerException(("failed addr"));
-        }
-        _listening_socket = socket(_addr->ai_family, _addr->ai_socktype, _addr->ai_protocol);
+    }
+    _listening_socket = socket(_addr->ai_family, _addr->ai_socktype, _addr->ai_protocol);
         //it_server->setListeningSocket(_listening_socket);// todo I get a "failed addr" when I try this (or anything else, even a log line)
         break;// todo for now, I am breaking, but we intend to keep looping to the other server blocks!
     }
@@ -58,6 +58,7 @@ WebServer::~WebServer()
 
 void WebServer::runServer()
 {
+    std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ " << __FUNCTION__ << " function called  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
 	struct kevent evList[MAX_EVENTS];
 //	struct kevent evSet;
 	int i;
@@ -123,7 +124,6 @@ void WebServer::readRequest(struct kevent& event)
 	char buffer[50];
 	memset(&buffer, '\0', 50);
 	Request* storage = (Request*)event.udata;
-	//Request* storage = (Request*)event.udata;
 
 	int ret = recv(event.ident, &buffer, sizeof(buffer) - 1, 0);
 //	std::cout << "bytes read: " << ret << std::endl;                 // test line 
@@ -167,16 +167,16 @@ void WebServer::readRequest(struct kevent& event)
 }
 
 void WebServer::sendResponse(struct kevent& event) {
-    if (not event.udata) {
-        // JOYCE I got a heap-use-after-free from AddressSanitizer
-        // READ of size 8 at 0x615000001140 thread T0
-        //    #0 0x10c0a1980 in Request::getTime() RequestParser.cpp:349
-        //    ...
-        // i think it's in case  storage->getTime() tries runs but event.udata does not exist
-        // with this if I did not see the error again but we can keep an eye on it
-        throw ServerException("Empty event.udata");
-    }
-    Request *storage = (Request *) event.udata;
+//    if (not event.udata) {
+//        // JOYCE I got a heap-use-after-free from AddressSanitizer
+//        // READ of size 8 at 0x615000001140 thread T0
+//        //    #0 0x10c0a1980 in Request::getTime() RequestParser.cpp:349
+//        //    ...
+//        // i think it's in case  storage->getTime() tries runs but event.udata does not exist
+//        // with this if I did not see the error again but we can keep an eye on it
+//        throw ServerException("Empty event.udata");
+//    }
+    Request *storage = (Request*)event.udata;
 
     std::time_t elapsedTime = std::time(NULL);
     if (elapsedTime - storage->getTime() > 5)// JOYCE QUESTION -> TODO this one is supposed to wait for 5 seconds to get a connection, if it does not ir closes the connection and closes write with error? (see logs)
@@ -204,16 +204,15 @@ void WebServer::sendResponse(struct kevent& event) {
                 // sendImmage(event, "./resources/img_36kb.jpg");
                 // sendImmage(event, "./resources/img_109kb.jpg");
                 // sendImmage(event, "./resources/img_938kb.jpg");
-                // sendImmage(event, "./resources/img_5000kb.jpg");
-//                std::cout << "ROOT DIRECTORY: " << it_server->getRootDirectory() << std::endl;
-//                sendResponseFile(event, it_server->getIndexFile());
-                sendImmage(event, "resources/img_13000kb.jpg");
+//                 sendImmage(event, "./resources/img_5000kb.jpg");
+                std::cout << "ROOT DIRECTORY: " << it_server->getRootDirectory() << std::endl;
+                sendImmage(event, it_server->getRootDirectory() + "/img_13000kb.jpg");
 
                 //  !!!
                 //  If the image path in html file is too long, it started, then address sanitizer
                 //  gives error 'heap buffer overflow' !!!
             } else {
-                std::cout << "INDEX FILE: " << it_server->getIndexFile() << std::endl;
+                std::cout << GRN_BG << "INDEX FILE: " << it_server->getIndexFile() << RES << std::endl;
                 sendResponseFile(event, it_server->getIndexFile());
             }
             if (removeEvent(event, EVFILT_WRITE) == 1)
@@ -243,6 +242,7 @@ void WebServer::newClient(struct kevent event)
 	setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &opt_value, sizeof(opt_value));
 	if (fd == -1)
 		throw ServerException("failed accept");
+
 
 	Request *storage = new Request();
 	EV_SET(&evSet, fd, EVFILT_READ, EV_ADD, 0, 0, storage); 
