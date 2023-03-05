@@ -15,6 +15,7 @@
 #include "./Parser.hpp"
 #include "./RequestData.hpp"
 #include "./ParseURLpath.hpp"
+#include "./ServerData.hpp"
 
 
 	// std::string temp = path;
@@ -41,6 +42,7 @@ class Request : public Parser {
         bool 		_errorRequest;
         bool 		_earlyClose;
         std::time_t _startTime;
+        ServerData  _server;
 
 
     public:

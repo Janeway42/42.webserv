@@ -1,6 +1,11 @@
 #include <arpa/inet.h>
 
 #include "ServerData.hpp"
+// ---- kqueue ----
+#include <sys/socket.h>
+#include <netdb.h>
+#include <fcntl.h>
+#include <sys/event.h>
 
 /** Default constructor */
 ServerData::ServerData()
@@ -88,8 +93,12 @@ std::vector<ServerLocation> & ServerData::getLocationBlocks() {
     return _location_data_vector;
 }
 
-int ServerData::getListeningSocket() const {
+size_t ServerData::getListeningSocket() const {
     return _listening_socket;
+}
+
+struct addrinfo* ServerData::getAddr() const {
+    return _addr;
 }
 
 /** #################################### Setters #################################### */
@@ -276,6 +285,30 @@ bool ServerData::setPortRedirection(std::string const & port_redir) {
 //    _location_data_vector = location_data;
 //}
 
-void ServerData::setListeningSocket(size_t listening_socket) {
-    _listening_socket = listening_socket;
+void ServerData::setListeningSocket() {
+    _addr = new struct addrinfo();
+    struct addrinfo hints;
+
+    hints.ai_family = PF_UNSPEC;
+    hints.ai_flags = AI_PASSIVE;
+    hints.ai_socktype = SOCK_STREAM;
+
+//    std::cout  << "IP ADDRESS: " << _ip_address << std::endl;
+//    std::cout  << "PORT: " << _listens_to << std::endl;
+    if (getaddrinfo(_ip_address.c_str(), _listens_to.c_str(), &hints, &_addr) != 0) {
+        freeaddrinfo(_addr);
+        throw ServerDataException("failed addr");
+    }
+
+    _listening_socket = socket(_addr->ai_family, _addr->ai_socktype, _addr->ai_protocol);
+    if (_listening_socket < 0)
+        throw ServerDataException(("failed socket"));
+    fcntl(_listening_socket, F_SETFL, O_NONBLOCK);
+
+    int socket_on = 1;
+    setsockopt(_listening_socket, SOL_SOCKET, SO_REUSEADDR, &socket_on, sizeof(socket_on));
+    if (bind(_listening_socket, _addr->ai_addr, _addr->ai_addrlen) == -1)
+        throw ServerDataException(("failed bind"));
+    if (listen(_listening_socket, SOMAXCONN) == -1)  // max nr of accepted connections
+        throw ServerDataException(("failed listen"));
 }

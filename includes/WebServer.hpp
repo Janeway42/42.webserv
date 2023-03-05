@@ -24,8 +24,6 @@ class WebServer
 {
 	private:
 		int _kq;
-		struct addrinfo *_addr;
-		size_t _listening_socket;// todo delete? it is now on the ServerLocation
         std::vector<ServerData> _servers;
 
 	public:

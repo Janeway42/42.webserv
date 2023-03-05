@@ -1,57 +1,38 @@
-#include "WebServer.hpp"  // jaka
+#include "WebServer.hpp"
 
 WebServer::WebServer(std::string const & configFileName)
 {
-	_addr = new struct addrinfo();
-	struct addrinfo hints;
+    ConfigFileParser configFileData = ConfigFileParser(configFileName);
+    _servers = configFileData.servers;
+    std::cout  << "Server blocks quantity: " << configFileData.numberOfServerBlocks() << std::endl;
 
-	hints.ai_family = PF_UNSPEC; 
-	hints.ai_flags = AI_PASSIVE; 
-	hints.ai_socktype = SOCK_STREAM;
+    // ----------- create kq structure --------------------------
+    struct kevent evSet;
+    _kq = kqueue();
+    if (_kq == -1)
+        throw ServerException(("failed kq"));// todo: exceptions call the destructor to delete memory?
 
-    (void)configFileName;
-//    ConfigFileParser configFileData = ConfigFileParser(configFileName);
-//    _servers = configFileData.servers;
-    //std::vector<ServerData>::iterator it_server = _servers.begin();
-    //for (; it_server != _servers.cend(); ++it_server) {
-//        std::cout  << "IP ADDRESS: " << it_server->getIpAddress() << std::endl;
-//        std::cout  << "PORT: " << it_server->getListensTo() << std::endl;
-    if (getaddrinfo("127.0.0.1", "8008", &hints, &_addr) != 0) {
-        throw ServerException(("failed addr"));
+    // ----------- loop to create all listening sockets ---------
+    std::vector<ServerData>::iterator it_server;
+    for (it_server = _servers.begin(); it_server != _servers.end(); ++it_server) {
+        it_server->setListeningSocket();
+        EV_SET(&evSet, it_server->getListeningSocket(), EVFILT_READ, EV_ADD | EV_CLEAR, NOTE_WRITE, 0, NULL);
+        if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
+            throw ServerException(("failed kevent start listening socket"));
     }
-    _listening_socket = socket(_addr->ai_family, _addr->ai_socktype, _addr->ai_protocol);
-        //it_server->setListeningSocket(_listening_socket);// todo I get a "failed addr" when I try this (or anything else, even a log line)
-        //break;// todo for now, I am breaking, but we intend to keep looping to the other server blocks!
-    //}
-
-	if (_listening_socket < 0)
-		throw ServerException(("failed socket"));
-	fcntl(_listening_socket, F_SETFL, O_NONBLOCK);
-
-	int socket_on = 1;
-	setsockopt(_listening_socket, SOL_SOCKET, SO_REUSEADDR, &socket_on, sizeof(socket_on));
-	if (bind(_listening_socket, _addr->ai_addr, _addr->ai_addrlen) == -1)
-	{
-		perror("... bind error: ");
-		throw ServerException(("failed bind"));
-	}
-	if (listen(_listening_socket, SOMAXCONN) == -1)  // max nr of accepted connections 
-		throw ServerException(("failed listen"));
-
-	struct kevent evSet;
-	_kq = kqueue();
-	if (_kq == -1)
-		throw ServerException(("failed kq"));
-
-	EV_SET(&evSet, _listening_socket, EVFILT_READ, EV_ADD | EV_CLEAR, NOTE_WRITE	, 0, NULL);
-	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1) 
-		throw ServerException(("failed kevent start"));
+    std::cout  << "LEAVING WEBSERV CONSTRUCTOR" << std::endl;
 }
 
 WebServer::~WebServer()
 {
-	close(_kq);
-	freeaddrinfo(_addr);
+    close(_kq);
+
+    std::vector<ServerData>::iterator it_server = _servers.begin();
+    for (; it_server != _servers.end(); ++it_server) {
+        freeaddrinfo(it_server->getAddr());
+    }
+    std::cout << "WebServer Destructor" << std::endl;
+
 }
 
 // --------------------------------------------------------- server main loop
@@ -59,6 +40,7 @@ WebServer::~WebServer()
 
 void WebServer::runServer()
 {
+    std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ " << __FUNCTION__ << " function called  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
 	struct kevent evList[MAX_EVENTS];
 //	struct kevent evSet;
 	int i;
@@ -82,7 +64,7 @@ void WebServer::runServer()
 
 				if (evList[i].flags & EV_ERROR)
 					std::cout << "Event error\n";
-				else if (evList[i].ident == _listening_socket)
+				else if (evList[i].ident == _servers.begin()->getListeningSocket())//todo loop to know if evList[i].ident == current client listening socket
 					newClient(evList[i]);
 				else if (evList[i].filter == EVFILT_READ)
 				{
@@ -124,7 +106,6 @@ void WebServer::readRequest(struct kevent& event)
 	char buffer[50];
 	memset(&buffer, '\0', 50);
 	Request* storage = (Request*)event.udata;
-	//Request* storage = (Request*)event.udata;
 
 	int ret = recv(event.ident, &buffer, sizeof(buffer) - 1, 0);
 //	std::cout << "bytes read: " << ret << std::endl;                 // test line 
@@ -168,19 +149,19 @@ void WebServer::readRequest(struct kevent& event)
 }
 
 void WebServer::sendResponse(struct kevent& event) {
-    if (not event.udata) {
-        // JOYCE I got a heap-use-after-free from AddressSanitizer
-        // READ of size 8 at 0x615000001140 thread T0
-        //    #0 0x10c0a1980 in Request::getTime() RequestParser.cpp:349
-        //    ...
-        // i think it's in case  storage->getTime() tries runs but event.udata does not exist
-        // with this if I did not see the error again but we can keep an eye on it
-        throw ServerException("Empty event.udata");
-    }
-    Request *storage = (Request *) event.udata;
+//    if (not event.udata) {
+//        // JOYCE I got a heap-use-after-free from AddressSanitizer
+//        // READ of size 8 at 0x615000001140 thread T0
+//        //    #0 0x10c0a1980 in Request::getTime() RequestParser.cpp:349
+//        //    ...
+//        // i think it's in case  storage->getTime() tries runs but event.udata does not exist
+//        // with this if I did not see the error again but we can keep an eye on it
+//        throw ServerException("Empty event.udata");
+//    }
+    Request *storage = (Request*)event.udata;
 
     std::time_t elapsedTime = std::time(NULL);
-    if (elapsedTime - storage->getTime() > 15)// JOYCE QUESTION -> TODO this one is supposed to wait for 5 seconds to get a connection, if it does not ir closes the connection and closes write with error? (see logs)
+    if (elapsedTime - storage->getTime() > 5)// JOYCE QUESTION -> TODO this one is supposed to wait for 5 seconds to get a connection, if it does not ir closes the connection and closes write with error? (see logs)
     {
         std::cout << "Unable to process request, it takes too long!\n";
         storage->setError(true);
@@ -205,16 +186,15 @@ void WebServer::sendResponse(struct kevent& event) {
                 // sendImmage(event, "./resources/img_36kb.jpg");
                 // sendImmage(event, "./resources/img_109kb.jpg");
                 // sendImmage(event, "./resources/img_938kb.jpg");
-                // sendImmage(event, "./resources/img_5000kb.jpg");
-//                std::cout << "ROOT DIRECTORY: " << it_server->getRootDirectory() << std::endl;
-//                sendResponseFile(event, it_server->getIndexFile());
-                sendImmage(event, "resources/img_13000kb.jpg");
+//                 sendImmage(event, "./resources/img_5000kb.jpg");
+                std::cout << "ROOT DIRECTORY: " << it_server->getRootDirectory() << std::endl;
+                sendImmage(event, it_server->getRootDirectory() + "/img_13000kb.jpg");
 
                 //  !!!
                 //  If the image path in html file is too long, it started, then address sanitizer
                 //  gives error 'heap buffer overflow' !!!
             } else {
-                std::cout << "INDEX FILE: " << it_server->getIndexFile() << std::endl;
+                std::cout << GRN_BG << "INDEX FILE: " << it_server->getIndexFile() << RES << std::endl;
                 sendResponseFile(event, it_server->getIndexFile());
             }
             if (removeEvent(event, EVFILT_WRITE) == 1)

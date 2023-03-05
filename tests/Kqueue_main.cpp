@@ -1,7 +1,12 @@
 #include "WebServer.hpp"
 
+void func() {
+    system("leaks webserv");
+}
+
 int main(int ac, char **av)
 {
+    //atexit(func);
     if (ac == 2) {
         try {
             WebServer *webServ = new WebServer(av[1]);

@@ -19,6 +19,7 @@ Request::Request() {
 	_errorRequest = false;
 	_earlyClose = false;
 	_startTime = std::time(NULL);
+
 }
 
 /** Destructor */

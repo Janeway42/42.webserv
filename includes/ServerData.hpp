@@ -25,7 +25,9 @@ class ServerData : public Parser {
         unsigned int _port_redirection;
         /* As more than 1 location block can be added to a server block */
         std::vector<ServerLocation> _location_data_vector;
-        size_t _listening_socket;
+
+        int _listening_socket;
+        struct addrinfo *_addr;
 
     public:
         ServerData();
@@ -44,7 +46,8 @@ class ServerData : public Parser {
         std::string getErrorPage() const;
         unsigned int getPortRedirection() const;
         std::vector<ServerLocation> & getLocationBlocks();
-        int getListeningSocket() const;
+        size_t getListeningSocket() const;
+        struct addrinfo* getAddr() const;
 
         /** Setters */
         bool setServerName(std::string const & name);
@@ -56,6 +59,19 @@ class ServerData : public Parser {
         bool setErrorPage(std::string const & err_page);
         bool setPortRedirection(std::string const & port_redir);
 //        void addToLocationVector(std::vector<ServerLocation> const & location_data);
-        void setListeningSocket(size_t listening_socket);
+        void setListeningSocket();
+
+        class ServerDataException: public std::exception {
+        private:
+            std::string _errorMessage;
+        public:
+            explicit ServerDataException(std::string const & errorMessage) throw() {
+                _errorMessage = "ServerData error: " + errorMessage;// todo: maybe add a number to it? and make it an array, std::pair map?
+            }
+            virtual const char* what() const throw() {
+                return (_errorMessage.c_str());
+            }
+            virtual ~ServerDataException() throw() {}
+        };
 };
 #endif //SERVERDATA_HPP
