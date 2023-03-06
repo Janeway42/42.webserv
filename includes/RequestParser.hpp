@@ -24,7 +24,7 @@
 	// std::size_t found = temp.find_last_of(".");
 	// std::string extention = temp.substr(found, std::string::npos);
 	
-	//std::cout << GRN "Found Extension: [" << temp << "]\n" RES;
+	//std::cout << GRN "Found Extension: [" << temp << "]\n" << RES;
 	//std::cout << GRN "Found Extension: [" << extention << "]\n" RES;
 
 class Request : public Parser {

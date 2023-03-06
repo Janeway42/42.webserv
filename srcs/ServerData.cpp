@@ -287,7 +287,7 @@ bool ServerData::setPortRedirection(std::string const & port_redir) {
 
 void ServerData::setListeningSocket() {
     _addr = new struct addrinfo();
-    struct addrinfo hints;
+    struct addrinfo hints = addrinfo();
 
     hints.ai_family = PF_UNSPEC;
     hints.ai_flags = AI_PASSIVE;

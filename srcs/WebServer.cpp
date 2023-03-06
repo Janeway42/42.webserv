@@ -293,7 +293,7 @@ void WebServer::sendResponseFile(struct kevent& event, std::string file)
 	std::string contentLen = "Content-Length: ";
 	contentLen.append(fileLen);
 	contentLen.append("\r\n");
-	// std::cout << RED "ContLen: " << contentLen << "\n" RES;
+	// std::cout << RED "ContLen: " << contentLen << "\n" << RES;
 
 	headerBlock = 	"HTTP/1.1 200 OK\n"
 					"Content-Type: text/html\n";
@@ -315,7 +315,7 @@ void WebServer::sendResponseFile(struct kevent& event, std::string file)
 
 // NEW SEND_IMAGE
 void WebServer::sendImmage(struct kevent& event, std::string imagePath) {
-	std::cout << GRN "FOUND IMAGE extention .jpg or .png\n" RES;
+	std::cout << GRN << "FOUND IMAGE extention .jpg or .png\n" << RES;// TODO it works on Chrome but breaks on Safari for me (joyce)
 	unsigned long ret = 0;
 
 	// Stream image and store it into a string
@@ -336,7 +336,7 @@ void WebServer::sendImmage(struct kevent& event, std::string imagePath) {
 	contentLen.append(temp);
 	headerBlock.append("\r\n\r\n");
 	ret = send(event.ident, headerBlock.c_str(), headerBlock.length(), 0);
-	//std::cout << YEL "Image header block sent, ret: " << ret << RES "\n";
+	//std::cout << YEL << "Image header block sent, ret: " << ret << RES << "\n";
 
 	// Send image content and each time reduce the original by ret
 	size_t sentSoFar = 0;
@@ -344,13 +344,13 @@ void WebServer::sendImmage(struct kevent& event, std::string imagePath) {
 	for (int i = 0; sentSoFar < imageSize; i++) {
 		ret = send(event.ident, content.c_str(), content.size(), 0);
 		if (ret == std::string::npos) {
-			//std::cout << RED << i << "    Nothing sent (" << ret << RES "),  sentSoFar " << sentSoFar << "\n";
+			//std::cout << RED << i << "    Nothing sent (" << ret << RES << "),  sentSoFar " << sentSoFar << "\n";
 			continue ;
 		}
 		else {
 			content.erase(0, ret);
 			sentSoFar += ret;
-			//std::cout << YEL << i << "    Sent chunk " << ret << RES ",  sentSoFar " << sentSoFar << "\n";
+			//std::cout << YEL << i << "    Sent chunk " << ret << RES << ",  sentSoFar " << sentSoFar << "\n";
 		}
 	}
 }
@@ -358,7 +358,7 @@ void WebServer::sendImmage(struct kevent& event, std::string imagePath) {
 /* OLD SEND_IMAGE
 void WebServer::sendImmage(struct kevent& event, std::string imagePath)
 {
-	std::cout << RED "FOUND extention .jpg or .png\n" RES;
+	std::cout << RED << "FOUND extention .jpg or .png\n" << RES;
 
 	FILE *file;
 	unsigned char *buffer;
@@ -392,7 +392,7 @@ void WebServer::sendImmage(struct kevent& event, std::string imagePath)
 		{ fprintf(stderr, "Memory error!"); fclose(file); return ; }
 
 	int ret = fread(buffer, sizeof(unsigned char), imageSize, file);
-	std::cout << YEL "Returned fread:     " << ret << RES "\n";
+	std::cout << YEL << "Returned fread:     " << ret << RES << "\n";
 	
 	ret = send(event.ident, headerBlock.c_str(), headerBlock.length(), 0);
 	ret = send(event.ident, reinterpret_cast <const char* >(buffer), imageSize, 0);
