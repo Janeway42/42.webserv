@@ -549,6 +549,13 @@ void    Request::appendToRequest(const char *str, int fdClient) {
 		appendToBody(chunk);
 		if (_doneParsing == true && _data.getRequestMethod() == "POST")
 			; // callCGI(getRequestData(), fdClient);
+        if (_doneParsing == true && _data.getRequestMethod() == "DELETE") {
+            // callCGI(getRequestData(), fdClient);
+            if (file to be deleted -> from the request, does not exist) {
+                status error 404
+            }
+            // joyce TODO cgi or just delete the file literally?
+        }
 	}
 	//std::cout << PUR << "End of AppendToRequest()\n" << RES; // sleep(1);
 }
