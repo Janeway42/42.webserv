@@ -1,47 +1,42 @@
-#ifndef WEBSERV_CONFIGFILEPARSER_HPP
-#define WEBSERV_CONFIGFILEPARSER_HPP
+#ifndef CONFIGFILEPARSER_HPP
+#define CONFIGFILEPARSER_HPP
+
+#include <fstream>
+#include <iostream>
 
 #include "Parser.hpp"
 #include "ServerData.hpp"
-#include "LocationData.hpp"
+#include "ServerLocation.hpp"
 
-#include <iostream>
-#include <map>
-
-namespace data {
-class ConfigFile : public Parser {
+class ConfigFileParser : public Parser {
     private:
-        Server _server_data;
+//        ServerData _server_data;
+//        std::vector<ServerLocation> serverData;
+//        ServerLocation _server_location;
+//        std::vector<ServerLocation> _location_data_vector;
         unsigned short _server_block_counter;
-        Location _location_data;
         unsigned short _location_block_counter;
-        /* As more than 1 location block can be added */
-        std::vector<Location> _location_data_vector;
-        /* As more than 1 server block can be added (with one or more location blocks inside) */
-        std::map<Server*, std::vector<Location> > _server_map;
+        bool _is_cgi;
+
+//        ConfigFileParser() = default;
 
         /** Private Methods */
-        //template<typename T>
-        std::string keyParser(std::string & lineContent, const std::string& keyToFind);
-        bool handleFile(std::string const & configFileName);
+        void handleFile(std::string const & configFileName);
         void parseFileServerBlock(std::ifstream & configFile);
-        void parseFileLocationBlock(std::ifstream & configFile);
+        void parseFileLocationBlock(std::ifstream & configFile, ServerData & _server_data);
 
     public:
-        ConfigFile();
-//        explicit ConfigFile(std::string const & configFileName);// todo what is it: Clang-Tidy: Single-argument constructors must be marked explicit to avoid unintentional implicit conversions
-        virtual ~ConfigFile();
+        ConfigFileParser(std::string const & configFileName);
+        /* explicit keyword is here so the compiler won't do implicit conversions, which means implicitly calling this
+         * constructor anytime a string is given to this type (e.g.: ConfigFileParser obj; obj = std::string("Test");) todo check this*/
+//        ConfigFileParser(std::string const & configFileName);
+        virtual ~ConfigFileParser();
 
-        /** Methods */
-        std::map<Server*, std::vector<Location> > parseFile(std::string const & configFileName);
-        void serverBlockCounter();
-        void locationBlockCounter();
+        /* As more than 1 server block can be added (with one or more location blocks inside) */
+        std::vector<ServerData> servers;
 
         /** Getters */
-        std::map<Server*, std::vector<Location> > const & getServerDataMap() const;
-        unsigned short getServerBlockCounter() const;
-        unsigned short getLocationBlockCounter() const;
-
-    };
-} // data
-#endif // WEBSERV_CONFIGFILEPARSER_HPP
+        unsigned short numberOfServerBlocks() const;
+        unsigned short numberOfLocationBlocks() const;
+};
+#endif //CONFIGFILEPARSER_HPP

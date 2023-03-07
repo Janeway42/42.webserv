@@ -179,7 +179,7 @@ void    Request::appendToRequest(const char *str) {
 	// return ;
 
 	//test request takes too long: 
-	// sleep(3);
+	sleep(10);
 
 	if (_headerDone == false) {
 		std::cout << PUR "     _headerDone == FALSE\n" RES;

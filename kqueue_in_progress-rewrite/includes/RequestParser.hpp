@@ -1,13 +1,8 @@
-//
-// Created by Joyce Macksuele on 18/01/2023.
-// Adapted Jaka
-//
+#ifndef REQUESTPARSER_HPP
+#define REQUESTPARSER_HPP
 
-#ifndef WEBSERV_REQUEST_PARSER_HPP
-#define WEBSERV_REQUEST_PARSER_HPP
-
-#include <cctype> // tolower()
-#include <string.h>	// for memset
+#include <cctype>
+#include <string.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -17,77 +12,88 @@
 #include <unistd.h>
 #include <ctime>
 
-#include "./Parser.hpp"
-#include "./RequestData.hpp"
-#include "./RequestResponse.hpp"
+#include "Parser.hpp"
+#include "RequestData.hpp"
+#include "ResponseData.hpp"
+#include "ParseURLpath.hpp"
+#include "CgiData.hpp"
 
-namespace data {
+// std::string temp = path;
+// if (path[0] == '.')
+// 	temp = path.substr(1, std::string::npos);
+// std::size_t found = temp.find_last_of(".");
+// std::string extention = temp.substr(found, std::string::npos);
 
-	class Request : public Parser {
-		private:
-			// request:
-			RequestData _data;
+//std::cout << GRN "Found Extension: [" << temp << "]\n" RES;
+//std::cout << GRN "Found Extension: [" << extention << "]\n" RES;
 
-			// response
-			Response _answer;
+class Request : public Parser {
+    private:
+		// --- request --- 
+        RequestData _data;
 
-			// server utils
-			bool _doneParsing;
-			int _errorRequest;
-			bool _earlyClose;
-			std::time_t _startTime;
+		// --- response --
+		ResponseData _answer;
 
-			// to be relocated
-			std::string _header;
-			std::string _temp;
-			bool _headerDone;
-			std::string _body;
-        	std::string keyParser(std::string & lineContent, std::string keyToFind);
-			int appendLastChunkToBody(std::string::size_type it);
-			int appendToBody(std::string request);
+		// --- CGI -------
+		CgiData _cgi;
 
+		// --- server utils -- 
+		int			_fdClient;
+        bool		_cgiScript;  // change inside parsing 
+		bool		_doneParsing; // doesn't mean that the server can reply to the client
+		bool		_allowWrite;  // only now the server can reply to the client 
+        bool 		_errorRequest;
+        std::time_t _startTime;
 
 
-			
+
+        bool		_headerDone;
+        std::string _header;
+        std::string _body;
+        std::string _temp;
+        //std::string keyParser(std::string & lineContent, std::string keyToFind); // I think its not being used
+        int 		appendLastChunkToBody(std::string::size_type it);
+
+    public:
+        Request(int fd);
+        virtual ~Request();
+
+        /** Getters */
+        RequestData getRequestData() const;
+        ResponseData & getResponseData();
+		std::string getRequestBody() const;
+		CgiData & getCgiData();
+		bool getDoneParsing();
+		bool getAllowWrite();
+		bool getCgiScript();
+        int getError();
+        std::time_t getTime();
+        std::string getTemp();
+		int getFdClinet();
 
 
-		public:
-			Request();
-			virtual ~Request();
+        /** Setters */
+        void setCgiScript(bool val);
+		void setDoneParsing(bool val);
+		void setAllowWrite(bool val);
+        void setError(bool val);
 
-			/** Getters */
-			RequestData const & getRequestData() const;
-			std::string const & getRequestBody() const;
+        /** Methods */
+        void    							parseHeader(std::string header);
+        int									parsePath(std::string str);
+        void    							appendToRequest(const char *str);
+        void								storeBody(std::istringstream &iss);
+        std::map<std::string, std::string>	storeFormData(std::string pq);
+        int 		                        appendToBody(std::string request);
+        void	storePathParts_and_FormData(std::string path);
+        void	storePath_and_FolderName(std::string path);
 
-			/** Methods */
-			void    parseHeader(std::string header);
-			void    appendToRequest(const char *str);
+        int     checkStoredVars();
+        void    printStoredRequestData(Request &request); // Just for checking
 
-			int     checkStoredVars();
-			void    printStoredRequestData(data::Request &request); // Just for checking
+        int     storeWordsFromFirstLine(std::string firstLine);
+        int     storeWordsFromOtherLine(std::string otherLine);
+};
 
-			int     storeWordsFromFirstLine(std::string firstLine);
-			int     storeWordsFromOtherLine(std::string otherLine);
-
-			// Getters ----------------------------------------------------------------
-
-			Response & getAnswer(void);
-			void setAnswerPath(std::string file);
-
-			std::string getTemp();
-
-			bool getDone();
-			void setDone(bool val);
-			int getError();
-			bool getEarlyClose();
-			std::time_t getTime();
-
-			// Setters ----------------------------------------------------------------
-			void setError(int val);
-			void setEarlyClose(bool val);
-	};
-
-	
-
-} // data
-#endif // WEBSERV_REQUEST_PARSER_HPP
+#endif //REQUEST_PARSER_HPP

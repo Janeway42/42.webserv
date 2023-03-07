@@ -69,6 +69,12 @@ void Server::runServer()
 					std::cout << "Event error\n";
 				else if (evList[i].ident == _listening_socket)
 					newClient(evList[i]);
+
+				else if (evList[i].filter == EVFILT_TIMER)
+				{
+					std::cout << "timeout FILTER\n";
+					exit(0);
+				}
 				else if (evList[i].filter == EVFILT_READ)
 				{
 					std::cout << "READ\n";
@@ -156,14 +162,14 @@ void Server::sendResponse(struct kevent& event)
 	data::Request *storage = (data::Request *)event.udata;
 
 	std::time_t elapsedTime = std::time(NULL);
-	if (elapsedTime - storage->getTime() > 1)
-	{
-		std::cout << "Unable to process request, it takes too long!\n";
-		storage->setError(true);
-		storage->setEarlyClose(true);
-		if (removeEvent(event, EVFILT_READ) == 1)
-			throw ServerException("failed EVFILT_READ removal\n"); 
-	}
+	// if (elapsedTime - storage->getTime() > 1)
+	// {
+	// 	std::cout << "Unable to process request, it takes too long!\n";
+	// 	storage->setError(true);
+	// 	storage->setEarlyClose(true);
+	// 	if (removeEvent(event, EVFILT_READ) == 1)
+	// 		throw ServerException("failed EVFILT_READ removal\n"); 
+	// }
 
 	if (storage->getError() == true)
 	{
@@ -214,6 +220,11 @@ void Server::newClient(struct kevent event)
 	EV_SET(&evSet, fd, EVFILT_WRITE, EV_ADD, 0, 0, storage); 
 	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 		throw ServerException("failed kevent add EVFILT_WRITE");
+	
+	int timer = 2 * 1000;
+	EV_SET(&evSet, fd, EVFILT_TIMER, EV_ADD | EV_ENABLE, 0, timer, NULL);
+	if (kevent(_kq, &evSet, 1, NULL, 0, NULL)  == -1)
+		throw ServerException("failed kevent add EVFILT_TIMEOUT");
 }
 
 void Server::closeClient(struct kevent& event)

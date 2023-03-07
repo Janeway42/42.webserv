@@ -1,55 +1,83 @@
-#ifndef WEBSERV_SERVERDATA_HPP
-#define WEBSERV_SERVERDATA_HPP
+#ifndef SERVERDATA_HPP
+#define SERVERDATA_HPP
 
 #include "Parser.hpp"
-#include "includes/LocationData.hpp"
+#include "ServerLocation.hpp"
 
 /**
+ * An IP address identifies a machine in an IP network and is used to determine the destination of a data packet.
+ * Port numbers identify a particular application or service on a system.
+ *
  * Directory and file (full/relative) path:
  *      ./ means $path_to_web_server_executable/
  *      a directory or file with no path (i.e.: test_index.html) will be searched on ./
  */
 
-namespace data {
-class Server {
+class ServerData : public Parser {
     private:
         std::string _server_name;
-        unsigned int _listens_to;
-        /* std::uint8_t since each block of an ip address s form 0 to 255 */
-        std::string _ip_address;// todo look for a better _data type?
+        std::string _listens_to;
+        std::string _ip_address;
         std::string _root_directory;
         std::string _index_file;
         unsigned int _client_max_body_size;
         std::string _error_page;
         unsigned int _port_redirection;
+        /* As more than 1 location block can be added to a server block */
+        std::vector<ServerLocation> _location_data_vector;
+
+        int _listening_socket;
+		struct addrinfo *_addr;
 
     public:
-        Server();
-        virtual ~Server();
-        Server(Server const & rhs);
+        ServerData();
+        virtual ~ServerData();
+        ServerData(ServerData const & rhs);
 
         /** Methods */
 
         /** Getters */
         std::string getServerName() const;
-        unsigned int getListensTo() const;
+        std::string getListensTo() const;
         std::string getIpAddress() const;
         std::string getRootDirectory() const;
         std::string getIndexFile() const;
         unsigned int getClientMaxBodySize() const;
         std::string getErrorPage() const;
         unsigned int getPortRedirection() const;
-
+        std::vector<ServerLocation> & getLocationBlocks();
+        int getListeningSocket() const;
+		struct addrinfo* getAddr();
+	
         /** Setters */
-        void setServerName(std::string const & name);
-        void setListensTo(unsigned int const & port);
-        void setIpAddress(std::string const & ip);
-        void setRootDirectory(std::string const & root_dir);
-        void setIndexFile(std::string const & idx_file);
-        void setClientMaxBodySize(unsigned int const & body_size);
-        void setErrorPage(std::string const & err_page);
-        void setPortRedirection(unsigned int const & port_redir);
+        bool setServerName(std::string const & name);
+        bool setListensTo(std::string const & port);
+        bool setIpAddress(std::string const & ip);
+        bool setRootDirectory(std::string const & root_dir);
+        bool setIndexFile(std::string const & idx_file);
+        bool setClientMaxBodySize(std::string const & body_size);
+        bool setErrorPage(std::string const & err_page);
+        bool setPortRedirection(std::string const & port_redir);
+//        void addToLocationVector(std::vector<ServerLocation> const & location_data);
+		void setListeningSocket();
 
+
+
+		 class ServerDataException: public std::exception
+        {
+            private:
+                std::string _errorMessage;
+
+            public:
+                ServerDataException(std::string message) throw()
+                {
+                    _errorMessage = message;
+                }
+                virtual const char* what() const throw()
+                {
+                    return (_errorMessage.c_str());
+                }
+                virtual ~ServerDataException() throw(){}
+        };
 };
-} // data
-#endif // WEBSERV_SERVERDATA_HPP
+#endif //SERVERDATA_HPP

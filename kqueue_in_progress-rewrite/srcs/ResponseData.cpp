@@ -1,26 +1,24 @@
-#include "../includes/RequestResponse.hpp"
-#include "../includes/Server.hpp"
+#include "../includes/RequestParser.hpp"
+#include "../includes/ResponseData.hpp"
 #include "../includes/RequestData.hpp"
 
-namespace data {
+ResponseData::ResponseData(void) {}
 
-Response::Response(void) {}
-
-Response::~Response(void) {}
+ResponseData::~ResponseData(void) {}
 
 // ---------------------------------------------------------------------------- set functions
 // ------------------------------------------------------------------------------------------
 
-void Response::setResponse(struct kevent& event)
+void ResponseData::setResponse(struct kevent& event)
 {
-	data::Request *storage = (data::Request *)event.udata;	
+	Request *storage = (Request *)event.udata;	
 
 	_responseHeader += setResponseStatus(event);
 
 	if (storage->getRequestData().getRequestContentType().compare("txt") == 0)
 		_responseBody = streamFile(_responsePath);
 	else
-		_responseBody = setImage(storage->getAnswer().getResponsePath());
+		_responseBody = setImage(storage->getResponseData().getResponsePath());
 
 	std::cout << "_fullBody: " << _responseBody << std::endl;
 
@@ -38,9 +36,9 @@ void Response::setResponse(struct kevent& event)
 	// std::cout << "_fullResponse: " << _fullResponse << std::endl;
 }
 
-std::string Response::setResponseStatus(struct kevent& event)
+std::string ResponseData::setResponseStatus(struct kevent& event)
 {
-	data::Request *storage = (data::Request *)event.udata;
+	Request *storage = (Request *)event.udata;
 	std::string status;
 
 	std::string fileType = storage->getRequestData().getRequestContentType();
@@ -50,7 +48,7 @@ std::string Response::setResponseStatus(struct kevent& event)
 		status = "HTTP/1.1 200 OK\r\n"
 					"Content-Type: image/";   // change to take in consideration the image extension
 		status += fileType + "\r\n";
-		(storage->getAnswer()).setResponsePath(storage->getRequestData().getHttpPath());
+		(storage->getResponseData()).setResponsePath(storage->getRequestData().getHttpPath());
 		return (status);
 	}			
 	
@@ -59,17 +57,17 @@ std::string Response::setResponseStatus(struct kevent& event)
 		case 1:
 			status = "HTTP/1.1 400 Bad Request\n"
 						"Content-Type: text/html\n";
-			(storage->getAnswer()).setResponsePath("HTMLResponse/400BadResponse.html");
+			(storage->getResponseData()).setResponsePath("HTMLResponse/400BadResponse.html");
 			break;
 		case 2:
 			status = "HTTP/1.1 405 Method Not Allowed\n"
 						"Content-Type: text/html\n";
-			(storage->getAnswer()).setResponsePath("HTMLResponse/405MethodnotAllowed.html");
+			(storage->getResponseData()).setResponsePath("HTMLResponse/405MethodnotAllowed.html");
 			break;
 		case 3:
 			status = "HTTP/1.1 408 Request Timeout\n"
 						"Content-Type: text/html\n";
-			(storage->getAnswer()).setResponsePath("HTMLResponse/408RequestTimeout.html");
+			(storage->getResponseData()).setResponsePath("HTMLResponse/408RequestTimeout.html");
 			break;
 		default:
 			status = "HTTP/1.1 200 OK\n"
@@ -81,7 +79,7 @@ std::string Response::setResponseStatus(struct kevent& event)
 	return (status);
 }
 
-std::string Response::setImage(std::string imagePath)
+std::string ResponseData::setImage(std::string imagePath)
 {
 	std::cout << RED "FOUND extention .jpg or .png\n" RES;
 
@@ -127,7 +125,7 @@ std::string Response::setImage(std::string imagePath)
 	return (imageFile);
 }
 
-void Response::setResponsePath(std::string file)
+void ResponseData::setResponsePath(std::string file)
 {
 	_responsePath = file;
 }
@@ -135,7 +133,7 @@ void Response::setResponsePath(std::string file)
 // --------------------------------------------------------------------------- util functions
 // ------------------------------------------------------------------------------------------
 
-std::string Response::streamFile(std::string file)
+std::string ResponseData::streamFile(std::string file)
 {
 	std::string responseNoFav;
 	std::fstream    infile;
@@ -162,27 +160,26 @@ std::string Response::streamFile(std::string file)
 // ---------------------------------------------------------------------------- get functions
 // ------------------------------------------------------------------------------------------
 
-std::string Response::getHeader()
+std::string ResponseData::getHeader()
 {
 	return (_responseHeader);
 }
 
-std::string Response::getBody()
+std::string ResponseData::getBody()
 {
 	return (_responseBody);
 }
 
-std::string Response::getFullResponse()
+std::string & ResponseData::getFullResponse()
 {
 	return (_fullResponse);
 }
 
-std::string Response::getResponsePath()
+std::string ResponseData::getResponsePath()
 {
 	return (_responsePath);
 }
 
-} //data
 
 
 
