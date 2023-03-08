@@ -19,7 +19,7 @@ std::string Parser::keyParser(std::string & lineContent, std::string const & key
     return std::string();
 }
 
-/* define is path is file(1), folder(2) or something else(3) */
+/* define if path is file(1), folder(2) or something else(3) */
 // todo: can we use it? stat
 PathType Parser::pathType(std::string const & path) {
     struct stat	buffer = {};

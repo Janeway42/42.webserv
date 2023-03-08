@@ -41,6 +41,7 @@ class Request : public Parser {
         bool		_doneParsing;
         bool 		_errorRequest;
         bool 		_earlyClose;
+        bool 		_hasBody;
         std::time_t _startTime;
         ServerData  _server;
 

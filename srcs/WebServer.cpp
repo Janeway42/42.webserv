@@ -194,7 +194,7 @@ void WebServer::sendResponse(struct kevent& event) {
                 //  If the image path in html file is too long, it started, then address sanitizer
                 //  gives error 'heap buffer overflow' !!!
             } else {
-                std::cout << GRN_BG << "INDEX FILE: " << it_server->getIndexFile() << RES << std::endl;
+                //std::cout << GRN_BG << "INDEX FILE: " << it_server->getIndexFile() << RES << std::endl;
                 sendResponseFile(event, it_server->getIndexFile());
             }
             if (removeEvent(event, EVFILT_WRITE) == 1)
@@ -290,7 +290,7 @@ void WebServer::sendResponseFile(struct kevent& event, std::string file)
 	
 	int temp = response.length();
 	std::string fileLen = std::to_string(temp);
-	std::string contentLen = "Content-Length: ";
+	std::string contentLen = "Content-Length: ";// TODO Content-Length is present in ALL responses even DELETE?
 	contentLen.append(fileLen);
 	contentLen.append("\r\n");
 	// std::cout << RED "ContLen: " << contentLen << "\n" << RES;
