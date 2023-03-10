@@ -34,8 +34,12 @@ class Request : public Parser {
     //	std::string _body;
     //	std::string _temp;
     //	std::string keyParser(std::string & lineContent, std::string keyToFind);
+
+
+        void        parseHeaderAndPath(std::string & tmpHeader, int fdClient, std::string::size_type it);
         int 		appendLastChunkToBody(std::string::size_type it, int fdClient);
         int 		appendToBody(std::string request);
+        void	    chooseMethod_StartAction();
 
         bool		_headerDone;
         bool		_doneParsing;
@@ -56,7 +60,7 @@ class Request : public Parser {
 
         /** Methods */
         void    							parseHeader(std::string header);
-        int									parsePath(std::string str, int fdClient);
+        int									parsePath(std::string str);
         void    							appendToRequest(const char *str, int fdClient);
         void								storeBody(std::istringstream &iss);
         // std::map<std::string, std::string>	storeFormData(std::string & pq);
