@@ -41,7 +41,7 @@ INCLUDES_DEPENDENCY = ./includes/*.hpp
 
 SRC =   srcs/ConfigFileParser.cpp\
 		srcs/Parser.cpp\
-		srcs/ParseURLpath.cpp\
+		srcs/RequestParserURLpath.cpp\
 		srcs/RequestData.cpp\
 		srcs/RequestParser.cpp\
 		srcs/ServerData.cpp\
