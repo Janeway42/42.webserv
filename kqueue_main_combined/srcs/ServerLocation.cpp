@@ -1,4 +1,4 @@
-#include "../includes/ServerLocation.hpp"
+#include "ServerLocation.hpp"
 
 /** Default constructor */
 //ServerLocation::ServerLocation()// todo private???
@@ -10,7 +10,7 @@
 //    _auto_index(false),
 //    _interpreter_path(std::string()),
 //    _script_extension(std::string()) {
-//    std::cout << CYN << "JOYCE CREATING ServerLocation: " << BACK << std::endl;
+//    std::cout << CYN << "ServerLocation Default constructor" << RES << std::endl;
 //}
 
 /** Overloaded constructor */
@@ -23,7 +23,7 @@ ServerLocation::ServerLocation(std::string const & server_root_directory, std::s
     _interpreter_path(std::string()),
     _script_extension(std::string()) {
     _allow_methods.push_back(GET);
-    std::cout << CYN << "JOYCE CREATING Overloaded ServerLocation" << BACK << std::endl;
+    std::cout << CYN << "ServerLocation Overloaded constructor" << RES << std::endl;
 }
 
 /** Destructor */
@@ -36,7 +36,7 @@ ServerLocation::~ServerLocation() {
     _auto_index = false;
     _interpreter_path = std::string();
     _script_extension = std::string();
-    std::cout << CYN << "JOYCE deleting ServerLocation" << BACK << std::endl;
+    std::cout << CYN << "ServerLocation Destructor" << RES << std::endl;
 }
 
 /** #################################### Methods #################################### */

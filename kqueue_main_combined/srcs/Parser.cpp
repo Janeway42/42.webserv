@@ -2,7 +2,7 @@
 #include <iomanip>
 #include <dirent.h>
 
-#include "../includes/Parser.hpp"
+#include "Parser.hpp"
 
 ///** Default Constructor */
 //Parser::Parser() {
@@ -12,14 +12,14 @@
 std::string Parser::keyParser(std::string & lineContent, std::string const & keyToFind) {
     if (not lineContent.empty() || not keyToFind.empty()) {
         if (lineContent.find(keyToFind) != std::string::npos) {
-            std::cout << YEL << lineContent << BACK << std::endl;
+            std::cout << YEL << lineContent << RES << std::endl;
             return getOneCleanValueFromKey(lineContent, keyToFind);
         }
     }
     return std::string();
 }
 
-/* define is path is file(1), folder(2) or something else(3) */
+/* define if path is file(1), folder(2) or something else(3) */
 // todo: can we use it? stat
 PathType Parser::pathType(std::string const & path) {
     struct stat	buffer = {};

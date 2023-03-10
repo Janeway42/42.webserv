@@ -1,10 +1,11 @@
 #include <arpa/inet.h>
-#include <sys/types.h>
+
+#include "ServerData.hpp"
+// ---- kqueue ----
 #include <sys/socket.h>
 #include <netdb.h>
 #include <fcntl.h>
-
-#include "../includes/ServerData.hpp"
+#include <sys/event.h>
 
 /** Default constructor */
 ServerData::ServerData()
@@ -17,7 +18,7 @@ ServerData::ServerData()
     _client_max_body_size(1024),
     _error_page(""),
     _port_redirection(0) {
-    std::cout << PUR << "JOYCE CREATING Default ServerData: " << BACK << std::endl;
+    std::cout << PUR << "ServerData Default constructor" << RES << std::endl;
 //    _location_data_vector.push_back(ServerLocation(_root_directory, _index_file));//TODO WILL IT CALL THE ServerLocation CONSTRUCTOR???
 }
 
@@ -32,7 +33,7 @@ ServerData::ServerData(ServerData const & rhs)
     _error_page(rhs._error_page),
     _port_redirection(rhs._port_redirection),
     _location_data_vector(rhs._location_data_vector) {
-    std::cout << PUR << "JOYCE _location_data_vector.size(): " << _location_data_vector.size() << BACK << std::endl;
+    std::cout << PUR << "ServerData Copy constructor" << RES << std::endl;
 }
 
 /** Destructor */
@@ -47,7 +48,7 @@ ServerData::~ServerData() {
     _error_page = std::string();
     _port_redirection = 0;
 //    _location_data_vector = std::vector<ServerLocation>();//TODO WILL IT CALL THE ServerLocation CONSTRUCTOR???
-    std::cout << PUR << "JOYCE deleting ServerData" << BACK << std::endl;
+    std::cout << PUR << "ServerData Destructor" << RES << std::endl;
 }
 
 /** #################################### Methods #################################### */
@@ -92,12 +93,12 @@ std::vector<ServerLocation> & ServerData::getLocationBlocks() {
     return _location_data_vector;
 }
 
-int ServerData::getListeningSocket() const {
+size_t ServerData::getListeningSocket() const {
     return _listening_socket;
 }
 
-struct addrinfo* ServerData::getAddr(){
-	return (_addr);
+struct addrinfo* ServerData::getAddr() const {
+    return _addr;
 }
 
 /** #################################### Setters #################################### */
@@ -173,7 +174,7 @@ bool ServerData::setIpAddress(std::string const & ip) {
 //    std::string copy_ip = ip;
 //
 //    while (not copy_ip.empty()) {
-//        std::cout << RED_BG << "copy_ip: " << copy_ip << BACK << std::endl;
+//        std::cout << RED_BG << "copy_ip: " << copy_ip << RES << std::endl;
 //
 //        it = copy_ip.find('.');
 //        try {
@@ -284,26 +285,30 @@ bool ServerData::setPortRedirection(std::string const & port_redir) {
 //    _location_data_vector = location_data;
 //}
 
-void ServerData::setListeningSocket(){
-	_addr = new struct addrinfo();
-	struct addrinfo hints;
+void ServerData::setListeningSocket() {
+    _addr = new struct addrinfo();
+    struct addrinfo hints = addrinfo();
 
-	hints.ai_family = PF_UNSPEC; 
-	hints.ai_flags = AI_PASSIVE; 
-	hints.ai_socktype = SOCK_STREAM;
+    hints.ai_family = PF_UNSPEC;
+    hints.ai_flags = AI_PASSIVE;
+    hints.ai_socktype = SOCK_STREAM;
 
-	if (getaddrinfo(_ip_address.c_str(), _listens_to.c_str(), &hints, &_addr) != 0)
-            throw ServerDataException(("failed addr"));
+//    std::cout  << "IP ADDRESS: " << _ip_address << std::endl;
+//    std::cout  << "PORT: " << _listens_to << std::endl;
+    if (getaddrinfo(_ip_address.c_str(), _listens_to.c_str(), &hints, &_addr) != 0) {
+        freeaddrinfo(_addr);
+        throw ServerDataException("failed addr");
+    }
 
-	_listening_socket = socket(_addr->ai_family, _addr->ai_socktype, _addr->ai_protocol);
-	if (_listening_socket < 0)
-		throw ServerDataException(("failed socket"));
-	fcntl(_listening_socket, F_SETFL, O_NONBLOCK);
+    _listening_socket = socket(_addr->ai_family, _addr->ai_socktype, _addr->ai_protocol);
+    if (_listening_socket < 0)
+        throw ServerDataException(("failed socket"));
+    fcntl(_listening_socket, F_SETFL, O_NONBLOCK);
 
-	int socket_on = 1;
-	setsockopt(_listening_socket, SOL_SOCKET, SO_REUSEADDR, &socket_on, sizeof(socket_on));
-	if (bind(_listening_socket, _addr->ai_addr, _addr->ai_addrlen) == -1)
-		throw ServerDataException(("failed bind"));
-	if (listen(_listening_socket, SOMAXCONN) == -1)  // max nr of accepted connections 
-		throw ServerDataException(("failed listen"));
+    int socket_on = 1;
+    setsockopt(_listening_socket, SOL_SOCKET, SO_REUSEADDR, &socket_on, sizeof(socket_on));
+    if (bind(_listening_socket, _addr->ai_addr, _addr->ai_addrlen) == -1)
+        throw ServerDataException(("failed bind"));
+    if (listen(_listening_socket, SOMAXCONN) == -1)  // max nr of accepted connections
+        throw ServerDataException(("failed listen"));
 }

@@ -69,6 +69,9 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
 						"Content-Type: text/html\n";
 			(storage->getResponseData()).setResponsePath("HTMLResponse/408RequestTimeout.html");
 			break;
+		case 4:
+			status = "HTTP/1.1 500 Internal Server Error";
+			// (storage->getResponseData()).setResponsePath("HTMLResponse/408RequestTimeout.html");
 		default:
 			status = "HTTP/1.1 200 OK\n"
 						"Content-Type: text/html\n";
@@ -170,7 +173,7 @@ std::string ResponseData::getBody()
 	return (_responseBody);
 }
 
-std::string ResponseData::getFullResponse()
+std::string & ResponseData::getFullResponse()
 {
 	return (_fullResponse);
 }
@@ -180,7 +183,15 @@ std::string ResponseData::getResponsePath()
 	return (_responsePath);
 }
 
+int ResponseData::getBytesToClient()
+{
+	return (_bytesToClient);
+}
 
+std::string & ResponseData::getResponseBody()
+{
+	return (_responseBody);
+}
 
 
 // ------------------------------------------------------------------------------ HTTP STATUS

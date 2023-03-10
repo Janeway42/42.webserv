@@ -1,24 +1,34 @@
-#include <unistd.h> // sleep
-
-#include "../includes/RequestParser.hpp"
 
 // c++ kqueue.cpp Server.cpp srcs/Parser.cpp srcs/RequestData.cpp srcs/RequestParser.cpp && ./a.out
+
+/* Example of simple URL for methods:
+GET http://api.example.com/employee/<any_id>
+POST http://api.example.com/employee/
+PUT http://api.example.com/employee/
+DELETE http://api.example.com/employee/1
+ */
 
 // CALLING CURL 
 // curl -X POST localhost:8080  -H "Content-Type: text/html" -d '{"Id": 79, "status": 3}'
 // curl -X POST localhost:8080  -H "Content-Type: text/html" -d 'abc'
 // curl -X POST localhost:8080  -H "Content-Length: 444"  -H "Content-Type: text/html" -d 'abc'
+// curl -X DELETE localhost:8080/resources/test_index.html -H "Content-Type: text/html"
+
+#include <unistd.h> // sleep
+
+#include "../includes/RequestParser.hpp"
 
 /** Default constructor */
-Request::Request() {
+Request::Request(int fd) {
+	_clientFd = fd;
 	_data = RequestData();
 	_answer = ResponseData();
+	_cgi = CgiData();
 
 	_headerDone = false;
 	_doneParsing = false;
 	_errorRequest = false;
-	// _earlyClose = false;
-	_startTime = std::time(NULL);
+    _hasBody = false;
 }
 
 /** Destructor */
@@ -26,60 +36,419 @@ Request::~Request() {
 //   delete _data;
 }
 
+
 /** Getters */
-RequestData Request::getRequestData() const {
+RequestData & Request::getRequestData(){
 	return _data;
 }
 
-std::string Request::getRequestBody() const {
-	return _body;
+ResponseData & Request::getResponseData(){
+	return (_answer);
 }
 
-ResponseData & Request::getResponseData(){
-	return(_answer);
+CgiData & Request::getCgiData(){
+	return (_cgi);
 }
+
+
 
 /** METHODS ################################################################# */
+
+void Request::parseHeader(std::string header) {
+
+//	std::string body;
+    std::string lineContent;
+    int i = 0;
+
+    std::istringstream iss(header);
+
+    while (std::getline(iss, lineContent)) {
+        if (i == 0) {								// FIRST LINE HEADER
+            storeWordsFromFirstLine(lineContent);
+        } else if (i > 0 && lineContent != "\r") {	// OTHER HEADER LINES
+            storeWordsFromOtherLine(lineContent);
+            // Store key:value pairs into vector or map
+        } else if (i > 0 && lineContent == "\r") {	// Not sure if this \r is 100% good
+            // START READING BODY
+            //	std::cout << YEL << "Found end of header block, begin of Body\n" << RES;
+            storeBody(iss);
+            break ;
+        }
+        i++;
+    }
+}
 
 void Request::storeBody(std::istringstream &iss)
 {
 	std::string lineContent;
-//	std::string body;
+	std::string tmp;
 
 	while (std::getline(iss, lineContent)) {
-		_body.append(lineContent);
+		tmp = _data.getBody();
+		tmp.append(lineContent);
+		_data.setBody(tmp);
+		// _body.append(lineContent);
 	}
-	std::cout << YEL "body [" << _body << "]\n" RES;
+	std::cout << YEL "body [" << _data.getBody() << "]\n" << RES;
 
-	// IF METHOD == POST AND IF Content-Type 	application/x-www-form-urlencoded
-	//	Store key:value pars in map<>
-	// storeFormData(_body); // here too early
 }
 
-void Request::parseHeader(std::string header) {
-	
-//	std::string body;
-	std::string lineContent;
-	int i = 0;
 
-	std::istringstream iss(header);
+/* 	Split string at '&' and store each line into vector<>
+	Then split each line in vector into map<> key:value */
+// std::map<std::string, std::string> Request::storeFormData(std::string &queryString)
+std::map<std::string, std::string> Request::storeFormData(std::string queryString)
+{
+    std::cout << GRN << "Start store form data()\n" << RES;
+    //std::cout << GRN << "    BODY:        ["   << _body << "]\n" << RES;
+    //std::cout << GRN << "    queryString:   [" <<  queryString << "]\n" << RES;
+    //std::cout << GRN << "   _queryString:   [" << _data.getQueryString() << "]\n" << RES;
 
-	while (std::getline(iss, lineContent)) {
-		if (i == 0) {								// FIRST LINE HEADER
-			storeWordsFromFirstLine(lineContent);
-		}
-		else if (i > 0 && lineContent != "\r") {	// OTHER HEADER LINES
-			storeWordsFromOtherLine(lineContent);
-		}
-													// START READING BODY
-		else if (i > 0 && lineContent == "\r") {	// Not sure if this \r is 100% good
-		//	std::cout << YEL << "Found end of header block, begin of Body\n" RES;
-			storeBody(iss);	
-			break ; 
-		}
-		i++;
-	}
+    std::string					line;
+    std::vector<std::string>	formList;
+
+    std::stringstream iss(queryString);
+    while (std::getline(iss, line, '&'))
+        formList.push_back(line);
+
+    _data.setFormList(formList);
+
+    // MAYBE THE FORM MAP WILL NOT BE NEEDED
+    std::string							key, val;
+    std::map<std::string, std::string>	formDataMap;
+    std::vector<std::string>::iterator	it;
+
+    for (it = formList.begin(); it != formList.end(); it++) {
+        std::stringstream iss2(*it);								// maybe change name, or reuse the above variable
+        std::getline(iss2, key, '=') >> val;
+        formDataMap[key] = val;
+        //std::cout << YEL << "  ... vector [" << *it << "]\n" << RES;
+    }
+    _data.setFormData(formDataMap);
+    return (formDataMap);
 }
+
+// Found GET Method with '?' Form Data
+void Request::storePathParts_and_FormData(std::string path) {
+
+    int			temp		= path.find_first_of("?");
+    std::string tempStr		= path.substr(0, temp);
+
+    _data.setPath(path.substr(0, temp));
+    //std::cout << CYN "StorePathParts() " << _data.getPath() << "\n" << RES;
+    int posLastSlash 		= tempStr.find_last_of("/");
+    int	posFirstQuestMark	= path.find_first_of("?");
+    std::string	queryString	= path.substr(temp, std::string::npos);
+
+    _data.setPathFirstPart(tempStr.substr(0, posLastSlash));
+    _data.setPathLastWord(path.substr(posLastSlash, posFirstQuestMark - posLastSlash));
+
+    if (queryString[0] == '?') 	// Skip the '?' in the path
+        queryString = &queryString[1];
+
+    if (_data.getRequestMethod() == "GET")
+        _data.setQueryString(queryString);
+
+    std::cout << "Stored GET _queryString [\n" << BLU << _data.getQueryString() << RES << "]\n";
+    std::cout << "Stored GET _body [\n" << BLU << _data.getBody() << RES << "]\n" << RES;
+
+    storeFormData(queryString);	// maybe not needed (the whole vector and map)
+    // if the cgi script can handle the whole queryString
+}
+
+
+// !!! Not storing correctly the path part and file name!
+// If last '/' is found in path, then this is a folder, not file
+void Request::storePath_and_FolderName(std::string path) {
+
+    size_t 	pos1	= 0;
+    size_t	pos2	= 0;
+    size_t 	count	= 0;
+
+    std::cout << CYN "Start storePath_and_FolderName(}" << path << "\n" << RES;
+
+    // Check if there is query '?' and store path before it
+    // Probably not needed searching for query here, because the method is POST,  so query not possible
+    _data.setPath(path);
+    pos1 = path.find_first_of("?");
+    if (pos1 != std::string::npos)
+        _data.setPath(path.substr(0, pos1));
+
+    pos1	= 0;
+    pos2	= path.find_first_of("/");
+//	pos2	= path.find_last_of("/");
+    while (count < path.length()) {
+        if ((count = path.find("/", count)) != std::string::npos) {
+            pos1 = pos2;
+            pos2 = count;
+        }
+        if ( count == std::string::npos )
+            break ;
+        count++;
+    }
+    _data.setPathFirstPart(path.substr(0, pos1 + 1));
+    _data.setPathLastWord(path.substr(pos1 + 1, pos2));
+}
+
+/*
+char* ENV[25] = {
+	(char*)"COMSPEC=", (char*)"DOCUMENT_ROOT=", (char*)"GATEWAY_INTERFACE=", (char*)"HTTP_ACCEPT=", (char*)"HTTP_ACCEPT_ENCODING=",
+	(char*)"HTTP_ACCEPT_LANGUAGE=", (char*)"HTTP_CONNECTION=", (char*)"HTTP_HOST=", (char*)"HTTP_USER_AGENT=", (char*)"PATH=",
+	(char*)"QUERY_STRING=", (char*)"REMOTE_ADDR=", (char*)"REMOTE_PORT=", request_method2, (char*)"REQUEST_URI=", (char*)"SCRIPT_FILENAME=",
+	(char*)"SCRIPT_NAME=", (char*)"SERVER_ADDR=", (char*)"SERVER_ADMIN=", (char*)"SERVER_NAME=",(char*)"SERVER_PORT=",(char*)"SERVER_PROTOCOL=",
+	(char*)"SERVER_SIGNATURE=", (char*)"SERVER_SOFTWARE=", NULL
+};
+*/
+
+static std::string runExecve(char *ENV[], char *args[], int fdClient) {
+    //std::cout << BLU << "START runExeve\n" << RES;
+    //std::cout << "ENV: " << ENV[0] << "\n";
+
+    int    		fd[2];
+
+    int    		fdSendBody[2];
+
+    pid_t		retFork;
+    std::string	incomingStr;
+
+    if (pipe(fd) == -1)
+        std::cout << "Error: Pipe failed\n";
+
+    //std::cout << "pipe fd[0] " << fd[0] << ", pipe fd[1] " << fd[1] << " \n";
+    //dup2(fdClient, fd[1]);
+    //std::cout << BLU << "POST BODY ENV : " << ENV[2] << "\n" << RES;
+    // BY HERE, THE HUGE TEXTFILE IS STORED OK
+
+
+    retFork = fork();
+
+    if (retFork == 0) {
+        std::cout << "    Start CHILD execve()\n";
+        if (retFork < 0)
+            std::cout << "Error: Fork failed\n";
+
+        dup2(fd[1], 1);
+        (void)fdClient;
+        //dup2(fdClient, fd[1]);
+        close(fd[0]);
+
+        // BIG BODY NEEDS TO BE SENT TO THE CGI BY WRITE TO PIPE
+        close(fdSendBody[0]);	// close stdout reading from
+        dup2(fdSendBody[1], 1);
+        int ret2 = write(fdSendBody[1], "Something ..." , 13);
+        std::cout << YEL << "ret from write to CGI : " << ret2 << "\n" << RES;
+
+
+        // std::cout << YEL << "POST BODY ENV : " << ENV[2] << "\n" << RES;
+
+
+
+        int ret = execve(args[0], args, ENV);
+        std::cout << RED << "Error: Execve failed: " << ret << "\n" << RES;
+    }
+    else {
+        wait(NULL);
+        //std::cout << "    Start Parent\n";
+        char buff[100];
+
+        close(fd[1]);
+        dup2(fd[0], 0);
+        //dup2(fdClient, fd[0]);
+
+        close(fdSendBody[1]);
+        close(fdSendBody[0]);
+        //dup2(fdSendBody[0], 0);
+
+        //std::cout << RED << "        Start loop reading from child\n" << RES;
+        for (int ret = 1; ret != 0; ) {
+            memset(buff, '\0', 100);
+            ret = read(fd[0], buff, 99);
+            incomingStr.append(buff);
+        }
+        //std::cout << BLU "\n       All content read from CGI\n[" << incomingStr << "]\n" << RES;
+    }
+    return (incomingStr);
+}
+
+void Request::callCGI(RequestData reqData, int fdClient) {
+    std::cout << RED << "START CALL_CGI\n" << RES;
+
+    (void)reqData;
+    // Declare all necessary variables
+    std::string comspec			= "COMSPEC=";
+    std::string request_method	= "REQUEST_METHOD=";
+    std::string query_string	= "QUERY_STRING=";
+    std::string server_name		= "SERVER_NAME=";
+
+    // Declare a vector and fill it with variables, with attached =values
+    std::vector<std::string> temp;
+    temp.push_back(comspec.append("default"));
+    temp.push_back(request_method.append(_data.getRequestMethod()));
+    temp.push_back(query_string.append(_data.getQueryString()));
+    temp.push_back(server_name.append("default"));
+
+    //std::cout << "Size of vector temp: " << temp.size() << "\n";
+    // std::cout << YEL << "POST BODY: " << temp[2] << "\n" << RES;
+    // BY HERE, THE HUGE BODY IS STORED OK
+
+    // Make a char** array and copy all content of the above vector
+    char **env = new char*[temp.size()  + 1];
+
+    size_t i = 0;
+    for (i = 0; i < temp.size(); i++) {
+        env[i] = new char[temp[i].length() + 1];
+        strcpy(env[i], temp[i].c_str());
+    }
+    env[i] = NULL;
+    //std::cout << YEL << "POST BODY ENV : " << env[2] << "\n" << RES;
+    // BY HERE, THE HUGE BODY IS STORED OK
+
+    // Just for printing
+    //for (i = 0; env[i]; i++) {
+    //   std::cout << env[i] << std::endl;
+    //}
+
+    // Prepare the array of the correct command/cgi file to be executed
+    // The path of the executable must be according to the 'action file' from the URL
+    // char *args[2];
+    // args[0] = (char *)"./jaka_cgi/cpp_cgi";   // Make sure the path is correct on Mac/Linux
+    // args[1] = NULL;
+
+
+    // char *args[3];
+    // args[0] = (char *)"/usr/bin/php";   // Make sure the path is correct on Mac/Linux
+    // args[1] = (char *)"./jaka_cgi/_somePhp.php"; // MUST BE WITH A DOT !!
+    // args[2] = NULL;
+
+    char *args[3];
+    args[0] = (char *)"/usr/bin/python";   // Make sure the path is correct on Mac/Linux
+    args[1] = (char *)"./resources/cgi/python_cgi.py"; // MUST BE WITH A DOT !!
+    args[2] = NULL;
+
+    // (void)ENV;
+    // (void)fdClient;
+    _data.setCgiBody(runExecve(env, args, fdClient));
+
+    std::cout << "Stored CGI Body: [\n" << BLU << _data.getCgiBody() << RES << "]\n";
+
+    // Cleanup
+    for (size_t j = 0; j < temp.size(); j++) {
+        delete env[j];
+    }
+    delete[] env;
+}
+
+int Request::checkTypeOfFile() {
+    std::cout << GRN << "Start checkTypeofFile(), path [" << _data.getPath() << "]" << "\n" << RES;
+
+    std::string path = _data.getPath();
+    std::string temp = _data.getPath();
+
+    if (path[0] == '.')
+        temp = path.substr(1, std::string::npos);
+
+    std::size_t found = temp.find_last_of(".");
+
+    if (found != std::string::npos) {
+        // std::string extention = temp.substr(found, std::string::npos);
+        _data.setFileExtention(temp.substr(found, std::string::npos));
+    }
+    else
+        std::cout << GRN << "There is no extention in the last name\n" << RES;
+    return (0);
+}
+
+// Some arguments not used
+static void printPathParts(std::string str, RequestData reqData) {
+
+    std::cout << "Found path:      [" << BLU << str << RES << "]\n";
+//	std::cout << "Path trimmed:    [" << BLU << strTrim << RES << "]\n";
+    std::cout << "Path:            [" << PUR << reqData.getPath() << RES << "]\n";
+    std::cout << "Path first part: [" << PUR << reqData.getPathFirstPart() << RES << "]\n";
+    std::cout << "File/Folder:     [" << PUR << reqData.getPathLastWord() << RES << "]\n";
+    std::cout << "File extention:  [" << PUR << reqData.getFileExtention() << RES << "]\n";
+
+    std::map<std::string, std::string> formData;
+    formData = reqData.getFormData();
+
+    if (! formData.empty()) {
+        std::cout << "\nSTORED FORM DATA PAIRS:\n";// Print the map
+        std::map<std::string, std::string>::iterator it;
+        for (it = formData.begin(); it != formData.end(); it++)
+            std::cout << PUR << "   " << it->first << RES << " ---> " << PUR << it->second << "\n" << RES;
+    }
+    else
+        std::cout << "Form Data:    " << YEL << "(not present)\n" << RES;
+    std::cout << "\n";
+}
+
+int Request::parsePath(std::string str, int fdClient) {
+
+    std::cout << "    start parse path: [" << str << "]\n";	// sleep(1);
+//	std::string path			= removeDuplicateSlash(str);	// here error: read buffer overflow
+    std::string path			= str;
+    size_t		ret				= 0;
+//	std::string pathLastWord	= "";
+
+
+    if (path == "")
+        return (-1);
+    if (path[0] == '/')
+        path = "." + path;
+
+    if (path == "./") {
+        std::cout << GRN << "Path is the root '/'\n" << RES;
+    }
+    if (path.back() == '/'  && (path.find("?") == std::string::npos)) {
+        std::cout << GRN << "The path has no GET-Form data. Last char is '/', it must be a folder.\n" << RES;
+        storePath_and_FolderName(path);
+    }
+
+        // if the last char is not slash /   then look for question mark
+        // else if ((ret = path.find("?")) == std::string::npos ) {
+    else if ((ret = path.find("?")) == std::string::npos && _data.getRequestMethod() != "POST") {
+        std::cout << YEL << "There is no GET or POST method, also the '?' not found\n" << RES;
+        _data.setPath(path);
+        int pos			= 0;
+        pos				= path.find_last_of("/");
+        _data.setPathFirstPart(path.substr(0, pos));
+        _data.setPathLastWord(path.substr(pos, std::string::npos));
+    }
+
+    else if ((ret = path.find("?")) != std::string::npos) {			// Found '?' in the path, maybe also check != "POST"
+        std::cout << GRN << "There is GET Form data, the '?' is found\n" << RES;
+        storePathParts_and_FormData(path);
+    }
+
+    else if (_data.getRequestMethod() == "POST") {
+        std::cout << GRN << "There is POST Form data\n" << RES;
+        storePath_and_FolderName(path);	// Not sur if this good here ???
+        // path is not extracted correctly
+        // _data.setQueryString(getRequestBody());
+        _data.setQueryString(_data.getBody());
+    }
+
+    else if (_data.getRequestMethod() == "DELETE") {
+        std::cout << GRN << "There is DELETE Form data\n" << RES;
+        storePath_and_FolderName(path);	// Not sur if this good here ???
+        // path is not extracted correctly
+        // _data.setQueryString(getRequestBody());
+        _data.setQueryString(_data.getBody());
+    }
+
+    //std::cout << GRN << "XXX)\n" << RES;
+    checkIfFileExists(_data.getPath());	// What in case of root only "/"  ???
+    // What is case of GET??
+    checkTypeOfFile();
+
+    printPathParts(str, getRequestData());
+
+    (void)fdClient;
+    //callCGI(getRequestData(), fdClient);
+    return (0);
+}
+
+
 
 // !!!!!!! need to remove the file and links
 int Request::storeWordsFromFirstLine(std::string firstLine)
@@ -100,16 +469,20 @@ int Request::storeWordsFromFirstLine(std::string firstLine)
 	std::vector<std::string>::iterator iter = arr.begin();
 	for (int i = 0; iter < arr.end(); iter++, i++) {
 		if (i == 0) {
-			if (*iter == "GET" || *iter == "POST" || *iter == "DELETE")
-				_data.setRequestMethod(*iter);
-			else
-				std::cout << RED << "Error: This method is not recognized\n" << RES;
+			if (*iter == "GET" || *iter == "POST" || *iter == "DELETE") {
+                std::cout << RED_BG << YEL << "JOYCE REQUEST METHOD: " << *iter << RES << std::endl;
+                _data.setRequestMethod(*iter);
+            } else {
+                std::cout << RED << "Error: This method is not recognized\n" << RES;
+                // TODO -> Set 405 Method Not Allowed
+            }
 		}
 		else if (i == 1)
 			_data.setRequestPath(*iter);
 		else if (i == 2) {
 			if (*iter != "HTTP/1.1" && *iter != "HTTP/1.0")		// maybe also HTTP/1.0 needed ??
 			{
+                // TODO: SET CORRECT STATUS ERROR
 				std::cout << RED << "Error: wrong http version\n" << RES;
 				_errorRequest = true;
 			}
@@ -118,6 +491,8 @@ int Request::storeWordsFromFirstLine(std::string firstLine)
 	}
 	return (0);
 }
+
+
 
 int Request::storeWordsFromOtherLine(std::string otherLine) {
 	std::vector<std::string> arr;
@@ -159,194 +534,115 @@ int Request::storeWordsFromOtherLine(std::string otherLine) {
 	return (0);
 }
 
-/* 	Split string at '&' and store each line into vector<>
-	Then split each line in vector into map<> key:value */
-std::map<std::string, std::string> Request::storeFormData(std::string pathForm)
-{
-    //std::cout << GRE << "Start store form data()\n" << RES;
-    std::cout << GRE << "   BODY:        [" << _body << "]\n" << RES;
-    std::cout << GRE << "   FORM PATH:   [" << pathForm << "]\n" << RES;
-
-    std::string					line;
-    std::vector<std::string>	formList;
-
-    std::stringstream iss(pathForm);
-    while (std::getline(iss, line, '&'))
-        formList.push_back(line);
-
-    std::string							key, val;
-    std::map<std::string, std::string>	formDataMap;
-    std::vector<std::string>::iterator	it;
-
-    for (it = formList.begin(); it != formList.end(); it++) {
-        std::stringstream inss(*it);
-        std::getline(inss, key, '=') >> val;
-        formDataMap[key] = val;
-    }
-    _data.setFormData(formDataMap);
-    return (formDataMap);
-}
-
-// Found GET Method with '?' Form Data
-void	Request::storePathParts_and_FormData(std::string path) {
-
-    int temp				= path.find_first_of("?");
-    std::string tempStr		= path.substr(0, temp);
-    int posLastSlash 		= tempStr.find_last_of("/");
-    int	posFirstQuestMark	= path.find_first_of("?");
-    std::string	pathForm	= path.substr(temp, std::string::npos);
-
-    _data.setPathFirstPart(tempStr.substr(0, posLastSlash));
-    _data.setPathLastWord(path.substr(posLastSlash, posFirstQuestMark - posLastSlash));
-
-    if (pathForm[0] == '?') 	// Skip the '?' in the path
-        pathForm = &pathForm[1];
-    storeFormData(pathForm);
-}
-
-// Last word in path must be a folder (last '/' found)
-// The 2nd and 3rd args not needed anymore
-// void	Request::storePath_and_FolderName(std::string path, std::string pathFirstPart, std::string pathLastWord, RequestData reqData) {
-void	Request::storePath_and_FolderName(std::string path) {
-
-    int 	pos1	= 0;
-    int		pos2	= 0;
-    size_t 	count	= 0;
-    pos2 			= path.find_first_of("/");
-
-    while (count < path.length()) {
-        if ((count = path.find("/", count)) != std::string::npos) {
-            pos1 = pos2;
-            pos2 = count;
-        }
-        if ( count == std::string::npos )
-            break ;
-        count++;
-    }
-    //	pathFirstPart	= path.substr(0, pos1 + 1);
-    //	pathLastWord	= path.substr(pos1 + 1, pos2);
-
-    _data.setPathFirstPart(path.substr(0, pos1 + 1));
-    _data.setPathLastWord(path.substr(pos1 + 1, pos2));
-    //	reqData.setPathLastWord(path.substr(pos1 + 1, pos2));
-}
-
-int Request::parsePath(std::string str) {
-    // maybe also trim white spaces front and back
-//	Request		req;
-    std::string path			= removeDuplicateSlash(str);
-    size_t		ret				= 0;
-    std::string pathLastWord	= "";
-
-    if (path == "")
-        return (-1);
-    else if (path == "/") {
-        std::cout << GRE << "The path has no GET-Form data. Path is the root '/'\n" << RES;
-    }
-    else if (path.back() == '/'  && (path.find("?") == std::string::npos)) {
-        std::cout << GRE << "The path has no GET-Form data. Last char is '/', it must be a folder.\n" << RES;
-        storePath_and_FolderName(path);
-        printPathParts(str, path, "", "", getRequestData());
-    }
-
-        // if the last char is not slash /   then look for question mark
-    else if ((ret = path.find("?")) == std::string::npos ) {
-        std::cout << GRE << "There is no Form data, the '?' not found\n" << RES;
-        int pos			= 0;
-        pos				= path.find_last_of("/");
-
-        _data.setPathFirstPart(path.substr(0, pos));
-        _data.setPathLastWord(path.substr(pos, std::string::npos));
-        printPathParts(str, path, "", "", getRequestData());
-    }
-
-    else if ((ret = path.find("?")) != std::string::npos) {			// Found '?' in the path
-        std::cout << GRE << "There is GET Form data, the '?' is found\n" << RES;
-        storePathParts_and_FormData(path);
-        printPathParts(str, path, "", "", getRequestData());
-    }
-
-    checkIfFileExists(path);	// What in case of root only "/"  ???
-    checkTypeOfFile(path);
-    //checkTypeOfFile(_data.getPathLastWord());
-    //std::cout << RED << "Last word " << _data.getPathLastWord() << RES << "\n";
-    return (0);
-}
-
 /*	- What if method is GET (normaly without body) AND content-length is not zero ???
 	- What if method POST and content-length is zero ???
 */
 
-void    Request::appendToRequest(const char *str) {
+void    Request::appendToRequest(const char *str, int fdClient) {
+	//std::cout << PUR << "AppendToRequest()\n" << RES; // sleep(1);
 	std::string 			chunk = std::string(str);
 	std::string				strToFind = "\r\n\r\n";
 	std::string::size_type	it;
+	std::string				tmpHeader;
 
-	//std::cout << PUR "AppendToRequest()\n" RES; // sleep(1);
-
-	//test error: 
-	// _errorRequest = true;  // --------------------------------------------------error test
-	// return ;
-
-	//test request takes too long: 
-	// sleep(3);
-
+    _hasBody = false;
+    std::cout << RED_BG << "JOYCE header chunk: " << str << RES << std::endl;
 	if (_headerDone == false) {
-		//std::cout << PUR "     _headerDone == FALSE\n" RES;
-		
-		_temp.append(chunk);
-		//std::cout << PUR "     chunk appended to _temp\n" RES;	// sleep(1);
+        std::cout << PUR << "     _headerDone == FALSE\n" << RES;	// sleep(1);
+		_data.setTemp(_data.getTemp() + chunk);
 
-		if ((it = _temp.find(strToFind)) != std::string::npos) {
-			//std::cout << PUR "     a)  Found header ending /r/n, maybe there is body\n" RES;	// sleep(1);
-			_header.append(_temp.substr(0, it));
+		if ((it = _data.getTemp().find(strToFind)) != std::string::npos) {
+			std::cout << PUR << " Found header ending /r/n, maybe there is body\n" << RES;	// sleep(1);
+            _hasBody = true;
+			// _header.append(_temp.substr(0, it));
+
+			tmpHeader = _data.getHeader();
+			// tmpHeader.append(_temp.substr(0, it));
+			tmpHeader.append(_data.getTemp().substr(0, it));
+			_data.setHeader(tmpHeader);
 			_headerDone = true;
-			std::cout << "HEADER: [" BLU << _header << RES "]\n";	// sleep(1);
-			parseHeader(_header);
-
-			parsePath(_data.getHttpPath());	// INSERTED JAKA, can maybe be moved to parseHeader()
+			//std::cout << "HEADER: [" << BLU << _header << RES "]\n";	// sleep(1);
+			parseHeader(_data.getHeader());
+			parsePath(_data.getHttpPath(), fdClient);
 
 			if (_data.getRequestContentLength() == 0){
+                std::cout << PUR << "     DONE PARSING\n" << RES;	// sleep(1);
+				if (_data.getRequestMethod() == "GET" && _data.getQueryString() != "")
+				 	; //callCGI(getRequestData(), fdClient);
 				_doneParsing = true;
-				return ;
+				//return ;
 			}
-			appendLastChunkToBody(it + strToFind.length());
-			std::cout << "BODY:   [" BLU << _body   << RES "]\n\n";	// sleep(1);
+			appendLastChunkToBody(it + strToFind.length(), fdClient);
+			//std::cout << "apr() BODY:   [" << BLU << _body   << RES "]\n\n";	// sleep(1);
 		}
-
-		// else if ((it = _temp.find(strToFind)) == std::string::npos ) { // Keep appending, till /r/n id found
-		// 	// std::cout << PUR "     b)  Found header ending, no body\n" RES;
-		// 	std::cout << PUR "     b)  Not found /r/n yet. Append _temp_ to _header." RES;
-		// 	std::cout << PUR " (it: " << it << ")\n" RES;	// sleep(1);
-		// 	std::cout << "     _temp: [" BLU << _temp << RES "]\n";	// sleep(1);
-		// }
 	}
-	else if (_headerDone == true) {
-			std::cout << PUR "     _headerDone == TRUE\n" RES;	// sleep(1);
-			appendToBody(chunk);
+    if (_headerDone == true) {
+		std::cout << PUR << "     _headerDone == TRUE\n" << RES;	// sleep(1);
+        if (_hasBody == true) {
+            std::cout << "BODY IS PRESENT -> appendToBody(chunk) will be called" << RES << std::endl;
+            appendToBody(chunk);
+        }
+		if (_doneParsing == true && _data.getRequestMethod() == "POST")
+			; // callCGI(getRequestData(), fdClient);
+        if (_doneParsing == true && _data.getRequestMethod() == "DELETE") {
+            std::cout << GRN_BG << "DELETE METHOD" << RES << std::endl;
+            /* DELETE deletes a resource (specified in URI) */
+            if (pathType(_data.getPath()) != REG_FILE) {
+                std::cout << RED_BG << "ERROR 404 Not Found" << RES << std::endl;
+                // status error 404 Not Found -> Server cannot find the requested resource.
+            }
+            // cgi or just delete the file literally? It's not with CGI: Your program should call the CGI with the file requested as first argument.
+            // How to delete a file froma  direcory: https://codescracker.com/cpp/program/cpp-program-delete-file.htm#:~:text=To%20delete%20any%20file%20from,used%20to%20delete%20a%20file.
+            if (remove(_data.getPath().c_str()) != 0) {
+                std::cout << RED_BG << "ERROR 204 No Content" << RES << std::endl;
+                // 500 Internal Server Error -> Server encountered an unexpected condition that prevented it from fulfilling the request.
+            }
+             /* On successful deletion, it returns HTTP response status code 204 (No Content) */
+            _doneParsing = true;
+        }
 	}
-	//std::cout << PUR "End of AppendToRequest()\n" RES; // sleep(1);
+	//std::cout << PUR << "End of AppendToRequest()\n" << RES; // sleep(1);
 }
 
+//aaaaaiiiiiaaaaaiiiii22
+
+
 // Last chunk means, last chunk of header section, so first chunk of body
-int Request::appendLastChunkToBody(std::string::size_type it) {
-	_body = _temp.substr(it);
+int Request::appendLastChunkToBody(std::string::size_type it, int fdClient) {
+	// _body = _temp.substr(it);
+	//std::string tmpStr = _data.getTemp();
+	//_data.setBody(tmpStr.substr(it));
+
+	_data.setBody(_data.getTemp().substr(it));
 	
 	// Compare body lenght
-	if (_body.length() > _data.getRequestContentLength()) {
-		std::cout << RED "Error: Body-Length is bigger than expected Content-Length\n" RES;
+	// if (_body.length() > _data.getRequestContentLength()) {
+	if (_data.getBody().length() > _data.getRequestContentLength()) {
+		std::cout << RED << "Error: Body-Length (" << _data.getBody().length() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;
+		std::cout << RED << "       Body:             [" << _data.getBody() << "]\n" << RES; // sleep(2);
+		std::cout << RED << "       Body-Length:       " << _data.getBody().size() << "\n" << RES; // sleep(2);
+		std::cout << RED << "       Req.ContentLength: " << _data.getRequestContentLength() << "\n" << RES; // sleep(2);
 		_errorRequest = true;
 		return (1);
 	}
 
-	if (_body.length() == _data.getRequestContentLength()) {
-		if (_body.length() == 0 && _data.getRequestContentLength() == 0) {		// Compare body lenght
-			std::cout << GRE "OK (there is no body)\n" RES;
+	if (_data.getBody().length() == _data.getRequestContentLength()) {
+		if (_data.getBody().length() == 0 && _data.getRequestContentLength() == 0) {		// Compare body lenght
+			std::cout << GRE << "OK (there is no body)\n" << RES;
 			_doneParsing = true;
+            _hasBody = false;
 			return (0);
 		}
-		std::cout << GRE "OK: Body-Length is as expected Content-Length\n" RES;
+		std::cout << GRE << "OK: Body-Length is as expected Content-Length\n" << RES;
 		_doneParsing = true;
+		if (_doneParsing == true && _data.getRequestMethod() == "POST") { // can delete doneParsing == true
+			std::cout << "      doneparsing true and POST true, call CGI\n";
+			// std::cout << "      _body: [" << getRequestBody() << "]\n"; 
+			std::cout << "      _body: [" << _data.getBody() << "]\n"; 
+			parsePath(_data.getHttpPath(), fdClient);
+			std::cout << "      getQueryString: [" << getRequestData().getQueryString() << "]\n"; 
+			callCGI(getRequestData(), fdClient);
+		}
 		return (0);
 	}
 	// Timeout ???
@@ -355,52 +651,41 @@ int Request::appendLastChunkToBody(std::string::size_type it) {
 	return (0);
 }
 
-int Request::appendToBody(std::string req) {
-	std::cout << GRE "AppendToBody()\n" RES;
-	//exit (0);
 
-	_body.append(req);
+
+int Request::appendToBody(std::string req) {
+	//std::cout << GRE << "AppendToBody()\n" << RES;
+
+	std::string tmp = _data.getBody();
+	tmp.append(req);
+	_data.setBody(tmp);
 	
-	if (_body.length() > _data.getRequestContentLength()) {		// Compare body lenght
-		std::cout << RED "Error: Body-Length is bigger than expected Content-Length\n" RES; // sleep(2);
+	if (_data.getBody().length() > _data.getRequestContentLength()) {		// Compare body lenght
+        std::cout << RED << "Error: Body-Length (" << _data.getBody().length() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;// sleep(2);
+		std::cout << RED << "       Body-Length:       " << _data.getBody() << RES << "\n"; // sleep(2);
+		std::cout << RED << "       Req.ContentLength: " << _data.getRequestContentLength() << RES << "\n"; // sleep(2);
 		_errorRequest = true;
 		return (1);
 	}
-	else if (_body.length() == _data.getRequestContentLength()) {		// Compare body lenght
+	else if (_data.getBody().length() == _data.getRequestContentLength()) {		// Compare body lenght
 		std::cout << GRE "OK: Done parsing.\n" RES; // sleep(2);
 
-		if (_data.getRequestMethod() == "POST")
-			storeFormData(_body);
-
+		if (_data.getRequestMethod() == "POST") {
+			std::cout << GRE "      ....    store _body into _queryString\n" RES; // sleep(2);
+			_data.setQueryString(_data.getBody());
+			storeFormData(_data.getBody());	// maybe not needed
+		}
 		_doneParsing = true;
-		std::cout << "HEADER: [" BLU << _header << RES "]\n";	// sleep(1);
-		std::cout << "BODY:   [" BLU << _body   << RES "]\n\n";	// sleep(1);
+		//std::cout << "HEADER: [" BLU << _header << RES "]\n";	// sleep(1);
+		//std::cout << "BODY:   [" BLU << _body   << RES "]\n\n";	// sleep(1);
 		return (0);
 	}
-	// // Maybe not needed
-	// else if (_body.length() == 0 && _data.getRequestContentLength() == 0) {		// Compare body lenght
-	// 	std::cout << GRE "There is no body\n" RES;
-	// 	_doneParsing = true;
-	// 	return (0);
-	// }
 	return (0);
 }
 
-int Request::checkStoredVars() {
-	if (_data.getRequestContentLength() == _body.length()) {
-		// if (_body.length() == 0 && _data.getRequestContentLength() == 0) {		// Compare body lenght
-		// 	std::cout << GRE "OK (there is no body)\n" RES;
-		// 	_doneParsing = true;
-		// 	return (0);
-		// }
-		std::cout << GRE "OK: Body size == Content lenght\n" RES;
-	}
-	if (_data.getRequestContentLength() > _body.length()) {
-		std::cout << RED "Error: Body length is smaller than expected Content-Length\n" RES;
-		return (1);
-	}
-	return (0);
-}
+
+
+
 
 // JUST FOR CHECKING
 void Request::printStoredRequestData(Request &request) {
@@ -418,8 +703,9 @@ void Request::printStoredRequestData(Request &request) {
 	std::cout << "Content-Type:   [" << reqData.getRequestContentType() << "]\n" RES;
 
 	// PRINT BODY
-	std::cout << "REQUEST BODY:\n[" PUR << request.getRequestBody() << RES "]\n";
+//	std::cout << "REQUEST BODY:\n[" PUR << request.getRequestBody() << RES "]\n";
 }
+
 
 bool Request::getDone()
 {
@@ -431,7 +717,7 @@ void Request::setDone(bool val)
 	_doneParsing = val;
 }
 
-int Request::getError()
+bool Request::getError()
 {
 	return (_errorRequest);
 }
@@ -441,22 +727,8 @@ void Request::setError(bool val)
 	_errorRequest = val;
 }
 
-// bool Request::getEarlyClose()
+// std::string Request::getTemp()	// moved to RequestData
 // {
-// 	return (_earlyClose);
+// 	return(_temp);
 // }
 
-// void Request::setEarlyClose(bool val)
-// {
-// 	_earlyClose = val;
-// }
-
-std::string Request::getTemp()
-{
-	return(_temp);
-}
-
-std::time_t Request::getTime()
-{
-	return(_startTime);
-}

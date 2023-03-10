@@ -7,18 +7,18 @@ void printStoredRequestData(Request &request)
 	RequestData reqData = request.getRequestData();
 
 	// PRINT FIRST LINE HEADER
-	std::cout << "\nFIRST LINE:  [" RED << reqData.getRequestMethod() << ", "
+	std::cout << "\nFIRST LINE:  [" << RED << reqData.getRequestMethod() << ", "
 										<< reqData.getHttpPath() << ", "
-										<< reqData.getHttpVersion() << RES "]\n\n";
+										<< reqData.getHttpVersion() << RES << "]\n\n";
 	// PRINT OTHER HEADERS	
-	std::cout << "HEADER FIELDS:\n" BLU;
+	std::cout << "HEADER FIELDS:\n" << BLU;
 	std::cout << "Host:           [" << reqData.getRequestHost() << "]\n";
 	std::cout << "Accept:         [" << reqData.getRequestAccept() << "]\n";
 	std::cout << "Content-Length: [" << reqData.getRequestContentLength() << "]\n";
-	std::cout << "Content-Type:   [" << reqData.getRequestContentType() << "]\n\n" RES;
+	std::cout << "Content-Type:   [" << reqData.getRequestContentType() << "]\n\n" << RES;
 
 	// PRINT BODY
-	std::cout << "REQUEST BODY:\n[" PUR << request.getRequestBody() << RES "]\n";
+	std::cout << "REQUEST BODY:\n[" << PUR << request.getRequestBody() << RES "]\n";
 }
 
 

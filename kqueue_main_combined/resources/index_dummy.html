@@ -48,11 +48,32 @@
   <input type="file" name="fileToUpload" id="fileToUpload">
   <input type="submit" value="Upload Image" name="submit">
 </form>
-  
-  
+
+
+
+
+<p> METHOD DELETE:</p>
+I have no idea how to make a html delete
+<script type="text/javascript" src="engine1/jquery.js"></script>
+
+<a href="test_index.html" onclick="sendDelete(event)">test</a>
+<script>
+    function sendDelete(event) {
+        event.preventDefault();
+        xhttp.open("DELETE", this.href, true);
+        xhttp.send();
+    }
+</script>
+<button class="delete" data-target="http://localhost:8080/resources/test_index.html" data-method="DELETE" data-disabled="true">Delete Article</button>
+
+
+
+
   
 </form> <br><br><br>
 
 <p> SOME PHOTO</p>
-<img src="immage.png" alt="immage" style="width:20%; height:20%; ">
+<img src="immage.png" alt="immage" style="width:40%; height:20%; ">
+<!-- <img src="xxx/iaaaaaaaaaaaaaaaaaaaaaaammagexxx.png" alt="immage" style="width:40%; height:20%; "> -->
+<!-- <img src="resources/img_13000kb.jpg" alt="big pumpkin" style="width:40%; height:20%; "> -->
 </body>

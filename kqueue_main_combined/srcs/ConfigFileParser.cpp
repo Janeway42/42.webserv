@@ -1,4 +1,4 @@
-#include "../includes/ConfigFileParser.hpp"
+#include "ConfigFileParser.hpp"
 
 /** Private Default Constructor */
 //ConfigFileParser::ConfigFileParser()
@@ -16,7 +16,8 @@ ConfigFileParser::ConfigFileParser(std::string const & configFileName)
       _server_block_counter(0),
       _location_block_counter(0),
       _is_cgi(false) {
-    std::cout << BLU << "JOYCE CREATING ConfigFileParser " << BACK << std::endl;
+    std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Config File ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
+    std::cout << BLU << "ConfigFileParser Overloaded constructor" << RES << std::endl;
     handleFile(configFileName);
 }
 
@@ -26,7 +27,8 @@ ConfigFileParser::~ConfigFileParser() {
     _server_block_counter = 0;
     _location_block_counter = 0;
     _is_cgi = false;
-    std::cout << BLU << "JOYCE deleting ConfigFileParser" << BACK << std::endl;
+    std::cout << BLU << "ConfigFileParser Destructor" << RES << std::endl;
+    std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
 }
 
 /** #################################### Getters #################################### */
@@ -53,7 +55,7 @@ void ConfigFileParser::handleFile(std::string const & configFileName) {
             if (lineContent.find('#') != std::string::npos || !lineContent[0]) {
                 continue;
             } else if (lineContent != "server {" && numberOfServerBlocks() == 0) {
-                std::cerr << RED << "A server block is needed in the configuration file" << BACK << std::endl;// TODO: throw exception
+                std::cerr << RED << "A server block is needed in the configuration file" << RES << std::endl;// TODO: throw exception
                 break;
             } else if (lineContent == "server {") {
                 std::cout << "server block:" << std::endl;
@@ -82,9 +84,7 @@ void ConfigFileParser::parseFileServerBlock(std::ifstream & configFile) {
             continue;
         } else if (lineContent.find('}') != std::string::npos) {
             /* Adding to the vector whatever was inserted into _server_data */
-            std::cout << "#################### Copy Constructor"  << std::endl;
             servers.push_back(_server_data);
-            std::cout << "####################" << std::endl;
             break;
         }
         /** Handling the server block key values */
@@ -135,7 +135,6 @@ void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile, Server
     ServerLocation _server_location(ServerLocation(_server_data.getRootDirectory(), _server_data.getIndexFile()));
     _location_block_counter++;
     if (_is_cgi) {
-        std::cout << "#################### " << _server_location.isLocationCgi() << std::endl;
         _server_location.setLocationAsCgi(true);
     }
     /** Handling the location or cgi block key values */

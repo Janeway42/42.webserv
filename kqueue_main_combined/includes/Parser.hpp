@@ -6,14 +6,15 @@
 #include <unistd.h>
 
 # define RED_BG  "\033[41m"
+# define GRN_BG  "\033[42m"
 # define RED     "\033[31m"
 # define GRE     "\033[32m"
+# define GRN     "\x1B[32m"
 # define YEL     "\033[33m"
 # define BLU     "\033[34m"
 # define PUR     "\033[35m"
 # define CYN     "\033[36m"
-# define RES     "\033[37m"
-# define BACK     "\033[0m"
+# define RES     "\033[0m"
 
 enum PathType {
     DIRECTORY = 0,
@@ -71,9 +72,9 @@ enum DataType {// todo: Maybe not used
 #define NOT_SUPPORTED 0
 #define MANDATORY 1
 #define MISSING 2
-#define CONFIG_FILE_ERROR(key, error_message) ((error_message == MANDATORY) ? (BACK key RED " is mandatory") \
-                                                : (error_message == NOT_SUPPORTED) ? (BACK key RED" is not supported") \
-                                                : (BACK key RED" is missing"))
+#define CONFIG_FILE_ERROR(key, error_message) ((error_message == MANDATORY) ? (RES key RED " is mandatory") \
+                                                : (error_message == NOT_SUPPORTED) ? (RES key RED" is not supported") \
+                                                : (RES key RED" is missing"))
 
 class Parser {
     public:

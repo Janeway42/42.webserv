@@ -22,7 +22,7 @@ class ServerLocation : public Parser {
         std::string _script_extension;
 
     public:
-//        ServerLocation() {    std::cout << BLU << "JOYCE CREATING DEFAULT ServerLocation " << BACK << std::endl;}
+//        ServerLocation() {    std::cout << BLU << "CREATING DEFAULT ServerLocation " << RES << std::endl;}
         explicit ServerLocation(std::string const & server_root_directory, std::string const & server_index_file);
         virtual ~ServerLocation();
 

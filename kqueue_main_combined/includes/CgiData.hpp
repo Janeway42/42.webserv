@@ -1,5 +1,5 @@
-#ifndef RESPONSEDATA_HPP
-#define RESPONSEDATA_HPP
+#ifndef CGIDATA_HPP
+#define CGIDATA_HPP
 
 #include <sys/socket.h>
 #include <netdb.h>
@@ -12,32 +12,49 @@
 class CgiData: public Parser
 {
 	private:
-		int _fd_in[2];
-		int _fd_out[2];
-		int _sendPosition;
-
+		int _fd_in[2];  // we write to cg  - we write on _fd_in[1]
+		int _fd_out[2]; // we read from cgi - we read from _fd_out[0]
+		int _bytesToCgi;
+		bool _pipesDone;
 
 	public:
-		ResponseData();
-		virtual ~ResponseData();
+		CgiData();
+		virtual ~CgiData();
 
-		std::string streamFile(std::string file);
+		void createPipes(int kq, struct kevent & event);
 
 		// getters
-		std::string getHeader();
-		std::string getBody();
-		std::string getFullResponse();
-		std::string getResponsePath();
+		int		getBytesToCgi();
+		int		getPipeCgiIn();
+		int		getPipeCgiOut();
+		bool	getPipesDone();
 
-		//setters
-		void setResponse(struct kevent& event);
+		// setters
+		void setPosition(int val);
+		void setPipesDone(bool val);
+		void setBytesToCgi(int sent);
 
-		std::string setResponseStatus(struct kevent& event);
-		void setResponseHeader(std::string val);
-		void setResponseBody(std::string file);
-		void setResponsePath(std::string file);
+		// utils 
+		bool checkFdCgi(struct kevent & event, int filter);
+		void closeFileDescriptors(struct kevent & event);
 
-		std::string setImage(std::string imagePath);
+
+		class CgiException: public std::exception
+        {
+            private:
+                std::string _errorMessage;
+
+            public:
+                CgiException(std::string message) throw()
+                {
+                    _errorMessage = message;
+                }
+                virtual const char* what() const throw()
+                {
+                    return (_errorMessage.c_str());
+                }
+                virtual ~CgiException() throw(){}
+        };
 };
 
 #endif

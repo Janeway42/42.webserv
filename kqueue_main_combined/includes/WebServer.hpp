@@ -1,5 +1,5 @@
-#ifndef WEBSERVER_HPP
-#define WEBSERVER_HPP
+#ifndef WEBSERVER_CPP
+#define WEBSERVER_CPP
 
 // ---- C ----
 #include <unistd.h>
@@ -11,20 +11,16 @@
 #include <fcntl.h>
 #include <sys/event.h>
 
+#include "RequestParser.hpp"
 #include "ConfigFileParser.hpp"
 
 #define MAX_EVENTS 100
-
-#ifndef DEBUG
-    #define DEBUG 0
-#endif
+#define BUFFER_SIZE 50
 
 class WebServer
 {
 	private:
 		int _kq;
-		struct addrinfo *_addr;
-		size_t _listening_socket;// todo delete? it is now on the ServerLocation
         std::vector<ServerData> _servers;
 
 	public:
@@ -33,24 +29,25 @@ class WebServer
 		~WebServer(void);
 
 		void runServer();
+
 		void readRequest(struct kevent& event);
 		void sendResponse(struct kevent& event);
+		void handleTimeout(struct kevent &event);
+
+		void sendProcesssedResponse(struct kevent& event);
+		void sendError(struct kevent& event);
+		void handleTimeout(struct kevent& event);
 
 		void newClient(struct kevent event);
-		int removeEvent(struct kevent& event, int filter);
+		int removeEvent(struct kevent& event, int filter, std::string errorMessage);
 		void closeClient(struct kevent& event);
 
-		// process request 
-		void processResponse(struct kevent& event);
-		void doGet(struct kevent& event);
-		void doPost(struct kevent& event);
-		void doDelete(struct kevent& event);
-		void doNotAllowed(struct kevent& event);
+		std::string streamFile(std::string file);
+		void sendResponseFile(struct kevent& event, std::string file);
+		void sendImmage(struct kevent& event, std::string imgFileName);
+		// int closeClient(struct kevent event, int filter);
 
-		// utils request
-		void sendFile(struct kevent& event);
-
-		// getters
+		int getSocket();
 		int getKq();
 
         class ServerException: public std::exception
@@ -71,4 +68,4 @@ class WebServer
         };
 };
 
-#endif 
+#endif //WEBSERVER_CPP

@@ -27,7 +27,7 @@ NAME = webserv
 
 CPP = c++
 
-FLAGS = #-Iincludes -Wall -Werror -Wextra -pedantic -std=c++98 -Wshadow -fsanitize=address -g3
+FLAGS = -Iincludes -Wall -Werror -Wextra -pedantic -std=c++98 -Wshadow -g3 -fsanitize=address
 # other debug options: -fsanitize=address -g3
 # -pedantic -> Issue all the warnings demanded by strict ISO, it follows the
 #  version of the ISO standard specified by any -std option.
@@ -36,18 +36,17 @@ FLAGS = #-Iincludes -Wall -Werror -Wextra -pedantic -std=c++98 -Wshadow -fsaniti
 # -Wno-shadow -> is the default for the compiler, determinating that no warning
 #  is issued when variables are being shadowed.
 
-# Any modify to a .hpp file will alert Makefile's rules and recompile
-INCLUDES_DEPENDENCY = ./includes/*/*.hpp standard_complete.conf
+# Any modify to those files will alert Makefile's rules and recompile
+INCLUDES_DEPENDENCY = ./includes/*.hpp
 
-SRC =   srcs/WebServer.cpp\
-		srcs/ConfigFileParser.cpp\
-		srcs/ServerLocation.cpp\
+SRC =   srcs/ConfigFileParser.cpp\
 		srcs/Parser.cpp\
 		srcs/ParseURLpath.cpp\
 		srcs/RequestData.cpp\
-		srcs/ResponseData.cpp\
 		srcs/RequestParser.cpp\
 		srcs/ServerData.cpp\
+		srcs/ServerLocation.cpp\
+		srcs/WebServer.cpp\
 		tests/Kqueue_main.cpp
 
 OBJ = $(SRC:%.cpp=%.o)
