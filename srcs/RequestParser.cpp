@@ -179,17 +179,19 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, int fdClient, std::str
 	if (_data.getRequestContentLength() == 0){
 		std::cout << PUR << "     DONE PARSING\n" << RES;	// sleep(1);
 		if (_data.getRequestMethod() == "GET" && _data.getQueryString() != "")
-			; //callCGI(getRequestData(), fdClient);
+			; //callCGI(getRequestData(), fdClient); // moved to chooseMethod_StartAction()
 		_doneParsing = true;
 	}
 }
 
 
 
-void	Request::chooseMethod_StartAction() {
-	if (_doneParsing == true && _data.getRequestMethod() == "POST")
+void	Request::chooseMethod_StartAction(int fdClient) {
+	if (_data.getRequestMethod() == "GET" && _data.getQueryString() != "")
+			callCGI(getRequestData(), fdClient);
+	if (_data.getRequestMethod() == "POST")
 			; // callCGI(getRequestData(), fdClient);
-	if (_doneParsing == true && _data.getRequestMethod() == "DELETE") {
+	if (_data.getRequestMethod() == "DELETE") {
 		std::cout << GRN_BG << "DELETE METHOD" << RES << std::endl;
 		/* DELETE deletes a resource (specified in URI) */
 		if (pathType(_data.getPath()) != REG_FILE) {
@@ -224,23 +226,22 @@ void    Request::appendToRequest(const char *str, int fdClient) {
 		if ((it = _data.getTemp().find(strToFind)) != std::string::npos) {
 			parseHeaderAndPath(tmpHeader, fdClient, it);
 			std::cout << PUR << "Found header ending /r/n, maybe there is body\n" << RES;
-			appendLastChunkToBody(it + strToFind.length(), fdClient);
+			appendLastChunkToBody(it + strToFind.length());
 		}
 	}
 	if (_headerDone == true) {
 		std::cout << PUR << "     _headerDone == TRUE\n" << RES;
-		if (_hasBody == true) {
+		if (_hasBody == true)
 			appendToBody(chunk);
-		}
 		if (_doneParsing == true)	
-			chooseMethod_StartAction();
+			chooseMethod_StartAction(fdClient);
 	}
 }
 
 
 
 // Last chunk means, last chunk of header section, so first chunk of body
-int Request::appendLastChunkToBody(std::string::size_type it, int fdClient) {
+int Request::appendLastChunkToBody(std::string::size_type it) {
 	_data.setBody(_data.getTemp().substr(it));
 	if (_data.getBody().length() > _data.getRequestContentLength()) {   // Compare body length
 		std::cout << RED << "Error: Body-Length (" << _data.getBody().length() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;
@@ -248,21 +249,20 @@ int Request::appendLastChunkToBody(std::string::size_type it, int fdClient) {
 		return (1);
 	}
 	if (_data.getBody().length() == _data.getRequestContentLength()) {
+		_doneParsing = true;
 		if (_data.getBody().length() == 0 && _data.getRequestContentLength() == 0) {    // Compare body lenght
 			std::cout << GRE << "OK (there is no body)\n" << RES;
-			_doneParsing = true;
 			_hasBody = false;
 			return (0);
 		}
 		std::cout << GRE << "OK: Body-Length is as expected Content-Length\n" << RES;
-		_doneParsing = true;
-		if (_doneParsing == true && _data.getRequestMethod() == "POST") { // can delete doneParsing == true
-			std::cout << "      doneparsing true and POST true, call CGI\n";
-			std::cout << "      _body: [" << _data.getBody() << "]\n"; 
-			parsePath(_data.getHttpPath());	// Jaka: Probably not needed here?? Already done in parseHeaderAndpath
-			std::cout << "      getQueryString: [" << getRequestData().getQueryString() << "]\n"; 
-			callCGI(getRequestData(), fdClient);
-		}
+		//if (_doneParsing == true && _data.getRequestMethod() == "POST") { // can delete doneParsing == true
+		//	std::cout << "      doneparsing true and POST true, call CGI\n";
+		//	std::cout << "      _body: [" << _data.getBody() << "]\n"; 
+		//	parsePath(_data.getHttpPath());	// Jaka: Probably not needed here?? Already done in parseHeaderAndpath
+		//	std::cout << "      getQueryString: [" << getRequestData().getQueryString() << "]\n"; 
+		//	// callCGI(getRequestData(), fdClient); // moved to ChooseMethod_StartAction()
+		//}
 		return (0);
 	}
 	// Timeout ???
