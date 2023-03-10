@@ -27,8 +27,6 @@ class ResponseData: public Parser
 		ResponseData();
 		virtual ~ResponseData();
 
-		std::string streamFile(std::string file);
-
 		// getters
 		std::string getHeader();
 		std::string getBody();
@@ -39,11 +37,11 @@ class ResponseData: public Parser
 
 		//setters
 		void setResponse(struct kevent& event);
-
 		std::string setResponseStatus(struct kevent& event);
-		void setResponseHeader(std::string val);
+		void overrideFullResponse();
+
+		std::string streamFile(std::string file);
 		void setResponseBody(std::string file);
-		void setResponsePath(std::string file);
 
 		std::string setImage(std::string imagePath);
 

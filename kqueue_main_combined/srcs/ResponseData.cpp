@@ -2,7 +2,16 @@
 #include "../includes/ResponseData.hpp"
 #include "../includes/RequestData.hpp"
 
-ResponseData::ResponseData(void) {}
+ResponseData::ResponseData(void) {
+	_status = "";
+	_length = "";
+	_type = "";
+	_responseHeader = "";
+	_responseBody = "";
+	_fullResponse = "";
+	_responsePath = "";
+	_bytesToClient = 0;
+}
 
 ResponseData::~ResponseData(void) {}
 
@@ -20,8 +29,6 @@ void ResponseData::setResponse(struct kevent& event)
 	else
 		_responseBody = setImage(storage->getResponseData().getResponsePath());
 
-	std::cout << "_fullBody: " << _responseBody << std::endl;
-
 	// set up header 
 	int temp = _responseBody.length();
 	std::string fileLen = std::to_string(temp);
@@ -33,7 +40,6 @@ void ResponseData::setResponse(struct kevent& event)
 	_responseHeader += "\r\n\r\n";
 
 	_fullResponse += _responseHeader + _responseBody;
-	// std::cout << "_fullResponse: " << _fullResponse << std::endl;
 }
 
 std::string ResponseData::setResponseStatus(struct kevent& event)
@@ -57,29 +63,44 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
 		case 1:
 			status = "HTTP/1.1 400 Bad Request\n"
 						"Content-Type: text/html\n";
-			(storage->getResponseData()).setResponsePath("HTMLResponse/400BadResponse.html");
+			(storage->getResponseData()).setResponsePath("resources/error_pages/400BadRequest.html");
 			break;
 		case 2:
-			status = "HTTP/1.1 405 Method Not Allowed\n"
+			status = "HTTP/1.1 404 Not Found\n"
 						"Content-Type: text/html\n";
-			(storage->getResponseData()).setResponsePath("HTMLResponse/405MethodnotAllowed.html");
+			(storage->getResponseData()).setResponsePath("resources/error_pages/404NotFound.html");
 			break;
 		case 3:
-			status = "HTTP/1.1 408 Request Timeout\n"
+			status = "HTTP/1.1 405 Method Not Allowed\n"
 						"Content-Type: text/html\n";
-			(storage->getResponseData()).setResponsePath("HTMLResponse/408RequestTimeout.html");
+			(storage->getResponseData()).setResponsePath("resources/error_pages/405MethodnotAllowed.html");
 			break;
 		case 4:
+			status = "HTTP/1.1 408 Request Timeout\n"
+						"Content-Type: text/html\n";
+			(storage->getResponseData()).setResponsePath("resources/error_pages/408RequestTimeout.html");
+			break;
+		case 5:
 			status = "HTTP/1.1 500 Internal Server Error";
-			// (storage->getResponseData()).setResponsePath("HTMLResponse/408RequestTimeout.html");
+			(storage->getResponseData()).setResponsePath("resources/error_pages/500InternarServerError.html");
 		default:
 			status = "HTTP/1.1 200 OK\n"
 						"Content-Type: text/html\n";
-			_responsePath = "HTMLResponse/index_dummy.html";
-			// (storage->getAnswer()).setResponsePath("index_dummy.html");
+			_responsePath = "resources/index_dummy.html";
+			// _responsePath = storage->getRequestData().getHttpPath();
 			break;
 	}
 	return (status);
+}
+
+void ResponseData::setResponseBody(std::string file)
+{
+	_responseBody += file;
+}
+
+void ResponseData::setBytesToClient(int val)
+{
+	_bytesToClient += val;
 }
 
 std::string ResponseData::setImage(std::string imagePath)
@@ -128,13 +149,14 @@ std::string ResponseData::setImage(std::string imagePath)
 	return (imageFile);
 }
 
-void ResponseData::setResponsePath(std::string file)
-{
-	_responsePath = file;
-}
-
 // --------------------------------------------------------------------------- util functions
 // ------------------------------------------------------------------------------------------
+
+void ResponseData::overrideFullResponse()
+{
+	std::string errorMessage = " insert html code";
+	_fullResponse = errorMessage;
+}
 
 std::string ResponseData::streamFile(std::string file)
 {
@@ -183,14 +205,14 @@ std::string ResponseData::getResponsePath()
 	return (_responsePath);
 }
 
-int ResponseData::getBytesToClient()
-{
-	return (_bytesToClient);
-}
-
 std::string & ResponseData::getResponseBody()
 {
 	return (_responseBody);
+}
+
+int ResponseData::getBytesToClient()
+{
+	return (_bytesToClient);
 }
 
 

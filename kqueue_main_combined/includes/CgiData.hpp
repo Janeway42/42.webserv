@@ -22,6 +22,7 @@ class CgiData: public Parser
 		virtual ~CgiData();
 
 		void createPipes(int kq, struct kevent & event);
+		void closePipes(struct kevent & event);
 
 		// getters
 		int		getBytesToCgi();
@@ -30,15 +31,9 @@ class CgiData: public Parser
 		bool	getPipesDone();
 
 		// setters
-		void setPosition(int val);
+		void setBytesToCgi(int val);
 		void setPipesDone(bool val);
-		void setBytesToCgi(int sent);
-
-		// utils 
-		bool checkFdCgi(struct kevent & event, int filter);
-		void closeFileDescriptors(struct kevent & event);
-
-
+	
 		class CgiException: public std::exception
         {
             private:

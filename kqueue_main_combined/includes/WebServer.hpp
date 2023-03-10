@@ -34,21 +34,21 @@ class WebServer
 		void sendResponse(struct kevent& event);
 		void handleTimeout(struct kevent &event);
 
-		void sendProcesssedResponse(struct kevent& event);
-		void sendError(struct kevent& event);
-		void handleTimeout(struct kevent& event);
-
 		void newClient(struct kevent event);
-		int removeEvent(struct kevent& event, int filter, std::string errorMessage);
+		void addFilter(struct kevent& event, int filter, std::string errormMsesage);
+		void removeFilter(struct kevent& event, int filter, std::string errorMessage);
 		void closeClient(struct kevent& event);
+		
 
+
+		void sendProcesssedResponse(struct kevent& event);
 		std::string streamFile(std::string file);
 		void sendResponseFile(struct kevent& event, std::string file);
 		void sendImmage(struct kevent& event, std::string imgFileName);
 		// int closeClient(struct kevent event, int filter);
 
-		int getSocket();
-		int getKq();
+		// getters
+		int getKq();  // not actually used anywhere 
 
         class ServerException: public std::exception
         {
