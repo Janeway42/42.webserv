@@ -17,6 +17,157 @@
 #include "../includes/Parser.hpp" // for colors
 #include "../includes/RequestParser.hpp"
 
+
+
+
+static std::string runExecve(char *ENV[], char *args[], int fdClient) {
+	//std::cout << BLU << "START runExeve\n" << RES;
+	//std::cout << "ENV: " << ENV[0] << "\n";
+
+	int    		fd[2];
+
+	//int    		fdSendBody[2];
+
+	pid_t		retFork;
+	std::string	incomingStr;
+
+	if (pipe(fd) == -1)
+		std::cout << "Error: Pipe failed\n";
+
+	//std::cout << "pipe fd[0] " << fd[0] << ", pipe fd[1] " << fd[1] << " \n";
+	//dup2(fdClient, fd[1]);
+	//std::cout << BLU << "POST BODY ENV : " << ENV[2] << "\n" << RES;
+	// BY HERE, THE HUGE TEXTFILE IS STORED OK
+
+
+	retFork = fork();
+
+	if (retFork == 0) {
+		std::cout << RED "Start CHILD execve()\n" RES;
+		if (retFork < 0)
+			std::cout << "Error: Fork failed\n";
+
+		dup2(fd[1], 1);
+		(void)fdClient;
+		//dup2(fdClient, fd[1]);
+		close(fd[0]);
+
+		// BIG BODY NEEDS TO BE SENT TO THE CGI BY WRITE TO PIPE
+		//close(fdSendBody[0]);	// close stdout reading from
+		//dup2(fdSendBody[1], 1);
+		//int ret2 = write(fdSendBody[1], "Something ..." , 13);
+		//std::cout << YEL << "ret from write to CGI : " << ret2 << "\n" << RES;
+
+
+		// std::cout << YEL << "POST BODY ENV : " << ENV[2] << "\n" << RES;
+		int ret = execve(args[0], args, ENV);
+		std::cout << RED << "Error: Execve failed: " << ret << "\n" << RES;
+	}
+	else {
+		wait(NULL);
+		//std::cout << "    Start Parent\n";
+		char buff[100];
+
+		close(fd[1]);
+		dup2(fd[0], 0);
+		//dup2(fdClient, fd[0]);
+
+		//close(fdSendBody[1]);
+		//close(fdSendBody[0]);
+		//dup2(fdSendBody[0], 0);
+
+		//std::cout << RED << "        Start loop reading from child\n" << RES;
+		for (int ret = 1; ret != 0; ) {
+			memset(buff, '\0', 100);
+			ret = read(fd[0], buff, 99);
+			incomingStr.append(buff);
+		}
+		//std::cout << BLU "\n       All content read from CGI\n[" << incomingStr << "]\n" << RES;
+	}
+	return (incomingStr);
+}
+
+
+
+
+void Request::callCGI(RequestData reqData, int fdClient) {
+	std::cout << RED << "START CALL_CGI\n" << RES;
+
+	(void)reqData;
+	// Declare all necessary variables
+	std::string comspec			= "COMSPEC=";
+	std::string request_method	= "REQUEST_METHOD=";
+	std::string query_string	= "QUERY_STRING=";
+	std::string server_name		= "SERVER_NAME=";
+
+	// Declare a vector and fill it with variables, with attached =values
+	std::vector<std::string> temp;
+	temp.push_back(comspec.append("default"));
+	temp.push_back(request_method.append(_data.getRequestMethod()));
+	temp.push_back(query_string.append(_data.getQueryString()));
+	temp.push_back(server_name.append("default"));
+
+	//std::cout << "Size of vector temp: " << temp.size() << "\n";
+	// std::cout << YEL << "POST BODY: " << temp[2] << "\n" << RES;
+	// BY HERE, THE HUGE BODY IS STORED OK
+
+	// Make a char** array and copy all content of the above vector
+	char **env = new char*[temp.size()  + 1];
+
+	size_t i = 0;
+	for (i = 0; i < temp.size(); i++) {
+		env[i] = new char[temp[i].length() + 1];
+		strcpy(env[i], temp[i].c_str());
+	}
+	env[i] = NULL;
+	//std::cout << YEL << "POST BODY ENV : " << env[2] << "\n" << RES;
+	// BY HERE, THE HUGE BODY IS STORED OK
+
+	// Just for printing
+	//for (i = 0; env[i]; i++) {
+	//   std::cout << env[i] << std::endl;
+	//}
+
+	// Prepare the array of the correct command/cgi file to be executed
+	// The path of the executable must be according to the 'action file' from the URL
+	// char *args[2];
+	// args[0] = (char *)"./jaka_cgi/cpp_cgi";   // Make sure the path is correct on Mac/Linux
+	// args[1] = NULL;
+
+
+	// char *args[3];
+	// args[0] = (char *)"/usr/bin/php";   // Make sure the path is correct on Mac/Linux
+	// args[1] = (char *)"./jaka_cgi/_somePhp.php"; // MUST BE WITH A DOT !!
+	// args[2] = NULL;
+
+	char *args[3];
+	args[0] = (char *)"/usr/bin/python";   // Make sure the path is correct on Mac/Linux
+	args[1] = (char *)"./resources/cgi/python_cgi.py"; // MUST BE WITH A DOT !!
+	args[2] = NULL;
+
+	// (void)ENV;
+	// (void)fdClient;
+	_data.setCgiBody(runExecve(env, args, fdClient));
+
+	std::cout << "Stored CGI Body: [\n" << BLU << _data.getCgiBody() << RES << "]\n";
+
+	// Cleanup
+	for (size_t j = 0; j < temp.size(); j++) {
+		delete env[j];
+	}
+	delete[] env;
+}
+
+
+
+
+
+
+
+
+
+
+
 int checkIfFileExists(const std::string& path) {
 	std::ifstream file(path.c_str());
 
@@ -168,143 +319,6 @@ char* ENV[25] = {
 };
 */
 
-static std::string runExecve(char *ENV[], char *args[], int fdClient) {
-	//std::cout << BLU << "START runExeve\n" << RES;
-	//std::cout << "ENV: " << ENV[0] << "\n";
-
-	int    		fd[2];
-
-	int    		fdSendBody[2];
-
-	pid_t		retFork;
-	std::string	incomingStr;
-
-	if (pipe(fd) == -1)
-		std::cout << "Error: Pipe failed\n";
-
-	//std::cout << "pipe fd[0] " << fd[0] << ", pipe fd[1] " << fd[1] << " \n";
-	//dup2(fdClient, fd[1]);
-	//std::cout << BLU << "POST BODY ENV : " << ENV[2] << "\n" << RES;
-	// BY HERE, THE HUGE TEXTFILE IS STORED OK
-
-
-	retFork = fork();
-
-	if (retFork == 0) {
-		std::cout << "    Start CHILD execve()\n";
-		if (retFork < 0)
-			std::cout << "Error: Fork failed\n";
-
-		dup2(fd[1], 1);
-		(void)fdClient;
-		//dup2(fdClient, fd[1]);
-		close(fd[0]);
-
-		// BIG BODY NEEDS TO BE SENT TO THE CGI BY WRITE TO PIPE
-		close(fdSendBody[0]);	// close stdout reading from
-		dup2(fdSendBody[1], 1);
-		int ret2 = write(fdSendBody[1], "Something ..." , 13);
-		std::cout << YEL << "ret from write to CGI : " << ret2 << "\n" << RES;
-
-
-		// std::cout << YEL << "POST BODY ENV : " << ENV[2] << "\n" << RES;
-
-
-
-		int ret = execve(args[0], args, ENV);
-		std::cout << RED << "Error: Execve failed: " << ret << "\n" << RES;
-	}
-	else {
-		wait(NULL);
-		//std::cout << "    Start Parent\n";
-		char buff[100];
-
-		close(fd[1]);
-		dup2(fd[0], 0);
-		//dup2(fdClient, fd[0]);
-
-		close(fdSendBody[1]);
-		close(fdSendBody[0]);
-		//dup2(fdSendBody[0], 0);
-
-		//std::cout << RED << "        Start loop reading from child\n" << RES;
-		for (int ret = 1; ret != 0; ) {
-			memset(buff, '\0', 100);
-			ret = read(fd[0], buff, 99);
-			incomingStr.append(buff);
-		}
-		//std::cout << BLU "\n       All content read from CGI\n[" << incomingStr << "]\n" << RES;
-	}
-	return (incomingStr);
-}
-
-void Request::callCGI(RequestData reqData, int fdClient) {
-	std::cout << RED << "START CALL_CGI\n" << RES;
-
-	(void)reqData;
-	// Declare all necessary variables
-	std::string comspec			= "COMSPEC=";
-	std::string request_method	= "REQUEST_METHOD=";
-	std::string query_string	= "QUERY_STRING=";
-	std::string server_name		= "SERVER_NAME=";
-
-	// Declare a vector and fill it with variables, with attached =values
-	std::vector<std::string> temp;
-	temp.push_back(comspec.append("default"));
-	temp.push_back(request_method.append(_data.getRequestMethod()));
-	temp.push_back(query_string.append(_data.getQueryString()));
-	temp.push_back(server_name.append("default"));
-
-	//std::cout << "Size of vector temp: " << temp.size() << "\n";
-	// std::cout << YEL << "POST BODY: " << temp[2] << "\n" << RES;
-	// BY HERE, THE HUGE BODY IS STORED OK
-
-	// Make a char** array and copy all content of the above vector
-	char **env = new char*[temp.size()  + 1];
-
-	size_t i = 0;
-	for (i = 0; i < temp.size(); i++) {
-		env[i] = new char[temp[i].length() + 1];
-		strcpy(env[i], temp[i].c_str());
-	}
-	env[i] = NULL;
-	//std::cout << YEL << "POST BODY ENV : " << env[2] << "\n" << RES;
-	// BY HERE, THE HUGE BODY IS STORED OK
-
-	// Just for printing
-	//for (i = 0; env[i]; i++) {
-	//   std::cout << env[i] << std::endl;
-	//}
-
-	// Prepare the array of the correct command/cgi file to be executed
-	// The path of the executable must be according to the 'action file' from the URL
-	// char *args[2];
-	// args[0] = (char *)"./jaka_cgi/cpp_cgi";   // Make sure the path is correct on Mac/Linux
-	// args[1] = NULL;
-
-
-	// char *args[3];
-	// args[0] = (char *)"/usr/bin/php";   // Make sure the path is correct on Mac/Linux
-	// args[1] = (char *)"./jaka_cgi/_somePhp.php"; // MUST BE WITH A DOT !!
-	// args[2] = NULL;
-
-	char *args[3];
-	args[0] = (char *)"/usr/bin/python";   // Make sure the path is correct on Mac/Linux
-	args[1] = (char *)"./resources/cgi/python_cgi.py"; // MUST BE WITH A DOT !!
-	args[2] = NULL;
-
-	// (void)ENV;
-	// (void)fdClient;
-	_data.setCgiBody(runExecve(env, args, fdClient));
-
-	std::cout << "Stored CGI Body: [\n" << BLU << _data.getCgiBody() << RES << "]\n";
-
-	// Cleanup
-	for (size_t j = 0; j < temp.size(); j++) {
-		delete env[j];
-	}
-	delete[] env;
-}
 
 int Request::checkTypeOfFile() {
 	std::cout << GRN << "Start checkTypeofFile(), path [" << _data.getPath() << "]" << "\n" << RES;
@@ -325,6 +339,7 @@ int Request::checkTypeOfFile() {
 		std::cout << GRN << "There is no extention in the last name\n" << RES;
 	return (0);
 }
+
 
 // Some arguments not used
 static void printPathParts(std::string str, RequestData reqData) {
@@ -349,6 +364,8 @@ static void printPathParts(std::string str, RequestData reqData) {
 		std::cout << "Form Data:    " << YEL << "(not present)\n" << RES;
 	std::cout << "\n";
 }
+
+
 
 int Request::parsePath(std::string str) {
 

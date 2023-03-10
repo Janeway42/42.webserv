@@ -37,9 +37,9 @@ class Request : public Parser {
 
 
         void        parseHeaderAndPath(std::string & tmpHeader, int fdClient, std::string::size_type it);
-        int 		appendLastChunkToBody(std::string::size_type it, int fdClient);
+        int 		appendLastChunkToBody(std::string::size_type it);
         int 		appendToBody(std::string request);
-        void	    chooseMethod_StartAction();
+        void	    chooseMethod_StartAction(int fdClient);
 
         bool		_headerDone;
         bool		_doneParsing;
