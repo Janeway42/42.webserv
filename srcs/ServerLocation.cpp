@@ -17,6 +17,7 @@
 ServerLocation::ServerLocation(std::string const & server_root_directory, std::string const & server_index_file)
     /** Initializing default values for the location block */
     : _is_location_cgi(false),
+    _location_path(std::string()),
     _root_directory(server_root_directory),
     _index_file(server_index_file),
     _auto_index(false),
@@ -30,12 +31,13 @@ ServerLocation::ServerLocation(std::string const & server_root_directory, std::s
 ServerLocation::~ServerLocation() {
     /** Cleaning default values for the location block */
     _is_location_cgi = false;
-    _root_directory = std::string();
+    _location_path.clear();
+    _root_directory.clear();
     _allow_methods = std::vector<AllowMethods>(NONE);
-    _index_file = std::string();
+    _index_file.clear();
     _auto_index = false;
-    _interpreter_path = std::string();
-    _script_extension = std::string();
+    _interpreter_path.clear();
+    _script_extension.clear();
     std::cout << CYN << "ServerLocation Destructor" << RES << std::endl;
 }
 
@@ -46,6 +48,10 @@ bool ServerLocation::isLocationCgi() const {
 }
 
 /** #################################### Getters #################################### */
+
+std::string ServerLocation::getLocationPath() const {
+    return _location_path;
+}
 
 std::string ServerLocation::getRootDirectory() const {
     return _root_directory;
@@ -78,8 +84,26 @@ void ServerLocation::setLocationAsCgi(bool isCgi) {
     _is_location_cgi = isCgi;
 }
 
+bool ServerLocation::setLocationPath(std::string const & locationPath) {
+    /* not mandatory | if request contains an uri directory path, it can be made accessible by making it a location block */
+    if (not locationPath.empty()) {
+        std::string location_path = isPath(_root_directory, locationPath);
+        std::cout << RED_BG << "" << location_path << std::endl;
+        PathType type = pathType(location_path);
+        if (type == DIRECTORY) {
+            _location_path = addCurrentDirPath(location_path) + location_path;
+            return true;
+        } else if (type == PATH_TYPE_ERROR) {
+            throw ParserException(CONFIG_FILE_ERROR("location block", MISSING));
+        } else {
+            throw ParserException(CONFIG_FILE_ERROR("location block", NOT_SUPPORTED));
+        }
+    }
+    return false;
+}
+
 bool ServerLocation::setRootDirectory(std::string const & rootDirectory) {
-    /* location -> not mandatory | default: $server.root_directory */
+    /* not mandatory | default: $server.root_directory */
     if (not rootDirectory.empty()) {
         PathType type = pathType(rootDirectory);
         if (type == DIRECTORY) {
@@ -128,11 +152,10 @@ bool ServerLocation::setAllowMethods(std::string const & allowMethods) {
 }
 
 bool ServerLocation::setIndexFile(std::string const & indexFile) {
-    /* location -> not mandatory | default: $server.index_file */
-    /* cgi -> not mandatory | default: stays in the same page */
+    /* not mandatory | default: $server.index_file */
+    /* cgi -> not mandatory | default: stays in the same html page */
     if (not indexFile.empty()) {
         std::string index_file = isPath(_root_directory, indexFile);
-
         if (pathType(index_file) == REG_FILE) {
             _index_file = addCurrentDirPath(index_file) + index_file;
             return true;
@@ -178,8 +201,9 @@ bool ServerLocation::setInterpreterPath(std::string const & interpreterPath) {
 bool ServerLocation::setScriptExtension(std::string const & scriptExtension) {
     /* mandatory */
     if (not scriptExtension.empty()) {
-        if (scriptExtension == ".py") {
+        if (scriptExtension == ".py") {// todo or php?
             _script_extension = scriptExtension;
+            return true;
         } else {
             throw ParserException(CONFIG_FILE_ERROR("script_extension", NOT_SUPPORTED));
         }

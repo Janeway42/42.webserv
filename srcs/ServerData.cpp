@@ -39,13 +39,13 @@ ServerData::ServerData(ServerData const & rhs)
 /** Destructor */
 ServerData::~ServerData() {
     /** Cleaning default values for the server block */
-    _server_name = "";
-    _listens_to = "";
-    _ip_address = std::string();
-    _root_directory = std::string();
-    _index_file = std::string();
+    _server_name.clear();
+    _listens_to.clear();
+    _ip_address.clear();
+    _root_directory.clear();
+    _index_file.clear();
     _client_max_body_size = 0;
-    _error_page = std::string();
+    _error_page.clear();
     _port_redirection = 0;
 //    _location_data_vector = std::vector<ServerLocation>();//TODO WILL IT CALL THE ServerLocation CONSTRUCTOR???
     std::cout << PUR << "ServerData Destructor" << RES << std::endl;
@@ -155,46 +155,18 @@ bool ServerData::setListensTo(std::string const & port) {
     return false;
 }
 
-
-void ServerConfig::setHost(std::string parametr)
-{
-    if (parametr == "localhost")
-        parametr = "127.0.0.1";
-    if (!isValidHost(parametr))
-        throw ErrorException("Wrong syntax: host");
-    this->_host = inet_addr(parametr.data());
-}
-
 /*
- * To add a hostname or IP address to your macOS machine, you can modify the "hosts" file located at /etc/hosts. This file maps hostnames to IP addresses and is used by the operating system to resolve domain names to IP addresses locally, without querying a DNS server.
-
-To edit the hosts file, you can follow these steps:
-
-Open the Terminal app on your Mac.
-
-Type the following command to open the hosts file in the nano text editor:
-
-sudo nano /etc/hosts
-
-This will prompt you to enter your password, as the sudo command requires administrative privileges to modify system files.
-
-Use the arrow keys to navigate to the end of the file, and add a new line for the hostname or IP address you want to add. The format of the line should be:
-
-<IP address> <hostname>
-
-For example, if you want to add the hostname "example.com" with IP address "192.168.0.1", the line would look like this:
-
-192.168.0.1 example.com
-
-Press Ctrl+O to save the file, then press Ctrl+X to exit the nano editor.
-
-Finally, flush the DNS cache by typing the following command in the Terminal:
-
-sudo dscacheutil -flushcache
-
-This will ensure that the updated hosts file is used by the operating system.
-
-After making these changes, you should be able to use the hostname or IP address you added to access the associated network resource on your Mac.
+ * To add a hostname or IP address to your macOS machine, you can modify the "hosts" file located at /etc/hosts.
+ * This file maps hostnames to IP addresses and is used by the operating system to resolve domain names to IP addresses locally, without querying a DNS server.
+ * To edit the hosts file, you can follow these steps:
+ * 1. Open /etc/hosts (it requires sudo rights to modify system files)
+ * 2. Add a new line for the hostname or IP address you want to add. The format of the line should be: <IP address> <hostname>
+ *    ex: 192.168.0.1 example.com
+ *    2.1. Or add a new hostname to an existing IP address
+ *         ex:127.0.0.1 localhost example.com.br
+ * 3. Finally, flush the DNS cache by typing the following command in the Terminal: sudo dscacheutil -flushcache
+ *    This will ensure that the updated hosts file is used by the operating system.
+ * After making these changes, you should be able to use the hostname or IP address you added to access the associated network resource on your Mac.
  */
 bool ServerData::setIpAddress(std::string const & ip) {
     /* not mandatory | default: 127.0.0.1 */

@@ -14,8 +14,7 @@ ConfigFileParser::ConfigFileParser(std::string const & configFileName)
     : //_server_data(ServerData()),
       //_server_location(ServerLocation(_server_data.getRootDirectory(), _server_data.getIndexFile())),
       _server_block_counter(0),
-      _location_block_counter(0),
-      _is_cgi(false) {
+      _location_block_counter(0) {
     std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Config File ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
     std::cout << BLU << "ConfigFileParser Overloaded constructor" << RES << std::endl;
     handleFile(configFileName);
@@ -26,7 +25,6 @@ ConfigFileParser::~ConfigFileParser() {
     /** Cleaning default values */
     _server_block_counter = 0;
     _location_block_counter = 0;
-    _is_cgi = false;
     std::cout << BLU << "ConfigFileParser Destructor" << RES << std::endl;
     std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
 }
@@ -114,29 +112,22 @@ void ConfigFileParser::parseFileServerBlock(std::ifstream & configFile) {
         }
         /** Checking for cgi or location/cgi blocks */
         if (lineContent.find("location") != std::string::npos && lineContent.find('{') != std::string::npos) {
-            if (lineContent.find("cgi {") != std::string::npos) {
-                std::cout << "cgi block:" << std::endl;
-                _is_cgi = true;
-            } else {
-                std::cout << "location block:" << std::endl;
+            ServerLocation _server_location(ServerLocation(_server_data.getRootDirectory(), _server_data.getIndexFile()));
+            if (_server_location.setLocationPath(keyParser(lineContent, "location"))) {
+                parseFileLocationBlock(configFile, _server_data, _server_location);
             }
-            parseFileLocationBlock(configFile, _server_data);
             continue;
         }
     }
 }
 
-void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile, ServerData & _server_data) {
+void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile, ServerData & _server_data, ServerLocation & _server_location) {
     std::string lineContent;
     bool rootDirectoryAlreadyChecked = false;
     bool scriptExtensionAlreadyChecked = false;
     bool interpreterPathAlreadyChecked = false;
 
-    ServerLocation _server_location(ServerLocation(_server_data.getRootDirectory(), _server_data.getIndexFile()));
     _location_block_counter++;
-    if (_is_cgi) {
-        _server_location.setLocationAsCgi(true);
-    }
     /** Handling the location or cgi block key values */
     while (configFile) {
         std::getline(configFile, lineContent);
@@ -146,14 +137,11 @@ void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile, Server
         if (lineContent.find('}') != std::string::npos) {
             /* Adding a location block to the location vector */
             _server_data.getLocationBlocks().push_back(_server_location);
-
-            /* Now we are going out of a possible cgi block */
-            _is_cgi = false;
             break;
         }
         /** Handling the location or cgi block key values */
-        if (not rootDirectoryAlreadyChecked && _server_location.setRootDirectory(keyParser(lineContent, "root_directory"))) {
-            rootDirectoryAlreadyChecked = true;
+        if (not rootDirectoryAlreadyChecked &&
+                (rootDirectoryAlreadyChecked = _server_location.setRootDirectory(keyParser(lineContent, "root_directory")))) {
             continue;
         }
         if (_server_location.setAllowMethods(keyParser(lineContent, "allow_methods"))) {
@@ -166,13 +154,12 @@ void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile, Server
             continue;
         }
         if (not interpreterPathAlreadyChecked &&
-            _server_location.setInterpreterPath(keyParser(lineContent, "interpreter_path"))) {
-            interpreterPathAlreadyChecked = true;
+                (interpreterPathAlreadyChecked = _server_location.setInterpreterPath(keyParser(lineContent, "interpreter_path")))) {
+            _server_location.setLocationAsCgi(true);
             continue;
         }
         if (not scriptExtensionAlreadyChecked &&
-            _server_location.setScriptExtension(keyParser(lineContent, "script_extension"))) {
-            scriptExtensionAlreadyChecked = true;
+                (scriptExtensionAlreadyChecked = _server_location.setScriptExtension(keyParser(lineContent, "script_extension")))) {
             continue;
         }
     }
