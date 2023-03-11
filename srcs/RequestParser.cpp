@@ -247,7 +247,7 @@ void    Request::appendToRequest(const char *str, int fdClient) {
 	std::string				tmpHeader;
 
 	_hasBody = false;
-	std::cout << RED_BG << "JOYCE header chunk: " << str << RES << std::endl;
+	std::cout << GRN << "JOYCE header chunk: " << str << RES << std::endl;
 	if (_headerDone == false) {
 		std::cout << PUR << "     _headerDone == FALSE\n" << RES;
 		_data.setTemp(_data.getTemp() + chunk);

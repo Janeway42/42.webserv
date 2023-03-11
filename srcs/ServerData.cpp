@@ -155,12 +155,53 @@ bool ServerData::setListensTo(std::string const & port) {
     return false;
 }
 
+
+void ServerConfig::setHost(std::string parametr)
+{
+    if (parametr == "localhost")
+        parametr = "127.0.0.1";
+    if (!isValidHost(parametr))
+        throw ErrorException("Wrong syntax: host");
+    this->_host = inet_addr(parametr.data());
+}
+
+/*
+ * To add a hostname or IP address to your macOS machine, you can modify the "hosts" file located at /etc/hosts. This file maps hostnames to IP addresses and is used by the operating system to resolve domain names to IP addresses locally, without querying a DNS server.
+
+To edit the hosts file, you can follow these steps:
+
+Open the Terminal app on your Mac.
+
+Type the following command to open the hosts file in the nano text editor:
+
+sudo nano /etc/hosts
+
+This will prompt you to enter your password, as the sudo command requires administrative privileges to modify system files.
+
+Use the arrow keys to navigate to the end of the file, and add a new line for the hostname or IP address you want to add. The format of the line should be:
+
+<IP address> <hostname>
+
+For example, if you want to add the hostname "example.com" with IP address "192.168.0.1", the line would look like this:
+
+192.168.0.1 example.com
+
+Press Ctrl+O to save the file, then press Ctrl+X to exit the nano editor.
+
+Finally, flush the DNS cache by typing the following command in the Terminal:
+
+sudo dscacheutil -flushcache
+
+This will ensure that the updated hosts file is used by the operating system.
+
+After making these changes, you should be able to use the hostname or IP address you added to access the associated network resource on your Mac.
+ */
 bool ServerData::setIpAddress(std::string const & ip) {
     /* not mandatory | default: 127.0.0.1 */
     if (not ip.empty()) {
-        struct sockaddr_in sockAddr = {};
+        struct sockaddr_in sockAddr;
         if (inet_pton(AF_INET, ip.c_str(), &(sockAddr.sin_addr))) {
-            _ip_address = ip;
+            _ip_address = ip;// TODO _ip_address = inet_addr(ip.c_str()); ???
             return true;
         } else {
             throw ParserException(CONFIG_FILE_ERROR("ip_address", NOT_SUPPORTED));
@@ -281,10 +322,6 @@ bool ServerData::setPortRedirection(std::string const & port_redir) {
     return false;
 }
 
-//void ServerData::addToLocationVector(std::vector<ServerLocation> const & location_data) {
-//    _location_data_vector = location_data;
-//}
-
 void ServerData::setListeningSocket() {
     _addr = new struct addrinfo();
     struct addrinfo hints = addrinfo();
@@ -293,9 +330,11 @@ void ServerData::setListeningSocket() {
     hints.ai_flags = AI_PASSIVE;
     hints.ai_socktype = SOCK_STREAM;
 
-   std::cout  << "IP ADDRESS: " << _ip_address << std::endl;
-   std::cout  << "PORT: " << _listens_to << std::endl;
-    if (getaddrinfo(_ip_address.c_str(), _listens_to.c_str(), &hints, &_addr) != 0) {
+    std::cout  << "IP ADDRESS: " << _server_name << std::endl;
+    std::cout  << "PORT: " << _listens_to << std::endl;
+    // hostname: is either a valid host name or a numeric host address string consisting of a dotted decimal IPv4 address or an IPv6 address.
+    // servname: is either a decimal port number or a service name listed in services(5).
+    if (getaddrinfo(_server_name.c_str(), _listens_to.c_str(), &hints, &_addr) != 0) {
         freeaddrinfo(_addr);
         throw ServerDataException("failed addr");
     }
@@ -308,7 +347,7 @@ void ServerData::setListeningSocket() {
     int socket_on = 1;
     setsockopt(_listening_socket, SOL_SOCKET, SO_REUSEADDR, &socket_on, sizeof(socket_on));
     if (bind(_listening_socket, _addr->ai_addr, _addr->ai_addrlen) == -1)
-        throw ServerDataException(("failed bind"));
+        throw ServerDataException(("failed bind: " + std::to_string(errno)));
     if (listen(_listening_socket, SOMAXCONN) == -1)  // max nr of accepted connections
         throw ServerDataException(("failed listen"));
 }
