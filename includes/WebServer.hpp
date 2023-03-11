@@ -15,10 +15,7 @@
 #include "ConfigFileParser.hpp"
 
 #define MAX_EVENTS 100
-
-#ifndef DEBUG
-    #define DEBUG 0
-#endif
+#define BUFFER_SIZE 50
 
 class WebServer
 {
@@ -31,26 +28,28 @@ class WebServer
         WebServer(std::string const & configFileName);
 		~WebServer(void);
 
+		// main functions 
 		void runServer();
-
 		void readRequest(struct kevent& event);
 		void sendResponse(struct kevent& event);
+		void handleTimeout(struct kevent &event);
+		void newClient(struct kevent event, ServerData * specificServer);
+		void addFilter(struct kevent& event, int filter, std::string errormMsesage);
+		void removeFilter(struct kevent& event, int filter, std::string errorMessage);
+		void closeClient(struct kevent& event);
+		
+		// utils 
+		bool isListeningSocket(int fd);
+		ServerData * getSpecificServer(int fd);
 
 		void sendProcesssedResponse(struct kevent& event);
-		void sendError(struct kevent& event);
-		void handleTimeout(struct kevent& event);
-
-		void newClient(struct kevent event);
-		int removeEvent(struct kevent& event, int filter);
-		void closeClient(struct kevent& event);
-
 		std::string streamFile(std::string file);
 		void sendResponseFile(struct kevent& event, std::string file);
 		void sendImmage(struct kevent& event, std::string imgFileName);
 		// int closeClient(struct kevent event, int filter);
 
-		int getSocket();
-		int getKq();
+		// getters
+		int getKq();  // not actually used anywhere 
 
         class ServerException: public std::exception
         {

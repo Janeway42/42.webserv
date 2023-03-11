@@ -18,6 +18,8 @@ RequestData::RequestData() {
 	_fileExtention		= "";
 	_queryString		= "";
 	_cgiBody			= "";
+
+	_reqContentType = "txt";
 //	_formList			= NULL;	// ???
 //	_formData			= NULL;	// ???
 }

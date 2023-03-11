@@ -42,10 +42,12 @@ INCLUDES_DEPENDENCY = ./includes/*.hpp
 SRC =   srcs/ConfigFileParser.cpp\
 		srcs/Parser.cpp\
 		srcs/RequestParserURLpath.cpp\
-		srcs/RequestData.cpp\
 		srcs/RequestParser.cpp\
 		srcs/ServerData.cpp\
 		srcs/ServerLocation.cpp\
+		srcs/RequestData.cpp\
+		srcs/ResponseData.cpp\
+		srcs/CgiData.cpp\
 		srcs/WebServer.cpp\
 		tests/Kqueue_main.cpp
 

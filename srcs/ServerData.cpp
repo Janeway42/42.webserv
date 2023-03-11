@@ -93,7 +93,7 @@ std::vector<ServerLocation> & ServerData::getLocationBlocks() {
     return _location_data_vector;
 }
 
-size_t ServerData::getListeningSocket() const {
+int ServerData::getListeningSocket() const {
     return _listening_socket;
 }
 
@@ -293,8 +293,8 @@ void ServerData::setListeningSocket() {
     hints.ai_flags = AI_PASSIVE;
     hints.ai_socktype = SOCK_STREAM;
 
-//    std::cout  << "IP ADDRESS: " << _ip_address << std::endl;
-//    std::cout  << "PORT: " << _listens_to << std::endl;
+   std::cout  << "IP ADDRESS: " << _ip_address << std::endl;
+   std::cout  << "PORT: " << _listens_to << std::endl;
     if (getaddrinfo(_ip_address.c_str(), _listens_to.c_str(), &hints, &_addr) != 0) {
         freeaddrinfo(_addr);
         throw ServerDataException("failed addr");

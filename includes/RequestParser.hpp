@@ -12,10 +12,12 @@
 #include <unistd.h>
 #include <ctime>
 
-#include "./Parser.hpp"
-#include "./RequestData.hpp"
-#include "./RequestParserURLpath.hpp"
-#include "./ServerData.hpp"
+#include "Parser.hpp"
+#include "ServerData.hpp"
+#include "RequestData.hpp"
+#include "ResponseData.hpp"
+#include "RequestParserURLpath.hpp"
+#include "CgiData.hpp"
 
 
 	// std::string temp = path;
@@ -29,11 +31,19 @@
 
 class Request : public Parser {
     private:
+        int _clientFd;
         RequestData _data;
-    //	std::string _header;
-    //	std::string _body;
-    //	std::string _temp;
-    //	std::string keyParser(std::string & lineContent, std::string keyToFind);
+
+		ResponseData _answer;
+
+		CgiData _cgi;
+
+        bool		_headerDone;
+        bool		_doneParsing;
+        bool 		_errorRequest;
+        bool 		_hasBody;
+        ServerData  _server;
+    
 
 
         void        parseHeaderAndPath(std::string & tmpHeader, int fdClient, std::string::size_type it);
@@ -41,21 +51,14 @@ class Request : public Parser {
         int 		appendToBody(std::string request);
         void	    chooseMethod_StartAction(int fdClient);
 
-        bool		_headerDone;
-        bool		_doneParsing;
-        bool 		_errorRequest;
-        bool 		_earlyClose;
-        bool 		_hasBody;
-        std::time_t _startTime;
-        ServerData  _server;
-
-
     public:
-        Request();
+        Request(int fd, ServerData * specificServer);
         virtual ~Request();
 
         /** Getters */
-        RequestData const & getRequestData() const;
+        RequestData & getRequestData();
+		ResponseData & getResponseData();
+		CgiData & getCgiData();
         // std::string const & getRequestBody() const;  // moved to RequestData
 
         /** Methods */
@@ -79,13 +82,15 @@ class Request : public Parser {
         int     storeWordsFromFirstLine(std::string firstLine);
         int     storeWordsFromOtherLine(std::string otherLine);
 
+		// getters 
         bool getDone();
+        int getError();
+		int getFdClient();
+
+		// setters
         void setDone(bool val);
-        bool getError();
         void setError(bool val);
-        bool getEarlyClose();
-        void setEarlyClose(bool val);
-        std::time_t getTime();
+
 
     //	std::string getTemp();	moved to RequestData
 };

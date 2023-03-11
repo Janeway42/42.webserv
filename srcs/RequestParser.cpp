@@ -17,15 +17,17 @@ DELETE http://api.example.com/employee/1
 #include "../includes/RequestParser.hpp"
 
 /** Default constructor */
-Request::Request() {
+Request::Request(int fd, ServerData *specificServer) {
+	_clientFd = fd;
+	_server = *specificServer;
 	_data = RequestData();
+	_answer = ResponseData();
+	_cgi = CgiData();
+
 	_headerDone = false;
 	_doneParsing = false;
 	_errorRequest = false;
-	_earlyClose = false;
 	_hasBody = false;
-	_startTime = std::time(NULL);
-
 }
 
 /** Destructor */
@@ -35,8 +37,16 @@ Request::~Request() {
 
 
 /** Getters */
-RequestData const & Request::getRequestData() const {
+RequestData & Request::getRequestData(){
 	return _data;
+}
+
+ResponseData & Request::getResponseData(){
+	return (_answer);
+}
+
+CgiData & Request::getCgiData(){
+	return (_cgi);
 }
 
 
@@ -318,37 +328,31 @@ void Request::printStoredRequestData(Request &request) {
 }
 
 
+// getters 
+
 bool Request::getDone()
 {
 	return (_doneParsing);
 }
+
+int Request::getError()
+{
+	return (_errorRequest);
+}
+
+int Request::getFdClient()
+{
+	return (_clientFd);
+}
+
+// setters
 
 void Request::setDone(bool val)
 {
 	_doneParsing = val;
 }
 
-bool Request::getError()
-{
-	return (_errorRequest);
-}
-
 void Request::setError(bool val)
 {
 	_errorRequest = val;
-}
-
-bool Request::getEarlyClose()
-{
-	return (_earlyClose);
-}
-
-void Request::setEarlyClose(bool val)
-{
-	_earlyClose = val;
-}
-
-std::time_t Request::getTime()
-{
-	return(_startTime);
 }

@@ -46,7 +46,7 @@ class ServerData : public Parser {
         std::string getErrorPage() const;
         unsigned int getPortRedirection() const;
         std::vector<ServerLocation> & getLocationBlocks();
-        size_t getListeningSocket() const;
+        int getListeningSocket() const;
         struct addrinfo* getAddr() const;
 
         /** Setters */
