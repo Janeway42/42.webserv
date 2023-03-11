@@ -61,11 +61,9 @@ void WebServer::runServer()
 				ServerData* specificServer = getSpecificServer(evList[i].ident);
 
 				if (evList[i].flags & EV_ERROR)
-					std::cout << "Event error\n";
+					std::cout << "Event error\n";  // Corina - is there more that needs to happen here ?!!!!!!!
 				else if (specificServer != NULL)
 					newClient(evList[i], specificServer);
-				// else if ((int)evList[i].ident == _servers.begin()->getListeningSocket())//todo loop to know if evList[i].ident == current client listening socket
-				// 	newClient(evList[i]);
 				else if (evList[i].filter == EVFILT_TIMER)
 					handleTimeout(evList[i]);
 				else if (evList[i].filter == EVFILT_READ)
@@ -73,7 +71,7 @@ void WebServer::runServer()
 				//	std::cout << "READ\n";
 					if (evList[i].flags & EV_EOF)  // if client closes connection 
 					{
-						removeFilter(evList[i], EVFILT_READ, "failed kevent EV_EOF - EVFILT_READ");
+						removeFilter(evList[i].ident, evList[i], EVFILT_READ, "failed kevent EV_EOF - EVFILT_READ");
 						closeClient(evList[i]);
 					}
 					else
@@ -84,7 +82,7 @@ void WebServer::runServer()
 				//	std::cout << "WRITE\n";
 					if (evList[i].flags & EV_EOF)
 					{
-						removeFilter(evList[i], EVFILT_WRITE, "failed kevent EV_EOF - EVFILT_WRITE");
+						removeFilter(evList[i].ident, evList[i], EVFILT_WRITE, "failed kevent EV_EOF - EVFILT_WRITE");
 						closeClient(evList[i]);
 					}
 					else
@@ -109,7 +107,7 @@ void WebServer::handleTimeout(struct kevent &event)
 	{
 		storage->setError(4);      // -------------------    408 Request Timeout
 		std::cout << "Unable to process, takes too long\n";
-		addFilter(event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE - handle timeout");
+		addFilter(event.ident, event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE - handle timeout");
 	}
 }
 
@@ -119,7 +117,7 @@ void WebServer::readRequest(struct kevent& event)
 	memset(&buffer, '\0', BUFFER_SIZE);
 	Request* storage = (Request*)event.udata;
 
-	if ((int)event.ident == (storage->getCgiData()).getPipeCgiOut())  // read from CGI - we get the info 
+	if ((int)event.ident == (storage->getCgiData()).getPipeCgiOut())  // read from CGI - we get the info // the event belong to the pipe fd: _fd_out[0]
 	{
 		size_t ret = read(event.ident, &buffer,  BUFFER_SIZE);
 		if (ret < 0)
@@ -128,8 +126,8 @@ void WebServer::readRequest(struct kevent& event)
 			storage->setError(5);       // -------------------    500 Internal Server Error  
 
 			storage->getResponseData().setResponse(event);
-			addFilter(event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, ret < 0 on _fd_out[0]");  // Corina - write on the client needs to be added !!!!!!!!!
-			removeFilter(event, EVFILT_READ, "failed kevent EV_DELETE, EVFILT_READ, ret < 0 on _fd_out[0]");
+			addFilter(storage->getFdClient(), event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, ret < 0 on _fd_out[0]");  //  this allows client write 
+			removeFilter(event, EVFILT_READ, "failed kevent EV_DELETE, EVFILT_READ, ret < 0 on _fd_out[0]"); // this removes the pipe fd 
 			std::cout << "sent error message back to client\n";
 		}
 		else
@@ -139,13 +137,13 @@ void WebServer::readRequest(struct kevent& event)
 			if (ret == 0 || buffer[ret] == EOF)
 			{
 				storage->getResponseData().setResponse(event);
-				addFilter(event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, success on _fd_out[0]");  // Corina - write on the client needs to be added !!!!!!!!!
-				removeFilter(event, EVFILT_READ, "failed kevent EV_DELETE, EVFILT_READ, success on _fd_out[0]");
+				addFilter(storage->getFdClient(), event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, success on _fd_out[0]");   //  this allows client write 
+				removeFilter(event, EVFILT_READ, "failed kevent EV_DELETE, EVFILT_READ, success on _fd_out[0]"); // this removes the pipe fd 
 			}
 		}
 	}
 
-	else if ((int)event.ident == storage->getFdClient())
+	else if ((int)event.ident == storage->getFdClient()) // the event belongs to the client fd 
 	{
 		int ret = recv(event.ident, &buffer, BUFFER_SIZE - 1, 0);
 		//	std::cout << "bytes read: " << ret << std::endl;                 // test line 
@@ -155,7 +153,7 @@ void WebServer::readRequest(struct kevent& event)
 			storage->setError(5);       // -------------------    500 Internal Server Error  
 
 			storage->getResponseData().setResponse(event);
-			addFilter(event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, ret < 0, _fdClient");
+			addFilter(event.ident, event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, ret < 0, _fdClient");
 			removeFilter(event, EVFILT_READ, "failed kevent EV_DELETE, EVFILT_READ, ret < 0, _fdClient");
 			std::cout << "sent error message back to client\n";
 		}
@@ -172,7 +170,7 @@ void WebServer::readRequest(struct kevent& event)
 					std::cout << "done parsing - sending response - success\n";
 
 				storage->getResponseData().setResponse(event);
-				addFilter(event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, success READ");
+				addFilter(event.ident, event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, success READ");
 				removeFilter(event, EVFILT_READ, "failed kevent eof - read failure");
 			}
 		}
@@ -184,7 +182,7 @@ void WebServer::sendResponse(struct kevent& event)
     Request *storage = (Request*)event.udata;
 	std::string buffer;
 
-	if ((int)event.ident == (storage->getCgiData()).getPipeCgiIn())  // write to CGI - we send the info
+	if ((int)event.ident == (storage->getCgiData()).getPipeCgiIn())  // write to CGI - we send the info // the event belong to the pipe fd: _fd_in[1]
 	{
 		buffer = storage->getResponseData().getResponseBody();
 		ssize_t ret = write(storage->getCgiData().getPipeCgiIn(), buffer.c_str(), buffer.length());
@@ -192,8 +190,8 @@ void WebServer::sendResponse(struct kevent& event)
 		{
 			storage->setError(4); // 500 system failure 
 			storage->getResponseData().setResponse(event);
-			addFilter(event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, ret = -1 on _fd_in[1]");  // Corina - write on the client needs to be added !!!!!!!!!
-			// Corina - remove filter write on pipe 
+			addFilter(storage->getFdClient(), event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, ret = -1 on _fd_in[1]");    //  this allows client write 
+			removeFilter(event, EVFILT_WRITE, "failed kevent, EV_DELETE, EVFILT_WRITE failure on _fd_in[1]")  // this removes the pipe fd _fd_in[1]
 		}
 		else 
 		{
@@ -201,13 +199,13 @@ void WebServer::sendResponse(struct kevent& event)
 			// Jaka -  keep track of what has been sent-> change file to be written if necessary 
 			if (storage->getCgiData().getBytesToCgi() == (storage->getRequestData()).getBody().length())
 			{
-				removeFilter(event, EVFILT_WRITE, "failed kevent EV_DELETE, EVFILT_WRITE - _fd_in[1]");
+				removeFilter(event, EVFILT_WRITE, "failed kevent EV_DELETE, EVFILT_WRITE - success on _fd_in[1]");
 				close(event.ident);     // if CGI needs it 
 				storage->getCgiData().resetPipeIn();
 			}
 		}
 	}
-	else if ((int)event.ident == storage->getFdClient())
+	else if ((int)event.ident == storage->getFdClient()) // the event belongs to the client fd 
 	{
 		// todo grab from string and put into buffer 
 		buffer = storage->getResponseData().getFullResponse();
@@ -225,7 +223,7 @@ void WebServer::sendResponse(struct kevent& event)
 			if (storage->getResponseData().getOverride() == true)
 			{
 				removeFilter(event, EVFILT_WRITE, "failed kevent, EV_DELETE, EVFILT_WRITE, override on _fdClient");
-				removeFilter(event, EVFILT_TIMER, "failed kevent, EV_DELETE, EVFILT_WRITE, override on _fdClient");
+				removeFilter(event, EVFILT_TIMER, "failed kevent, EV_DELETE, EVFILT_TIMER, override on _fdClient");
 				closeClient(event);
 			}
 			else if (ret == 0 || ret != (ssize_t)buffer.length()); // added ret == 0 just to be according to the subject 
@@ -235,8 +233,8 @@ void WebServer::sendResponse(struct kevent& event)
 			{
 				if (storage->getResponseData().getBytesToClient() == storage->getResponseData().getFullResponse().length())
 				{
-					removeFilter(event, EVFILT_WRITE, "failed kevent, EV_DELETE, EVFILT_WRITE, ret = -1 on _fdClient");
-					removeFilter(event, EVFILT_TIMER, "failed kevent, EV_DELETE, EVFILT_WRITE, override on _fdClient");
+					removeFilter(event, EVFILT_WRITE, "failed kevent, EV_DELETE, EVFILT_WRITE, success on _fdClient");
+					removeFilter(event, EVFILT_TIMER, "failed kevent, EV_DELETE, EVFILT_TIMER, success on _fdClient");
 					closeClient(event);
 				}				
 			}
@@ -269,7 +267,7 @@ void WebServer::newClient(struct kevent event, ServerData * specificServer)
 	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 		throw ServerException("failed kevent EV_ADD, EVFILT_READ, new client");
 
-	int time = 5 * 1000;     // needs to be 30 for final version 
+	int time = 5 * 1000;     // needs to be 30 for final version -----------------------------------------
 	EV_SET(&evSet, fd, EVFILT_TIMER, EV_ADD, 0, time, storage); 
 	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 		throw ServerException("failed kevent EV_ADD, EVFILT_TIMER, new client");
@@ -280,7 +278,7 @@ void WebServer::closeClient(struct kevent& event)
 	Request *storage;
 	storage = (Request *)event.udata;
 
-	storage->getCgiData().closePipes();
+	storage->getCgiData().closePipes();  // if any pipes are still open, function cleans them out 
 	close(event.ident); 
 	std::cout << "connection closed\n";
 	delete(storage);
@@ -299,12 +297,12 @@ ServerData * WebServer::getSpecificServer(int fd)
 	return NULL;
 }
 
-void WebServer::addFilter(struct kevent& event, int filter, std::string errorMessage)
+void WebServer::addFilter(int fd, struct kevent& event, int filter, std::string errorMessage)
 {
 	Request *storage = (Request *)event.udata;
 
 	struct kevent evSet;
-	EV_SET(&evSet, event.ident, filter, EV_ADD, 0, 0, storage); 
+	EV_SET(&evSet, fd, filter, EV_ADD, 0, 0, storage); 
 	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 		throw ServerException(errorMessage);
 }

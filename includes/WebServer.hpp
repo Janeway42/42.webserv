@@ -34,7 +34,7 @@ class WebServer
 		void sendResponse(struct kevent& event);
 		void handleTimeout(struct kevent &event);
 		void newClient(struct kevent event, ServerData * specificServer);
-		void addFilter(struct kevent& event, int filter, std::string errormMsesage);
+		void addFilter(int fd, struct kevent& event, int filter, std::string errormMsesage);
 		void removeFilter(struct kevent& event, int filter, std::string errorMessage);
 		void closeClient(struct kevent& event);
 		
