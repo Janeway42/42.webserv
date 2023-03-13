@@ -53,9 +53,11 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
 	if (fileType.compare("txt") != 0 && storage->getError() == 0)
 	{
 		status = "HTTP/1.1 200 OK\r\n"
-					"Content-Type: image/png";   // change to take in consideration the image extension
+					// "Content-Type: image/png";   // change to take in consideration the image extension
+					"Content-Type: image/jpg";   // change to take in consideration the image extension
 		status += fileType + "\r\n";
-		(storage->getResponseData()).setResponsePath(storage->getRequestData().getHttpPath());
+		// (storage->getResponseData()).setResponsePath(storage->getRequestData().getHttpPath()); jaka: should be getPath()
+		(storage->getResponseData()).setResponsePath(storage->getRequestData().getPath());
 		return (status);
 	}			
 	
@@ -85,11 +87,16 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
 			status = "HTTP/1.1 500 Internal Server Error";
 			(storage->getResponseData()).setResponsePath("resources/error_pages/500InternarServerError.html");
 		default:
-			status = "HTTP/1.1 200 OK\n"
-						"Content-Type: text/html\n";
-			_responsePath = "resources/index_dummy.html";
-			// _responsePath = "resources/index_just_text.html";
-			// _responsePath = storage->getRequestData().getHttpPath();
+			status = "HTTP/1.1 200 OK\n"  
+					 "Content-Type: text/html\n";
+			//_responsePath = "resources/index_dummy.html";
+			//_responsePath = "resources/index_just_text.html";
+			//  _responsePath = "resources/index_just_text_bible.html";
+			//  _responsePath = "resources/index_just_image.html";
+			//  _responsePath = "resources/img_36kb.jpg";
+			//  _responsePath = storage->getRequestData().getHttpPath();	// jaka: this is old, should be getPath()
+			_responsePath = storage->getRequestData().getPath();
+			std::cout << GRN "getHttpPath: [" << _responsePath << "]\n" RES;
 			break;
 	}
 	return (status);
