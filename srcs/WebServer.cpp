@@ -71,7 +71,8 @@ void WebServer::runServer()
 				//	std::cout << "READ\n";
 					if (evList[i].flags & EV_EOF)  // if client closes connection 
 					{
-						removeFilter(evList[i].ident, evList[i], EVFILT_READ, "failed kevent EV_EOF - EVFILT_READ");
+						// removeFilter(evList[i].ident, evList[i], EVFILT_READ, "failed kevent EV_EOF - EVFILT_READ");		// jaka: error, too many arguments
+						removeFilter(evList[i], EVFILT_READ, "failed kevent EV_EOF - EVFILT_READ");
 						closeClient(evList[i]);
 					}
 					else
@@ -82,7 +83,8 @@ void WebServer::runServer()
 				//	std::cout << "WRITE\n";
 					if (evList[i].flags & EV_EOF)
 					{
-						removeFilter(evList[i].ident, evList[i], EVFILT_WRITE, "failed kevent EV_EOF - EVFILT_WRITE");
+						// removeFilter(evList[i].ident, evList[i], EVFILT_READ, "failed kevent EV_EOF - EVFILT_READ");			// jaka: error, too many arguments
+						removeFilter(evList[i], EVFILT_WRITE, "failed kevent EV_EOF - EVFILT_WRITE");
 						closeClient(evList[i]);
 					}
 					else
@@ -191,7 +193,7 @@ void WebServer::sendResponse(struct kevent& event)
 			storage->setError(4); // 500 system failure 
 			storage->getResponseData().setResponse(event);
 			addFilter(storage->getFdClient(), event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, ret = -1 on _fd_in[1]");    //  this allows client write 
-			removeFilter(event, EVFILT_WRITE, "failed kevent, EV_DELETE, EVFILT_WRITE failure on _fd_in[1]")  // this removes the pipe fd _fd_in[1]
+			removeFilter(event, EVFILT_WRITE, "failed kevent, EV_DELETE, EVFILT_WRITE failure on _fd_in[1]");  // this removes the pipe fd _fd_in[1]
 		}
 		else 
 		{
@@ -406,63 +408,18 @@ void WebServer::sendImmage(struct kevent& event, std::string imagePath) {
 	for (int i = 0; sentSoFar < imageSize; i++) {
 		ret = send(event.ident, content.c_str(), content.size(), 0);
 		if (ret == std::string::npos) {
-			//std::cout << RED << i << "    Nothing sent (" << ret << RES << "),  sentSoFar " << sentSoFar << "\n";
+			std::cout << RED << i << "    Nothing sent (" << ret << RES << "),  sentSoFar " << sentSoFar << "\n";
 			continue ;
 		}
 		else {
 			content.erase(0, ret);
 			sentSoFar += ret;
-			//std::cout << YEL << i << "    Sent chunk " << ret << RES << ",  sentSoFar " << sentSoFar << "\n";
+			std::cout << YEL << i << "    Sent chunk " << ret << RES << ",  sentSoFar " << sentSoFar << "\n";
 		}
 	}
 }
 
-/* OLD SEND_IMAGE
-void WebServer::sendImmage(struct kevent& event, std::string imagePath)
-{
-	std::cout << RED << "FOUND extention .jpg or .png\n" << RES;
 
-	FILE *file;
-	unsigned char *buffer;
-	unsigned long imageSize;
-
-	file = fopen(imagePath.c_str(), "rb");
-	if (!file)
-	{
-		std::cerr << "Unable to open file\n";
-		return ;
- 	}
-
-	fseek(file, 0L, SEEK_END);	// Get file length
-	imageSize = ftell(file);
-	fseek(file, 0L, SEEK_SET);
-
-	std::string temp = std::to_string(imageSize);
-	std::string contentLen = "Content-Length: ";
-	contentLen.append(temp);
-	contentLen.append("\r\n");
-
-	std::string headerBlock = 	"HTTP/1.1 200 OK\r\n"
-								"accept-ranges: bytes\r\n"
-								"Content-Type: image/jpg\r\n";
-	headerBlock.append(contentLen);
-	headerBlock.append("accept-ranges: bytes");
-	headerBlock.append("\r\n\r\n");
-
-	buffer = (unsigned char *)malloc(imageSize);
-	if (!buffer)
-		{ fprintf(stderr, "Memory error!"); fclose(file); return ; }
-
-	int ret = fread(buffer, sizeof(unsigned char), imageSize, file);
-	std::cout << YEL << "Returned fread:     " << ret << RES << "\n";
-	
-	ret = send(event.ident, headerBlock.c_str(), headerBlock.length(), 0);
-	ret = send(event.ident, reinterpret_cast <const char* >(buffer), imageSize, 0);
-	std::cout << YEL "Image sent, returned from send() image: " << ret << RES "\n";
-	fclose(file);
-	free(buffer);
-}
-*/
 
 bool WebServer::isListeningSocket(int fd)
 {
