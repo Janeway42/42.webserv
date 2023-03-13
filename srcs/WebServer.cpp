@@ -182,18 +182,19 @@ void WebServer::readRequest(struct kevent& event)
 void WebServer::sendResponse(struct kevent& event) 
 {
     Request *storage = (Request*)event.udata;
-	std::string buffer;
+	char* buffer[BUFFER_SIZE];
+	buffer = memset(&buffer, '\0', BUFFER_SIZE);  // cpp alternative? write our own ? 
 
 	if ((int)event.ident == (storage->getCgiData()).getPipeCgiIn())  // write to CGI - we send the info // the event belong to the pipe fd: _fd_in[1]
 	{
 		buffer = storage->getResponseData().getResponseBody();
-		ssize_t ret = write(storage->getCgiData().getPipeCgiIn(), buffer.c_str(), buffer.length());
+		ssize_t ret = write(storage->getCgiData().getPipeCgiIn(), buffer, sizeof(buffer) - 1);
 		if (ret == -1)
 		{
 			storage->setError(4); // 500 system failure 
 			storage->getResponseData().setResponse(event);
 			addFilter(storage->getFdClient(), event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, ret = -1 on _fd_in[1]");    //  this allows client write 
-			removeFilter(event, EVFILT_WRITE, "failed kevent, EV_DELETE, EVFILT_WRITE failure on _fd_in[1]");  // this removes the pipe fd _fd_in[1]
+			removeFilter(event, EVFILT_WRITE, "failed kevent, EV_DELETE, EVFILT_WRITE failure on _fd_in[1]")  // this removes the pipe fd _fd_in[1]
 		}
 		else 
 		{
@@ -211,29 +212,22 @@ void WebServer::sendResponse(struct kevent& event)
 	{
 		// todo grab from string and put into buffer 
 		buffer = storage->getResponseData().getFullResponse();
-		ssize_t ret = send(event.ident, buffer.c_str(), buffer.length(), 0);
+		ssize_t ret = send(event.ident, buffer.c_str(), sizeof(buffer) - 1, 0);
 
-		// to be researched how to solve if the first bloock was sent and then system fails  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		if (ret == -1)  // system failure 
 		{
-			// if some of the message has been sent then send the error block - fixed position 
-			storage->getResponseData().overrideFullResponse();  // content length -> which has already been sent/ 
+			removeFilter(event, EVFILT_WRITE, "failed kevent, EV_DELETE, EVFILT_WRITE, ret = -1 on _fdClient");
+			removeFilter(event, EVFILT_TIMER, "failed kevent, EV_DELETE, EVFILT_TIMER, ret = -1 on _fdClient");
+			closeClient(event);
 		}
 		else
 		{	
 			storage->getResponseData().setBytesToClient(ret);
-			if (storage->getResponseData().getOverride() == true)
-			{
-				removeFilter(event, EVFILT_WRITE, "failed kevent, EV_DELETE, EVFILT_WRITE, override on _fdClient");
-				removeFilter(event, EVFILT_TIMER, "failed kevent, EV_DELETE, EVFILT_TIMER, override on _fdClient");
-				closeClient(event);
-			}
-			else if (ret == 0 || ret != (ssize_t)buffer.length()); // added ret == 0 just to be according to the subject 
-				// Jaka - keep track of what has been sent 
-				// erase first part of storage->getResponsedata().getFullResponse();
+			if (ret == 0 || ret != BUFFER_SIZE - 1); // added ret == 0 just to be according to the subject 
+				storage->getResponseData().adjustFullResponse(ret);
 			else
 			{
-				if (storage->getResponseData().getBytesToClient() == storage->getResponseData().getFullResponse().length())
+				if (storage->getResponseData().getBytesToClient() == storage->getResponseData().getLengthFullResponse())
 				{
 					removeFilter(event, EVFILT_WRITE, "failed kevent, EV_DELETE, EVFILT_WRITE, success on _fdClient");
 					removeFilter(event, EVFILT_TIMER, "failed kevent, EV_DELETE, EVFILT_TIMER, success on _fdClient");

@@ -4,12 +4,12 @@
 
 ResponseData::ResponseData(void) {
 	_status = "";
-	_length = "";
 	_type = "";
 	_responseHeader = "";
 	_responseBody = "";
 	_fullResponse = "";
 	_responsePath = "";
+	_lengthFullResponse; = 0;
 	_bytesToClient = 0;
 	_errorOverride = false;
 }
@@ -41,6 +41,7 @@ void ResponseData::setResponse(struct kevent& event)
 	_responseHeader += "\r\n\r\n";
 
 	_fullResponse += _responseHeader + _responseBody;
+	_lengthFullResponse = _fullResponse.length();
 }
 
 std::string ResponseData::setResponseStatus(struct kevent& event)
@@ -60,45 +61,48 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
 		(storage->getResponseData()).setResponsePath(storage->getRequestData().getPath());
 		return (status);
 	}			
-	
-	switch (storage->getError())
+	else
 	{
-		case 1:
-			status = "HTTP/1.1 400 Bad Request\n"
+		switch (storage->getError())
+		{
+			case 1:
+				status = "HTTP/1.1 400 Bad Request\n"
+							"Content-Type: text/html\n";
+				(storage->getResponseData()).setResponsePath("resources/error_pages/400BadRequest.html");
+				break;
+			case 2:
+				status = "HTTP/1.1 404 Not Found\n"
+							"Content-Type: text/html\n";
+				(storage->getResponseData()).setResponsePath("resources/error_pages/404NotFound.html");
+				break;
+			case 3:
+				status = "HTTP/1.1 405 Method Not Allowed\n"
+							"Content-Type: text/html\n";
+				(storage->getResponseData()).setResponsePath("resources/error_pages/405MethodnotAllowed.html");
+				break;
+			case 4:
+				status = "HTTP/1.1 408 Request Timeout\n"
+							"Content-Type: text/html\n";
+				(storage->getResponseData()).setResponsePath("resources/error_pages/408RequestTimeout.html");
+				break;
+			case 5:
+				status = "HTTP/1.1 500 Internal Server Error";
+				(storage->getResponseData()).setResponsePath("resources/error_pages/500InternarServerError.html");
+			default:
+				status = "HTTP/1.1 200 OK\n"  
 						"Content-Type: text/html\n";
-			(storage->getResponseData()).setResponsePath("resources/error_pages/400BadRequest.html");
-			break;
-		case 2:
-			status = "HTTP/1.1 404 Not Found\n"
-						"Content-Type: text/html\n";
-			(storage->getResponseData()).setResponsePath("resources/error_pages/404NotFound.html");
-			break;
-		case 3:
-			status = "HTTP/1.1 405 Method Not Allowed\n"
-						"Content-Type: text/html\n";
-			(storage->getResponseData()).setResponsePath("resources/error_pages/405MethodnotAllowed.html");
-			break;
-		case 4:
-			status = "HTTP/1.1 408 Request Timeout\n"
-						"Content-Type: text/html\n";
-			(storage->getResponseData()).setResponsePath("resources/error_pages/408RequestTimeout.html");
-			break;
-		case 5:
-			status = "HTTP/1.1 500 Internal Server Error";
-			(storage->getResponseData()).setResponsePath("resources/error_pages/500InternarServerError.html");
-		default:
-			status = "HTTP/1.1 200 OK\n"  
-					 "Content-Type: text/html\n";
-			//_responsePath = "resources/index_dummy.html";
-			//_responsePath = "resources/index_just_text.html";
-			//  _responsePath = "resources/index_just_text_bible.html";
-			//  _responsePath = "resources/index_just_image.html";
-			//  _responsePath = "resources/img_36kb.jpg";
-			//  _responsePath = storage->getRequestData().getHttpPath();	// jaka: this is old, should be getPath()
-			_responsePath = storage->getRequestData().getPath();
-			std::cout << GRN "getHttpPath: [" << _responsePath << "]\n" RES;
-			break;
+				//_responsePath = "resources/index_dummy.html";
+				//_responsePath = "resources/index_just_text.html";
+				//  _responsePath = "resources/index_just_text_bible.html";
+				//  _responsePath = "resources/index_just_image.html";
+				//  _responsePath = "resources/img_36kb.jpg";
+				//  _responsePath = storage->getRequestData().getHttpPath();	// jaka: this is old, should be getPath()
+				_responsePath = storage->getRequestData().getPath();
+				std::cout << GRN "getHttpPath: [" << _responsePath << "]\n" RES;
+				break;
+		}
 	}
+
 	return (status);
 }
 
@@ -172,11 +176,10 @@ void ResponseData::setResponsePath(std::string path)
 // --------------------------------------------------------------------------- util functions
 // ------------------------------------------------------------------------------------------
 
-void ResponseData::overrideFullResponse()
+void ResponseData::adjustFullResponse(ssize_t ret)
 {
-	std::string errorMessage = " insert html code";
-	_fullResponse = errorMessage;
-	_errorOverride = true;
+	_fullResponse = _fullResponse.substr(val);
+	// this removed the first "ret" of the full response string 
 }
 
 std::string ResponseData::streamFile(std::string file)

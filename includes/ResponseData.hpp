@@ -12,16 +12,16 @@
 class ResponseData: public Parser
 {
 	private:
-		std::string _status;
-		std::string _length;
-		std::string _type;
+		std::string		_status;
+		std::string		_type;
 		
-		std::string _responseHeader;
-		std::string _responseBody;
-		std::string _fullResponse;
-		std::string _responsePath;
+		std::string		_responseHeader;
+		std::string		_responseBody;
+		std::string		_fullResponse;
+		std::string		_responsePath;
 
-		unsigned long _bytesToClient;
+		ssize_t			_lengthFullResponse; // neds to be set at the end of making the response (just once)
+		unsigned long	_bytesToClient;
 		bool _errorOverride;
 
 	public:
@@ -38,12 +38,12 @@ class ResponseData: public Parser
 		bool			getOverride();
 
 		//setters
-		void		overrideFullResponse();
 		void		setResponse(struct kevent& event);
 		std::string	setResponseStatus(struct kevent& event);
 		void		setResponsePath(std::string path);
 		void		setOverride(bool val);
 		void		setResponseBody(std::string file);
+		void		adjustFullResponse(ssize_t ret);
 
 		std::string	streamFile(std::string file);
 		std::string setImage(std::string imagePath);
