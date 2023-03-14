@@ -415,6 +415,7 @@ int Request::parsePath(std::string str) {
 	checkIfFileExists(_data.getPath());	// What in case of root only "/"  ???
 	// What in case of GET??
 	checkTypeOfFile();
+	_data.setRequestContentType(_data.getFileExtention());
 
 	printPathParts(str, getRequestData());
 	return (0);

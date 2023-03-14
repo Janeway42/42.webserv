@@ -219,6 +219,7 @@ void WebServer::sendResponse(struct kevent& event)
 		std::string content = storage->getResponseData().getFullResponse();
 		unsigned long myRet;
 		storage->getResponseData().setCurrentLength(content.size());
+		std::cout << YEL"content size: " << content.size() << RES"\n";
 		std::cout << YEL"START SENDING CHUNK,  remaining response length: " << storage->getResponseData().getCurrentLength() << RES"\n";
 		myRet = send(event.ident, content.c_str(), content.size(), 0);
 		if (myRet == std::string::npos) {	// Temporary, just to see. It can be probably removed (Jaka)
@@ -352,79 +353,79 @@ std::string WebServer::streamFile(std::string file)
 	return (responseNoFav);
 }
 
-void WebServer::sendResponseFile(struct kevent& event, std::string file)
-{
-	Request *storage = (Request *)event.udata;
-	std::string response;
-	std::string headerBlock;
-	response = streamFile(file);
+// void WebServer::sendResponseFile(struct kevent& event, std::string file)
+// {
+// 	Request *storage = (Request *)event.udata;
+// 	std::string response;
+// 	std::string headerBlock;
+// 	response = streamFile(file);
 	
-	int temp = response.length();
-	std::string fileLen = std::to_string(temp);
-	std::string contentLen = "Content-Length: ";// TODO Content-Length is present in ALL responses even DELETE?
-	contentLen.append(fileLen);
-	contentLen.append("\r\n");
-	// std::cout << RED "ContLen: " << contentLen << "\n" << RES;
+// 	int temp = response.length();
+// 	std::string fileLen = std::to_string(temp);
+// 	std::string contentLen = "Content-Length: ";// TODO Content-Length is present in ALL responses even DELETE?
+// 	contentLen.append(fileLen);
+// 	contentLen.append("\r\n");
+// 	// std::cout << RED "ContLen: " << contentLen << "\n" << RES;
 
-	headerBlock = 	"HTTP/1.1 200 OK\n"
-					"Content-Type: text/html\n";
-					// "Content-Type: image/png\n";
-	if (storage->getError() == true)
-		headerBlock = 	"HTTP/1.1 404 Not Found\n"
-						"Content-Type: text/html\n";
-	headerBlock.append(contentLen);
-	headerBlock.append("\r\n\r\n");
-	headerBlock.append(response);
+// 	headerBlock = 	"HTTP/1.1 200 OK\n"
+// 					"Content-Type: text/html\n";
+// 					// "Content-Type: image/png\n";
+// 	if (storage->getError() == true)
+// 		headerBlock = 	"HTTP/1.1 404 Not Found\n"
+// 						"Content-Type: text/html\n";
+// 	headerBlock.append(contentLen);
+// 	headerBlock.append("\r\n\r\n");
+// 	headerBlock.append(response);
 
-	int ret = send(event.ident, headerBlock.c_str(), headerBlock.length(), 0);
-	if (ret == -1)
-		throw ServerException("Send failed\n");
-	std::cout << "ret: " << ret << std::endl;
+// 	int ret = send(event.ident, headerBlock.c_str(), headerBlock.length(), 0);
+// 	if (ret == -1)
+// 		throw ServerException("Send failed\n");
+// 	std::cout << "ret: " << ret << std::endl;
 
-}
+// }
 
 
 // NEW SEND_IMAGE
-void WebServer::sendImmage(struct kevent& event, std::string imagePath) {
-	std::cout << GRN << "FOUND IMAGE extention .jpg or .png\n" << RES;// TODO it works on Chrome but breaks on Safari for me (joyce)
-	unsigned long ret = 0;
+// void WebServer::sendImmage(struct kevent& event, std::string imagePath) {
+// 	std::cout << GRN << "FOUND IMAGE extention .jpg or .png\n" << RES;// TODO it works on Chrome but breaks on Safari for me (joyce)
+// 	unsigned long ret = 0;
 
-	// Stream image and store it into a string
-	std::fstream imageFile;
-	std::string content;
-	imageFile.open(imagePath);
-	content.assign(std::istreambuf_iterator<char>(imageFile), std::istreambuf_iterator<char>());
-	content += "\r\n";
-	imageFile.close();
+// 	// Stream image and store it into a string
+// 	std::fstream imageFile;
+// 	std::string content;
+// 	imageFile.open(imagePath);
+// 	content.assign(std::istreambuf_iterator<char>(imageFile), std::istreambuf_iterator<char>());
+// 	content += "\r\n";
+// 	imageFile.close();
 
-	// Send header block
-	std::string headerBlock = 	"HTTP/1.1 200 OK\r\n"
-								"Content-Type: image/jpg\r\n";
-	headerBlock.append("accept-ranges: bytes\r\n");
-	std::string contentLen = "Content-Length: ";
-	std::string temp = std::to_string(content.size());
-	headerBlock.append(contentLen);
-	contentLen.append(temp);
-	headerBlock.append("\r\n\r\n");
-	ret = send(event.ident, headerBlock.c_str(), headerBlock.length(), 0);
-	//std::cout << YEL << "Image header block sent, ret: " << ret << RES << "\n";
+// 	// Send header block
+// 	std::string headerBlock = 	"HTTP/1.1 200 OK\r\n"
+// 								"Content-Type: image/jpg\r\n";
+// 	headerBlock.append("accept-ranges: bytes\r\n");
+// 	std::string contentLen = "Content-Length: ";
+// 	std::string temp = std::to_string(content.size());
+// 	headerBlock.append(contentLen);
+// 	contentLen.append(temp);
+// 	headerBlock.append("\r\n\r\n");
+// 	ret = send(event.ident, headerBlock.c_str(), headerBlock.length(), 0);
+// 	//std::cout << YEL << "Image header block sent, ret: " << ret << RES << "\n";
 
-	// Send image content and each time reduce the original by ret
-	size_t sentSoFar = 0;
-	size_t imageSize = content.size();
-	for (int i = 0; sentSoFar < imageSize; i++) {
-		ret = send(event.ident, content.c_str(), content.size(), 0);
-		if (ret == std::string::npos) {
-			std::cout << RED << i << "    Nothing sent (" << ret << RES << "),  sentSoFar " << sentSoFar << "\n";
-			continue ;
-		}
-		else {
-			content.erase(0, ret);
-			sentSoFar += ret;
-			std::cout << YEL << i << "    Sent chunk " << ret << RES << ",  sentSoFar " << sentSoFar << "\n";
-		}
-	}
-}
+// 	// Send image content and each time reduce the original by ret
+// 	size_t sentSoFar = 0;
+// 	size_t imageSize = content.size();
+// 	for (int i = 0; sentSoFar < imageSize; i++) {
+// 		ret = send(event.ident, content.c_str(), content.size(), 0);
+// 		if (ret == std::string::npos) {
+// 			std::cout << RED << i << "    Nothing sent (" << ret << RES << "),  sentSoFar " << sentSoFar << "\n";
+// 			continue ;
+// 		}
+// 		else {
+// 			content.erase(0, ret);
+// 			sentSoFar += ret;
+// 			std::cout << YEL << i << "    Sent chunk " << ret << RES << ",  sentSoFar " << sentSoFar << "\n";
+// 		}
+// 	}
+// }
 
 
 

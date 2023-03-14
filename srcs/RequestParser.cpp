@@ -282,6 +282,10 @@ int Request::appendLastChunkToBody(std::string::size_type it) {
 		if (_data.getBody().length() == 0 && _data.getRequestContentLength() == 0) {    // Compare body lenght
 			std::cout << GRE << "OK (there is no body)\n" << RES;
 			_hasBody = false;
+
+
+			std::cout << RED "content type: [" << _data.getRequestContentType() << "]\n" RES;
+
 			return (0);
 		}
 		std::cout << GRE << "OK: Body-Length is as expected Content-Length\n" << RES;

@@ -19,7 +19,7 @@ RequestData::RequestData() {
 	_queryString		= "";
 	_cgiBody			= "";
 
-	_reqContentType = "txt";
+	_reqContentType 	= "text/html";
 //	_formList			= NULL;	// ???
 //	_formData			= NULL;	// ???
 }
@@ -148,9 +148,16 @@ void RequestData::setRequestContentLength(std::string reqContentLength)
 	_reqContentLength = stoi(reqContentLength); // is STOI allowed ???
 }
 
-void RequestData::setRequestContentType(std::string reqContentType)
+void RequestData::setRequestContentType(std::string fileExtention)
 {
-	_reqContentType = reqContentType;
+	if (fileExtention == ".html")
+		_reqContentType = "text/html";
+	else if (fileExtention == ".jpg")
+		_reqContentType = "image/jpg";
+	else if (fileExtention == ".png")
+		_reqContentType = "image/png";
+	else if (fileExtention == ".ico")
+		_reqContentType = "image/x-con";
 }
 
 

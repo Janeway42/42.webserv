@@ -2,6 +2,9 @@
 #include "../includes/ResponseData.hpp"
 #include "../includes/RequestData.hpp"
 
+
+#include <string.h> // jaka, temp, can be removed
+
 ResponseData::ResponseData(void) {
 	_status = "";
 	//_length = "";
@@ -20,16 +23,35 @@ ResponseData::~ResponseData(void) {}
 // ---------------------------------------------------------------------------- set functions
 // ------------------------------------------------------------------------------------------
 
+
+
+/*
+
+	Problem in setImage:
+	It correctly reads into buffer the size of image 35581, but then size of buffer is only 4, and size of image is only 67
+	Maybe look into the sendImage that was working int temp02 or temp03
+	???
+
+	Here in setResponse() is maybe also a problem
+		The image is set in setImage, and it gets everything there, status line, length, type, etc ...
+		This should then be sent in sendResponse()
+*/
+
+
 void ResponseData::setResponse(struct kevent& event)
 {
 	Request *storage = (Request *)event.udata;	
 
 	_responseHeader += setResponseStatus(event);
 
-	if (storage->getRequestData().getRequestContentType().compare("txt") == 0)
+	if (storage->getRequestData().getRequestContentType().compare("text/html") == 0)
 		_responseBody = streamFile(_responsePath);
-	else
-		_responseBody = setImage(storage->getResponseData().getResponsePath());
+	else {
+		std::cout << YEL "SetResponse():  It is an image, by here it already has a complete header with image body\n";
+		_fullResponse = setImage(storage->getResponseData().getResponsePath());
+		std::cout << BLU "image _fullResponse: [\n" <<_fullResponse << "\n" RES;
+		return ;
+	}
 
 	// set up header 
 	int temp = _responseBody.length();
@@ -41,8 +63,11 @@ void ResponseData::setResponse(struct kevent& event)
 	_responseHeader += contentLen;
 	_responseHeader += "\r\n\r\n";
 
+	std::cout << YEL "complete response header: [" << _responseHeader << "]\n";
+
 	_fullResponse += _responseHeader + _responseBody;
 }
+
 
 std::string ResponseData::setResponseStatus(struct kevent& event)
 {
@@ -50,18 +75,23 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
 	std::string status;
 
 	std::string fileType = storage->getRequestData().getRequestContentType();
+	//std::cout << GRN "content type: [" << storage->getRequestData().getRequestContentType() << "]\n" RES;
 
-	if (fileType.compare("txt") != 0 && storage->getError() == 0)
-	{
-		status = "HTTP/1.1 200 OK\r\n"
-					// "Content-Type: image/png";   // change to take in consideration the image extension
-					"Content-Type: image/jpg";   // change to take in consideration the image extension
-		status += fileType + "\r\n";
-		// (storage->getResponseData()).setResponsePath(storage->getRequestData().getHttpPath()); jaka: should be getPath()
-		(storage->getResponseData()).setResponsePath(storage->getRequestData().getPath());
-		return (status);
-	}			
+	// if (fileType.compare("text/html") != 0 && storage->getError() == 0)
+	// {
+	// 	std::cout << RED "A) setResponseStatus\n";
+	// 	status = "HTTP/1.1 200 OK\r\n"
+	// 				// "Content-Type: image/png";   // change to take in consideration the image extension
+	// 				"Content-Type: ";   // change to take in consideration the image extension
+	// 	status += fileType + "\r\n";
+	// 	// (storage->getResponseData()).setResponsePath(storage->getRequestData().getHttpPath()); jaka: should be getPath()
+	// 	(storage->getResponseData()).setResponsePath(storage->getRequestData().getPath());
+	// 	std::cout << GRN "getHttpPath: [" << _responsePath << "]\n" RES;
+	// 	std::cout << GRN "status: [" << status << "]\n" RES;
+	// 	return (status);
+	// }			
 	
+	std::cout << RED "B) setResponseStatus\n";
 	switch (storage->getError())
 	{
 		case 1:
@@ -89,7 +119,7 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
 			(storage->getResponseData()).setResponsePath("resources/error_pages/500InternarServerError.html");
 		default:
 			status = "HTTP/1.1 200 OK\n"  
-					 "Content-Type: text/html\n";
+					"Content-Type: " + storage->getRequestData().getRequestContentType() + "\n";	// jaka
 			//_responsePath = "resources/index_dummy.html";
 			//_responsePath = "resources/index_just_text.html";
 			//  _responsePath = "resources/index_just_text_bible.html";
@@ -113,6 +143,8 @@ void ResponseData::setBytesToClient(int val)
 	_bytesToClient += val;
 }
 
+
+
 std::string ResponseData::setImage(std::string imagePath)
 {
 	std::cout << RED "FOUND extention .jpg or .png\n" RES;
@@ -120,7 +152,8 @@ std::string ResponseData::setImage(std::string imagePath)
 	FILE *file;
 	unsigned char *buffer;
 	std::string imageFile;
-	unsigned long imageSize;
+	// unsigned long imageSize;
+	size_t imageSize;
 
 	file = fopen(imagePath.c_str(), "rb");
 	if (!file)
@@ -138,6 +171,7 @@ std::string ResponseData::setImage(std::string imagePath)
 	contentLen.append(temp);
 	contentLen.append("\r\n");
 
+	imageFile += "HTTP/1.1 200 OK\n";	// maybe here not good
 	imageFile += contentLen;
 	imageFile += "accept-ranges: bytes";
 	imageFile += "\r\n\r\n";
@@ -150,10 +184,15 @@ std::string ResponseData::setImage(std::string imagePath)
 			}
 
 	int ret = fread(buffer, sizeof(unsigned char), imageSize, file);
-	std::cout << YEL "Returned fread:     " << ret << RES "\n";
+	std::cout << YEL "Returned fread, image size:     " << ret << RES "\n";
 
+	std::cout << GRN "buffer size: " << strlen(reinterpret_cast<const char* >(buffer)) << "\n" RES;
 	imageFile += reinterpret_cast<const char* >(buffer);
 	
+	std::cout << GRN "imageFile size:" << imageFile.size() << "\n" RES;
+	std::cout << GRN "setImage(), imageFile [\n" << imageFile << "\n" RES;
+
+
 	fclose(file);
 	free(buffer);
 	return (imageFile);
