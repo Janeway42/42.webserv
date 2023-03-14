@@ -88,7 +88,6 @@ bool ServerLocation::setLocationPath(std::string const & locationPath) {
     /* not mandatory | if request contains an uri directory path, it can be made accessible by making it a location block */
     if (not locationPath.empty()) {
         std::string location_path = isPath(_root_directory, locationPath);
-        std::cout << RED_BG << "" << location_path << std::endl;
         PathType type = pathType(location_path);
         if (type == DIRECTORY) {
             _location_path = addCurrentDirPath(location_path) + location_path;

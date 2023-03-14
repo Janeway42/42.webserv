@@ -56,7 +56,6 @@ void ConfigFileParser::handleFile(std::string const & configFileName) {
                 std::cerr << RED << "A server block is needed in the configuration file" << RES << std::endl;// TODO: throw exception
                 break;
             } else if (lineContent == "server {") {
-                std::cout << "server block:" << std::endl;
                 _server_block_counter++;
                 parseFileServerBlock(configFile);
                 continue;

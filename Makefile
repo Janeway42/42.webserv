@@ -41,16 +41,15 @@ INCLUDES_DEPENDENCY = ./includes/*.hpp standard_complete.conf
 
 SRC =   srcs/ConfigFileParser.cpp\
 		srcs/Parser.cpp\
+		srcs/RequestParserURLpath.cpp\
+		srcs/RequestParser.cpp\
 		srcs/ServerData.cpp\
 		srcs/ServerLocation.cpp\
-		tests/mainConfigFile.cpp
-		#tests/Kqueue_main.cpp
-		#srcs/RequestParserURLpath.cpp\
-		#srcs/RequestParser.cpp\
-		#srcs/RequestData.cpp\
-		#srcs/ResponseData.cpp\
-		#srcs/CgiData.cpp\
-		#srcs/WebServer.cpp\
+		srcs/RequestData.cpp\
+		srcs/ResponseData.cpp\
+		srcs/CgiData.cpp\
+		srcs/WebServer.cpp\
+		tests/Kqueue_main.cpp
 
 OBJ = $(SRC:%.cpp=%.o)
 
