@@ -5,6 +5,7 @@ WebServer::WebServer(std::string const & configFileName)
     ConfigFileParser configFileData = ConfigFileParser(configFileName);
     _servers = configFileData.servers;
     std::cout  << "Server blocks quantity: " << configFileData.numberOfServerBlocks() << std::endl;
+    std::cout  << "Location block quantity: " << configFileData.numberOfLocationBlocks() << std::endl;
 
     // ----------- create kq structure --------------------------
     struct kevent evSet;
@@ -217,20 +218,22 @@ void WebServer::sendResponse(struct kevent& event)
 	else if ((int)event.ident == storage->getFdClient()) // the event belongs to the client fd 
 	{
 		std::string content = storage->getResponseData().getFullResponse();
-		unsigned long myRet;
+        std::cout << GRN << "Full Response:\n" RES << storage->getResponseData().getFullResponse() << RES << std::endl;
+        std::cout << GRN << "Full Response size:\n" RES << content.size() << RES << std::endl;
+        unsigned long myRet;
 		storage->getResponseData().setCurrentLength(content.size());
-		std::cout << YEL"START SENDING CHUNK,  remaining response length: " << storage->getResponseData().getCurrentLength() << RES"\n";
+		std::cout << YEL << "START SENDING CHUNK,  remaining response length: " << storage->getResponseData().getCurrentLength() << RES << "\n";
 		myRet = send(event.ident, content.c_str(), content.size(), 0);
 		if (myRet == std::string::npos) {	// Temporary, just to see. It can be probably removed (Jaka)
-			std::cout << RED "    myRet == std::string::npos" RES "\n";
+			std::cout << RED << "    myRet == std::string::npos" RES << "\n";
 		}
 		else if (myRet > 0) {
 			storage->getResponseData().increaseSentSoFar(myRet);
 			storage->getResponseData().eraseSentChunkFromFullResponse(myRet);
-			std::cout << CYN "    Sent chunk " << myRet << ",  sentSoFar " << storage->getResponseData().getSentSoFar() << "\n" RES;
+			std::cout << CYN << "    Sent chunk " << myRet << ",  sentSoFar " << storage->getResponseData().getSentSoFar() << "\n" << RES;
 		}
-		if (myRet < 0) {  // system failure // if some of the message has been sent then send the error block - fixed position 
-			storage->getResponseData().overrideFullResponse();  // content length -> which has already been sent/ 
+		if (myRet < 0) {  // system failure // if some of the message has been sent then send the error block - fixed position
+            storage->getResponseData().overrideFullResponse();  // content length -> which has already been sent/
 		}
 		else {	
 			if (storage->getResponseData().getOverride() == true) {	// maybe we will not have this feature
@@ -253,8 +256,6 @@ void WebServer::sendResponse(struct kevent& event)
 
 // --------------------------------------------------------- client functions 
 // --------------------------------------------------------------------------
-
-
 
 void WebServer::newClient(struct kevent event, ServerData * specificServer)
 {
@@ -288,8 +289,8 @@ void WebServer::closeClient(struct kevent& event)
 	storage = (Request *)event.udata;
 
 	storage->getCgiData().closePipes();  // if any pipes are still open, function cleans them out 
-	close(event.ident); 
-	std::cout << "connection closed\n";
+	close(event.ident);
+    std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
 	delete(storage);
 }
 
@@ -426,8 +427,6 @@ void WebServer::sendImmage(struct kevent& event, std::string imagePath) {
 	}
 }
 
-
-
 bool WebServer::isListeningSocket(int fd)
 {
 	std::vector<ServerData>::iterator it_server = _servers.begin();
@@ -437,7 +436,6 @@ bool WebServer::isListeningSocket(int fd)
     }
 	return (false);
 }
-
 
 // --------------------------------------------------------- get functions
 // -----------------------------------------------------------------------

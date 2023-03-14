@@ -130,7 +130,7 @@ int Request::storeWordsFromFirstLine(std::string firstLine) {
 	for (int i = 0; iter < arr.end(); iter++, i++) {
 		if (i == 0) {
 			if (*iter == "GET" || *iter == "POST" || *iter == "DELETE") {
-				std::cout << RED_BG << YEL << "JOYCE REQUEST METHOD: " << *iter << RES << std::endl;
+				std::cout << GRN_BG << YEL << "REQUEST METHOD: " << *iter << RES << std::endl;
 				_data.setRequestMethod(*iter);
 			} else {
 				std::cout << RED << "Error: This method is not recognized\n" << RES;
@@ -247,9 +247,9 @@ void    Request::appendToRequest(const char *str, int fdClient) {
 	std::string				tmpHeader;
 
 	_hasBody = false;
-	std::cout << RED_BG << "JOYCE header chunk: " << str << RES << std::endl;
+	std::cout << GRE << "Request Chunk: " << RES << str << std::endl;
 	if (_headerDone == false) {
-		std::cout << PUR << "     _headerDone == FALSE\n" << RES;
+		//std::cout << PUR << "     _headerDone == FALSE\n" << RES;
 		_data.setTemp(_data.getTemp() + chunk);
 
 		if ((it = _data.getTemp().find(strToFind)) != std::string::npos) {

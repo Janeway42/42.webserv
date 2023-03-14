@@ -20,16 +20,19 @@ ResponseData::~ResponseData(void) {}
 // ---------------------------------------------------------------------------- set functions
 // ------------------------------------------------------------------------------------------
 
-void ResponseData::setResponse(struct kevent& event)
-{
-	Request *storage = (Request *)event.udata;	
+void ResponseData::setResponse(struct kevent& event) {
+    Request *storage = (Request *) event.udata;
 
-	_responseHeader += setResponseStatus(event);
+    _responseHeader += setResponseStatus(event);
+    if (storage->getRequestData().getRequestContentType().compare("txt") == 0) {
+        std::cout << YEL << __func__ << " CALLED -> Response path is a file: " << _responsePath << RES << std::endl;
+        _responseBody = streamFile(_responsePath);
+        std::cout << GRN << "Response BODY: " << RES << _responseBody << std::endl;
 
-	if (storage->getRequestData().getRequestContentType().compare("txt") == 0)
-		_responseBody = streamFile(_responsePath);
-	else
-		_responseBody = setImage(storage->getResponseData().getResponsePath());
+    } else {
+        std::cout << YEL << __func__ << " CALLED -> Response path is an image" << RES << std::endl;
+        _responseBody = setImage(storage->getResponseData().getResponsePath());
+    }
 
 	// set up header 
 	int temp = _responseBody.length();
@@ -185,12 +188,11 @@ std::string ResponseData::streamFile(std::string file)
 	std::string responseNoFav;
 	std::fstream    infile;
 
-	// std::cout << "file: " << file << std::endl; 
-
-
+	std::cout << "File to be streamed: " << file << std::endl;
 	infile.open(file, std::fstream::in);
-	// if (!infile)
-		// throw ServerException("Error: File not be opened for reading!");   SET UP ERROR
+	if (not infile)
+        throw ParserException(CONFIG_FILE_ERROR("File to be streamed is ", MISSING));
+//		throw ServerException("Error: File not be opened for reading!");   SET UP ERROR
 	while (infile)     // While there's still stuff left to read
 	{
 		std::string strInput;
@@ -200,7 +202,7 @@ std::string ResponseData::streamFile(std::string file)
 	}
 	infile.close();
 
-	// std::cout << "streamed: " << responseNoFav << std::endl;
+	std::cout << "Streamed: " << responseNoFav << std::endl;
 	return (responseNoFav);
 }
 

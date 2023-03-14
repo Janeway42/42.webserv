@@ -72,15 +72,18 @@ bool Parser::isSpace(char ch) {
 
 std::string Parser::getOneCleanValueFromKey(std::string & contentLine, std::string const & key) {
 	std::string content = contentLine.substr(contentLine.find(key) + key.size());
-	if (content.empty())	// added jaka, it was giving error abort, when the content was empty string
-		return "Key is empty!\n";
-	size_t i = 0;
-	for (; content.at(i) == ' '; i++) {}
-	std::string trimmed_content = content.substr(i);
-    if (trimmed_content.find(';') != std::string::npos) {
-        return trimmed_content.substr(0, trimmed_content.size() - 1);
+	if (not content.empty()) {
+        size_t i = 0;
+        for (; content.at(i) == ' '; i++) {}
+        std::string trimmed_content = content.substr(i);
+        if (trimmed_content.find(';') != std::string::npos) {
+            return trimmed_content.substr(0, trimmed_content.size() - 1);
+        } else if (trimmed_content.find('{') != std::string::npos) {
+            return trimmed_content.substr(0, trimmed_content.size() - 2);
+        }
+        return trimmed_content.substr(0, trimmed_content.size() - 0);
     }
-	return trimmed_content.substr(0, trimmed_content.size() - 0);
+    return std::string();
 }
 
 DataType Parser::getValueType(std::string & lineContent) {// Todo: Maybe not needed
