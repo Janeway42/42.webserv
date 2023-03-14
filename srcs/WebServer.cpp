@@ -182,19 +182,18 @@ void WebServer::readRequest(struct kevent& event)
 void WebServer::sendResponse(struct kevent& event) 
 {
     Request *storage = (Request*)event.udata;
-	char* buffer[BUFFER_SIZE];
-	buffer = memset(&buffer, '\0', BUFFER_SIZE);  // cpp alternative? write our own ? 
+	std::string buffer;
 
 	if ((int)event.ident == (storage->getCgiData()).getPipeCgiIn())  // write to CGI - we send the info // the event belong to the pipe fd: _fd_in[1]
 	{
 		buffer = storage->getResponseData().getResponseBody();
-		ssize_t ret = write(storage->getCgiData().getPipeCgiIn(), buffer, sizeof(buffer) - 1);
+		ssize_t ret = write(storage->getCgiData().getPipeCgiIn(), buffer.c_str(), buffer.length());
 		if (ret == -1)
 		{
 			storage->setError(4); // 500 system failure 
 			storage->getResponseData().setResponse(event);
 			addFilter(storage->getFdClient(), event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, ret = -1 on _fd_in[1]");    //  this allows client write 
-			removeFilter(event, EVFILT_WRITE, "failed kevent, EV_DELETE, EVFILT_WRITE failure on _fd_in[1]")  // this removes the pipe fd _fd_in[1]
+			removeFilter(event, EVFILT_WRITE, "failed kevent, EV_DELETE, EVFILT_WRITE failure on _fd_in[1]");  // this removes the pipe fd _fd_in[1]
 		}
 		else 
 		{
@@ -208,27 +207,41 @@ void WebServer::sendResponse(struct kevent& event)
 			}
 		}
 	}
+
+	// SENDING CONTENT TO A CLIENT:
+	// The current 'content' string length keeps decreasing, the value of 'sentSoFar' bytes keeps increasing
+	// First, stores the whole response into 'content' and gets its current length.
+	// Then sends a chunk. If successfully sent, checks the return value (bytes sent).
+	// Increases the value of 'bytes sentSoFar'
+	// Keeps deleting the sent chunk from the content string, until it has zero length.
 	else if ((int)event.ident == storage->getFdClient()) // the event belongs to the client fd 
 	{
-		// todo grab from string and put into buffer 
-		buffer = storage->getResponseData().getFullResponse();
-		ssize_t ret = send(event.ident, buffer.c_str(), sizeof(buffer) - 1, 0);
-
-		if (ret == -1)  // system failure 
-		{
-			removeFilter(event, EVFILT_WRITE, "failed kevent, EV_DELETE, EVFILT_WRITE, ret = -1 on _fdClient");
-			removeFilter(event, EVFILT_TIMER, "failed kevent, EV_DELETE, EVFILT_TIMER, ret = -1 on _fdClient");
-			closeClient(event);
+		std::string content = storage->getResponseData().getFullResponse();
+		unsigned long myRet;
+		storage->getResponseData().setCurrentLength(content.size());
+		std::cout << YEL"START SENDING CHUNK,  remaining response length: " << storage->getResponseData().getCurrentLength() << RES"\n";
+		myRet = send(event.ident, content.c_str(), content.size(), 0);
+		if (myRet == std::string::npos) {	// Temporary, just to see. It can be probably removed (Jaka)
+			std::cout << RED "    myRet == std::string::npos" RES "\n";
 		}
-		else
-		{	
-			storage->getResponseData().setBytesToClient(ret);
-			if (ret == 0 || ret != BUFFER_SIZE - 1); // added ret == 0 just to be according to the subject 
-				storage->getResponseData().adjustFullResponse(ret);
-			else
-			{
-				if (storage->getResponseData().getBytesToClient() == storage->getResponseData().getLengthFullResponse())
-				{
+		else if (myRet > 0) {
+			storage->getResponseData().increaseSentSoFar(myRet);
+			storage->getResponseData().eraseSentChunkFromFullResponse(myRet);
+			std::cout << CYN "    Sent chunk " << myRet << ",  sentSoFar " << storage->getResponseData().getSentSoFar() << "\n" RES;
+		}
+		if (myRet < 0) {  // system failure // if some of the message has been sent then send the error block - fixed position 
+			storage->getResponseData().overrideFullResponse();  // content length -> which has already been sent/ 
+		}
+		else {	
+			if (storage->getResponseData().getOverride() == true) {	// maybe we will not have this feature
+				std::cout << RED << "System error! (send) " RES "\n";
+				removeFilter(event, EVFILT_WRITE, "failed kevent, EV_DELETE, EVFILT_WRITE, override on _fdClient");
+				removeFilter(event, EVFILT_TIMER, "failed kevent, EV_DELETE, EVFILT_TIMER, override on _fdClient");
+				closeClient(event);
+			}
+			else {
+				if (myRet == 0 && storage->getResponseData().getCurrentLength() == 0) {
+					std::cout << CYN << "ALL SENT, CLOSE CLIENT" RES "\n";
 					removeFilter(event, EVFILT_WRITE, "failed kevent, EV_DELETE, EVFILT_WRITE, success on _fdClient");
 					removeFilter(event, EVFILT_TIMER, "failed kevent, EV_DELETE, EVFILT_TIMER, success on _fdClient");
 					closeClient(event);
