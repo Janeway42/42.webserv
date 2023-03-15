@@ -56,6 +56,8 @@ class Request : public Parser {
         virtual ~Request();
 
         /** Getters */
+        ServerData & getServerData();  // added jaka
+
         RequestData & getRequestData();
 		ResponseData & getResponseData();
 		CgiData & getCgiData();

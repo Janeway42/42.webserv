@@ -31,6 +31,7 @@ class RequestData {
 		std::string _pathFirstPart;                 // ie: /kostja.se/folderA/folderB/
 		std::string _pathLastWord;                  // ie: /index.html  OR   /folderC/
 		std::string _fileExtention;                 // ie: /index.html  OR   /folderC/
+		bool		_isFolder;
 		std::string	_queryString;
 		std::string	_cgiBody;
 		std::map<std::string, std::string>	_formData;	 // maybe not needed, maybe Vector list will be enough
@@ -66,6 +67,7 @@ class RequestData {
 		const std::string 							getPathFirstPart( )const;	// maybe not needed
 		const std::string							getPathLastWord() const;	// maybe not needed
 		const std::string							getFileExtention() const;
+		bool										getIsFolder() const;
 		const std::string							getQueryString() const;
 		const std::string							getCgiBody() const;
 
@@ -96,6 +98,7 @@ class RequestData {
 		void setPathFirstPart(std::string path);				// maybe not needed
 		void setPathLastWord(std::string path);					// maybe not needed
 		void setFileExtention(std::string path);
+		void setIsFolder(bool b);
 		void setQueryString(std::string path);
 		void setCgiBody(std::string cgiBody);
 		void setFormList(std::vector<std::string>);				// maybe not needed

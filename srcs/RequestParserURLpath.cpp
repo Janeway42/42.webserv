@@ -6,6 +6,11 @@
 #include <vector>
 #include <unistd.h>
 
+
+#include <sys/stat.h>	// stat()
+
+
+
 /*
 	What happens if you dont have a form on your page, but you directly write ?city=aaa in the URL?
 	In this case, no action file is specified ???
@@ -171,9 +176,9 @@ void Request::callCGI(RequestData reqData, int fdClient) {
 int checkIfFileExists(const std::string& path) {
 	std::ifstream file(path.c_str());
 
-	if (not file.is_open()) {
+	if (not file.is_open()) {		// ??? what is this syntax?
 		std::cout << RED << "Error: File " << path << " not found\n" << RES;
-		return (-1);
+		return (404);
 	}
 	std::cout << GRN << "File/folder " << path << " exists\n" << RES;
 	return 0;
@@ -326,13 +331,32 @@ int Request::checkTypeOfFile() {
 	std::string path = _data.getPath();
 	std::string temp = _data.getPath();
 
+
+	// CHECK IF THE PATH IS A FILE OR FOLDER, REGARDLES IF IT HAS ANY EXTENTION
+	struct stat s;
+    if (stat(path.c_str(), &s) == 0) {
+        if (S_ISDIR(s.st_mode)) {
+            std::cout << CYN << path << " is a directory\n";
+			_data.setIsFolder(true);
+			// return (0);
+        } else if (S_ISREG(s.st_mode)) {
+            std::cout << CYN << path << " is a file\n" RES;
+        } else {
+            std::cout << CYN << path << " is not a valid directory or file\n" RES;
+        }
+    } else {
+        std::cerr << CYN << "Error getting file/directory info: " << strerror(errno) << "\n" RES;
+    }
+
+
+
+	// IF IT IS A FILE, CHECK AND STORE THE SUFFIX
 	if (path[0] == '.')
 		temp = path.substr(1, std::string::npos);
 
 	std::size_t found = temp.find_last_of(".");
 
 	if (found != std::string::npos) {
-		// std::string extention = temp.substr(found, std::string::npos);
 		_data.setFileExtention(temp.substr(found, std::string::npos));
 	}
 	else
@@ -411,10 +435,15 @@ int Request::parsePath(std::string str) {
 		_data.setQueryString(_data.getBody());
 	}
 
-	//std::cout << GRN << "XXX)\n" << RES;
-	checkIfFileExists(_data.getPath());	// What in case of root only "/"  ???
+	ret = checkIfFileExists(_data.getPath());
+	if (ret != 0)	{ // What in case of root only "/"  ???
+		std::cout << RED << "ret " << ret << ", file not found, should set error to 404)\n" << RES;
+		setError(2);
+		return (2);
+	}
 	// What in case of GET??
 	checkTypeOfFile();
+	_data.setRequestContentType(_data.getFileExtention());
 
 	printPathParts(str, getRequestData());
 	return (0);

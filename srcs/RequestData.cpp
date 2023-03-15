@@ -16,10 +16,11 @@ RequestData::RequestData() {
 	_pathFirstPart		= "default";
 	_pathLastWord		= "default";
 	_fileExtention		= "";
+	_isFolder			= false;
 	_queryString		= "";
 	_cgiBody			= "";
 
-	_reqContentType = "txt";
+	_reqContentType 	= "text/html";
 //	_formList			= NULL;	// ???
 //	_formData			= NULL;	// ???
 }
@@ -88,6 +89,14 @@ const std::string RequestData::getPathLastWord() const {
 const std::string RequestData::getFileExtention() const {
 	return _fileExtention;
 }
+
+
+bool	RequestData::getIsFolder() const {
+	return _isFolder;
+}
+
+
+
 const std::string RequestData::getQueryString() const {
 	return _queryString;
 }
@@ -148,9 +157,18 @@ void RequestData::setRequestContentLength(std::string reqContentLength)
 	_reqContentLength = stoi(reqContentLength); // is STOI allowed ???
 }
 
-void RequestData::setRequestContentType(std::string reqContentType)
+void RequestData::setRequestContentType(std::string fileExtention)
 {
-	_reqContentType = reqContentType;
+	if (fileExtention == ".html")
+		_reqContentType = "text/html";
+	else if (fileExtention == ".jpg")
+		_reqContentType = "image/jpg";
+	else if (fileExtention == ".png")
+		_reqContentType = "image/png";
+	else if (fileExtention == ".ico")
+		_reqContentType = "image/x-con";
+	else if (fileExtention == "")			// Not sure if needed,
+		_reqContentType = "";				// in case of no suffix
 }
 
 
@@ -169,6 +187,11 @@ void RequestData::setPathLastWord(std::string pathLastWord) {
 void RequestData::setFileExtention(std::string fileExtention) {
 	_fileExtention = fileExtention;
 }
+
+void RequestData::setIsFolder(bool b) {
+	_isFolder = b;
+}
+
 void RequestData::setQueryString(std::string queryString) {
 	_queryString = queryString;
 }
