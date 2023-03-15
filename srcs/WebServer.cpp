@@ -218,7 +218,7 @@ void WebServer::sendResponse(struct kevent& event)
 	else if ((int)event.ident == storage->getFdClient()) // the event belongs to the client fd 
 	{
 		std::string content = storage->getResponseData().getFullResponse();
-        std::cout << GRN << "Full Response:\n" RES << storage->getResponseData().getFullResponse() << RES << std::endl;
+        //std::cout << GRN << "Full Response:\n" RES << storage->getResponseData().getFullResponse() << RES << std::endl;
         std::cout << GRN << "Full Response size:\n" RES << content.size() << RES << std::endl;
         unsigned long myRet;
 		storage->getResponseData().setCurrentLength(content.size());

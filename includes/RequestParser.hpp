@@ -52,6 +52,7 @@ class Request : public Parser {
         void	    chooseMethod_StartAction(int fdClient);
 
     public:
+        Request();
         Request(int fd, ServerData * specificServer);
         virtual ~Request();
 

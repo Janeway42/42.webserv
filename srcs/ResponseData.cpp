@@ -36,7 +36,7 @@ void ResponseData::setResponse(struct kevent& event) {
 	// 			IF YES, SEND HTML WITH FOLDER CONTENT
 	//			IF NOT, SEND ERROR PAGE, NOT ALLOWED ?
 	if (storage->getRequestData().getIsFolder() == true) {
-		std::cout << YEL "The Path is a folder: check for a default index file and/or autoindex on/off\n";
+		std::cout << YEL "The Path is a folder: check for a default index file and/or autoindex on/off\n" << RES;
 		//if (storage->getRequestData().getRequestContentType().compare("text/html") == 0) {		// IF FOLDER, THE CONT. TYPE SHOULD BE text.html
 			
 			// IF PATH IS THE ROOT "./"
@@ -56,8 +56,9 @@ void ResponseData::setResponse(struct kevent& event) {
 				// and append the filename after the path.
 				std::vector<ServerLocation> location_data_vector = storage->getServerData().getLocationBlocks();
 				for (size_t i = 0; i < location_data_vector.size(); i++) {
-					std::cout << GRE "   ... location root dir: [" << location_data_vector[i].getRootDirectory() << "]\n";
-					if (storage->getRequestData().getPath() == location_data_vector[i].getRootDirectory()) {
+                    std::cout << GRE "   ... location uri: [" << location_data_vector[i].getLocationPath() << "]\n";
+                    std::cout << GRE "   ... location root dir: [" << location_data_vector[i].getRootDirectory() << "]\n";
+					if (storage->getRequestData().getPath() == location_data_vector[i].getRootDirectory()) {// TODO here it should be getLocationPath() ?? talk to joyce
 						_responsePath = location_data_vector[i].getRootDirectory();
 						_responsePath.append(storage->getRequestData().getPath());
 						_responsePath.append("/autoindex_dummy.html");

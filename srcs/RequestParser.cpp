@@ -23,13 +23,25 @@ DELETE http://api.example.com/employee/1
 
 */
 
-
-
-
-
-
-
+// MAYBE THE SANITIZER ERROR HAPPENS BECAUSE WE TRY TO ACCESS MEMBERS OF THIS CLASS WHEN WE INSTANTIATE IT USING THE
+// UDATA BUT WE HAD MADE THE CONSTRUCTOR OVERLOADED AND DELETED THE DEFAULT ONE SO I IT WAS PROBABLY CALLING A COMPILER
+// DEFAULT CONSTRUCTOR THAT MAYBE WAS NOT INITIALIZING ANY VARIABLE, SO WHEN Request::getError() HAPPENED, _errorRequest
+// WAS NOT EVEN INITIALIZED TO ZERO !? lets see if it stops after this default constructor was added
 /** Default constructor */
+Request::Request() {
+    _clientFd = -1;
+    _server = ServerData();
+    _data = RequestData();
+    _answer = ResponseData();
+    _cgi = CgiData();
+
+    _headerDone = false;
+    _doneParsing = false;
+    _errorRequest = false;
+    _hasBody = false;
+}
+
+/** Overloaded constructor */
 Request::Request(int fd, ServerData *specificServer) {
 	_clientFd = fd;
 	_server = *specificServer;
