@@ -57,6 +57,9 @@ int main(int ac, char **av) {
                         std::cout << std::endl << "Starting location block" << std::endl;
                         std::cout << "Is this location a CGI location: " << it_location->isLocationCgi() << std::endl;
 
+                        std::string locationDirectory = it_location->getLocationPath();
+                        std::cout << GRE << std::left << std::setw(30) << "\"location\": " << locationDirectory << RES << std::endl;
+
                         std::string cgiLocationRootDirectory = it_location->getRootDirectory();
                         std::cout << GRE << std::left << std::setw(30) << "\"root_directory\": " << cgiLocationRootDirectory << RES << std::endl;
 
@@ -72,6 +75,9 @@ int main(int ac, char **av) {
                         /*************************************** location block data **************************************/
                         std::cout << std::endl << "Starting location block " << std::endl;
                         std::cout << "Is this location a CGI location: " << it_location->isLocationCgi() << std::endl;
+
+                        std::string locationDirectory = it_location->getLocationPath();
+                        std::cout << GRE << std::left << std::setw(30) << "\"location\": " << locationDirectory << RES << std::endl;
 
                         std::string locationRootDirectory = it_location->getRootDirectory();
                         std::cout << GRE << std::left << std::setw(30) << "\"root_directory\": " << locationRootDirectory << RES << std::endl;

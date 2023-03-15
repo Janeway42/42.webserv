@@ -23,8 +23,6 @@ ResponseData::~ResponseData(void) {}
 // ---------------------------------------------------------------------------- set functions
 // ------------------------------------------------------------------------------------------
 
-
-
 // This function creates the header only for text/html requests, but not for images.
 // If it is an image, then setImage() is called, where both header and body are created, and
 // then setResponse() returns this full content, ready to be sent.
@@ -83,6 +81,7 @@ void ResponseData::setResponse(struct kevent& event) {
 			return ;
 		}
 	}
+
 
 	// set up header 
 	int temp = _responseBody.length();
@@ -215,12 +214,11 @@ std::string ResponseData::streamFile(std::string file)
 	std::string responseNoFav;
 	std::fstream    infile;
 
-	// std::cout << "file: " << file << std::endl; 
-
-
+	std::cout << "File to be streamed: " << file << std::endl;
 	infile.open(file, std::fstream::in);
-	// if (!infile)
-		// throw ServerException("Error: File not be opened for reading!");   SET UP ERROR
+	if (not infile)
+        throw ParserException(CONFIG_FILE_ERROR("File to be streamed is ", MISSING));
+//		throw ServerException("Error: File not be opened for reading!");   SET UP ERROR
 	while (infile)     // While there's still stuff left to read
 	{
 		std::string strInput;
@@ -230,7 +228,7 @@ std::string ResponseData::streamFile(std::string file)
 	}
 	infile.close();
 
-	// std::cout << "streamed: " << responseNoFav << std::endl;
+	std::cout << "Streamed: " << responseNoFav << std::endl;
 	return (responseNoFav);
 }
 

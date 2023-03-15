@@ -17,7 +17,7 @@ class ServerData : public Parser {
     private:
         std::string _server_name;
         std::string _listens_to;
-        std::string _ip_address;
+        std::string _ip_address;// todo change to in_addr_t so I can use inet_addr()???
         std::string _root_directory;
         std::string _index_file;
         unsigned int _client_max_body_size;

@@ -16,14 +16,13 @@ class ConfigFileParser : public Parser {
 //        std::vector<ServerLocation> _location_data_vector;
         unsigned short _server_block_counter;
         unsigned short _location_block_counter;
-        bool _is_cgi;
 
 //        ConfigFileParser() = default;
 
         /** Private Methods */
         void handleFile(std::string const & configFileName);
         void parseFileServerBlock(std::ifstream & configFile);
-        void parseFileLocationBlock(std::ifstream & configFile, ServerData & _server_data);
+        void parseFileLocationBlock(std::ifstream & configFile, ServerData & _server_data, ServerLocation & _server_location);
 
     public:
         ConfigFileParser(std::string const & configFileName);
