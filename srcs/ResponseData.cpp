@@ -23,33 +23,22 @@ ResponseData::~ResponseData(void) {}
 // ---------------------------------------------------------------------------- set functions
 // ------------------------------------------------------------------------------------------
 
-
-
 /*
-
-	Problem in setImage:
-	It correctly reads into buffer the size of image 35581, but then size of buffer is only 4, and size of image is only 67
-	Maybe look into the sendImage that was working int temp02 or temp03
-	???
-
-	Here in setResponse() is maybe also a problem
-		The image is set in setImage, and it gets everything there, status line, length, type, etc ...
-		This should then be sent in sendResponse()
+	This function only creates the header for text/html requests.
+	If it is an image, then setImage() is called, where both header and body are created, and
+	then setResponse() returns this full content, ready to be sent.
 */
-
-
 void ResponseData::setResponse(struct kevent& event)
 {
 	Request *storage = (Request *)event.udata;	
 
 	_responseHeader += setResponseStatus(event);
-
 	if (storage->getRequestData().getRequestContentType().compare("text/html") == 0)
 		_responseBody = streamFile(_responsePath);
 	else {
-		std::cout << YEL "SetResponse():  It is an image, by here it already has a complete header with image body\n";
+		//std::cout << YEL "SetResponse():  It is an image, by here it already has a complete header with image body\n";
 		_fullResponse = setImage(storage->getResponseData().getResponsePath());
-		std::cout << BLU "image _fullResponse: [\n" <<_fullResponse << "\n" RES;
+		// std::cout << BLU "_fullResponse.length(): [\n" << _fullResponse.size() << "\n" RES;
 		return ;
 	}
 
@@ -59,12 +48,10 @@ void ResponseData::setResponse(struct kevent& event)
 	std::string contentLen = "Content-Length: ";
 	contentLen.append(fileLen);
 	contentLen.append("\r\n");
-
 	_responseHeader += contentLen;
 	_responseHeader += "\r\n\r\n";
 
-	std::cout << YEL "complete response header: [" << _responseHeader << "]\n";
-
+	// std::cout << YEL "complete response header: [" << _responseHeader << "]\n";
 	_fullResponse += _responseHeader + _responseBody;
 }
 
@@ -91,7 +78,7 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
 	// 	return (status);
 	// }			
 	
-	std::cout << RED "B) setResponseStatus\n";
+	//std::cout << RED "B) setResponseStatus\n";
 	switch (storage->getError())
 	{
 		case 1:
@@ -145,58 +132,89 @@ void ResponseData::setBytesToClient(int val)
 
 
 
-std::string ResponseData::setImage(std::string imagePath)
-{
-	std::cout << RED "FOUND extention .jpg or .png\n" RES;
 
-	FILE *file;
-	unsigned char *buffer;
-	std::string imageFile;
-	// unsigned long imageSize;
-	size_t imageSize;
+// NEW SETIMAGE
+// void ResponseData::setImage(struct kevent& event, std::string imagePath) {
+std::string ResponseData::setImage(std::string imagePath) {
+	//std::cout << RED "Start SetImage()\n" RES;
 
-	file = fopen(imagePath.c_str(), "rb");
-	if (!file)
-	{
-		std::cerr << "Unable to open file\n";
-		// return ;  throw error 
- 	}
+	std::fstream imageFile;		// Stream image and store it into a string
+	std::string content;
+	imageFile.open(imagePath);
 
-	fseek(file, 0L, SEEK_END);	// Get file length
-	imageSize = ftell(file);
-	fseek(file, 0L, SEEK_SET);
+	content.assign(std::istreambuf_iterator<char>(imageFile), std::istreambuf_iterator<char>());
+	content += "\r\n";
+	imageFile.close();
 
-	std::string temp = std::to_string(imageSize);
+	// Create the header block
+	std::string headerBlock = 	"HTTP/1.1 200 OK\r\n"
+								"Content-Type: image/jpg\r\n";
+	headerBlock.append("accept-ranges: bytes\r\n");
 	std::string contentLen = "Content-Length: ";
+	std::string temp = std::to_string(content.size());
+	headerBlock.append(contentLen);
 	contentLen.append(temp);
-	contentLen.append("\r\n");
+	headerBlock.append("\r\n\r\n");
 
-	imageFile += "HTTP/1.1 200 OK\n";	// maybe here not good
-	imageFile += contentLen;
-	imageFile += "accept-ranges: bytes";
-	imageFile += "\r\n\r\n";
-
-	buffer = (unsigned char *)malloc(imageSize);
-	if (!buffer)
-		{ 
-			fprintf(stderr, "Memory error!"); fclose(file); 
-			// return ;   throw error 
-			}
-
-	int ret = fread(buffer, sizeof(unsigned char), imageSize, file);
-	std::cout << YEL "Returned fread, image size:     " << ret << RES "\n";
-
-	std::cout << GRN "buffer size: " << strlen(reinterpret_cast<const char* >(buffer)) << "\n" RES;
-	imageFile += reinterpret_cast<const char* >(buffer);
-	
-	std::cout << GRN "imageFile size:" << imageFile.size() << "\n" RES;
-	std::cout << GRN "setImage(), imageFile [\n" << imageFile << "\n" RES;
-
-
-	fclose(file);
-	free(buffer);
-	return (imageFile);
+	headerBlock.append(content);
+	return (headerBlock);	// Both header and image content
 }
+
+
+
+// SET IMAGE OLD
+// std::string ResponseData::setImage(std::string imagePath)
+// {
+// 	std::cout << RED "Start SetImage()\n" RES;
+
+// 	FILE *file;
+// 	unsigned char *buffer;
+// 	std::string imageFile;
+// 	// unsigned long imageSize;
+// 	size_t imageSize;
+
+// 	file = fopen(imagePath.c_str(), "rb");
+// 	if (!file)
+// 	{
+// 		std::cerr << "Unable to open file\n";
+// 		// return ;  throw error 
+//  	}
+
+// 	fseek(file, 0L, SEEK_END);	// Get file length
+// 	imageSize = ftell(file);
+// 	fseek(file, 0L, SEEK_SET);
+
+// 	std::string temp = std::to_string(imageSize);
+// 	std::string contentLen = "Content-Length: ";
+// 	contentLen.append(temp);
+// 	contentLen.append("\r\n");
+
+// 	imageFile += "HTTP/1.1 200 OK\n";	// maybe here not good
+// 	imageFile += contentLen;
+// 	imageFile += "accept-ranges: bytes";
+// 	imageFile += "\r\n\r\n";
+
+// 	buffer = (unsigned char *)malloc(imageSize);
+// 	if (!buffer)
+// 		{ 
+// 			fprintf(stderr, "Memory error!"); fclose(file); 
+// 			// return ;   throw error 
+// 			}
+
+// 	int ret = fread(buffer, sizeof(unsigned char), imageSize, file);
+// 	std::cout << YEL "Returned fread, image size:     " << ret << RES "\n";
+
+// 	std::cout << GRN "buffer size: " << strlen(reinterpret_cast<const char* >(buffer)) << "\n" RES;
+// 	imageFile += reinterpret_cast<const char* >(buffer);
+	
+// 	std::cout << GRN "imageFile size:" << imageFile.size() << "\n" RES;
+// 	std::cout << GRN "setImage(), imageFile [\n" << imageFile << "\n" RES;
+
+
+// 	fclose(file);
+// 	free(buffer);
+// 	return (imageFile);
+// }
 
 void ResponseData::setOverride(bool val)
 {
