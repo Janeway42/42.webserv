@@ -23,43 +23,61 @@ ResponseData::~ResponseData(void) {}
 // ---------------------------------------------------------------------------- set functions
 // ------------------------------------------------------------------------------------------
 
-/*
-	This function creates the header only for text/html requests, but not for images.
-	If it is an image, then setImage() is called, where both header and body are created, and
-	then setResponse() returns this full content, ready to be sent.
-*/
-void ResponseData::setResponse(struct kevent& event)
-{
+
+
+// This function creates the header only for text/html requests, but not for images.
+// If it is an image, then setImage() is called, where both header and body are created, and
+// then setResponse() returns this full content, ready to be sent.
+void ResponseData::setResponse(struct kevent& event) {
+	
 	Request *storage = (Request *)event.udata;	
-
 	_responseHeader += setResponseStatus(event);
-
 
 	// IF THE PATH IS A FOLDER, THIS FUNCTION NEEDS TO CHECK IF THERE IS A DEFAULT INDEX FILE PRESENT,
 	// IF NOT, THEN CHECK IF AUTOINDEX IS ON,
 	// 			IF YES, SEND HTML WITH FOLDER CONTENT
 	//			IF NOT, SEND ERROR PAGE, NOT ALLOWED ?
 	if (storage->getRequestData().getIsFolder() == true) {
-		std::cout << YEL "It is a folder, check for a default index file and/or autoindex on/off\n";
-		if (storage->getRequestData().getRequestContentType().compare("text/html") == 0)
-			//git commit -m "Now showing a dummy file, if the path is a folder"
-			_responsePath = storage->getRequestData().getPath();
-			_responsePath.append("/autoindex_dummy.html");
-			//_responsePath.append("resources/autoindex_dummy.html");
-			//setResponsePath("sometnihg");
+		std::cout << YEL "The Path is a folder: check for a default index file and/or autoindex on/off\n";
+		//if (storage->getRequestData().getRequestContentType().compare("text/html") == 0) {		// IF FOLDER, THE CONT. TYPE SHOULD BE text.html
+			
+			// IF PATH IS THE ROOT "./"
+			if (storage->getRequestData().getPath() == "./") {
+				std::cout << YEL "          The Path is the root: [" << storage->getRequestData().getPath() << "]\n" RES;
+				_responsePath = storage->getRequestData().getPath();
+				_responsePath.append(storage->getServerData().getIndexFile());
+			}
+
+			// IF PATH IS A FOLDER INSIDE THE ROOT FOLDER
+			else {
+				std::cout << YEL "          The Path is a folder inside the root: [" << storage->getRequestData().getPath() << "]\n" RES;
+
+
+				// Here it should compare the path with available locations.
+				// If a location is valid in the config file, then take the default index file inside that location
+				// and append the filename after the path.
+				std::vector<ServerLocation> location_data_vector = storage->getServerData().getLocationBlocks();
+				for (size_t i = 0; i < location_data_vector.size(); i++) {
+					std::cout << GRE "   ... location root dir: [" << location_data_vector[i].getRootDirectory() << "]\n";
+					if (storage->getRequestData().getPath() == location_data_vector[i].getRootDirectory()) {
+						_responsePath = location_data_vector[i].getRootDirectory();
+						_responsePath.append(storage->getRequestData().getPath());
+						_responsePath.append("/autoindex_dummy.html");
+					}
+				}
+			}
+
+
+			_responseBody = streamFile(_responsePath);
 			std::cout << YEL "          response path for autoindex_dummy: [" << _responsePath << "]\n" RES;
-
-			_responseBody = streamFile(_responsePath);
 			std::cout << YEL "          content type should now be text/html: [" << storage->getRequestData().getRequestContentType() << RES "]\n";
-			//_responseBody = streamFile(_responsePath);
-		//return ;
+		//}
 	}
-
-	// IT'S NOT A FOLDER
-	else {
+	// IF NOT A FOLDER
+	else {	// IF TEXTFILE
 		if (storage->getRequestData().getRequestContentType().compare("text/html") == 0)
 			_responseBody = streamFile(_responsePath);
-		else {
+		else {	// IF IMAGE, FULL RESPONSE IS CREATED IN setImage()
 			_fullResponse = setImage(storage->getResponseData().getResponsePath());
 			// std::cout << BLU "_fullResponse.length(): [\n" << _fullResponse.size() << "\n" RES;
 			return ;
@@ -81,28 +99,13 @@ void ResponseData::setResponse(struct kevent& event)
 
 
 std::string ResponseData::setResponseStatus(struct kevent& event)
-{
+{	
+	//std::cout << RED "start setResponseStatus\n";
 	Request *storage = (Request *)event.udata;
 	std::string status;
 
 	std::string fileType = storage->getRequestData().getRequestContentType();
-	//std::cout << GRN "content type: [" << storage->getRequestData().getRequestContentType() << "]\n" RES;
 
-	// if (fileType.compare("text/html") != 0 && storage->getError() == 0)
-	// {
-	// 	std::cout << RED "A) setResponseStatus\n";
-	// 	status = "HTTP/1.1 200 OK\r\n"
-	// 				// "Content-Type: image/png";   // change to take in consideration the image extension
-	// 				"Content-Type: ";   // change to take in consideration the image extension
-	// 	status += fileType + "\r\n";
-	// 	// (storage->getResponseData()).setResponsePath(storage->getRequestData().getHttpPath()); jaka: should be getPath()
-	// 	(storage->getResponseData()).setResponsePath(storage->getRequestData().getPath());
-	// 	std::cout << GRN "getHttpPath: [" << _responsePath << "]\n" RES;
-	// 	std::cout << GRN "status: [" << status << "]\n" RES;
-	// 	return (status);
-	// }			
-	
-	//std::cout << RED "B) setResponseStatus\n";
 	switch (storage->getError())
 	{
 		case 1:
@@ -134,14 +137,9 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
 		default:
 			status = "HTTP/1.1 200 OK\n"  
 					"Content-Type: " + storage->getRequestData().getRequestContentType() + "\n";	// jaka
-			//_responsePath = "resources/index_dummy.html";
-			//_responsePath = "resources/index_just_text.html";
-			//  _responsePath = "resources/index_just_text_bible.html";
-			//  _responsePath = "resources/index_just_image.html";
-			//  _responsePath = "resources/img_36kb.jpg";
-			//  _responsePath = storage->getRequestData().getHttpPath();	// jaka: this is old, should be getPath()
+			//  _responsePath = storage->getRequestData().getHttpPath();							// jaka: this is old, should be getPath()
 			_responsePath = storage->getRequestData().getPath();
-			std::cout << GRN "getHttpPath: [" << _responsePath << "]\n" RES;
+			std::cout << GRN "_responsePath: [" << _responsePath << "]\n" RES;
 			break;
 	}
 	return (status);
@@ -173,7 +171,7 @@ std::string ResponseData::setImage(std::string imagePath) {
 	content += "\r\n";
 	imageFile.close();
 
-	// std::string contentType = getContent...  // Here it needs to grab the correct Type, jpg, png, gif, ico ...
+	// std::string contentType = getContent...  				// Here it needs to grab the correct Type, jpg, png, gif, ico ...
 
 	// Create the header block
 	std::string headerBlock = 	"HTTP/1.1 200 OK\r\n"
@@ -190,60 +188,6 @@ std::string ResponseData::setImage(std::string imagePath) {
 }
 
 
-
-// SET IMAGE OLD
-// std::string ResponseData::setImage(std::string imagePath)
-// {
-// 	std::cout << RED "Start SetImage()\n" RES;
-
-// 	FILE *file;
-// 	unsigned char *buffer;
-// 	std::string imageFile;
-// 	// unsigned long imageSize;
-// 	size_t imageSize;
-
-// 	file = fopen(imagePath.c_str(), "rb");
-// 	if (!file)
-// 	{
-// 		std::cerr << "Unable to open file\n";
-// 		// return ;  throw error 
-//  	}
-
-// 	fseek(file, 0L, SEEK_END);	// Get file length
-// 	imageSize = ftell(file);
-// 	fseek(file, 0L, SEEK_SET);
-
-// 	std::string temp = std::to_string(imageSize);
-// 	std::string contentLen = "Content-Length: ";
-// 	contentLen.append(temp);
-// 	contentLen.append("\r\n");
-
-// 	imageFile += "HTTP/1.1 200 OK\n";	// maybe here not good
-// 	imageFile += contentLen;
-// 	imageFile += "accept-ranges: bytes";
-// 	imageFile += "\r\n\r\n";
-
-// 	buffer = (unsigned char *)malloc(imageSize);
-// 	if (!buffer)
-// 		{ 
-// 			fprintf(stderr, "Memory error!"); fclose(file); 
-// 			// return ;   throw error 
-// 			}
-
-// 	int ret = fread(buffer, sizeof(unsigned char), imageSize, file);
-// 	std::cout << YEL "Returned fread, image size:     " << ret << RES "\n";
-
-// 	std::cout << GRN "buffer size: " << strlen(reinterpret_cast<const char* >(buffer)) << "\n" RES;
-// 	imageFile += reinterpret_cast<const char* >(buffer);
-	
-// 	std::cout << GRN "imageFile size:" << imageFile.size() << "\n" RES;
-// 	std::cout << GRN "setImage(), imageFile [\n" << imageFile << "\n" RES;
-
-
-// 	fclose(file);
-// 	free(buffer);
-// 	return (imageFile);
-// }
 
 void ResponseData::setOverride(bool val)
 {

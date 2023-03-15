@@ -54,6 +54,10 @@ RequestData & Request::getRequestData(){
 	return _data;
 }
 
+ServerData & Request::getServerData(){
+	return _server;
+}
+
 ResponseData & Request::getResponseData(){
 	return (_answer);
 }

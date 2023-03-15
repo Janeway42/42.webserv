@@ -1,0 +1,67 @@
+/*
+    Jaka:
+    This appeared once with URL http://localhost:8080/includes
+    It looks like it only shows now and then
+*/
+
+
+
+==15483==ERROR: AddressSanitizer: heap-use-after-free on address 0x618000000722 at pc 0x00010ea53e2b bp 0x7ffee11fb2c0 sp 0x7ffee11fb2b8
+READ of size 1 at 0x618000000722 thread T0
+    #0 0x10ea53e2a in Request::getError() RequestParser.cpp:357
+    #1 0x10ea9b952 in WebServer::handleTimeout(kevent&) WebServer.cpp:108
+    #2 0x10ea99e76 in WebServer::runServer() WebServer.cpp:68
+    #3 0x10eaabc80 in main Kqueue_main.cpp:13
+    #4 0x7fff6ae303d4 in start (libdyld.dylib:x86_64+0x163d4)
+
+0x618000000722 is located 674 bytes inside of 888-byte region [0x618000000480,0x6180000007f8)
+freed by thread T0 here:
+    #0 0x10ebf5b02 in wrap__ZdlPv (libclang_rt.asan_osx_dynamic.dylib:x86_64h+0x6eb02)
+    #1 0x10ea4c479 in Request::~Request() RequestParser.cpp:47
+    #2 0x10ea9c853 in WebServer::closeClient(kevent&) WebServer.cpp:294
+    #3 0x10ea99fea in WebServer::runServer() WebServer.cpp:76
+    #4 0x10eaabc80 in main Kqueue_main.cpp:13
+    #5 0x7fff6ae303d4 in start (libdyld.dylib:x86_64+0x163d4)
+
+previously allocated by thread T0 here:
+    #0 0x10ebf5502 in wrap__Znwm (libclang_rt.asan_osx_dynamic.dylib:x86_64h+0x6e502)
+    #1 0x10ea9aa93 in WebServer::newClient(kevent, ServerData*) WebServer.cpp:275
+    #2 0x10ea99dc1 in WebServer::runServer() WebServer.cpp:66
+    #3 0x10eaabc80 in main Kqueue_main.cpp:13
+    #4 0x7fff6ae303d4 in start (libdyld.dylib:x86_64+0x163d4)
+
+SUMMARY: AddressSanitizer: heap-use-after-free RequestParser.cpp:357 in Request::getError()
+Shadow bytes around the buggy address:
+  0x1c3000000090: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x1c30000000a0: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x1c30000000b0: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x1c30000000c0: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x1c30000000d0: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+=>0x1c30000000e0: fd fd fd fd[fd]fd fd fd fd fd fd fd fd fd fd fd
+  0x1c30000000f0: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fa
+  0x1c3000000100: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x1c3000000110: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x1c3000000120: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x1c3000000130: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==15483==ABORTING
+zsh: abort      ./webserv standard_complete.conf
