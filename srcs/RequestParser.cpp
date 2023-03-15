@@ -18,14 +18,8 @@ DELETE http://api.example.com/employee/1
 
 
 /*
-	Error with a specific URL, I don't remember which URL caused this?
-		==4580==ERROR: AddressSanitizer: heap-use-after-free on address 0x618000000b2a at pc 0x000101e7d58b bp 0x7ffeeddd12c0 sp 0x7ffeeddd12b8
-		READ of size 1 at 0x618000000b2a thread T0
-		#0 0x101e7d58a in Request::getError() RequestParser.cpp:340
-		#1 0x101ec3102 in WebServer::handleTimeout(kevent&) WebServer.cpp:108
-		#2 0x101ec1626 in WebServer::runServer() WebServer.cpp:68
-		#3 0x101ed6000 in main Kqueue_main.cpp:13
-		#4 0x7fff7b3393d4 in start (libdyld.dylib:x86_64+0x163d4)
+	In case error 404, file not found, it's probably good to not continue after parsePath(), 
+	and just close the connection
 
 */
 
@@ -203,7 +197,7 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, int fdClient, std::str
 	_headerDone = true;
 	//std::cout << "HEADER: [" << BLU << _header << RES "]\n";	// sleep(1);
 	parseHeader(_data.getHeader());
-	parsePath(_data.getHttpPath());
+	parsePath(_data.getHttpPath());	// IF FILE NOT FOUND 404, IT COULD JUST CLOSE THE CONNECTION AND STOP
 
 	if (_data.getRequestContentLength() == 0){
 		std::cout << PUR << "     DONE PARSING\n" << RES;	// sleep(1);

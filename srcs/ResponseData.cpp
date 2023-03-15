@@ -24,7 +24,7 @@ ResponseData::~ResponseData(void) {}
 // ------------------------------------------------------------------------------------------
 
 /*
-	This function only creates the header for text/html requests.
+	This function creates the header only for text/html requests, but not for images.
 	If it is an image, then setImage() is called, where both header and body are created, and
 	then setResponse() returns this full content, ready to be sent.
 */
@@ -33,13 +33,37 @@ void ResponseData::setResponse(struct kevent& event)
 	Request *storage = (Request *)event.udata;	
 
 	_responseHeader += setResponseStatus(event);
-	if (storage->getRequestData().getRequestContentType().compare("text/html") == 0)
-		_responseBody = streamFile(_responsePath);
+
+
+	// IF THE PATH IS A FOLDER, THIS FUNCTION NEEDS TO CHECK IF THERE IS A DEFAULT INDEX FILE PRESENT,
+	// IF NOT, THEN CHECK IF AUTOINDEX IS ON,
+	// 			IF YES, SEND HTML WITH FOLDER CONTENT
+	//			IF NOT, SEND ERROR PAGE, NOT ALLOWED ?
+	if (storage->getRequestData().getIsFolder() == true) {
+		std::cout << YEL "It is a folder, check for a default index file and/or autoindex on/off\n";
+		if (storage->getRequestData().getRequestContentType().compare("text/html") == 0)
+			//git commit -m "Now showing a dummy file, if the path is a folder"
+			_responsePath = storage->getRequestData().getPath();
+			_responsePath.append("/autoindex_dummy.html");
+			//_responsePath.append("resources/autoindex_dummy.html");
+			//setResponsePath("sometnihg");
+			std::cout << YEL "          response path for autoindex_dummy: [" << _responsePath << "]\n" RES;
+
+			_responseBody = streamFile(_responsePath);
+			std::cout << YEL "          content type should now be text/html: [" << storage->getRequestData().getRequestContentType() << RES "]\n";
+			//_responseBody = streamFile(_responsePath);
+		//return ;
+	}
+
+	// IT'S NOT A FOLDER
 	else {
-		//std::cout << YEL "SetResponse():  It is an image, by here it already has a complete header with image body\n";
-		_fullResponse = setImage(storage->getResponseData().getResponsePath());
-		// std::cout << BLU "_fullResponse.length(): [\n" << _fullResponse.size() << "\n" RES;
-		return ;
+		if (storage->getRequestData().getRequestContentType().compare("text/html") == 0)
+			_responseBody = streamFile(_responsePath);
+		else {
+			_fullResponse = setImage(storage->getResponseData().getResponsePath());
+			// std::cout << BLU "_fullResponse.length(): [\n" << _fullResponse.size() << "\n" RES;
+			return ;
+		}
 	}
 
 	// set up header 
@@ -104,6 +128,9 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
 		case 5:
 			status = "HTTP/1.1 500 Internal Server Error";
 			(storage->getResponseData()).setResponsePath("resources/error_pages/500InternarServerError.html");
+		case 6:
+			status = "HTTP/1.1 403 Forbidden";
+			(storage->getResponseData()).setResponsePath("resources/error_pages/403Forbidden.html");
 		default:
 			status = "HTTP/1.1 200 OK\n"  
 					"Content-Type: " + storage->getRequestData().getRequestContentType() + "\n";	// jaka
@@ -146,9 +173,11 @@ std::string ResponseData::setImage(std::string imagePath) {
 	content += "\r\n";
 	imageFile.close();
 
+	// std::string contentType = getContent...  // Here it needs to grab the correct Type, jpg, png, gif, ico ...
+
 	// Create the header block
 	std::string headerBlock = 	"HTTP/1.1 200 OK\r\n"
-								"Content-Type: image/jpg\r\n";
+								"Content-Type: image/jpg\r\n";	// Here it needs to grab the correct Type, jpg, png, gif, ico ...
 	headerBlock.append("accept-ranges: bytes\r\n");
 	std::string contentLen = "Content-Length: ";
 	std::string temp = std::to_string(content.size());
