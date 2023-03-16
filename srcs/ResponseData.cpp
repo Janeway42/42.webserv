@@ -68,22 +68,27 @@ void ResponseData::setResponse(struct kevent& event) {
 				// If a location is valid in the config file, then take the default index file inside that location
 				// and append the filename after the path.
 				std::vector<ServerLocation> location_data_vector = storage->getServerData().getLocationBlocks();
-				for (size_t i = 0; i < location_data_vector.size(); i++) {
+				size_t i;
+				for (i = 0; i < location_data_vector.size(); i++) {
                     std::cout << GRE "   ........ location uri: [" << location_data_vector[i].getLocationPath() << "]\n";
                     std::cout << GRE "   ... location root dir: [" << location_data_vector[i].getRootDirectory() << "]\n";
-                    std::cout << GRE "   ....... _responsePath: [" << location_data_vector[i].getRootDirectory() << "]\n";
+                    std::cout << GRE "   ....... _responsePath: [" << _responsePath << "]\n";
 					if (location_data_vector[i].getRootDirectory() == _responsePath) {// TODO here it should be getLocationPath() ?? talk to joyce
 						_responsePath = location_data_vector[i].getIndexFile();
                     	std::cout << BLU "   ....... FinalPath: [" << _responsePath << "]\n";
-
 					}
 				}
+				// if (i == location_data_vector.size()) {
+                //     std::cout << RED "This path exists but does not match any location: [" << _responsePath << "]\n";
+				// 	storage->setError(404);
+				// }
 			}
 
 
 			_responseBody = streamFile(_responsePath);
-			std::cout << YEL "          response path for autoindex_dummy: [" << _responsePath << "]\n" RES;
-			std::cout << YEL "          content type should now be text/html: [" << storage->getRequestData().getRequestContentType() << RES "]\n";
+			std::cout << YEL "                              getError(): [" << storage->getError() << "]\n" RES;
+			std::cout << YEL "                           response path: [" << _responsePath << "]\n" RES;
+			std::cout << YEL "    content type should now be text/html: [" << storage->getRequestData().getRequestContentType() << RES "]\n";
 		//}
 	}
 	// IF NOT A FOLDER

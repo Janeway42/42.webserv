@@ -152,7 +152,8 @@ void WebServer::readRequest(struct kevent& event)
 	
 		else if (storage->getDone() == false)
 		{
-			storage->appendToRequest(buffer, event.ident);
+			// storage->appendToRequest(buffer, event.ident);
+			storage->appendToRequest(buffer, event);
 
 			if (storage->getError() != 0 || storage->getDone() == true)
 			{

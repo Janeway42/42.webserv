@@ -173,16 +173,6 @@ void Request::callCGI(RequestData reqData, int fdClient) {
 
 
 
-int checkIfFileExists(const std::string& path) {
-	std::ifstream file(path.c_str());
-
-	if (not file.is_open()) {		// ??? what is this syntax?
-		std::cout << RED << "Error: File " << path << " not found\n" << RES;
-		return (404);
-	}
-	std::cout << GRN << "File/folder " << path << " exists\n" << RES;
-	return 0;
-}
 
 // Not in use
 // There is a read buffer overflow
@@ -391,7 +381,57 @@ static void printPathParts(std::string str, RequestData reqData) {
 
 
 
-int Request::parsePath(std::string str) {
+
+
+int checkIfPathExists(const std::string& path, struct kevent event) {
+	
+	(void)event;
+	std::cout << GRN << "Start CheckIfFIleExists(), path [" << path << "] \n" << RES;
+
+	
+	std::ifstream file(path.c_str());
+
+	if (not file.is_open()) {		// ??? what is this syntax?
+		std::cout << RED << "Error: File " << path << " not found\n" << RES;
+		return (404);
+	}
+	std::cout << GRN << "File/folder " << path << " exists\n" << RES;
+
+
+	// CHECK IF PATH MATCHES THE SERVER ROOT FOLDER
+	// Request *storage = (Request*)event.udata;
+	// if (path == storage->getServerData().getRootDirectory()) {
+	// 	std::cout << GRN << "Path is the root folder\n" << RES;
+	// 	return (0);
+	// }
+
+	// LOOP THROUGH LOCATIONS AND CHECK IF THERE IS A MATCH, OTHERWISE ERROR 404
+	// std::vector<ServerLocation> location_data_vector = storage->getServerData().getLocationBlocks();
+	// size_t i;
+	// for (i = 0; i < location_data_vector.size(); i++) {
+	// 	std::cout << GRE "   ........ location uri: [" << location_data_vector[i].getLocationPath() << "]\n";
+	// 	std::cout << GRE "   ... location root dir: [" << location_data_vector[i].getRootDirectory() << "]\n";
+	// 	std::cout << GRE "   ....... _responsePath: [" << location_data_vector[i].getRootDirectory() << "]\n";
+	// 	if (location_data_vector[i].getRootDirectory() == path) {// TODO here it should be getLocationPath() ?? talk to joyce
+	// 		path = location_data_vector[i].getIndexFile();
+	// 		std::cout << BLU "   ....... FinalPath: [" << path << "]\n";
+	// 	}
+	// }
+	// if (i == location_data_vector.size()) {
+	// 	std::cout << RED "This path exists but does not match any location: [" << path << "]\n";
+	// 	storage->setError(404);
+	// }
+
+	return 0;
+}
+
+
+
+
+
+
+// int Request::parsePath(std::string str) {
+int Request::parsePath(std::string str, struct kevent event) {
 
 	std::cout << GRN "Start parse path: [" << str << "]\n";	// sleep(1);
 //	std::string path			= removeDuplicateSlash(str);	// here error: read buffer overflow
@@ -445,12 +485,17 @@ int Request::parsePath(std::string str) {
 		_data.setQueryString(_data.getBody());
 	}
 
-	ret = checkIfFileExists(_data.getPath());
+	ret = checkIfPathExists(_data.getPath(), event);
 	if (ret != 0)	{ // What in case of root only "/"  ???
 		std::cout << RED << "ret " << ret << ", file not found, should set error to 404)\n" << RES;
 		setError(404);
 		return (404);
 	}
+
+	//Request *storage = (Request *)event.udata;	
+	
+
+
 	// What in case of GET??
 	checkTypeOfFile();
 	_data.setRequestContentType(_data.getFileExtention());
