@@ -326,7 +326,7 @@ char* ENV[25] = {
 
 
 int Request::checkTypeOfFile() {
-	std::cout << GRN << "Start checkTypeofFile(), path [" << _data.getPath() << "]" << "\n" << RES;
+	std::cout << GRN << "Start checkTypeofFile(), path [" << _data.getPath() << "] " RES;
 
 	std::string path = _data.getPath();
 	std::string temp = _data.getPath();
@@ -336,16 +336,16 @@ int Request::checkTypeOfFile() {
 	struct stat s;
     if (stat(path.c_str(), &s) == 0) {
         if (S_ISDIR(s.st_mode)) {
-            std::cout << CYN << path << " is a directory\n";
+            std::cout << CYN "is a directory\n";
 			_data.setIsFolder(true);
 			// return (0);
         } else if (S_ISREG(s.st_mode)) {
-            std::cout << CYN << path << " is a file\n" RES;
+            std::cout << CYN "is a file\n" RES;
         } else {
-            std::cout << CYN << path << " is not a valid directory or file\n" RES;
+            std::cout << CYN "is not a valid directory or file\n" RES;
         }
     } else {
-        std::cerr << CYN << "Error getting file/directory info: " << strerror(errno) << "\n" RES;
+        std::cerr << RED << "Error getting file/directory info: " << strerror(errno) << "\n" RES;
     }
 
 
@@ -393,7 +393,7 @@ static void printPathParts(std::string str, RequestData reqData) {
 
 int Request::parsePath(std::string str) {
 
-	std::cout << "    start parse path: [" << str << "]\n";	// sleep(1);
+	std::cout << GRN "Start parse path: [" << str << "]\n";	// sleep(1);
 //	std::string path			= removeDuplicateSlash(str);	// here error: read buffer overflow
 	std::string path			= str;
 	size_t		ret				= 0;
@@ -401,11 +401,21 @@ int Request::parsePath(std::string str) {
 
 	if (path == "")
 		return (-1);
-	if (path[0] == '/')
-		path = "." + path;
+	if (path[0] == '/' && path != "/")
+		path = getServerData().getRootDirectory() + path;
+	if (path[0] == '/' && path == "/")
+		path = getServerData().getRootDirectory();
+	if (path[0] != '/')
 	if (path == "./") {
-		std::cout << GRN << "Path is the root '/'\n" << RES;
+		path = getServerData().getRootDirectory();
+		//path = path + "resources"; // !!! How to grab the server root name? The path should contain the root folder, ie: ./sources 
+		std::cout << GRN << "Path is the root '/'    [" << path << "]\n" RES;
 	}
+	std::cout << GRN << "Path with pre-pended root folder [" << path << "]\n" RES;
+
+	// Pre-pend the name of the root folder
+
+
 	if (path.back() == '/'  && (path.find("?") == std::string::npos)) {
 		std::cout << GRN << "The path has no GET-Form data. Last char is '/', it must be a folder.\n" << RES;
 		storePath_and_FolderName(path);
@@ -438,8 +448,8 @@ int Request::parsePath(std::string str) {
 	ret = checkIfFileExists(_data.getPath());
 	if (ret != 0)	{ // What in case of root only "/"  ???
 		std::cout << RED << "ret " << ret << ", file not found, should set error to 404)\n" << RES;
-		setError(2);
-		return (2);
+		setError(404);
+		return (404);
 	}
 	// What in case of GET??
 	checkTypeOfFile();
