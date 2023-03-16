@@ -173,16 +173,6 @@ void Request::callCGI(RequestData reqData, int fdClient) {
 
 
 
-int checkIfFileExists(const std::string& path) {
-	std::ifstream file(path.c_str());
-
-	if (not file.is_open()) {		// ??? what is this syntax?
-		std::cout << RED << "Error: File " << path << " not found\n" << RES;
-		return (404);
-	}
-	std::cout << GRN << "File/folder " << path << " exists\n" << RES;
-	return 0;
-}
 
 // Not in use
 // There is a read buffer overflow
@@ -326,7 +316,7 @@ char* ENV[25] = {
 
 
 int Request::checkTypeOfFile() {
-	std::cout << GRN << "Start checkTypeofFile(), path [" << _data.getPath() << "]" << "\n" << RES;
+	std::cout << GRN << "Start checkTypeofFile(), path [" << _data.getPath() << "] " RES;
 
 	std::string path = _data.getPath();
 	std::string temp = _data.getPath();
@@ -336,16 +326,16 @@ int Request::checkTypeOfFile() {
 	struct stat s;
     if (stat(path.c_str(), &s) == 0) {
         if (S_ISDIR(s.st_mode)) {
-            std::cout << CYN << path << " is a directory\n";
+            std::cout << CYN "is a directory\n";
 			_data.setIsFolder(true);
 			// return (0);
         } else if (S_ISREG(s.st_mode)) {
-            std::cout << CYN << path << " is a file\n" RES;
+            std::cout << CYN "is a file\n" RES;
         } else {
-            std::cout << CYN << path << " is not a valid directory or file\n" RES;
+            std::cout << CYN "is not a valid directory or file\n" RES;
         }
     } else {
-        std::cerr << CYN << "Error getting file/directory info: " << strerror(errno) << "\n" RES;
+        std::cerr << RED << "Error getting file/directory info: " << strerror(errno) << "\n" RES;
     }
 
 
@@ -391,9 +381,59 @@ static void printPathParts(std::string str, RequestData reqData) {
 
 
 
-int Request::parsePath(std::string str) {
 
-	std::cout << "    start parse path: [" << str << "]\n";	// sleep(1);
+
+int checkIfPathExists(const std::string& path, struct kevent event) {
+	
+	(void)event;
+	std::cout << GRN << "Start CheckIfFIleExists(), path [" << path << "] \n" << RES;
+
+	
+	std::ifstream file(path.c_str());
+
+	if (not file.is_open()) {		// ??? what is this syntax?
+		std::cout << RED << "Error: File " << path << " not found\n" << RES;
+		return (404);
+	}
+	std::cout << GRN << "File/folder " << path << " exists\n" << RES;
+
+
+	// CHECK IF PATH MATCHES THE SERVER ROOT FOLDER
+	// Request *storage = (Request*)event.udata;
+	// if (path == storage->getServerData().getRootDirectory()) {
+	// 	std::cout << GRN << "Path is the root folder\n" << RES;
+	// 	return (0);
+	// }
+
+	// LOOP THROUGH LOCATIONS AND CHECK IF THERE IS A MATCH, OTHERWISE ERROR 404
+	// std::vector<ServerLocation> location_data_vector = storage->getServerData().getLocationBlocks();
+	// size_t i;
+	// for (i = 0; i < location_data_vector.size(); i++) {
+	// 	std::cout << GRE "   ........ location uri: [" << location_data_vector[i].getLocationPath() << "]\n";
+	// 	std::cout << GRE "   ... location root dir: [" << location_data_vector[i].getRootDirectory() << "]\n";
+	// 	std::cout << GRE "   ....... _responsePath: [" << location_data_vector[i].getRootDirectory() << "]\n";
+	// 	if (location_data_vector[i].getRootDirectory() == path) {// TODO here it should be getLocationPath() ?? talk to joyce
+	// 		path = location_data_vector[i].getIndexFile();
+	// 		std::cout << BLU "   ....... FinalPath: [" << path << "]\n";
+	// 	}
+	// }
+	// if (i == location_data_vector.size()) {
+	// 	std::cout << RED "This path exists but does not match any location: [" << path << "]\n";
+	// 	storage->setError(404);
+	// }
+
+	return 0;
+}
+
+
+
+
+
+
+// int Request::parsePath(std::string str) {
+int Request::parsePath(std::string str, struct kevent event) {
+
+	std::cout << GRN "Start parse path: [" << str << "]\n";	// sleep(1);
 //	std::string path			= removeDuplicateSlash(str);	// here error: read buffer overflow
 	std::string path			= str;
 	size_t		ret				= 0;
@@ -401,11 +441,21 @@ int Request::parsePath(std::string str) {
 
 	if (path == "")
 		return (-1);
-	if (path[0] == '/')
-		path = "." + path;
+	if (path[0] == '/' && path != "/")
+		path = getServerData().getRootDirectory() + path;
+	if (path[0] == '/' && path == "/")
+		path = getServerData().getRootDirectory();
+	if (path[0] != '/')
 	if (path == "./") {
-		std::cout << GRN << "Path is the root '/'\n" << RES;
+		path = getServerData().getRootDirectory();
+		//path = path + "resources"; // !!! How to grab the server root name? The path should contain the root folder, ie: ./sources 
+		std::cout << GRN << "Path is the root '/'    [" << path << "]\n" RES;
 	}
+	std::cout << GRN << "Path with pre-pended root folder [" << path << "]\n" RES;
+
+	// Pre-pend the name of the root folder
+
+
 	if (path.back() == '/'  && (path.find("?") == std::string::npos)) {
 		std::cout << GRN << "The path has no GET-Form data. Last char is '/', it must be a folder.\n" << RES;
 		storePath_and_FolderName(path);
@@ -435,12 +485,17 @@ int Request::parsePath(std::string str) {
 		_data.setQueryString(_data.getBody());
 	}
 
-	ret = checkIfFileExists(_data.getPath());
+	ret = checkIfPathExists(_data.getPath(), event);
 	if (ret != 0)	{ // What in case of root only "/"  ???
 		std::cout << RED << "ret " << ret << ", file not found, should set error to 404)\n" << RES;
-		setError(2);
-		return (2);
+		setError(404);
+		return (404);
 	}
+
+	//Request *storage = (Request *)event.udata;	
+	
+
+
 	// What in case of GET??
 	checkTypeOfFile();
 	_data.setRequestContentType(_data.getFileExtention());

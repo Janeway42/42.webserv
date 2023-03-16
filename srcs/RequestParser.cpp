@@ -204,8 +204,9 @@ int Request::storeWordsFromOtherLine(std::string otherLine) {
 */
 
 
-void Request::parseHeaderAndPath(std::string & tmpHeader, int fdClient, std::string::size_type it) {
-	(void)fdClient; // maybe will be needed
+// void Request::parseHeaderAndPath(std::string & tmpHeader, int fdClient, std::string::size_type it) {
+void Request::parseHeaderAndPath(std::string & tmpHeader, struct kevent event, std::string::size_type it) {
+	//(void)fdClient; // maybe will be needed
 	_hasBody = true;
 	tmpHeader = _data.getHeader();
 	tmpHeader.append(_data.getTemp().substr(0, it));
@@ -213,7 +214,8 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, int fdClient, std::str
 	_headerDone = true;
 	//std::cout << "HEADER: [" << BLU << _header << RES "]\n";	// sleep(1);
 	parseHeader(_data.getHeader());
-	parsePath(_data.getHttpPath());	// IF FILE NOT FOUND 404, IT COULD JUST CLOSE THE CONNECTION AND STOP
+	// parsePath(_data.getHttpPath());	// IF FILE NOT FOUND 404, IT COULD JUST CLOSE THE CONNECTION AND STOP
+	parsePath(_data.getHttpPath(), event);	// IF FILE NOT FOUND 404, IT COULD JUST CLOSE THE CONNECTION AND STOP
 
 	if (_data.getRequestContentLength() == 0){
 		std::cout << PUR << "     DONE PARSING\n" << RES;	// sleep(1);
@@ -250,7 +252,8 @@ void	Request::chooseMethod_StartAction(int fdClient) {
 
 
 
-void    Request::appendToRequest(const char *str, int fdClient) {
+// void    Request::appendToRequest(const char *str, int fdClient) {
+void    Request::appendToRequest(const char *str, struct kevent event) {
 	std::string 			chunk = std::string(str);
 	std::string				strToFind = "\r\n\r\n";
 	std::string::size_type	it;
@@ -263,7 +266,8 @@ void    Request::appendToRequest(const char *str, int fdClient) {
 		_data.setTemp(_data.getTemp() + chunk);
 
 		if ((it = _data.getTemp().find(strToFind)) != std::string::npos) {
-			parseHeaderAndPath(tmpHeader, fdClient, it);
+			// parseHeaderAndPath(tmpHeader, fdClient, it);
+			parseHeaderAndPath(tmpHeader, event, it);
 			std::cout << PUR << "Found header ending /r/n, maybe there is body\n" << RES;
 			appendLastChunkToBody(it + strToFind.length());
 		}
@@ -273,7 +277,8 @@ void    Request::appendToRequest(const char *str, int fdClient) {
 		if (_hasBody == true)
 			appendToBody(chunk);
 		if (_doneParsing == true)	
-			chooseMethod_StartAction(fdClient);
+			chooseMethod_StartAction(event.ident);
+			// chooseMethod_StartAction(fdClient);
 	}
 }
 

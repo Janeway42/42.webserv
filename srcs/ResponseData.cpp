@@ -20,6 +20,9 @@ ResponseData::ResponseData(void) {
 
 ResponseData::~ResponseData(void) {}
 
+
+
+
 // ---------------------------------------------------------------------------- set functions
 // ------------------------------------------------------------------------------------------
 
@@ -31,45 +34,61 @@ void ResponseData::setResponse(struct kevent& event) {
 	Request *storage = (Request *)event.udata;	
 	_responseHeader += setResponseStatus(event);
 
+	std::string serverRootFolder = storage->getServerData().getRootDirectory();
+	if (serverRootFolder.substr(0, 2) == "./") {
+		//std::cout << YEL " ...... yes ./ found in root name\n" << RES;
+		serverRootFolder.erase(0, 2);
+		//std::cout << YEL " ...... erased: [" << serverRootFolder << "]\n" << RES;
+	}
+
+
 	// IF THE PATH IS A FOLDER, THIS FUNCTION NEEDS TO CHECK IF THERE IS A DEFAULT INDEX FILE PRESENT,
 	// IF NOT, THEN CHECK IF AUTOINDEX IS ON,
 	// 			IF YES, SEND HTML WITH FOLDER CONTENT
 	//			IF NOT, SEND ERROR PAGE, NOT ALLOWED ?
 	if (storage->getRequestData().getIsFolder() == true) {
 		std::cout << YEL "The Path is a folder: check for a default index file and/or autoindex on/off\n" << RES;
+		std::cout << YEL "           Stored server root folder: [" << storage->getServerData().getRootDirectory() << "]\n" RES;
+	//	std::cout << YEL "          local var. for root folder: [" << serverRootFolder << "]\n" RES;
+	//	std::cout << YEL "                             getPath: [" << storage->getRequestData().getPath() << "]\n" RES;
+
 		//if (storage->getRequestData().getRequestContentType().compare("text/html") == 0) {		// IF FOLDER, THE CONT. TYPE SHOULD BE text.html
 			
-			// IF PATH IS THE ROOT "./"
-			if (storage->getRequestData().getPath() == "./") {
-				std::cout << YEL "          The Path is the root: [" << storage->getRequestData().getPath() << "]\n" RES;
-				_responsePath = storage->getRequestData().getPath();
-				_responsePath.append(storage->getServerData().getIndexFile());
+			// IF PATH IS THE SERVER ROOT "./"  (  ./resources/  )
+			if (storage->getRequestData().getPath() == ("./" + serverRootFolder)) {		// The path matches the server root
+				std::cout << YEL "                The Path is the root: [" << storage->getRequestData().getPath() << "]\n" RES;
+				_responsePath = storage->getServerData().getIndexFile();	// It is already stored as the whole path: ./resources/index.html
+				std::cout << YEL "                       _responsePath: [" << _responsePath << "]\n" RES;
 			}
-
 			// IF PATH IS A FOLDER INSIDE THE ROOT FOLDER
 			else {
 				std::cout << YEL "          The Path is a folder inside the root: [" << storage->getRequestData().getPath() << "]\n" RES;
-
 
 				// Here it should compare the path with available locations.
 				// If a location is valid in the config file, then take the default index file inside that location
 				// and append the filename after the path.
 				std::vector<ServerLocation> location_data_vector = storage->getServerData().getLocationBlocks();
-				for (size_t i = 0; i < location_data_vector.size(); i++) {
-                    std::cout << GRE "   ... location uri: [" << location_data_vector[i].getLocationPath() << "]\n";
+				size_t i;
+				for (i = 0; i < location_data_vector.size(); i++) {
+                    std::cout << GRE "   ........ location uri: [" << location_data_vector[i].getLocationPath() << "]\n";
                     std::cout << GRE "   ... location root dir: [" << location_data_vector[i].getRootDirectory() << "]\n";
-					if (storage->getRequestData().getPath() == location_data_vector[i].getRootDirectory()) {// TODO here it should be getLocationPath() ?? talk to joyce
-						_responsePath = location_data_vector[i].getRootDirectory();
-						_responsePath.append(storage->getRequestData().getPath());
-						_responsePath.append("/autoindex_dummy.html");
+                    std::cout << GRE "   ....... _responsePath: [" << _responsePath << "]\n";
+					if (location_data_vector[i].getRootDirectory() == _responsePath) {// TODO here it should be getLocationPath() ?? talk to joyce
+						_responsePath = location_data_vector[i].getIndexFile();
+                    	std::cout << BLU "   ....... FinalPath: [" << _responsePath << "]\n";
 					}
 				}
+				// if (i == location_data_vector.size()) {
+                //     std::cout << RED "This path exists but does not match any location: [" << _responsePath << "]\n";
+				// 	storage->setError(404);
+				// }
 			}
 
 
 			_responseBody = streamFile(_responsePath);
-			std::cout << YEL "          response path for autoindex_dummy: [" << _responsePath << "]\n" RES;
-			std::cout << YEL "          content type should now be text/html: [" << storage->getRequestData().getRequestContentType() << RES "]\n";
+			std::cout << YEL "                              getError(): [" << storage->getError() << "]\n" RES;
+			std::cout << YEL "                           response path: [" << _responsePath << "]\n" RES;
+			std::cout << YEL "    content type should now be text/html: [" << storage->getRequestData().getRequestContentType() << RES "]\n";
 		//}
 	}
 	// IF NOT A FOLDER
@@ -113,7 +132,7 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
 						"Content-Type: text/html\n";
 			(storage->getResponseData()).setResponsePath("resources/error_pages/400BadRequest.html");
 			break;
-		case 2:
+		case 404:
 			status = "HTTP/1.1 404 Not Found\n"
 						"Content-Type: text/html\n";
 			(storage->getResponseData()).setResponsePath("resources/error_pages/404NotFound.html");

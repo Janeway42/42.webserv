@@ -152,12 +152,13 @@ void WebServer::readRequest(struct kevent& event)
 	
 		else if (storage->getDone() == false)
 		{
-			storage->appendToRequest(buffer, event.ident);
+			// storage->appendToRequest(buffer, event.ident);
+			storage->appendToRequest(buffer, event);
 
 			if (storage->getError() != 0 || storage->getDone() == true)
 			{
 				if (storage->getError() != 0)
-					std::cout << "error parsing - sending response - failure\n";
+					std::cout << "error parsing - sending response - failure, error " << storage->getError() << "\n";
 				else if (storage->getDone() == true)
 					std::cout << "done parsing - sending response - success\n";
 

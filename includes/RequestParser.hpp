@@ -46,7 +46,8 @@ class Request : public Parser {
     
 
 
-        void        parseHeaderAndPath(std::string & tmpHeader, int fdClient, std::string::size_type it);
+        // void        parseHeaderAndPath(std::string & tmpHeader, int fdClient, std::string::size_type it);
+        void        parseHeaderAndPath(std::string & tmpHeader, struct kevent event, std::string::size_type it);
         int 		appendLastChunkToBody(std::string::size_type it);
         int 		appendToBody(std::string request);
         void	    chooseMethod_StartAction(int fdClient);
@@ -66,8 +67,10 @@ class Request : public Parser {
 
         /** Methods */
         void    							parseHeader(std::string header);
-        int									parsePath(std::string str);
-        void    							appendToRequest(const char *str, int fdClient);
+        // int									parsePath(std::string str); 
+        int									parsePath(std::string str, struct kevent event);
+        // void    							appendToRequest(const char *str, int fdClient);
+        void    							appendToRequest(const char *str, struct kevent event);
         void								storeBody(std::istringstream &iss);
         // std::map<std::string, std::string>	storeFormData(std::string & pq);
         std::map<std::string, std::string>	storeFormData(std::string pq);
