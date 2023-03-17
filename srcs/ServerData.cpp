@@ -1,11 +1,12 @@
-#include <arpa/inet.h>
-
 #include "ServerData.hpp"
+
 // ---- kqueue ----
 #include <sys/socket.h>
 #include <netdb.h>
 #include <fcntl.h>
 #include <sys/event.h>
+
+#include <arpa/inet.h>
 
 /** Default constructor */
 ServerData::ServerData()
@@ -14,12 +15,11 @@ ServerData::ServerData()
     _listens_to("80"),
     _ip_address("127.0.0.1"),
     _root_directory("./" + _server_name),
-    _index_file(_root_directory + "/" + "index.html"),
+    _index_file("index.html"),
     _client_max_body_size(1024),
     _error_page(""),
     _port_redirection(0) {
     std::cout << PUR << "ServerData Default constructor" << RES << std::endl;
-//    _location_data_vector.push_back(ServerLocation(_root_directory, _index_file));//TODO WILL IT CALL THE ServerLocation CONSTRUCTOR???
 }
 
 /** Copy constructor */
@@ -50,10 +50,6 @@ ServerData::~ServerData() {
 //    _location_data_vector = std::vector<ServerLocation>();//TODO WILL IT CALL THE ServerLocation CONSTRUCTOR???
     std::cout << PUR << "ServerData Destructor" << RES << std::endl;
 }
-
-/** #################################### Methods #################################### */
-
-
 
 /** #################################### Getters #################################### */
 
@@ -110,11 +106,11 @@ static bool isServerNameValid(int ch) {
     return false;
 }
 
-bool ServerData::setServerName(std::string const & name) {
+bool ServerData::setServerName(std::string const & serverName) {
     /* not mandatory | default: localhost */
-    if (not name.empty()) {
-        if (std::all_of(name.begin(), name.end(), isServerNameValid)) {
-            _server_name = name;
+    if (not serverName.empty()) {
+        if (std::all_of(serverName.begin(), serverName.end(), isServerNameValid)) {
+            _server_name = serverName;
             return true;
         } else {
             throw ParserException(CONFIG_FILE_ERROR("server_name", NOT_SUPPORTED));
@@ -215,12 +211,12 @@ bool ServerData::setIpAddress(std::string const & ip) {
 //    _ip_address = ip;
 }
 
-bool ServerData::setRootDirectory(std::string const & root_dir) {
+bool ServerData::setRootDirectory(std::string const & rootDirectory) {
     /* not mandatory | default: ./$server_name */
-    if (not root_dir.empty()) {
-        PathType type = pathType(root_dir);
+    if (not rootDirectory.empty()) {
+        PathType type = pathType(rootDirectory);
         if (type == DIRECTORY) {
-            _root_directory = addCurrentDirPath(root_dir) + root_dir;
+            _root_directory = addCurrentDirPath(rootDirectory) + rootDirectory;
             return true;
         } else if (type == PATH_TYPE_ERROR) {
             throw ParserException(CONFIG_FILE_ERROR("root_directory", MISSING));
@@ -231,12 +227,12 @@ bool ServerData::setRootDirectory(std::string const & root_dir) {
     return false;
 }
 
-bool ServerData::setIndexFile(std::string const & idx_file) {
+bool ServerData::setIndexFile(std::string const & indexFile) {
     /* not mandatory | default: $root_directory/index.html */
-    if (not idx_file.empty()) {
-        std::string indexFile = isPath(_root_directory, idx_file);
-        if (pathType(indexFile) == REG_FILE) {
-            _index_file = addCurrentDirPath(indexFile) + indexFile;
+    if (not indexFile.empty()) {
+        std::string index_file = addRootDirectoryPath(_root_directory, indexFile);
+        if (pathType(index_file) == REG_FILE) {
+            _index_file = addCurrentDirPath(index_file) + index_file;
             return true;
         } else {
             throw ParserException(CONFIG_FILE_ERROR("index_file", NOT_SUPPORTED));
@@ -245,13 +241,13 @@ bool ServerData::setIndexFile(std::string const & idx_file) {
     return false;
 }
 
-bool ServerData::setClientMaxBodySize(std::string const & body_size) {
+bool ServerData::setClientMaxBodySize(std::string const & bodySize) {
     /* not mandatory | default: 1024 (1KB) -> Max: INT_MAX (2GB) */
-    if (not body_size.empty()) {
+    if (not bodySize.empty()) {
         try {
-            unsigned int const & bodySize = std::strtol(body_size.c_str(), nullptr, 10);
-            if (bodySize <= INT32_MAX) {
-                _client_max_body_size = bodySize;
+            unsigned int const & body_size = std::strtol(bodySize.c_str(), nullptr, 10);
+            if (body_size <= INT32_MAX) {
+                _client_max_body_size = body_size;
                 return true;
             } else {
                 throw ParserException(CONFIG_FILE_ERROR("client_max_body_size", NOT_SUPPORTED));
@@ -263,12 +259,12 @@ bool ServerData::setClientMaxBodySize(std::string const & body_size) {
     return false;
 }
 
-bool ServerData::setErrorPage(std::string const & err_page) {
+bool ServerData::setErrorPage(std::string const & errorPage) {
     /* not mandatory | default: empty, no set error page, webserver will decide */
-    if (not err_page.empty()) {
-        std::string errorPage = isPath(_root_directory, err_page);
-        if (pathType(errorPage) == REG_FILE) {
-            _error_page = addCurrentDirPath(errorPage) + errorPage;
+    if (not errorPage.empty()) {
+        std::string error_page = addRootDirectoryPath(_root_directory, errorPage);
+        if (pathType(error_page) == REG_FILE) {
+            _error_page = addCurrentDirPath(error_page) + error_page;
             return true;
         } else {
             throw ParserException(CONFIG_FILE_ERROR("error_page", NOT_SUPPORTED));
@@ -277,15 +273,15 @@ bool ServerData::setErrorPage(std::string const & err_page) {
     return false;
 }
 
-bool ServerData::setPortRedirection(std::string const & port_redir) {
+bool ServerData::setPortRedirection(std::string const & portRedirection) {
     /* not mandatory | default: zero, no redirection */
-    if (not port_redir.empty()) {
-        unsigned int portRedirection = std::strtol(port_redir.c_str(), nullptr, 10);
-        if (port_redir != _listens_to &&
-            (portRedirection == 80 || portRedirection == 591 || portRedirection == 8008 || portRedirection == 8080 ||
-                    portRedirection >= 49152)) {// todo:: add 65536 as acceptable? then change form short to int?
+    if (not portRedirection.empty()) {
+        unsigned int port_redirection = std::strtol(portRedirection.c_str(), nullptr, 10);
+        if (portRedirection != _listens_to &&
+            (port_redirection == 80 || port_redirection == 591 || port_redirection == 8008 || port_redirection == 8080 ||
+                    port_redirection >= 49152)) {// todo:: add 65536 as acceptable? then change form short to int?
             /* No need to check port < 65536 since port is an unsigned short already */
-            _port_redirection = portRedirection;
+            _port_redirection = port_redirection;
             return true;
         } else {
             throw ParserException(CONFIG_FILE_ERROR("port_redirection", NOT_SUPPORTED));

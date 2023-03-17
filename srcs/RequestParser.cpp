@@ -37,7 +37,7 @@ Request::Request() {
 
     _headerDone = false;
     _doneParsing = false;
-    _errorRequest = false;
+    _errorRequest = NO_STATUS;
     _hasBody = false;
 }
 
@@ -51,7 +51,7 @@ Request::Request(int fd, ServerData *specificServer) {
 
 	_headerDone = false;
 	_doneParsing = false;
-	_errorRequest = false;
+	_errorRequest = NO_STATUS;
 	_hasBody = false;
 }
 
@@ -153,7 +153,7 @@ int Request::storeWordsFromFirstLine(std::string firstLine) {
 			if (*iter != "HTTP/1.1" && *iter != "HTTP/1.0")	{	// maybe also HTTP/1.0 needed ??
 				// TODO: SET CORRECT STATUS ERROR
 				std::cout << RED << "Error: wrong http version\n" << RES;
-				_errorRequest = true;
+				_errorRequest = HTTP_VERSION_NOT_SUPPORTED;
 			}
 			_data.setHttpVersion(*iter);
 		}
@@ -206,6 +206,7 @@ int Request::storeWordsFromOtherLine(std::string otherLine) {
 
 // void Request::parseHeaderAndPath(std::string & tmpHeader, int fdClient, std::string::size_type it) {
 void Request::parseHeaderAndPath(std::string & tmpHeader, struct kevent event, std::string::size_type it) {
+    std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
 	//(void)fdClient; // maybe will be needed
 	_hasBody = true;
 	tmpHeader = _data.getHeader();
@@ -218,11 +219,10 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, struct kevent event, s
 	parsePath(_data.getHttpPath(), event);	// IF FILE NOT FOUND 404, IT COULD JUST CLOSE THE CONNECTION AND STOP
 
 	if (_data.getRequestContentLength() == 0){
-		std::cout << PUR << "     DONE PARSING\n" << RES;	// sleep(1);
 		if (_data.getRequestMethod() == "GET" && _data.getQueryString() != "")
 			; //callCGI(getRequestData(), fdClient); // moved to chooseMethod_StartAction()
 		_doneParsing = true;
-	}
+    }
 }
 
 
@@ -289,7 +289,7 @@ int Request::appendLastChunkToBody(std::string::size_type it) {
 	_data.setBody(_data.getTemp().substr(it));
 	if (_data.getBody().length() > _data.getRequestContentLength()) {   // Compare body length
 		std::cout << RED << "Error: Body-Length (" << _data.getBody().length() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;
-		_errorRequest = true;
+		_errorRequest = I_AM_A_TEAPOT;
 		return (1);
 	}
 	if (_data.getBody().length() == _data.getRequestContentLength()) {
@@ -327,7 +327,7 @@ int Request::appendToBody(std::string req) {
 	
 	if (_data.getBody().length() > _data.getRequestContentLength()) {		// Compare body lenght
 		std::cout << RED << "Error: Body-Length (" << _data.getBody().length() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;// sleep(2);
-		_errorRequest = true;
+		_errorRequest = I_AM_A_TEAPOT;
 		return (1);
 	}
 	else if (_data.getBody().length() == _data.getRequestContentLength()) {
@@ -373,7 +373,7 @@ bool Request::getDone()
 	return (_doneParsing);
 }
 
-int Request::getError()
+HttpStatus Request::getError()
 {
 	return (_errorRequest);
 }
@@ -390,7 +390,7 @@ void Request::setDone(bool val)
 	_doneParsing = val;
 }
 
-void Request::setError(bool val)
+void Request::setError(HttpStatus val)
 {
 	_errorRequest = val;
 }
