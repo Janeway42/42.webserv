@@ -88,9 +88,9 @@ void Request::parseHeader(std::string header) {
 	std::string lineContent;
 	int i = 0;
 
-	std::istringstream iss(header);
+	std::istringstream is(header);
 
-	while (std::getline(iss, lineContent)) {
+	while (std::getline(is, lineContent)) {
 		if (i == 0) {								// FIRST LINE HEADER
 			storeWordsFromFirstLine(lineContent);
 		} else if (i > 0 && lineContent != "\r") {	// OTHER HEADER LINES
@@ -99,7 +99,7 @@ void Request::parseHeader(std::string header) {
 		} else if (i > 0 && lineContent == "\r") {	// Not sure if this \r is 100% good
 			// START READING BODY
 			//	std::cout << YEL << "Found end of header block, begin of Body\n" << RES;
-			storeBody(iss);
+			storeBody(is);
 			break ;
 		}
 		i++;
@@ -207,7 +207,6 @@ int Request::storeWordsFromOtherLine(std::string otherLine) {
 // void Request::parseHeaderAndPath(std::string & tmpHeader, int fdClient, std::string::size_type it) {
 void Request::parseHeaderAndPath(std::string & tmpHeader, struct kevent event, std::string::size_type it) {
     std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
-	//(void)fdClient; // maybe will be needed
 	_hasBody = true;
 	tmpHeader = _data.getHeader();
 	tmpHeader.append(_data.getTemp().substr(0, it));
@@ -215,6 +214,7 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, struct kevent event, s
 	_headerDone = true;
 	//std::cout << "HEADER: [" << BLU << _header << RES "]\n";	// sleep(1);
 	parseHeader(_data.getHeader());
+	std::cout << RED "server root path: " << getServerData().getRootDirectory() << "\n"RES;
 	// parsePath(_data.getHttpPath());	// IF FILE NOT FOUND 404, IT COULD JUST CLOSE THE CONNECTION AND STOP
 	parsePath(_data.getHttpPath(), event);	// IF FILE NOT FOUND 404, IT COULD JUST CLOSE THE CONNECTION AND STOP
 

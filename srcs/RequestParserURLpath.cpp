@@ -380,7 +380,7 @@ static void printPathParts(std::string str, RequestData reqData) {
 	std::cout << "\n";
 }
 
-int checkIfPathExists(const std::string& path, struct kevent event) {
+static int checkIfPathExists(const std::string& path, struct kevent event) {
 	
 	(void)event;
 	std::cout << GRN << "Start CheckIfFIleExists(), path [" << path << "] \n" << RES;
