@@ -232,7 +232,7 @@ bool ServerData::setIndexFile(std::string const & indexFile) {
     if (not indexFile.empty()) {
         std::string index_file = addRootDirectoryPath(_root_directory, indexFile);
         if (pathType(index_file) == REG_FILE) {
-            _index_file = addCurrentDirPath(index_file) + index_file;
+            _index_file = indexFile;
             return true;
         } else {
             throw ParserException(CONFIG_FILE_ERROR("index_file", NOT_SUPPORTED));
