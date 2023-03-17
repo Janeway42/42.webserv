@@ -40,7 +40,7 @@ class Request : public Parser {
 
         bool		_headerDone;
         bool		_doneParsing;
-        HttpStatus 	_errorRequest;
+        HttpStatus 	_httpStatus;
         bool 		_hasBody;
         ServerData  _server;
     
@@ -90,12 +90,12 @@ class Request : public Parser {
 
 		// getters 
         bool getDone();
-        HttpStatus getError();
+        HttpStatus getHttpStatus();
 		int getFdClient();
 
 		// setters
         void setDone(bool val);
-        void setError(HttpStatus val);
+        void setHttpStatus(HttpStatus val);
 
 
     //	std::string getTemp();	moved to RequestData

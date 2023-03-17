@@ -80,13 +80,13 @@ void ResponseData::setResponse(struct kevent& event) {
 				}
 				// if (i == location_data_vector.size()) {
                 //     std::cout << RED "This path exists but does not match any location: [" << _responsePath << "]\n";
-				// 	storage->setError(NOT_FOUND);
+				// 	storage->setHttpStatus((NOT_FOUND);
 				// }
 			}
 
 
 			_responseBody = streamFile(_responsePath);
-			std::cout << YEL "                              getError(): [" << storage->getError() << "]\n" RES;// todo JOYCE map enums to strings
+			std::cout << YEL "                              getHttpStatus(): [" << storage->getHttpStatus() << "]\n" RES;// todo JOYCE map enums to strings
 			std::cout << YEL "                           response path: [" << _responsePath << "]\n" RES;
 			std::cout << YEL "    content type should now be text/html: [" << storage->getRequestData().getRequestContentType() << RES "]\n";
 		//}
@@ -125,7 +125,7 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
 
 	std::string fileType = storage->getRequestData().getRequestContentType();
 
-	switch (storage->getError())
+	switch (storage->getHttpStatus())
 	{
 		case 400:
 			status = "HTTP/1.1 400 Bad Request\n"
