@@ -98,9 +98,9 @@ void WebServer::handleTimeout(struct kevent &event)
 {
 	Request *storage = (Request *)event.udata;
 
-	if (storage->getError() == NO_STATUS && storage->getDone() != true)  // this is just for extra precaution
+	if (storage->getHttpStatus() == NO_STATUS && storage->getDone() != true)  // this is just for extra precaution
 	{
-		storage->setError(REQUEST_TIMEOUT);
+		storage->setHttpStatus(REQUEST_TIMEOUT);
 		std::cout << "Unable to process, it takes too long\n";
 		addFilter(event.ident, event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE - handle timeout");
 	}
@@ -118,7 +118,7 @@ void WebServer::readRequest(struct kevent& event)
 		if (ret < 0)
 		{
 			std::cout << "failed recv in pipe from cgi\n";
-			storage->setError(INTERNAL_SERVER_ERROR);
+			storage->setHttpStatus(INTERNAL_SERVER_ERROR);
 			storage->getResponseData().setResponse(event);
 			addFilter(storage->getFdClient(), event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, ret < 0 on _fd_out[0]");  //  this allows client write 
 			removeFilter(event, EVFILT_READ, "failed kevent EV_DELETE, EVFILT_READ, ret < 0 on _fd_out[0]"); // this removes the pipe fd 
@@ -154,10 +154,10 @@ void WebServer::readRequest(struct kevent& event)
 			// storage->appendToRequest(buffer, event.ident);
 			storage->appendToRequest(buffer, event);
 
-			if (storage->getError() != NO_STATUS || storage->getDone() == true)
+			if (storage->getHttpStatus() != NO_STATUS || storage->getDone() == true)
 			{
-				if (storage->getError() != NO_STATUS)
-					std::cout << "error parsing - sending response - failure, error " << storage->getError() << "\n";// TODO JOYCE MAP ENUM TO STRING
+				if (storage->getHttpStatus() != NO_STATUS)
+					std::cout << "error parsing - sending response - failure, error " << storage->getHttpStatus() << "\n";// TODO JOYCE MAP ENUM TO STRING
 				else if (storage->getDone() == true) {
                     std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
                     std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Sending response ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
@@ -183,7 +183,7 @@ void WebServer::sendResponse(struct kevent& event)
 		ssize_t ret = write(storage->getCgiData().getPipeCgiIn(), buffer.c_str(), buffer.length());
 		if (ret == -1)
 		{
-			storage->setError(INTERNAL_SERVER_ERROR);
+			storage->setHttpStatus(INTERNAL_SERVER_ERROR);
 			storage->getResponseData().setResponse(event);
 			addFilter(storage->getFdClient(), event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, ret = -1 on _fd_in[1]");    //  this allows client write 
 			removeFilter(event, EVFILT_WRITE, "failed kevent, EV_DELETE, EVFILT_WRITE failure on _fd_in[1]");  // this removes the pipe fd _fd_in[1]
@@ -387,7 +387,7 @@ std::string WebServer::streamFile(std::string file)
 // 	headerBlock = 	"HTTP/1.1 200 OK\n"
 // 					"Content-Type: text/html\n";
 // 					// "Content-Type: image/png\n";
-// 	if (storage->getError() == NOT_FOUND)
+// 	if (storage->getHttpStatus() == NOT_FOUND)
 // 		headerBlock = 	"HTTP/1.1 404 Not Found\n"
 // 						"Content-Type: text/html\n";
 // 	headerBlock.append(contentLen);

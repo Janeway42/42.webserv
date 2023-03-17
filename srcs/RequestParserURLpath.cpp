@@ -415,7 +415,7 @@ int checkIfPathExists(const std::string& path, struct kevent event) {
 	// }
 	// if (i == location_data_vector.size()) {
 	// 	std::cout << RED "This path exists but does not match any location: [" << path << "]\n";
-	// 	storage->setError(NOT_FOUND);
+	// 	storage->setHttpStatus(NOT_FOUND);
 	// }
 
 	return 0;
@@ -484,7 +484,7 @@ int Request::parsePath(std::string str, struct kevent event) {
 	ret = checkIfPathExists(_data.getPath(), event);
 	if (ret != 0)	{ // What in case of root only "/"  ???
 		std::cout << RED << "ret " << ret << ", file not found, should set error to 404)\n" << RES;
-		setError(NOT_FOUND);
+        setHttpStatus(NOT_FOUND);
 		return (NOT_FOUND);
 	}
 

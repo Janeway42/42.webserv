@@ -8,7 +8,7 @@
 
 ==15483==ERROR: AddressSanitizer: heap-use-after-free on address 0x618000000722 at pc 0x00010ea53e2b bp 0x7ffee11fb2c0 sp 0x7ffee11fb2b8
 READ of size 1 at 0x618000000722 thread T0
-    #0 0x10ea53e2a in Request::getError() RequestParser.cpp:357
+    #0 0x10ea53e2a in Request::getHttpStatus() RequestParser.cpp:357
     #1 0x10ea9b952 in WebServer::handleTimeout(kevent&) WebServer.cpp:108
     #2 0x10ea99e76 in WebServer::runServer() WebServer.cpp:68
     #3 0x10eaabc80 in main Kqueue_main.cpp:13
@@ -30,7 +30,7 @@ previously allocated by thread T0 here:
     #3 0x10eaabc80 in main Kqueue_main.cpp:13
     #4 0x7fff6ae303d4 in start (libdyld.dylib:x86_64+0x163d4)
 
-SUMMARY: AddressSanitizer: heap-use-after-free RequestParser.cpp:357 in Request::getError()
+SUMMARY: AddressSanitizer: heap-use-after-free RequestParser.cpp:357 in Request::getHttpStatus()
 Shadow bytes around the buggy address:
   0x1c3000000090: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
   0x1c30000000a0: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd

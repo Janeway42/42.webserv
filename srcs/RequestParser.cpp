@@ -25,7 +25,7 @@ DELETE http://api.example.com/employee/1
 
 // MAYBE THE SANITIZER ERROR HAPPENS BECAUSE WE TRY TO ACCESS MEMBERS OF THIS CLASS WHEN WE INSTANTIATE IT USING THE
 // UDATA BUT WE HAD MADE THE CONSTRUCTOR OVERLOADED AND DELETED THE DEFAULT ONE SO I IT WAS PROBABLY CALLING A COMPILER
-// DEFAULT CONSTRUCTOR THAT MAYBE WAS NOT INITIALIZING ANY VARIABLE, SO WHEN Request::getError() HAPPENED, _errorRequest
+// DEFAULT CONSTRUCTOR THAT MAYBE WAS NOT INITIALIZING ANY VARIABLE, SO WHEN Request::getHttpStatus() HAPPENED, _httpStatus
 // WAS NOT EVEN INITIALIZED TO ZERO !? lets see if it stops after this default constructor was added
 /** Default constructor */
 Request::Request() {
@@ -37,7 +37,7 @@ Request::Request() {
 
     _headerDone = false;
     _doneParsing = false;
-    _errorRequest = NO_STATUS;
+    _httpStatus = NO_STATUS;
     _hasBody = false;
 }
 
@@ -51,7 +51,7 @@ Request::Request(int fd, ServerData *specificServer) {
 
 	_headerDone = false;
 	_doneParsing = false;
-	_errorRequest = NO_STATUS;
+    _httpStatus = NO_STATUS;
 	_hasBody = false;
 }
 
@@ -153,7 +153,7 @@ int Request::storeWordsFromFirstLine(std::string firstLine) {
 			if (*iter != "HTTP/1.1" && *iter != "HTTP/1.0")	{	// maybe also HTTP/1.0 needed ??
 				// TODO: SET CORRECT STATUS ERROR
 				std::cout << RED << "Error: wrong http version\n" << RES;
-				_errorRequest = HTTP_VERSION_NOT_SUPPORTED;
+                _httpStatus = HTTP_VERSION_NOT_SUPPORTED;
 			}
 			_data.setHttpVersion(*iter);
 		}
@@ -289,7 +289,7 @@ int Request::appendLastChunkToBody(std::string::size_type it) {
 	_data.setBody(_data.getTemp().substr(it));
 	if (_data.getBody().length() > _data.getRequestContentLength()) {   // Compare body length
 		std::cout << RED << "Error: Body-Length (" << _data.getBody().length() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;
-		_errorRequest = I_AM_A_TEAPOT;
+        _httpStatus = I_AM_A_TEAPOT;
 		return (1);
 	}
 	if (_data.getBody().length() == _data.getRequestContentLength()) {
@@ -327,7 +327,7 @@ int Request::appendToBody(std::string req) {
 	
 	if (_data.getBody().length() > _data.getRequestContentLength()) {		// Compare body lenght
 		std::cout << RED << "Error: Body-Length (" << _data.getBody().length() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;// sleep(2);
-		_errorRequest = I_AM_A_TEAPOT;
+        _httpStatus = I_AM_A_TEAPOT;
 		return (1);
 	}
 	else if (_data.getBody().length() == _data.getRequestContentLength()) {
@@ -373,9 +373,9 @@ bool Request::getDone()
 	return (_doneParsing);
 }
 
-HttpStatus Request::getError()
+HttpStatus Request::getHttpStatus()
 {
-	return (_errorRequest);
+	return (_httpStatus);
 }
 
 int Request::getFdClient()
@@ -390,7 +390,7 @@ void Request::setDone(bool val)
 	_doneParsing = val;
 }
 
-void Request::setError(HttpStatus val)
+void Request::setHttpStatus(HttpStatus val)
 {
-	_errorRequest = val;
+    _httpStatus = val;
 }
