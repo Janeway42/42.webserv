@@ -24,13 +24,13 @@ std::string Parser::keyParser(std::string & lineContent, std::string const & key
 PathType Parser::pathType(std::string const & path) {
     struct stat	buffer = {};
 
-    /* The & operator computes the logical AND of its operands. The result of x & y is true if both x and y
-     * evaluate to true. Otherwise, the result is false */
-    DIR* dir = opendir(path.c_str());
+    DIR* dir = opendir(path.c_str());// could also use the std::ifstream and then use the .is_open()
     if (stat(path.c_str(), &buffer) == 0) {
         if (buffer.st_mode & S_IFREG) {
             return (REG_FILE);
         } else if (buffer.st_mode & S_IFDIR || dir != NULL) {
+            /* The & operator computes the logical AND of its operands. The result of x & y is true if
+             * both x and y evaluate to true. Otherwise, the result is false */
             (void)closedir(dir);
             return (DIRECTORY);
         } else
@@ -46,9 +46,11 @@ std::string Parser::addCurrentDirPath(std::string const & fileOrDir) const {
     return std::string();
 }
 
-std::string Parser::isPath(std::string const & rootDirectory, std::string const & possiblePath) {
+std::string Parser::addRootDirectoryPath(std::string const & rootDirectory, std::string const & possiblePath) {
     std::string is_root_dir_or_has_path = possiblePath;
+    // If there is no / in the possiblePath, then it is not a path. It's either a file or directory name
     if (possiblePath.find('/') == std::string::npos) {
+        // Adding the rootDirectory path to the file or directory name
         std::string::size_type lastIndex = rootDirectory.size() - 1;
         if (rootDirectory[lastIndex] == '/') {
             is_root_dir_or_has_path = rootDirectory + possiblePath;

@@ -379,10 +379,6 @@ static void printPathParts(std::string str, RequestData reqData) {
 	std::cout << "\n";
 }
 
-
-
-
-
 int checkIfPathExists(const std::string& path, struct kevent event) {
 	
 	(void)event;
@@ -391,7 +387,7 @@ int checkIfPathExists(const std::string& path, struct kevent event) {
 	
 	std::ifstream file(path.c_str());
 
-	if (not file.is_open()) {		// ??? what is this syntax?
+	if (not file.is_open()) {		// ??? what is this syntax? -> joyce for cpp we can use not in the pace of ! for readability :)
 		std::cout << RED << "Error: File " << path << " not found\n" << RES;
 		return (404);
 	}
@@ -419,7 +415,7 @@ int checkIfPathExists(const std::string& path, struct kevent event) {
 	// }
 	// if (i == location_data_vector.size()) {
 	// 	std::cout << RED "This path exists but does not match any location: [" << path << "]\n";
-	// 	storage->setError(404);
+	// 	storage->setError(NOT_FOUND);
 	// }
 
 	return 0;
@@ -488,8 +484,8 @@ int Request::parsePath(std::string str, struct kevent event) {
 	ret = checkIfPathExists(_data.getPath(), event);
 	if (ret != 0)	{ // What in case of root only "/"  ???
 		std::cout << RED << "ret " << ret << ", file not found, should set error to 404)\n" << RES;
-		setError(404);
-		return (404);
+		setError(NOT_FOUND);
+		return (NOT_FOUND);
 	}
 
 	//Request *storage = (Request *)event.udata;	

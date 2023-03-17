@@ -50,15 +50,14 @@ class ServerData : public Parser {
         struct addrinfo* getAddr() const;
 
         /** Setters */
-        bool setServerName(std::string const & name);
+        bool setServerName(std::string const & serverName);
         bool setListensTo(std::string const & port);
         bool setIpAddress(std::string const & ip);
-        bool setRootDirectory(std::string const & root_dir);
-        bool setIndexFile(std::string const & idx_file);
-        bool setClientMaxBodySize(std::string const & body_size);
-        bool setErrorPage(std::string const & err_page);
-        bool setPortRedirection(std::string const & port_redir);
-//        void addToLocationVector(std::vector<ServerLocation> const & location_data);
+        bool setRootDirectory(std::string const & rootDirectory);
+        bool setIndexFile(std::string const & indexFile);
+        bool setClientMaxBodySize(std::string const & bodySize);
+        bool setErrorPage(std::string const & errorPage);
+        bool setPortRedirection(std::string const & portRedirection);
         void setListeningSocket();
 
         class ServerDataException: public std::exception {

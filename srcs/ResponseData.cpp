@@ -80,13 +80,13 @@ void ResponseData::setResponse(struct kevent& event) {
 				}
 				// if (i == location_data_vector.size()) {
                 //     std::cout << RED "This path exists but does not match any location: [" << _responsePath << "]\n";
-				// 	storage->setError(404);
+				// 	storage->setError(NOT_FOUND);
 				// }
 			}
 
 
 			_responseBody = streamFile(_responsePath);
-			std::cout << YEL "                              getError(): [" << storage->getError() << "]\n" RES;
+			std::cout << YEL "                              getError(): [" << storage->getError() << "]\n" RES;// todo JOYCE map enums to strings
 			std::cout << YEL "                           response path: [" << _responsePath << "]\n" RES;
 			std::cout << YEL "    content type should now be text/html: [" << storage->getRequestData().getRequestContentType() << RES "]\n";
 		//}
@@ -127,7 +127,7 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
 
 	switch (storage->getError())
 	{
-		case 1:
+		case 400:
 			status = "HTTP/1.1 400 Bad Request\n"
 						"Content-Type: text/html\n";
 			(storage->getResponseData()).setResponsePath("resources/error_pages/400BadRequest.html");
@@ -137,20 +137,20 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
 						"Content-Type: text/html\n";
 			(storage->getResponseData()).setResponsePath("resources/error_pages/404NotFound.html");
 			break;
-		case 3:
+		case 405:
 			status = "HTTP/1.1 405 Method Not Allowed\n"
 						"Content-Type: text/html\n";
 			(storage->getResponseData()).setResponsePath("resources/error_pages/405MethodnotAllowed.html");
 			break;
-		case 4:
+		case 408:
 			status = "HTTP/1.1 408 Request Timeout\n"
 						"Content-Type: text/html\n";
 			(storage->getResponseData()).setResponsePath("resources/error_pages/408RequestTimeout.html");
 			break;
-		case 5:
+		case 500:
 			status = "HTTP/1.1 500 Internal Server Error";
 			(storage->getResponseData()).setResponsePath("resources/error_pages/500InternarServerError.html");
-		case 6:
+		case 403:
 			status = "HTTP/1.1 403 Forbidden";
 			(storage->getResponseData()).setResponsePath("resources/error_pages/403Forbidden.html");
 		default:

@@ -87,7 +87,7 @@ void ServerLocation::setLocationAsCgi(bool isCgi) {
 bool ServerLocation::setLocationPath(std::string const & locationPath) {
     /* not mandatory | if request contains an uri directory path, it can be made accessible by making it a location block */
     if (not locationPath.empty()) {
-        std::string location_path = isPath(_root_directory, locationPath);
+        std::string location_path = addRootDirectoryPath(_root_directory, locationPath);
         PathType type = pathType(location_path);
         if (type == DIRECTORY) {
             _location_path = addCurrentDirPath(location_path) + location_path;
@@ -151,12 +151,15 @@ bool ServerLocation::setAllowMethods(std::string const & allowMethods) {
 }
 
 bool ServerLocation::setIndexFile(std::string const & indexFile) {
-    /* not mandatory | default: $server.index_file */
+    /* not mandatory | default: index_file */
     /* cgi -> not mandatory | default: stays in the same html page */
     if (not indexFile.empty()) {
-        std::string index_file = isPath(_root_directory, indexFile);
+        std::string index_file = addRootDirectoryPath(_root_directory, indexFile);
         if (pathType(index_file) == REG_FILE) {
-            _index_file = addCurrentDirPath(index_file) + index_file;
+            /* if the index_file (with the root_directory added to it) exists and is a regular file, it can be added
+             * * to the _index_file private variable (without the root_directory added to it, since for a location, if
+             * * auto_index is on, this same index_file would be used for the subdirectories) */
+            _index_file = indexFile;
             return true;
         } else {
             throw ParserException(CONFIG_FILE_ERROR("index_file", NOT_SUPPORTED));
