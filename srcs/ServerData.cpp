@@ -222,6 +222,10 @@ void ServerData::setRootDirectory(std::string const & rootDirectory) {
 
 void ServerData::setIndexFile(std::string const & indexFile) {
     /* not mandatory | default: index.html */
+    if (indexFile.find('/') != std::string::npos) {
+        throw ParserException(CONFIG_FILE_ERROR("index_file", NOT_SUPPORTED));
+    }
+
     std::string index_file_copy = indexFile;
     if (indexFile.empty()) {
         index_file_copy = _index_file;
@@ -229,9 +233,6 @@ void ServerData::setIndexFile(std::string const & indexFile) {
     std::string index_file = addRootDirectoryPath(_root_directory, index_file_copy);
     // doesn't contain regexp (regular expressions), wildcards or full/relative path
     if (pathType(index_file) == REG_FILE) {
-        if (index_file_copy.find('/') != std::string::npos) {
-            throw ParserException(CONFIG_FILE_ERROR("index_file", NOT_SUPPORTED));
-        }
         _index_file = index_file_copy;
     }
 }

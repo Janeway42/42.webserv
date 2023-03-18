@@ -439,7 +439,7 @@ int Request::parsePath(std::string str, struct kevent event) {
 	if (path == "")
 		return (-1);
 	if (path[0] == '/' && path != "/")
-		path = getServerData().getRootDirectory();// + path; -> JOyce: I have commented out the + path part since it was not matching ./resources/server_root/ with ./resources/server_root for example
+		path = getServerData().getRootDirectory() + path;
 	if (path[0] == '/' && path == "/")
 		path = getServerData().getRootDirectory();
 	if (path[0] != '/')
