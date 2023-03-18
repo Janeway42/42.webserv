@@ -27,6 +27,9 @@ class ServerLocation : public Parser {
         explicit ServerLocation(std::string const & server_root_directory, std::string const & server_index_file);
         virtual ~ServerLocation();
 
+        /** Public variables */
+        bool useServerBlockIndexFile;
+
         /** Methods */
         bool isLocationCgi() const;
 
@@ -41,12 +44,12 @@ class ServerLocation : public Parser {
 
         /** Setters */
         void setLocationAsCgi(bool isCgi);
-        bool setLocationPath(std::string const & locationPath);
-        bool setRootDirectory(std::string const & rootDirectory);
-        bool setAllowMethods(std::string const & allowMethods);
-        bool setIndexFile(std::string const & indexFile);
-        bool setAutoIndex(std::string const & autoIndex);
-        bool setInterpreterPath(std::string const & interpreterPath);
-        bool setScriptExtension(std::string const & scriptExtension);
+        void setLocationPath(std::string const & locationPath);
+        void setRootDirectory(std::string const & rootDirectory);
+        void setAllowMethods(std::string const & allowMethods);
+        void setIndexFile(std::string const & indexFile);
+        void setAutoIndex(std::string const & autoIndex);
+        void setInterpreterPath(std::string const & interpreterPath);
+        void setScriptExtension(std::string const & scriptExtension);
 };
 #endif //SERVERLOCATION_HPP

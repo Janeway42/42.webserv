@@ -63,8 +63,8 @@ class RequestData {
 		size_t         	  getRequestContentLength() const;
 		const std::string getRequestContentType() const;
 
-		const std::string 							getPath( )const;
-		const std::string 							getPathFirstPart( )const;	// maybe not needed
+		const std::string 							getPath()const;
+		const std::string 							getPathFirstPart()const;	// maybe not needed
 		const std::string							getPathLastWord() const;	// maybe not needed
 		const std::string							getFileExtention() const;
 		bool										getIsFolder() const;

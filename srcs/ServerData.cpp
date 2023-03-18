@@ -14,7 +14,7 @@ ServerData::ServerData()
     : _server_name("localhost"),
     _listens_to("80"),
     _ip_address("127.0.0.1"),
-    _root_directory("./" + _server_name),
+    _root_directory(_server_name),
     _index_file("index.html"),
     _client_max_body_size(1024),
     _error_page(""),
@@ -47,7 +47,6 @@ ServerData::~ServerData() {
     _client_max_body_size = 0;
     _error_page.clear();
     _port_redirection = 0;
-//    _location_data_vector = std::vector<ServerLocation>();//TODO WILL IT CALL THE ServerLocation CONSTRUCTOR???
     std::cout << PUR << "ServerData Destructor" << RES << std::endl;
 }
 
@@ -106,17 +105,15 @@ static bool isServerNameValid(int ch) {
     return false;
 }
 
-bool ServerData::setServerName(std::string const & serverName) {
+void ServerData::setServerName(std::string const & serverName) {
     /* not mandatory | default: localhost */
     if (not serverName.empty()) {
         if (std::all_of(serverName.begin(), serverName.end(), isServerNameValid)) {
             _server_name = serverName;
-            return true;
         } else {
             throw ParserException(CONFIG_FILE_ERROR("server_name", NOT_SUPPORTED));
         }
     }
-    return false;
 }
 
 /* Available ports:
@@ -131,7 +128,7 @@ bool ServerData::setServerName(std::string const & serverName) {
  * port can be used instead).
  * https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml?search=http-alt
  */
-bool ServerData::setListensTo(std::string const & port) {
+void ServerData::setListensTo(std::string const & port) {
     /* not mandatory | default 80 */
     if (not port.empty()) {
         try {
@@ -140,7 +137,6 @@ bool ServerData::setListensTo(std::string const & port) {
                     listensToPort >= 49152) {// todo:: add 65536 as acceptable? then change form short to int?
                 /* No need to check port < 65536 since port is an unsigned short already */
                 _listens_to = port;
-                return true;
             } else {
                 throw ParserException(CONFIG_FILE_ERROR("listens_to", NOT_SUPPORTED));
             }
@@ -148,7 +144,6 @@ bool ServerData::setListensTo(std::string const & port) {
             throw ParserException(CONFIG_FILE_ERROR("listens_to", NOT_SUPPORTED));
         }
     }
-    return false;
 }
 
 /*
@@ -164,19 +159,19 @@ bool ServerData::setListensTo(std::string const & port) {
  *    This will ensure that the updated hosts file is used by the operating system.
  * After making these changes, you should be able to use the hostname or IP address you added to access the associated network resource on your Mac.
  */
-bool ServerData::setIpAddress(std::string const & ip) {
+void ServerData::setIpAddress(std::string const & ip) {
     /* not mandatory | default: 127.0.0.1 */
     if (not ip.empty()) {
         struct sockaddr_in sockAddr;
         if (inet_pton(AF_INET, ip.c_str(), &(sockAddr.sin_addr))) {
             _ip_address = ip;// TODO _ip_address = inet_addr(ip.c_str()); ???
-            return true;
+
         } else {
             throw ParserException(CONFIG_FILE_ERROR("ip_address", NOT_SUPPORTED));
         }
     }
-    return false;
-//    WTF? LOL
+
+//    WTF? LOL (I was trying to do my self first -  I will keep it comment out for now in case we can't use inet_pton
 //    std::string::size_type it;
 //    int dots_quantity = 0;
 //    int ip_chunk = 0;
@@ -211,44 +206,43 @@ bool ServerData::setIpAddress(std::string const & ip) {
 //    _ip_address = ip;
 }
 
-bool ServerData::setRootDirectory(std::string const & rootDirectory) {
+void ServerData::setRootDirectory(std::string const & rootDirectory) {
     /* not mandatory | default: ./$server_name */
     if (not rootDirectory.empty()) {
         PathType type = pathType(rootDirectory);
         if (type == DIRECTORY) {
             _root_directory = addCurrentDirPath(rootDirectory) + rootDirectory;
-            return true;
         } else if (type == PATH_TYPE_ERROR) {
             throw ParserException(CONFIG_FILE_ERROR("root_directory", MISSING));
         } else {
             throw ParserException(CONFIG_FILE_ERROR("root_directory", NOT_SUPPORTED));
         }
     }
-    return false;
 }
 
-bool ServerData::setIndexFile(std::string const & indexFile) {
-    /* not mandatory | default: $root_directory/index.html */
-    if (not indexFile.empty()) {
-        std::string index_file = addRootDirectoryPath(_root_directory, indexFile);
-        if (pathType(index_file) == REG_FILE) {
-            _index_file = indexFile;
-            return true;
-        } else {
+void ServerData::setIndexFile(std::string const & indexFile) {
+    /* not mandatory | default: index.html */
+    std::string index_file_copy = indexFile;
+    if (indexFile.empty()) {
+        index_file_copy = _index_file;
+    }
+    std::string index_file = addRootDirectoryPath(_root_directory, index_file_copy);
+    // doesn't contain regexp (regular expressions), wildcards or full/relative path
+    if (pathType(index_file) == REG_FILE) {
+        if (index_file_copy.find('/') != std::string::npos) {
             throw ParserException(CONFIG_FILE_ERROR("index_file", NOT_SUPPORTED));
         }
+        _index_file = index_file_copy;
     }
-    return false;
 }
 
-bool ServerData::setClientMaxBodySize(std::string const & bodySize) {
+void ServerData::setClientMaxBodySize(std::string const & bodySize) {
     /* not mandatory | default: 1024 (1KB) -> Max: INT_MAX (2GB) */
     if (not bodySize.empty()) {
         try {
             unsigned int const & body_size = std::strtol(bodySize.c_str(), nullptr, 10);
             if (body_size <= INT32_MAX) {
                 _client_max_body_size = body_size;
-                return true;
             } else {
                 throw ParserException(CONFIG_FILE_ERROR("client_max_body_size", NOT_SUPPORTED));
             }
@@ -256,24 +250,21 @@ bool ServerData::setClientMaxBodySize(std::string const & bodySize) {
             throw ParserException(CONFIG_FILE_ERROR("client_max_body_size", NOT_SUPPORTED));
         }
     }
-    return false;
 }
 
-bool ServerData::setErrorPage(std::string const & errorPage) {
+void ServerData::setErrorPage(std::string const & errorPage) {
     /* not mandatory | default: empty, no set error page, webserver will decide */
     if (not errorPage.empty()) {
         std::string error_page = addRootDirectoryPath(_root_directory, errorPage);
         if (pathType(error_page) == REG_FILE) {
             _error_page = addCurrentDirPath(error_page) + error_page;
-            return true;
         } else {
             throw ParserException(CONFIG_FILE_ERROR("error_page", NOT_SUPPORTED));
         }
     }
-    return false;
 }
 
-bool ServerData::setPortRedirection(std::string const & portRedirection) {
+void ServerData::setPortRedirection(std::string const & portRedirection) {
     /* not mandatory | default: zero, no redirection */
     if (not portRedirection.empty()) {
         unsigned int port_redirection = std::strtol(portRedirection.c_str(), nullptr, 10);
@@ -282,12 +273,10 @@ bool ServerData::setPortRedirection(std::string const & portRedirection) {
                     port_redirection >= 49152)) {// todo:: add 65536 as acceptable? then change form short to int?
             /* No need to check port < 65536 since port is an unsigned short already */
             _port_redirection = port_redirection;
-            return true;
         } else {
             throw ParserException(CONFIG_FILE_ERROR("port_redirection", NOT_SUPPORTED));
         }
     }
-    return false;
 }
 
 void ServerData::setListeningSocket() {

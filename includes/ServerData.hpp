@@ -34,8 +34,6 @@ class ServerData : public Parser {
         virtual ~ServerData();
         ServerData(ServerData const & rhs);
 
-        /** Methods */
-
         /** Getters */
         std::string getServerName() const;
         std::string getListensTo() const;
@@ -50,14 +48,14 @@ class ServerData : public Parser {
         struct addrinfo* getAddr() const;
 
         /** Setters */
-        bool setServerName(std::string const & serverName);
-        bool setListensTo(std::string const & port);
-        bool setIpAddress(std::string const & ip);
-        bool setRootDirectory(std::string const & rootDirectory);
-        bool setIndexFile(std::string const & indexFile);
-        bool setClientMaxBodySize(std::string const & bodySize);
-        bool setErrorPage(std::string const & errorPage);
-        bool setPortRedirection(std::string const & portRedirection);
+        void setServerName(std::string const & serverName);
+        void setListensTo(std::string const & port);
+        void setIpAddress(std::string const & ip);
+        void setRootDirectory(std::string const & rootDirectory);
+        void setIndexFile(std::string const & indexFile);
+        void setClientMaxBodySize(std::string const & bodySize);
+        void setErrorPage(std::string const & errorPage);
+        void setPortRedirection(std::string const & portRedirection);
         void setListeningSocket();
 
         class ServerDataException: public std::exception {
