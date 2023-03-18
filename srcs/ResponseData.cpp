@@ -57,7 +57,7 @@ void ResponseData::setResponse(struct kevent& event) {
 			// IF PATH IS THE SERVER ROOT "./"  (  ./resources/  )
 			if (storage->getRequestData().getPath() == ("./" + serverRootFolder)) {		// The path matches the server root
 				std::cout << YEL "                The Path is the root: [" << storage->getRequestData().getPath() << "]\n" RES;
-				_responsePath = storage->getServerData().getIndexFile();	// It is already stored as the whole path: ./resources/index.html
+				_responsePath = storage->getServerData().getIndexFile();
 				std::cout << YEL "                       _responsePath: [" << _responsePath << "]\n" RES;
 			}
 			// IF PATH IS A FOLDER INSIDE THE ROOT FOLDER
@@ -73,7 +73,7 @@ void ResponseData::setResponse(struct kevent& event) {
                     std::cout << GRE "   ........ location uri: [" << location_data_vector[i].getLocationPath() << "]\n";
                     std::cout << GRE "   ... location root dir: [" << location_data_vector[i].getRootDirectory() << "]\n";
                     std::cout << GRE "   ....... _responsePath: [" << _responsePath << "]\n";
-					if (location_data_vector[i].getRootDirectory() == _responsePath) {// TODO here it should be getLocationPath() ?? talk to joyce
+					if (location_data_vector[i].getLocationPath() == _responsePath) {// TODO here it should be getLocationPath() ?? talk to joyce
 						_responsePath = location_data_vector[i].getIndexFile();
                     	std::cout << BLU "   ....... FinalPath: [" << _responsePath << "]\n";
 					}
@@ -85,7 +85,7 @@ void ResponseData::setResponse(struct kevent& event) {
 			}
 
 
-			_responseBody = streamFile(_responsePath);
+			_responseBody = streamFile(storage->getServerData().getRootDirectory() + "/" + _responsePath);
 			std::cout << YEL "                              getHttpStatus(): [" << storage->getHttpStatus() << "]\n" RES;// todo JOYCE map enums to strings
 			std::cout << YEL "                           response path: [" << _responsePath << "]\n" RES;
 			std::cout << YEL "    content type should now be text/html: [" << storage->getRequestData().getRequestContentType() << RES "]\n";
@@ -94,7 +94,7 @@ void ResponseData::setResponse(struct kevent& event) {
 	// IF NOT A FOLDER
 	else {	// IF TEXTFILE
 		if (storage->getRequestData().getRequestContentType().compare("text/html") == 0)
-			_responseBody = streamFile(_responsePath);
+			_responseBody = streamFile(storage->getServerData().getRootDirectory() + "/" + _responsePath);
 		else {	// IF IMAGE, FULL RESPONSE IS CREATED IN setImage()
 			_fullResponse = setImage(storage->getResponseData().getResponsePath());
 			// std::cout << BLU "_fullResponse.length(): [\n" << _fullResponse.size() << "\n" RES;
@@ -158,7 +158,7 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
 					"Content-Type: " + storage->getRequestData().getRequestContentType() + "\n";	// jaka
 			//  _responsePath = storage->getRequestData().getHttpPath();							// jaka: this is old, should be getPath()
 			_responsePath = storage->getRequestData().getPath();
-			std::cout << GRN "_responsePath: [" << _responsePath << "]\n" RES;
+			std::cout << GRN "_responsePath: [[" << _responsePath << "]]\n" RES;
 			break;
 	}
 	return (status);
@@ -237,7 +237,7 @@ std::string ResponseData::streamFile(std::string file)
 	std::cout << "File to be streamed: " << file << std::endl;
 	infile.open(file, std::fstream::in);
 	if (not infile)
-        throw ParserException(CONFIG_FILE_ERROR("File to be streamed is ", MISSING));
+        throw ParserException(CONFIG_FILE_ERROR("File to be streamed", MISSING));
 //		throw ServerException("Error: File not be opened for reading!");   SET UP ERROR
 	while (infile)     // While there's still stuff left to read
 	{

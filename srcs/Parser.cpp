@@ -19,6 +19,22 @@ std::string Parser::keyParser(std::string & lineContent, std::string const & key
     return std::string();
 }
 
+std::string Parser::getOneCleanValueFromKey(std::string & contentLine, std::string const & key) {
+    std::string content = contentLine.substr(contentLine.find(key) + key.size());
+    if (not content.empty()) {
+        size_t i = 0;
+        for (; content.at(i) == ' '; i++) {}
+        std::string trimmed_content = content.substr(i);
+        if (trimmed_content.find(';') != std::string::npos) {
+            return trimmed_content.substr(0, trimmed_content.size() - 1);
+        } else if (trimmed_content.find('{') != std::string::npos) {
+            return trimmed_content.substr(0, trimmed_content.size() - 2);
+        }
+        return trimmed_content.substr(0, trimmed_content.size() - 0);
+    }
+    return std::string();
+}
+
 /* define if path is file(1), folder(2) or something else(3) */
 // todo: can we use it? stat
 PathType Parser::pathType(std::string const & path) {
@@ -71,22 +87,6 @@ bool Parser::isSpace(char ch) {
 //    }
 //    return content;
 //}
-
-std::string Parser::getOneCleanValueFromKey(std::string & contentLine, std::string const & key) {
-	std::string content = contentLine.substr(contentLine.find(key) + key.size());
-	if (not content.empty()) {
-        size_t i = 0;
-        for (; content.at(i) == ' '; i++) {}
-        std::string trimmed_content = content.substr(i);
-        if (trimmed_content.find(';') != std::string::npos) {
-            return trimmed_content.substr(0, trimmed_content.size() - 1);
-        } else if (trimmed_content.find('{') != std::string::npos) {
-            return trimmed_content.substr(0, trimmed_content.size() - 2);
-        }
-        return trimmed_content.substr(0, trimmed_content.size() - 0);
-    }
-    return std::string();
-}
 
 DataType Parser::getValueType(std::string & lineContent) {// Todo: Maybe not needed
 	if (lineContent.find("server_name") != std::string::npos) {

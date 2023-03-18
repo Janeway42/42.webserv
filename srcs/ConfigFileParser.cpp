@@ -76,6 +76,7 @@ void ConfigFileParser::parseFileServerBlock(std::ifstream & configFile) {
     while (configFile) {
         std::string lineContent;
         std::getline(configFile, lineContent);
+//        std::cout << RED << lineContent << RES << std::endl;
 
         if (lineContent.find('#') != std::string::npos || !lineContent[0]) {
             continue;
@@ -85,36 +86,43 @@ void ConfigFileParser::parseFileServerBlock(std::ifstream & configFile) {
             break;
         }
         /** Handling the server block key values */
-        if (_server_data.setServerName(keyParser(lineContent, "server_name"))) {
+        if (lineContent.find("server_name") != std::string::npos) {
+            _server_data.setServerName(keyParser(lineContent, "server_name"));
             continue;
         }
-        if (_server_data.setListensTo(keyParser(lineContent, "listens_to"))) {
+        if (lineContent.find("listens_to") != std::string::npos) {
+            _server_data.setListensTo(keyParser(lineContent, "listens_to"));
             continue;
         }
-        if (_server_data.setIpAddress(keyParser(lineContent, "ip_address"))) {
+        if (lineContent.find("ip_address") != std::string::npos) {
+            _server_data.setIpAddress(keyParser(lineContent, "ip_address"));
             continue;
         }
-        if (_server_data.setRootDirectory(keyParser(lineContent, "root_directory"))) {
+        if (lineContent.find("root_directory") != std::string::npos) {
+            _server_data.setRootDirectory(keyParser(lineContent, "root_directory"));
             continue;
         }
-        if (_server_data.setIndexFile(keyParser(lineContent, "index_file"))) {
+        if (lineContent.find("index_file") != std::string::npos) {
+            _server_data.setIndexFile(keyParser(lineContent, "index_file"));
             continue;
         }
-        if (_server_data.setClientMaxBodySize(keyParser(lineContent, "client_max_body_size"))) {
+        if (lineContent.find("client_max_body_size") != std::string::npos) {
+            _server_data.setClientMaxBodySize(keyParser(lineContent, "client_max_body_size"));
             continue;
         }
-        if (_server_data.setErrorPage(keyParser(lineContent, "error_page"))) {
+        if (lineContent.find("error_page") != std::string::npos) {
+            _server_data.setErrorPage(keyParser(lineContent, "error_page"));
             continue;
         }
-        if (_server_data.setPortRedirection(keyParser(lineContent, "port_redirection"))) {
+        if (lineContent.find("port_redirection") != std::string::npos) {
+            _server_data.setPortRedirection(keyParser(lineContent, "port_redirection"));
             continue;
         }
         /** Checking for cgi or location/cgi blocks */
         if (lineContent.find("location") != std::string::npos && lineContent.find('{') != std::string::npos) {
             ServerLocation _server_location(ServerLocation(_server_data.getRootDirectory(), _server_data.getIndexFile()));
-            if (_server_location.setLocationPath(keyParser(lineContent, "location"))) {
-                parseFileLocationBlock(configFile, _server_data, _server_location);
-            }
+            _server_location.setLocationPath(keyParser(lineContent, "location"));
+            parseFileLocationBlock(configFile, _server_data, _server_location);
             continue;
         }
     }
@@ -127,7 +135,6 @@ void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile, Server
     bool interpreterPathAlreadyChecked = false;
 
     _location_block_counter++;
-    /** Handling the location or cgi block key values */
     while (configFile) {
         std::getline(configFile, lineContent);
         if (lineContent.find('#') != std::string::npos || !lineContent[0]) {
@@ -139,26 +146,43 @@ void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile, Server
             break;
         }
         /** Handling the location or cgi block key values */
-        if (not rootDirectoryAlreadyChecked &&
-                (rootDirectoryAlreadyChecked = _server_location.setRootDirectory(keyParser(lineContent, "root_directory")))) {
+        if (lineContent.find("root_directory") != std::string::npos) {
+            _server_location.setRootDirectory(keyParser(lineContent, "root_directory"));
+            rootDirectoryAlreadyChecked = true;
             continue;
         }
-        if (_server_location.setAllowMethods(keyParser(lineContent, "allow_methods"))) {
+        if (lineContent.find("allow_methods") != std::string::npos) {
+            _server_location.setAllowMethods(keyParser(lineContent, "allow_methods"));
             continue;
         }
-        if (_server_location.setIndexFile(keyParser(lineContent, "index_file"))) {
+        if (lineContent.find("index_file") != std::string::npos) {
+            _server_location.setIndexFile(keyParser(lineContent, "index_file"));
+            if (_server_location.getIndexFile().empty()) {
+                /* In a server configuration file, the default index file specified in the server block applies to all
+                 * locations within that server block unless it is explicitly overridden in a location block.
+                 * I.e. if the location index file is missing, the server block index file can be used */
+                _server_location.setIndexFile(_server_data.getIndexFile());
+            }
+            /* If the index file specified in the server block has a different name than the index file specified
+             * in the location block, both files will be used for requests that match that location */
+            else if (_server_location.getIndexFile() != _server_data.getIndexFile()) {
+                _server_location.useServerBlockIndexFile = true;
+            }
             continue;
         }
-        if (_server_location.setAutoIndex(keyParser(lineContent, "auto_index"))) {
+        if (lineContent.find("auto_index") != std::string::npos) {
+            _server_location.setAutoIndex(keyParser(lineContent, "auto_index"));
             continue;
         }
-        if (not interpreterPathAlreadyChecked &&
-                (interpreterPathAlreadyChecked = _server_location.setInterpreterPath(keyParser(lineContent, "interpreter_path")))) {
+        if (lineContent.find("interpreter_path") != std::string::npos) {
+            _server_location.setInterpreterPath(keyParser(lineContent, "interpreter_path"));
             _server_location.setLocationAsCgi(true);
+            interpreterPathAlreadyChecked = true;
             continue;
         }
-        if (not scriptExtensionAlreadyChecked &&
-                (scriptExtensionAlreadyChecked = _server_location.setScriptExtension(keyParser(lineContent, "script_extension")))) {
+        if (lineContent.find("script_extension") != std::string::npos) {
+            _server_location.setScriptExtension(keyParser(lineContent, "script_extension"));
+            scriptExtensionAlreadyChecked = true;
             continue;
         }
     }

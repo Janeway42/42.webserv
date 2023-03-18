@@ -323,6 +323,7 @@ int Request::checkTypeOfFile() {
 
 
 	// CHECK IF THE PATH IS A FILE OR FOLDER, REGARDLES IF IT HAS ANY EXTENTION
+    // TODO: USE THE FUNCTION INSIDE PARSER.CPP
 	struct stat s;
     if (stat(path.c_str(), &s) == 0) {
         if (S_ISDIR(s.st_mode)) {
@@ -438,7 +439,7 @@ int Request::parsePath(std::string str, struct kevent event) {
 	if (path == "")
 		return (-1);
 	if (path[0] == '/' && path != "/")
-		path = getServerData().getRootDirectory() + path;
+		path = getServerData().getRootDirectory();// + path; -> JOyce: I have commented out the + path part since it was not matching ./resources/server_root/ with ./resources/server_root for example
 	if (path[0] == '/' && path == "/")
 		path = getServerData().getRootDirectory();
 	if (path[0] != '/')
