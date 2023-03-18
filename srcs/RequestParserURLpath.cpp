@@ -154,7 +154,7 @@ void Request::callCGI(RequestData reqData, int fdClient) {
 	// (void)fdClient;
 	_data.setCgiBody(runExecve(env, args, fdClient));
 
-	std::cout << "Stored CGI Body: [\n" << BLU << _data.getCgiBody() << RES << "]\n";
+	std::cout << "Stored body from CGI: [\n" << BLU << _data.getCgiBody() << RES << "]\n";
 
 	// Cleanup
 	for (size_t j = 0; j < temp.size(); j++) {
@@ -423,9 +423,12 @@ static int checkIfPathExists(const std::string& path, struct kevent event) {
 }
 
 
-
-
-
+/*
+	For Joyce: I think there is no separate getter, just to get the path to the cgi location,
+	without having to loop through all locations.
+	Maybe it is usefull to have a separate getter() for the cgi path, or just folder.
+	in line ***** a)
+*/
 
 // int Request::parsePath(std::string str) {
 int Request::parsePath(std::string str, struct kevent event) {
@@ -438,20 +441,24 @@ int Request::parsePath(std::string str, struct kevent event) {
 
 	if (path == "")
 		return (-1);
-	if (path[0] == '/' && path != "/")
+	if (path[0] == '/' && path != "/" && path.find("?") == std::string::npos) {		// no CGI path needed
+		std::cout << GRN << "  No '?', no cgi path needed\n" RES;
 		path = getServerData().getRootDirectory() + path;
+	}
+	if ((path[0] == '/' && path != "/" && path.find("?") != std::string::npos)	 	// yes, CGI path needed
+		|| _data.getRequestMethod() == "POST"   ) {
+		std::cout << GRN << "  YES '?', The cgi path is needed\n" RES;
+		path = getServerData().getRootDirectory() + "/cgi/" + path;		//   ***** a)
+		getResponseData().setIsCgi(true);
+	}
 	if (path[0] == '/' && path == "/")
 		path = getServerData().getRootDirectory();
 	if (path[0] != '/')
 	if (path == "./") {
 		path = getServerData().getRootDirectory();
-		//path = path + "resources"; // !!! How to grab the server root name? The path should contain the root folder, ie: ./sources 
 		std::cout << GRN << "Path is the root '/'    [" << path << "]\n" RES;
 	}
 	std::cout << GRN << "Path with pre-pended root folder [" << path << "]\n" RES;
-
-	// Pre-pend the name of the root folder
-
 
 	if (path.back() == '/'  && (path.find("?") == std::string::npos)) {
 		std::cout << GRN << "The path has no GET-Form data. Last char is '/', it must be a folder.\n" << RES;

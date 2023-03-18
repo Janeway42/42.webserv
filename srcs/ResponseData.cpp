@@ -16,6 +16,7 @@ ResponseData::ResponseData(void) {
 	_lengthFullResponse = 0;
 	_bytesToClient = 0;
 	_errorOverride = false;
+	_isCgi = false;
 }
 
 ResponseData::~ResponseData(void) {}
@@ -57,14 +58,15 @@ void ResponseData::setResponse(struct kevent& event) {
 	Request *storage = (Request *)event.udata;	
 	_responseHeader += setResponseStatus(event);
 
-	std::string serverRootFolder = storage->getServerData().getRootDirectory();
-//	if (serverRootFolder.substr(0, 2) == "./") {
-//		std::cout << YEL " ...... yes ./ found in root name\n" << RES;
-//		serverRootFolder.erase(0, 2);
-//		std::cout << YEL " ...... erased: [" << serverRootFolder << "]\n" << RES;
-//	}// WHY try to find the ./ to erase it ad put it back again on line 58?
+	// NEED TO REMOVE THE SLASH AT THE END OF THE URL, IN CASE IT IS THERE, ie: .../location_random_dir/
 
 
+	// DO WE HAVE AN INDICATOR, IF THE REQUEST IS A CGI?
+	//	A)  NO CGI, RESPONSE IS JUST FILE OR IMAGE
+	// 	B)	YES CGI, THE RESPONSE BODY IS STORED CGI CONTENT
+
+
+	// A)
 	std::string serverRootDir = storage->getServerData().getRootDirectory();
 
 	// IF THE PATH IS A FOLDER, THIS FUNCTION NEEDS TO CHECK IF THERE IS A DEFAULT INDEX FILE PRESENT,
@@ -143,6 +145,10 @@ void ResponseData::setResponse(struct kevent& event) {
 			return ;
 		}
 	}
+
+	// B) IF IT IS A CGI:
+	if (_isCgi == true)
+		_responseBody = storage->getRequestData().getCgiBody();
 
 
 	// set up header 
@@ -261,6 +267,11 @@ void ResponseData::setResponsePath(std::string path)
 }
 
 
+void ResponseData::setIsCgi(bool b)	// added jaka
+{
+	_isCgi = b;
+}
+
 // --------------------------------------------------------------------------- util functions
 // ------------------------------------------------------------------------------------------
 
@@ -357,6 +368,13 @@ bool ResponseData::getOverride()
 {
 	return (_errorOverride);
 }
+
+
+bool ResponseData::getIsCgi()	// added jaka
+{
+	return (_isCgi);
+}
+
 
 // ------------------------------------------------------------------------------ HTTP STATUS
 // ------------------------------------------------------------------------------------------
