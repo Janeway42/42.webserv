@@ -227,11 +227,13 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, struct kevent event, s
 
 
 
-void	Request::chooseMethod_StartAction(int fdClient) {
+// void	Request::chooseMethod_StartAction(int fdClient) {
+void	Request::chooseMethod_StartAction(struct kevent event) {
 	if (_data.getRequestMethod() == "GET" && _data.getQueryString() != "")
-			callCGI(getRequestData(), fdClient);
+			// callCGI(getRequestData(), fdClient);
+			callCGI(event);
 	if (_data.getRequestMethod() == "POST")
-			; // callCGI(getRequestData(), fdClient);
+			callCGI(event);
 	if (_data.getRequestMethod() == "DELETE") {
 		std::cout << GRN_BG << "DELETE METHOD" << RES << std::endl;
 		/* DELETE deletes a resource (specified in URI) */
@@ -274,10 +276,12 @@ void    Request::appendToRequest(const char *str, struct kevent event) {
 	}
 	if (_headerDone == true) {
 		std::cout << PUR << "     _headerDone == TRUE\n" << RES;
-		if (_hasBody == true)
+		// if (_hasBody == true)
+		if (_hasBody == true && _doneParsing == false)
 			appendToBody(chunk);
 		if (_doneParsing == true)	
-			chooseMethod_StartAction(event.ident);
+			chooseMethod_StartAction(event);
+			// chooseMethod_StartAction(event.ident);
 			// chooseMethod_StartAction(fdClient);
 	}
 }
@@ -288,7 +292,7 @@ void    Request::appendToRequest(const char *str, struct kevent event) {
 int Request::appendLastChunkToBody(std::string::size_type it) {
 	_data.setBody(_data.getTemp().substr(it));
 	if (_data.getBody().length() > _data.getRequestContentLength()) {   // Compare body length
-		std::cout << RED << "Error: Body-Length (" << _data.getBody().length() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;
+		std::cout << RED << "Error: Body-Length, first chunk (" << _data.getBody().length() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;
         _httpStatus = I_AM_A_TEAPOT;
 		return (1);
 	}
@@ -304,6 +308,9 @@ int Request::appendLastChunkToBody(std::string::size_type it) {
 			return (0);
 		}
 		std::cout << GRE << "OK: Body-Length is as expected Content-Length\n" << RES;
+		_doneParsing = true; // ???
+		std::cout << CYN << "    Body [" << _data.getBody() << "]\n" RES;// sleep(2);
+
 		//if (_doneParsing == true && _data.getRequestMethod() == "POST") { // can delete doneParsing == true
 		//	std::cout << "      doneparsing true and POST true, call CGI\n";
 		//	std::cout << "      _body: [" << _data.getBody() << "]\n"; 
@@ -327,6 +334,7 @@ int Request::appendToBody(std::string req) {
 	
 	if (_data.getBody().length() > _data.getRequestContentLength()) {		// Compare body lenght
 		std::cout << RED << "Error: Body-Length (" << _data.getBody().length() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;// sleep(2);
+		std::cout << CYN << "       Body [" << _data.getBody() << "]\n" RES;// sleep(2);
         _httpStatus = I_AM_A_TEAPOT;
 		return (1);
 	}

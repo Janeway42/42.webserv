@@ -12,7 +12,7 @@
 class CgiData: public Parser
 {
 	private:
-		int _fd_in[2];  // we write to cg  - we write on _fd_in[1]
+		int _fd_in[2];  // we write to cgi  - we write on _fd_in[1]
 		int _fd_out[2]; // we read from cgi - we read from _fd_out[0]
 		unsigned long _bytesToCgi;
 		bool _pipesDone;
@@ -26,8 +26,10 @@ class CgiData: public Parser
 
 		// getters
 		unsigned long	getBytesToCgi();
-		int		getPipeCgiIn();
-		int		getPipeCgiOut();
+		int		getPipeCgiIn_0();	// changed jaka
+		int		getPipeCgiIn_1();	// added jaka
+		int		getPipeCgiOut_0();	// changed jaka
+		int		getPipeCgiOut_1();	// added jaka
 		bool	getPipesDone();
 
 		// setters

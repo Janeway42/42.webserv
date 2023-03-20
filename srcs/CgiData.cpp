@@ -23,6 +23,10 @@ void CgiData::createPipes(int kq, struct kevent & event)
 	fcntl(_fd_in[1], F_SETFL, O_NONBLOCK);
 	fcntl(_fd_out[0], F_SETFL, O_NONBLOCK);
 
+	std::cout << YEL "Created pipes:  in[0]" << _fd_in[0] << ",  in[1]" << _fd_in[1] 
+							   << ", out[1]" << _fd_out[0] << ", out[1]" << _fd_out[1] << " \n" RES; 
+
+
 	Request *storage = (Request *)event.udata;
 	struct kevent evSet;
 	EV_SET(&evSet, _fd_in[1], EVFILT_WRITE, EV_ADD, 0, 0, storage); 
@@ -60,14 +64,23 @@ unsigned long CgiData::getBytesToCgi()
 	return (_bytesToCgi);
 }
 
-int CgiData::getPipeCgiIn()
+int CgiData::getPipeCgiIn_0()
+{
+	return (_fd_in[0]);
+}
+
+int CgiData::getPipeCgiIn_1()
 {
 	return (_fd_in[1]);
 }
 
-int CgiData::getPipeCgiOut()
+int CgiData::getPipeCgiOut_0()
 {
 	return (_fd_out[0]);
+}
+int CgiData::getPipeCgiOut_1()
+{
+	return (_fd_out[1]);
 }
 
 bool CgiData::getPipesDone()

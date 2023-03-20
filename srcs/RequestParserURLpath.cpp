@@ -25,69 +25,55 @@
 
 
 
-static std::string runExecve(char *ENV[], char *args[], int fdClient) {
+std::string Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 	//std::cout << BLU << "START runExeve\n" << RES;
-	//std::cout << "ENV: " << ENV[0] << "\n";
+	(void)event;
 
-	int    		fd[2];
+	// Create pipes
+	_cgi.createPipes(_data.getKqFd(), event);
 
-	//int    		fdSendBody[2];
-
+	int ret = 0;
 	pid_t		retFork;
 	std::string	incomingStr;
 
-	if (pipe(fd) == -1)
-		std::cout << "Error: Pipe failed\n";
-
-	//std::cout << "pipe fd[0] " << fd[0] << ", pipe fd[1] " << fd[1] << " \n";
-	//dup2(fdClient, fd[1]);
-	//std::cout << BLU << "POST BODY ENV : " << ENV[2] << "\n" << RES;
-	// BY HERE, THE HUGE TEXTFILE IS STORED OK
-
-
 	retFork = fork();
 
-	if (retFork == 0) {
+	if (retFork == 0) { // CHILD
 		std::cout << RED "Start CHILD execve()\n" RES;
 		if (retFork < 0)
 			std::cout << "Error: Fork failed\n";
+	
+		// dup2 (_fd_in[1],  1)
+		std::cout << YEL "Before dup2() in child:  " << ret << "_cgi.getPipeCgiOut() " << _cgi.getPipeCgiOut_1() << "\n"RES;
+		ret = dup2(_cgi.getPipeCgiOut_1()   ,  1);	// cgi writes to parent via pipe fd_out NONBLOCK
+		// check ret 
 
-		dup2(fd[1], 1);
-		(void)fdClient;
-		//dup2(fdClient, fd[1]);
-		close(fd[0]);
 
-		// BIG BODY NEEDS TO BE SENT TO THE CGI BY WRITE TO PIPE
-		//close(fdSendBody[0]);	// close stdout reading from
-		//dup2(fdSendBody[1], 1);
-		//int ret2 = write(fdSendBody[1], "Something ..." , 13);
-		//std::cout << YEL << "ret from write to CGI : " << ret2 << "\n" << RES;
-
+		// dup2 (_fd_in[0],  0)
+		//dup2(_cgi.getPipeCgiOut()   ,  0);		// cgi reads from parent via pipe fd_out
 
 		// std::cout << YEL << "POST BODY ENV : " << ENV[2] << "\n" << RES;
-		int ret = execve(args[0], args, ENV);
+		ret = execve(args[0], args, ENV);
 		std::cout << RED << "Error: Execve failed: " << ret << "\n" << RES;
 	}
-	else {
+	else {				// PARENT
 		wait(NULL);
-		//std::cout << "    Start Parent\n";
-		char buff[100];
+		std::cout << "    Start Parent\n";
+		char buff[1000];
 
-		close(fd[1]);
-		dup2(fd[0], 0);
-		//dup2(fdClient, fd[0]);
+		ret = dup2(_cgi.getPipeCgiOut_0(), 0);		// parent reads from cgi via pipe fd_out
+		// check ret
+		//std::cout << YEL "returned dup2() in parent:  " << ret << "\n"RES;
 
-		//close(fdSendBody[1]);
-		//close(fdSendBody[0]);
-		//dup2(fdSendBody[0], 0);
+		//dup2(_cgi.getPipeCgiIn()   ,  1);	// parent writes to cgi via pipe fd_in
+		// close _fd_in[1]
 
-		//std::cout << RED << "        Start loop reading from child\n" << RES;
-		for (int ret = 1; ret != 0; ) {
-			memset(buff, '\0', 100);
-			ret = read(fd[0], buff, 99);
-			incomingStr.append(buff);
-		}
-		//std::cout << BLU "\n       All content read from CGI\n[" << incomingStr << "]\n" << RES;
+		memset(buff, '\0', 1000);
+		ret = read(_cgi.getPipeCgiOut_0(), buff, 999);
+		// check ret
+		std::cout << YEL"Ret: read from CGI, from _fd_out[0]:  " << ret << "\n"RES;
+		incomingStr.append(buff);	// HOW TO KEEP APPENDING, IF THERE IS MORE DATA THEN BUFFER SIZE ???
+		std::cout << BLU "\n       All content read from CGI\n[" << incomingStr << "]\n" << RES;
 	}
 	return (incomingStr);
 }
@@ -95,10 +81,11 @@ static std::string runExecve(char *ENV[], char *args[], int fdClient) {
 
 
 
-void Request::callCGI(RequestData reqData, int fdClient) {
-	std::cout << RED << "START CALL_CGI\n" << RES;
+// void Request::callCGI(RequestData reqData, int fdClient) {
+void Request::callCGI(struct kevent event) {
+	std::cout << RED << "START CALL_CGI, cgi path: " << _data.getPath() << "\n" << RES;
+	//(void)reqData;
 
-	(void)reqData;
 	// Declare all necessary variables
 	std::string comspec			= "COMSPEC=";
 	std::string request_method	= "REQUEST_METHOD=";
@@ -112,7 +99,7 @@ void Request::callCGI(RequestData reqData, int fdClient) {
 	temp.push_back(query_string.append(_data.getQueryString()));
 	temp.push_back(server_name.append("default"));
 
-	//std::cout << "Size of vector temp: " << temp.size() << "\n";
+	// std::cout << "Size of vector temp: " << temp.size() << "\n";
 	// std::cout << YEL << "POST BODY: " << temp[2] << "\n" << RES;
 	// BY HERE, THE HUGE BODY IS STORED OK
 
@@ -133,26 +120,21 @@ void Request::callCGI(RequestData reqData, int fdClient) {
 	//   std::cout << env[i] << std::endl;
 	//}
 
-	// Prepare the array of the correct command/cgi file to be executed
-	// The path of the executable must be according to the 'action file' from the URL
-	// char *args[2];
-	// args[0] = (char *)"./jaka_cgi/cpp_cgi";   // Make sure the path is correct on Mac/Linux
-	// args[1] = NULL;
-
-
 	// char *args[3];
 	// args[0] = (char *)"/usr/bin/php";   // Make sure the path is correct on Mac/Linux
 	// args[1] = (char *)"./jaka_cgi/_somePhp.php"; // MUST BE WITH A DOT !!
 	// args[2] = NULL;
 
 	char *args[3];
-	args[0] = (char *)"/usr/bin/python";   // Make sure the path is correct on Mac/Linux
-	args[1] = (char *)"./resources/cgi/python_cgi.py"; // MUST BE WITH A DOT !!
+	args[0] = (char *)"/usr/bin/python";
+	std::string tempPath = _data.getPath();
+	char *path = (char *)tempPath.c_str();	//  ie: "./resources/cgi//python_cgi_GET.py"
+	args[1] = path;
 	args[2] = NULL;
 
 	// (void)ENV;
 	// (void)fdClient;
-	_data.setCgiBody(runExecve(env, args, fdClient));
+	_data.setCgiBody(runExecve(env, args, event));
 
 	std::cout << "Stored body from CGI: [\n" << BLU << _data.getCgiBody() << RES << "]\n";
 
@@ -242,6 +224,8 @@ std::map<std::string, std::string> Request::storeFormData(std::string queryStrin
 	return (formDataMap);
 }
 
+
+
 // Found GET Method with '?' Form Data
 void Request::storePathParts_and_FormData(std::string path) {
 
@@ -269,6 +253,7 @@ void Request::storePathParts_and_FormData(std::string path) {
 	storeFormData(queryString);	// maybe not needed (the whole vector and map)
 	// if the cgi script can handle the whole queryString
 }
+
 
 
 // !!! Not storing correctly the path part and file name!
@@ -441,7 +426,7 @@ int Request::parsePath(std::string str, struct kevent event) {
 
 	if (path == "")
 		return (-1);
-	if (path[0] == '/' && path != "/" && path.find("?") == std::string::npos) {		// no CGI path needed
+	if (path[0] == '/' && path != "/" && path.find("?") == std::string::npos && _data.getRequestMethod() != "POST") {		// no CGI path needed
 		std::cout << GRN << "  No '?', no cgi path needed\n" RES;
 		path = getServerData().getRootDirectory() + path;
 	}
@@ -484,6 +469,7 @@ int Request::parsePath(std::string str, struct kevent event) {
 	else if (_data.getRequestMethod() == "POST" || _data.getRequestMethod() == "DELETE") {
 		std::cout << GRN << "There is POST Form data\n" << RES;
 		storePath_and_FolderName(path);	// Not sur if this good here ???
+		
 		// path is not extracted correctly
 		// _data.setQueryString(getRequestBody());
 		_data.setQueryString(_data.getBody());
@@ -496,9 +482,8 @@ int Request::parsePath(std::string str, struct kevent event) {
 		return (NOT_FOUND);
 	}
 
-	//Request *storage = (Request *)event.udata;	
 	
-
+	//std::cout << GRN "FD _kq: " << _data.getKqFd() << "\n" RES;
 
 	// What in case of GET??
 	checkTypeOfFile();

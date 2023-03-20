@@ -11,14 +11,40 @@
   <p>(path  ./resources/cgi/cgi_index.html)</p>
   
   <br><br><br>
-<p> METHOD GET:</p>
-<form action="python_cgi.py" method="get">
+
+<form action="python_cgi_GET.py" method="get">
+  <fieldset style="background: #fffdf6; border: 2px solid #caaf38;">
+  <legend> METHOD GET </legend>
+
  <!--<form action="response_get.html" method="get">     -->
   <label for="street">Street:</label>
   <input type="text" id="street" name="street"><br><br>
   <label for="city">City:</label>
   <input type="text" id="city" name="city"><br><br>
   <input type="submit" value="Submit">
+</fieldset>
+
 </form> <br><br><br>
   
+
+
+
+<!-- <form action="response_post.php" method="post"> -->
+<form action="python_cgi_POST.py" method="post">
+<!--<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">-->
+
+
+  <fieldset style="background: #f6f8ff; border: 2px solid #4238ca;">
+    <legend> METHOD POST </legend>
+    <label for="fruit">Fruit:</label>
+    <input type="text" name="street" placeholder="fruit"><br><br>
+    <label for="vegetable">Vegetable:</label>
+    <input type="text" name="vegetable" placeholder="vegetable"><br><br>
+    <!--<input type="text" name="lastname" placeholder="Last name"><br /><br />-->
+    <button type="submit">Submit</button>
+  </fieldset>
+</form> <br><br><br>
+
+
+
   </body>

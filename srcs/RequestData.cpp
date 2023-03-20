@@ -39,6 +39,9 @@ RequestData::~RequestData() {
 
 /** ########################################################################## */
 /** Request Getters */
+int	 RequestData::getKqFd() const {
+	return _kqFd;
+}
 
 
 const std::string RequestData::getRequestMethod() const {
@@ -78,6 +81,7 @@ const std::string RequestData::getRequestContentType() const {
 
 // PATH PARTS AND QUERY_STRING (FORM DATA)
 const std::string RequestData::getPath() const {
+// std::string RequestData::getPath() {
 	return _path;
 }
 const std::string RequestData::getPathFirstPart() const {
@@ -114,6 +118,11 @@ std::vector<std::string> RequestData::getFormList() const {	// Cannot return con
 
 /** ########################################################################## */
 /** Request Setters */
+
+void RequestData::setKqFd(int kqFd)
+{
+	_kqFd = kqFd;
+}
 
 void RequestData::setRequestMethod(std::string reqMethod)
 {

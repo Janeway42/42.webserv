@@ -112,7 +112,7 @@ void WebServer::readRequest(struct kevent& event)
 	memset(&buffer, '\0', BUFFER_SIZE); // cpp equivalent ? 
 	Request* storage = (Request*)event.udata;
 
-	if ((int)event.ident == (storage->getCgiData()).getPipeCgiOut())  // read from CGI - we get the info // the event belong to the pipe fd: _fd_out[0]
+	if ((int)event.ident == (storage->getCgiData()).getPipeCgiOut_0())  // read from CGI - we get the info // the event belong to the pipe fd: _fd_out[0]
 	{
 		size_t ret = read(event.ident, &buffer,  BUFFER_SIZE);
 		if (ret < 0)
@@ -151,6 +151,7 @@ void WebServer::readRequest(struct kevent& event)
 	
 		else if (storage->getDone() == false)
 		{
+			// storage->getRequestData().setKqFd(getKq());	// Jaka: I need to store the value of kqueue-FD for later, to create pipes for CGI
 			// storage->appendToRequest(buffer, event.ident);
 			storage->appendToRequest(buffer, event);
 
@@ -177,11 +178,14 @@ void WebServer::sendResponse(struct kevent& event)
     Request *storage = (Request*)event.udata;
 	std::string buffer;  // ----------------  JAKA - if read uses a char buffer[BUFFER_SIZE] shouldn't send use the same size too? 
 
-	if ((int)event.ident == (storage->getCgiData()).getPipeCgiIn())  // write to CGI - we send the info // the event belong to the pipe fd: _fd_in[1]
+	// if ((int)event.ident == (storage->getCgiData()).getPipeCgiIn())  // write to CGI - we send the info // the event belong to the pipe fd: _fd_in[1]
+	// 																	  changed jaka:  getPipeCgiIn_1()
+	if ((int)event.ident == (storage->getCgiData()).getPipeCgiIn_1())  // write to CGI - we send the info // the event belong to the pipe fd: _fd_in[1]
 	{
         std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CGI, write to CGI  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
 		buffer = storage->getResponseData().getResponseBody();
-		ssize_t ret = write(storage->getCgiData().getPipeCgiIn(), buffer.c_str(), buffer.length());
+		// ssize_t ret = write(storage->getCgiData().getPipeCgiIn(), buffer.c_str(), buffer.length());
+		ssize_t ret = write(storage->getCgiData().getPipeCgiIn_1(), buffer.c_str(), buffer.length());
 		if (ret == -1)
 		{
 			storage->setHttpStatus(INTERNAL_SERVER_ERROR);
@@ -296,6 +300,8 @@ void WebServer::newClient(struct kevent event, ServerData * specificServer)
 		throw ServerException("failed accept");
 
 	Request *storage = new Request(fd, specificServer);
+	storage->getRequestData().setKqFd(getKq());	// Jaka: I need to store the value of kqueue-FD for later, to create pipes for CGI
+
 	EV_SET(&evSet, fd, EVFILT_READ, EV_ADD, 0, 0, storage); 
 	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 		throw ServerException("failed kevent EV_ADD, EVFILT_READ, new client");
