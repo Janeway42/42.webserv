@@ -308,7 +308,7 @@ int Request::appendLastChunkToBody(std::string::size_type it) {
 			return (0);
 		}
 		std::cout << GRE << "OK: Body-Length is as expected Content-Length\n" << RES;
-		_doneParsing = true; // ???
+		_doneParsing = true; // otherwise it went to appendToBody, and appended more stuff, so the body lenght became larger then expected
 		std::cout << CYN << "    Body [" << _data.getBody() << "]\n" RES;// sleep(2);
 
 		//if (_doneParsing == true && _data.getRequestMethod() == "POST") { // can delete doneParsing == true
