@@ -16,6 +16,7 @@ ResponseData::ResponseData(void) {
 	_lengthFullResponse = 0;
 	_bytesToClient = 0;
 	_errorOverride = false;
+	_isCgi = false;
 }
 
 ResponseData::~ResponseData(void) {}
@@ -26,6 +27,29 @@ ResponseData::~ResponseData(void) {}
 // ---------------------------------------------------------------------------- set functions
 // ------------------------------------------------------------------------------------------
 
+
+// THIS SAME FUNCTION IS ALREADY INSIDE RequestParserURLpath, it can be used as one
+static int checkIfPathExists(const std::string& path, struct kevent event) {
+	
+	(void)event;
+	std::cout << GRN << "Start CheckIfFIleExists(), path [" << path << "] \n" << RES;
+
+	
+	std::ifstream file(path.c_str());
+
+	if (not file.is_open()) {		// ??? what is this syntax? -> joyce for cpp we can use not in the pace of ! for readability :)
+		std::cout << RED << "Error: File " << path << " not found\n" << RES;
+		return(NOT_FOUND);
+	}
+	std::cout << GRN << "File/folder " << path << " exists\n" << RES;
+
+	return 0;
+}
+
+
+
+
+
 // This function creates the header only for text/html requests, but not for images.
 // If it is an image, then setImage() is called, where both header and body are created, and
 // then setResponse() returns this full content, ready to be sent.
@@ -34,13 +58,16 @@ void ResponseData::setResponse(struct kevent& event) {
 	Request *storage = (Request *)event.udata;	
 	_responseHeader += setResponseStatus(event);
 
-	std::string serverRootFolder = storage->getServerData().getRootDirectory();
-//	if (serverRootFolder.substr(0, 2) == "./") {
-//		std::cout << YEL " ...... yes ./ found in root name\n" << RES;
-//		serverRootFolder.erase(0, 2);
-//		std::cout << YEL " ...... erased: [" << serverRootFolder << "]\n" << RES;
-//	}// WHY try to find the ./ to erase it ad put it back again on line 58?
+	// NEED TO REMOVE THE SLASH AT THE END OF THE URL, IN CASE IT IS THERE, ie: .../location_random_dir/
 
+
+	// DO WE HAVE AN INDICATOR, IF THE REQUEST IS A CGI?
+	//	A)  NO CGI, RESPONSE IS JUST FILE OR IMAGE
+	// 	B)	YES CGI, THE RESPONSE BODY IS STORED CGI CONTENT
+
+
+	// A)
+	std::string serverRootDir = storage->getServerData().getRootDirectory();
 
 	// IF THE PATH IS A FOLDER, THIS FUNCTION NEEDS TO CHECK IF THERE IS A DEFAULT INDEX FILE PRESENT,
 	// IF NOT, THEN CHECK IF AUTOINDEX IS ON,
@@ -49,14 +76,15 @@ void ResponseData::setResponse(struct kevent& event) {
 	if (storage->getRequestData().getIsFolder() == true) {
 		std::cout << YEL "The Path is a folder: check for a default index file and/or autoindex on/off\n" << RES;
 		std::cout << YEL "           Stored server root folder: [" << storage->getServerData().getRootDirectory() << "]\n" RES;
-		std::cout << YEL "          local var. for root folder: [" << serverRootFolder << "]\n" RES;
-		std::cout << YEL "                             getPath: [" << storage->getRequestData().getPath() << "]\n" RES;
+	//	std::cout << YEL "          local var. for root folder: [" << serverRootDir << "]\n" RES;
+	//	std::cout << YEL "                             getPath: [" << storage->getRequestData().getPath() << "]\n" RES;
 
 		//if (storage->getRequestData().getRequestContentType().compare("text/html") == 0) {		// IF FOLDER, THE CONT. TYPE SHOULD BE text.html
 			
 			// IF PATH IS THE SERVER ROOT "./"  (  ./resources/  )
-			if (storage->getRequestData().getPath() == (serverRootFolder)) {		// The path matches the server root
+			if (storage->getRequestData().getPath() == serverRootDir) {		// The path matches the server root
 				std::cout << YEL "                The Path is the root: [" << storage->getRequestData().getPath() << "]\n" RES;
+				_responsePath = storage->getServerData().getRootDirectory() + "/" + storage->getServerData().getIndexFile();
 				_responsePath = storage->getServerData().getRootDirectory() + "/" + storage->getServerData().getIndexFile();
 				std::cout << YEL "                       _responsePath: [" << _responsePath << "]\n" RES;
 			}
@@ -70,19 +98,33 @@ void ResponseData::setResponse(struct kevent& event) {
 				std::vector<ServerLocation> location_data_vector = storage->getServerData().getLocationBlocks();
 				size_t i;
 				for (i = 0; i < location_data_vector.size(); i++) {
-                    std::cout << GRE "   ........ location uri: [" << location_data_vector[i].getLocationPath() << "]\n";
+                    std::cout << GRE "   ........ location uri: [" << location_data_vector[i].getLocationUriName() << "]\n";
                     std::cout << GRE "   ... location root dir: [" << location_data_vector[i].getRootDirectory() << "]\n";
                     std::cout << GRE "   ....... _responsePath: [" << _responsePath << "]\n";
-                    std::cout << GRE "   . location index file: [" << location_data_vector[i].getIndexFile() << "]\n";
-                    if (location_data_vector[i].getLocationPath() == _responsePath) {
-						_responsePath = location_data_vector[i].getRootDirectory() + "/" + location_data_vector[i].getIndexFile();
-                        std::cout << BLU "   ........... FinalPath: [" << _responsePath << "]\n";
+					if (location_data_vector[i].getRootDirectory() == _responsePath) {// TODO here it should be getLocationUriName()
+						_responsePath = _responsePath + "/" + location_data_vector[i].getIndexFile();
+                    	std::cout << BLU "   ....... FinalPath: [" << _responsePath << "]\n";
+						break ;
 					}
 				}
-				// if (i == location_data_vector.size()) {
-                //     std::cout << RED "This path exists but does not match any location: [" << _responsePath << "]\n";
-				// 	storage->setHttpStatus((NOT_FOUND);
-				// }
+
+				// ???
+				if (i == location_data_vector.size()) {
+                    std::cout << RED "This path exists but does not match any location block: [" << _responsePath << "]\n";
+                    std::cout << RED "		Here the _responsepath / error page needs to be set to 404 NOT FOUND\n";
+					storage->setHttpStatus(NOT_FOUND);
+				}
+
+				// If chosen path filename is not in this folder, try default server filename:
+				else {
+					if (checkIfPathExists(_responsePath, event) == NOT_FOUND)
+						_responsePath = location_data_vector[i].getRootDirectory() + "/" + storage->getServerData().getIndexFile();
+					if (checkIfPathExists(_responsePath, event) == NOT_FOUND) {
+						storage->setHttpStatus(FORBIDDEN);
+	                    std::cout << RED "There is no such index file in this location: [" << _responsePath << "]\n";
+						return ;
+					}
+				}
 			}
 
 
@@ -94,6 +136,7 @@ void ResponseData::setResponse(struct kevent& event) {
 	}
 	// IF NOT A FOLDER
 	else {	// IF TEXTFILE
+        std::cout << RED "The path is a file: [" << _responsePath << "]\n";
 		if (storage->getRequestData().getRequestContentType().compare("text/html") == 0)
 			_responseBody = streamFile(storage->getServerData().getRootDirectory() + "/" + _responsePath);
 		else {	// IF IMAGE, FULL RESPONSE IS CREATED IN setImage()
@@ -102,6 +145,10 @@ void ResponseData::setResponse(struct kevent& event) {
 			return ;
 		}
 	}
+
+	// B) IF IT IS A CGI:
+	if (_isCgi == true)
+		_responseBody = storage->getRequestData().getCgiBody();
 
 
 	// set up header 
@@ -220,6 +267,11 @@ void ResponseData::setResponsePath(std::string path)
 }
 
 
+void ResponseData::setIsCgi(bool b)	// added jaka
+{
+	_isCgi = b;
+}
+
 // --------------------------------------------------------------------------- util functions
 // ------------------------------------------------------------------------------------------
 
@@ -249,7 +301,8 @@ std::string ResponseData::streamFile(std::string file)
 	}
 	infile.close();
 
-	std::cout << "Streamed: " << responseNoFav << std::endl;
+	//std::cout << "Streamed: " << responseNoFav << std::endl;
+	std::cout << "Streamed: temp turned off by jaka" << std::endl;
 	return (responseNoFav);
 }
 
@@ -316,6 +369,13 @@ bool ResponseData::getOverride()
 {
 	return (_errorOverride);
 }
+
+
+bool ResponseData::getIsCgi()	// added jaka
+{
+	return (_isCgi);
+}
+
 
 // ------------------------------------------------------------------------------ HTTP STATUS
 // ------------------------------------------------------------------------------------------

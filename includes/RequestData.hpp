@@ -9,6 +9,8 @@
 
 class RequestData {
 	private:
+		int			_kqFd;
+
 		// FIRST LINE HEADER
 		std::string _reqMethod;
 		std::string _reqHttpPath;
@@ -47,6 +49,9 @@ class RequestData {
 		bool errorRequest;
 
 		/** Request Getters */
+
+		int	getKqFd() const;
+
 		const std::string getRequestMethod() const;
 		const std::string getHttpPath() const;
 		const std::string getHttpVersion() const;
@@ -76,6 +81,8 @@ class RequestData {
 
 
 	/** Request Setters */
+		void setKqFd(int kqFd);
+
 		// First line
 		void setRequestMethod(std::string reqMethod);
 		void setRequestPath(std::string reqPath);

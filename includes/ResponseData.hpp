@@ -20,6 +20,8 @@ class ResponseData: public Parser
 		std::string _fullResponse;
 		std::string _responsePath;
 
+		bool		_isCgi;		// added jaka
+
 
 		ssize_t 		_lengthFullResponse;	// needs to be set at the end of making the response (just once)
 		unsigned long 	_bytesToClient;
@@ -49,6 +51,7 @@ class ResponseData: public Parser
 		std::string		getResponseBody();
 		unsigned long	getBytesToClient();
 		bool			getOverride();
+		bool			getIsCgi();		// added jaka
 
 		//setters
 		void		overrideFullResponse();			// jaka: maybe will not be used
@@ -60,6 +63,8 @@ class ResponseData: public Parser
 		void		adjustFullResponse(ssize_t ret);
 		std::string	streamFile(std::string file);
 		std::string setImage(std::string imagePath);
+
+		void		setIsCgi(bool b);
 
 		void setBytesToClient(int val);
 };

@@ -14,7 +14,7 @@
 class ServerLocation : public Parser {
     private:
         bool _is_location_cgi;
-        std::string _location_path;
+        std::string _location_uri_name;
         std::string _root_directory;
         std::vector<AllowMethods> _allow_methods;
         std::string _index_file;
@@ -34,7 +34,7 @@ class ServerLocation : public Parser {
         bool isLocationCgi() const;
 
         /** Getters */
-        std::string getLocationPath() const;
+        std::string getLocationUriName() const;
         std::string getRootDirectory() const;
         std::vector<AllowMethods> getAllowMethods() const;
         std::string getIndexFile() const;
