@@ -122,6 +122,18 @@ void Request::storeBody(std::istringstream &iss)
 }
 
 
+// MAYBE WON'T BE NEEDED
+void	storeBodyAsFile(std::string body) {
+	std::ofstream bodyFile("./resources/cgi/bodyFile.txt");
+	if (bodyFile.is_open()) {
+		bodyFile << body;
+		bodyFile.close();
+		std::cout << GRN "Body string written succesfuly to the file\n" RES;
+	}
+	else {
+		std::cout << RED "Error opening the file to write the body into\n" RES;
+	}
+}
 
 // !!!!!!! need to remove the file and links
 int Request::storeWordsFromFirstLine(std::string firstLine) {
@@ -215,12 +227,11 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, struct kevent event, s
 	//std::cout << "HEADER: [" << BLU << _header << RES "]\n";	// sleep(1);
 	parseHeader(_data.getHeader());
 	std::cout << RED "server root path: " << getServerData().getRootDirectory() << "\n"RES;
-	// parsePath(_data.getHttpPath());	// IF FILE NOT FOUND 404, IT COULD JUST CLOSE THE CONNECTION AND STOP
 	parsePath(_data.getHttpPath(), event);	// IF FILE NOT FOUND 404, IT COULD JUST CLOSE THE CONNECTION AND STOP
 
 	if (_data.getRequestContentLength() == 0){
-		if (_data.getRequestMethod() == "GET" && _data.getQueryString() != "")
-			; //callCGI(getRequestData(), fdClient); // moved to chooseMethod_StartAction()
+		// if (_data.getRequestMethod() == "GET" && _data.getQueryString() != "")
+		//	; //callCGI(getRequestData(), fdClient); // moved to chooseMethod_StartAction()
 		_doneParsing = true;
     }
 }
@@ -279,7 +290,8 @@ void    Request::appendToRequest(const char *str, struct kevent event) {
 		// if (_hasBody == true)
 		if (_hasBody == true && _doneParsing == false)
 			appendToBody(chunk);
-		if (_doneParsing == true)	
+		if (_doneParsing == true)
+			// storeBodyAsFile(_data.getBody());  // Maybe not needed
 			chooseMethod_StartAction(event);
 			// chooseMethod_StartAction(event.ident);
 			// chooseMethod_StartAction(fdClient);

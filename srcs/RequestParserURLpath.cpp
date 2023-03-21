@@ -34,7 +34,7 @@ std::string Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 
 	int ret = 0;
 	pid_t		retFork;
-	std::string	incomingStr;
+	std::string	incomingStr = "";
 
 	retFork = fork();
 
@@ -43,16 +43,22 @@ std::string Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 		if (retFork < 0)
 			std::cout << "Error: Fork failed\n";
 	
-		// dup2 (_fd_in[1],  1)
-		std::cout << YEL "Before dup2() in child:  " << ret << "_cgi.getPipeCgiOut() " << _cgi.getPipeCgiOut_1() << "\n"RES;
+
 		ret = dup2(_cgi.getPipeCgiOut_1()   ,  1);	// cgi writes to parent via pipe fd_out NONBLOCK
-		// check ret 
+		if (ret == -1)
+			std::cout << RED "Error dup2() of PipeCgiOut_1, child\n" RES;
+
+		// close(_cgi.getPipeCgiOut_0());
+
+		// ret = dup2(_cgi.getPipeCgiIn_0()   ,  0);		// cgi reads from parent via pipe fd_out
+		// if (ret == -1)
+		// 	std::cout << RED "Error dup2() of PipeCgiIn_0, child\n" RES;
+		// close(_cgi.getPipeCgiIn_1());
 
 
-		// dup2 (_fd_in[0],  0)
-		//dup2(_cgi.getPipeCgiOut()   ,  0);		// cgi reads from parent via pipe fd_out
 
 		// std::cout << YEL << "POST BODY ENV : " << ENV[2] << "\n" << RES;
+		std::cout << BLU "Before execve in child\n" << RES;
 		ret = execve(args[0], args, ENV);
 		std::cout << RED << "Error: Execve failed: " << ret << "\n" << RES;
 	}
@@ -62,18 +68,24 @@ std::string Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 		char buff[1000];
 
 		ret = dup2(_cgi.getPipeCgiOut_0(), 0);		// parent reads from cgi via pipe fd_out
-		// check ret
-		//std::cout << YEL "returned dup2() in parent:  " << ret << "\n"RES;
+		if (ret == -1)
+			std::cout << RED "Error dup2() of PipeCgiOut_0, parent\n" RES;
+		// close(_cgi.getPipeCgiOut_1());
 
-		//dup2(_cgi.getPipeCgiIn()   ,  1);	// parent writes to cgi via pipe fd_in
-		// close _fd_in[1]
+
+		// ret = dup2(_cgi.getPipeCgiIn_1()   ,  1);	// parent writes to cgi via pipe fd_in
+		// if (ret == -1)
+		// 	std::cout << RED "Error dup2() of PipeCgiIn_1, parent\n" RES;
+		// close(_cgi.getPipeCgiIn_0());
+
 
 		memset(buff, '\0', 1000);
 		ret = read(_cgi.getPipeCgiOut_0(), buff, 999);
-		// check ret
+		//check ret
 		std::cout << YEL"Ret: read from CGI, from _fd_out[0]:  " << ret << "\n"RES;
 		incomingStr.append(buff);	// HOW TO KEEP APPENDING, IF THERE IS MORE DATA THEN BUFFER SIZE ???
-		std::cout << BLU "\n       All content read from CGI\n[" << incomingStr << "]\n" << RES;
+		//std::cout << BLU "\n       All content read from CGI\n[" << incomingStr << "]\n" << RES;
+		//std::cout << BLU "\n       End parent\n" << RES;
 	}
 	return (incomingStr);
 }
@@ -81,7 +93,6 @@ std::string Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 
 
 
-// void Request::callCGI(RequestData reqData, int fdClient) {
 void Request::callCGI(struct kevent event) {
 	std::cout << RED << "START CALL_CGI, cgi path: " << _data.getPath() << "\n" << RES;
 	//(void)reqData;
@@ -91,6 +102,7 @@ void Request::callCGI(struct kevent event) {
 	std::string request_method	= "REQUEST_METHOD=";
 	std::string query_string	= "QUERY_STRING=";
 	std::string server_name		= "SERVER_NAME=";
+	std::string content_length	= "CONTENT_LENGTH=";
 
 	// Declare a vector and fill it with variables, with attached =values
 	std::vector<std::string> temp;
@@ -98,6 +110,10 @@ void Request::callCGI(struct kevent event) {
 	temp.push_back(request_method.append(_data.getRequestMethod()));
 	temp.push_back(query_string.append(_data.getQueryString()));
 	temp.push_back(server_name.append("default"));
+
+	std::stringstream ss;	// convert length int to string variable
+	ss << _data.getRequestContentLength();
+	temp.push_back(content_length.append(ss.str()));
 
 	// std::cout << "Size of vector temp: " << temp.size() << "\n";
 	// std::cout << YEL << "POST BODY: " << temp[2] << "\n" << RES;
