@@ -18,7 +18,7 @@
 ServerLocation::ServerLocation(std::string const & server_root_directory, std::string const & server_index_file)
     /** Initializing default values for the location block */
     : _is_location_cgi(false),
-    _location_path(std::string()),
+    _location_uri_name(std::string()),
     _root_directory(server_root_directory),
     _index_file(server_index_file),
     _auto_index(false),
@@ -33,7 +33,7 @@ ServerLocation::ServerLocation(std::string const & server_root_directory, std::s
 ServerLocation::~ServerLocation() {
     /** Cleaning default values for the location block */
     _is_location_cgi = false;
-    _location_path.clear();
+    _location_uri_name.clear();
     _root_directory.clear();
     _allow_methods = std::vector<AllowMethods>(NONE);
     _index_file.clear();
@@ -52,8 +52,8 @@ bool ServerLocation::isLocationCgi() const {
 
 /** #################################### Getters #################################### */
 
-std::string ServerLocation::getLocationPath() const {
-    return _location_path;
+std::string ServerLocation::getLocationUriName() const {
+    return _location_uri_name;
 }
 
 std::string ServerLocation::getRootDirectory() const {
@@ -93,7 +93,7 @@ void ServerLocation::setLocationPath(std::string const & locationPath) {
         std::string location_path = addRootDirectoryPath(_root_directory, locationPath);
         PathType type = pathType(location_path);
         if (type == DIRECTORY) {
-            _location_path = addCurrentDirPath(location_path) + location_path;
+            _location_uri_name = addCurrentDirPath(location_path) + location_path;
         } else if (type == PATH_TYPE_ERROR) {
             throw ParserException(CONFIG_FILE_ERROR("location block", MISSING));
         } else {

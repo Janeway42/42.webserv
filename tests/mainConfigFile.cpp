@@ -58,7 +58,7 @@ int main(int ac, char **av) {
                         std::cout << "Is this location a CGI location: " << it_location->isLocationCgi() << std::endl;
                         std::cout << "Server block and location block index files can be used for requests that match this location: " << it_location->useServerBlockIndexFile << std::endl;
 
-                        std::string locationDirectory = it_location->getLocationPath();
+                        std::string locationDirectory = it_location->getLocationUriName();
                         std::cout << GRE << std::left << std::setw(30) << "\"location\": " << locationDirectory << RES << std::endl;
 
                         std::string cgiLocationRootDirectory = it_location->getRootDirectory();
@@ -78,7 +78,7 @@ int main(int ac, char **av) {
                         std::cout << "Is this location a CGI location: " << it_location->isLocationCgi() << std::endl;
                         std::cout << "Server block and location block index files can be used for requests that match this location: " << it_location->useServerBlockIndexFile << std::endl;
 
-                        std::string locationDirectory = it_location->getLocationPath();
+                        std::string locationDirectory = it_location->getLocationUriName();
                         std::cout << GRE << std::left << std::setw(30) << "\"location\": " << locationDirectory << RES << std::endl;
 
                         std::string locationRootDirectory = it_location->getRootDirectory();

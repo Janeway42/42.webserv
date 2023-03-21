@@ -407,10 +407,10 @@ static int checkIfPathExists(const std::string& path, struct kevent event) {
 	// std::vector<ServerLocation> location_data_vector = storage->getServerData().getLocationBlocks();
 	// size_t i;
 	// for (i = 0; i < location_data_vector.size(); i++) {
-	// 	std::cout << GRE "   ........ location uri: [" << location_data_vector[i].getLocationPath() << "]\n";
+	// 	std::cout << GRE "   ........ location uri: [" << location_data_vector[i].getLocationUriName()) << "]\n";
 	// 	std::cout << GRE "   ... location root dir: [" << location_data_vector[i].getRootDirectory() << "]\n";
 	// 	std::cout << GRE "   ....... _responsePath: [" << location_data_vector[i].getRootDirectory() << "]\n";
-	// 	if (location_data_vector[i].getRootDirectory() == path) {// TODO here it should be getLocationPath() ?? talk to joyce
+	// 	if (location_data_vector[i].getRootDirectory() == path) {// TODO here it should be getLocationUriName() ?? talk to joyce
 	// 		path = location_data_vector[i].getIndexFile();
 	// 		std::cout << BLU "   ....... FinalPath: [" << path << "]\n";
 	// 	}
@@ -440,26 +440,27 @@ int Request::parsePath(std::string str, struct kevent event) {
 	size_t		ret				= 0;
 //	std::string pathLastWord	= "";
 
+// TODO CHECK IF path == the location block paths (getLocationUriName())
 	if (path == "")
 		return (-1);
 	if (path[0] == '/' && path != "/" && path.find("?") == std::string::npos && _data.getRequestMethod() != "POST") {		// no CGI path needed
 		std::cout << GRN << "  No '?', no cgi path needed\n" RES;
-		path = getServerData().getRootDirectory() + path;
+		path = getServerData().getRootDirectory() + path;// TODO 	SHOULD BE PRE PENDED WITH THE ROOT DIRECTORY OF THE LOCATION, NOT THE PATH FROM THE REQUEST
 	}
 	if ((path[0] == '/' && path != "/" && path.find("?") != std::string::npos)	 	// yes, CGI path needed
 		|| _data.getRequestMethod() == "POST"   ) {
 		std::cout << GRN << "  YES '?', The cgi path is needed\n" RES;
-		path = getServerData().getRootDirectory() + "/cgi/" + path;		//   ***** a)
+		path = getServerData().getRootDirectory() + "/cgi/" + path;		//   ***** a) // TODO 	SHOULD BE PRE PENDED WITH THE ROOT DIRECTORY OF THE LOCATION, NOT THE PATH FROM THE REQUEST
 		getResponseData().setIsCgi(true);
 	}
 	if (path[0] == '/' && path == "/")
-		path = getServerData().getRootDirectory();
+		path = getServerData().getRootDirectory();// TODO 	SHOULD BE PRE PENDED WITH THE ROOT DIRECTORY OF THE LOCATION, NOT THE PATH FROM THE REQUEST
 	if (path[0] != '/')
 	if (path == "./") {
-		path = getServerData().getRootDirectory();
+		path = getServerData().getRootDirectory();// TODO 	SHOULD BE PRE PENDED WITH THE ROOT DIRECTORY OF THE LOCATION, NOT THE PATH FROM THE REQUEST
 		std::cout << GRN << "Path is the root '/'    [" << path << "]\n" RES;
 	}
-	std::cout << GRN << "Path with pre-pended root folder [" << path << "]\n" RES;
+	std::cout << GRN << "Path with pre-pended root folder [" << path << "]\n" RES;// TODO 	SHOULD BE PRE PENDED WITH THE ROOT DIRECTORY OF THE LOCATION, NOT THE PATH FROM THE REQUEST
 
 	if (path.back() == '/'  && (path.find("?") == std::string::npos)) {
 		std::cout << GRN << "The path has no GET-Form data. Last char is '/', it must be a folder.\n" << RES;
