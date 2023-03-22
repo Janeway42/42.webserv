@@ -54,6 +54,7 @@ static int checkIfPathExists(const std::string& path, struct kevent event) {
 // If it is an image, then setImage() is called, where both header and body are created, and
 // then setResponse() returns this full content, ready to be sent.
 void ResponseData::setResponse(struct kevent& event) {
+	std::cout << YEL "Start setResponse()\n" << RES;
 	
 	Request *storage = (Request *)event.udata;	
 	_responseHeader += setResponseStatus(event);

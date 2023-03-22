@@ -222,7 +222,7 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, struct kevent event, s
 	_headerDone = true;
 	//std::cout << "HEADER: [" << BLU << _header << RES "]\n";	// sleep(1);
 	parseHeader(_data.getHeader());
-	std::cout << RED "server root path: " << getServerData().getRootDirectory() << "\n"RES;
+	std::cout << RED "server root path: " << getServerData().getRootDirectory() << "\n" RES;
 	parsePath(_data.getHttpPath(), event);	// IF FILE NOT FOUND 404, IT COULD JUST CLOSE THE CONNECTION AND STOP
 
 	if (_data.getRequestContentLength() == 0){
@@ -263,13 +263,15 @@ void	Request::chooseMethod_StartAction(struct kevent event) {
 
 // void    Request::appendToRequest(const char *str, int fdClient) {
 void    Request::appendToRequest(const char *str, struct kevent event) {
+	//std::cout << PUR << "Start appendToRequest(): _hasBody "<< _hasBody << " _doneParsing " << _doneParsing << " \n" << RES;
+
 	std::string 			chunk = std::string(str);
 	std::string				strToFind = "\r\n\r\n";
 	std::string::size_type	it;
 	std::string				tmpHeader;
 
-	_hasBody = false;
-	std::cout << GRE << "Request Chunk: " << RES << str << std::endl;
+	//_hasBody = false;
+	//std::cout << GRE << "Request Chunk: " << RES << str << std::endl;
 	if (_headerDone == false) {
 		//std::cout << PUR << "     _headerDone == FALSE\n" << RES;
 		_data.setTemp(_data.getTemp() + chunk);
@@ -281,11 +283,14 @@ void    Request::appendToRequest(const char *str, struct kevent event) {
 			appendLastChunkToBody(it + strToFind.length());
 		}
 	}
-	if (_headerDone == true) {
-		std::cout << PUR << "     _headerDone == TRUE\n" << RES;
+	// if (_headerDone == true) {
+	else if (_headerDone == true) {
+		//std::cout << PUR << "     _headerDone == TRUE\n" << RES;
 		// if (_hasBody == true)
-		if (_hasBody == true && _doneParsing == false)
+		if (_hasBody == true && _doneParsing == false) {
+			//std::cout << PUR << "     _hasBody == true && _doneParsing == false\n" << RES;
 			appendToBody(chunk);
+		}
 		if (_doneParsing == true)
 			// storeBodyAsFile(_data.getBody());  // Maybe not needed
 			chooseMethod_StartAction(event);
@@ -298,13 +303,19 @@ void    Request::appendToRequest(const char *str, struct kevent event) {
 
 // Last chunk means, last chunk of header section, so first chunk of body
 int Request::appendLastChunkToBody(std::string::size_type it) {
+	//std::cout << GRN << "start appendlastchunktobody()\n" << RES;
+	//std::cout << GRN << "    getTemp() [" << _data.getTemp() << "]\n" RES;// sleep(2);
 	_data.setBody(_data.getTemp().substr(it));
+	//std::cout << GRN << "    Body [" << _data.getBody() << "]\n" RES;// sleep(2);
+
 	if (_data.getBody().length() > _data.getRequestContentLength()) {   // Compare body length
 		std::cout << RED << "Error: Body-Length, first chunk (" << _data.getBody().length() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;
         _httpStatus = I_AM_A_TEAPOT;
 		return (1);
 	}
 	if (_data.getBody().length() == _data.getRequestContentLength()) {
+		std::cout << GRN << "    _doneparsing == true\n" << RES;
+
 		_doneParsing = true;
 		if (_data.getBody().length() == 0 && _data.getRequestContentLength() == 0) {    // Compare body lenght
 			std::cout << GRE << "OK (there is no body)\n" << RES;
@@ -317,7 +328,7 @@ int Request::appendLastChunkToBody(std::string::size_type it) {
 		}
 		std::cout << GRE << "OK: Body-Length is as expected Content-Length\n" << RES;
 		_doneParsing = true; // otherwise it went to appendToBody, and appended more stuff, so the body lenght became larger then expected
-		std::cout << CYN << "    Body [" << _data.getBody() << "]\n" RES;// sleep(2);
+		std::cout << CYN << "    Body first chunk [" << _data.getBody() << "]\n" RES;// sleep(2);
 
 		//if (_doneParsing == true && _data.getRequestMethod() == "POST") { // can delete doneParsing == true
 		//	std::cout << "      doneparsing true and POST true, call CGI\n";
@@ -336,13 +347,16 @@ int Request::appendLastChunkToBody(std::string::size_type it) {
 
 
 int Request::appendToBody(std::string req) {
+	//std::cout << RED << "start appendToBOdy(), req [" << req << "\n" << RES;
+	//std::cout << RED << "    body before append: [" << _data.getBody() << "\n" << RES;
 	std::string tmp = _data.getBody();
 	tmp.append(req);
 	_data.setBody(tmp);
+	//std::cout << CYN << "    body after append:  [" << _data.getBody() << "]\n" << RES;
 	
 	if (_data.getBody().length() > _data.getRequestContentLength()) {		// Compare body lenght
 		std::cout << RED << "Error: Body-Length (" << _data.getBody().length() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;// sleep(2);
-		std::cout << CYN << "       Body [" << _data.getBody() << "]\n" RES;// sleep(2);
+		//std::cout << CYN << "       Body [" << _data.getBody() << "]\n" RES;// sleep(2);
         _httpStatus = I_AM_A_TEAPOT;
 		return (1);
 	}
@@ -352,13 +366,15 @@ int Request::appendToBody(std::string req) {
 		if (_data.getRequestMethod() == "POST") {
 			std::cout << GRE "      ....    store _body into _queryString\n" RES;
 			_data.setQueryString(_data.getBody());
+			getResponseData().setResponseBody(_data.getBody());		// _responseBody to be sent to CGI
 			storeFormData(_data.getBody());	// maybe not needed
 		}
 		_doneParsing = true;
 		//std::cout << "HEADER: [" BLU << _header << RES "]\n";	// sleep(1);
-		//std::cout << "BODY:   [" BLU << _body   << RES "]\n\n";	// sleep(1);
+		std::cout << "BODY:   [" BLU << _data.getBody()   << RES "]\n\n";	// sleep(1);
 		return (0);
 	}
+	//std::cout << RED << "End appendToBody()\n" << RES;
 	return (0);
 }
 

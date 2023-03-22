@@ -5,22 +5,54 @@ import sys	# to read from std input
 
 
 # TO READ FROM STDIN, FROM PIPE
-print ("<br><br><h3>THIS IS COMING FROM PYTHON SCRIPT:</h3>")
+print ("<br><br><h3>THIS IS PYTHON SCRIPT:</h3>")
 
 content_lenght = int(os.environ.get('CONTENT_LENGTH', 0))   ### is this int ok if length is size_t ??
 print ("<p>BODY CONTENT_LENGTH: <span style='background-color:lavender; padding:1%;'>")
 print (content_lenght)
 print ("</span></p>")
 
-request_body = sys.stdin.read(content_lenght)
+# for line in sys.stdin:
+# 	print ("Print python line [" + line + "]")
+# 	print ("    len(line): ", len(line))
+# 	# print (len(line))
+# 	# if len(line) == content_lenght:
+# 	# if len(line) == 22:
+# 	# 	print ("YES THE SAME ------------")
+# 	# 	print (line)
+# 	# 	break
+# 	# print ("]")
+
+# sys.stdin.close()
+
+# request_body = sys.stdin.read(content_lenght)
+
+# print ("Print python request_body [")
+# print (request_body)
+# print ("]")
 
 
+##################################################
+# Set the buffer size to read from the pipe
+BUFFER_SIZE = 1024
 
+while True:
+    # Read data from the pipe's reading end
+	print ("Python while loop: ")
+	data = os.read(sys.stdin.fileno(), BUFFER_SIZE)
+	
+    # If there's no data, break out of the loop
+	if not data:
+		break
+	print ("Print python line [[[" + data + "]]]")
 
-# for l in sys.stdin:
-# 	print (l)
+	
+    # Print the data to stdout
+    # sys.stdout.write(data.decode('utf-8'))
+    # sys.stdout.flush()
+sys.stdin.close()
 
-
+##################################################
 
 
 # for param in os.environ.keys():

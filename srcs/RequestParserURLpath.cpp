@@ -43,47 +43,50 @@ std::string Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 		if (retFork < 0)
 			std::cout << "Error: Fork failed\n";
 	
+		//close(_cgi.getPipeCgiOut_0());
+		close(_cgi.getPipeCgiIn_1());
 
-		ret = dup2(_cgi.getPipeCgiOut_1()   ,  1);	// cgi writes to parent via pipe fd_out NONBLOCK
-		if (ret == -1)
-			std::cout << RED "Error dup2() of PipeCgiOut_1, child\n" RES;
-
-		// close(_cgi.getPipeCgiOut_0());
-
-		// ret = dup2(_cgi.getPipeCgiIn_0()   ,  0);		// cgi reads from parent via pipe fd_out
+		// ret = dup2(_cgi.getPipeCgiOut_1()   ,  1);	// cgi writes to parent via pipe fd_out NONBLOCK
 		// if (ret == -1)
-		// 	std::cout << RED "Error dup2() of PipeCgiIn_0, child\n" RES;
-		// close(_cgi.getPipeCgiIn_1());
+		// 	std::cout << RED "Error dup2() of PipeCgiOut_1, child\n" RES;
+
+
+		ret = dup2(_cgi.getPipeCgiIn_0()   ,  0);		// cgi reads from parent via pipe fd_out
+		if (ret == -1)
+		 	std::cout << RED "Error dup2() of PipeCgiIn_0, child\n" RES;
 
 
 
-		// std::cout << YEL << "POST BODY ENV : " << ENV[2] << "\n" << RES;
-		std::cout << BLU "Before execve in child\n" << RES;
+		std::cout << RED "Before execve in child\n" << RES;
 		ret = execve(args[0], args, ENV);
 		std::cout << RED << "Error: Execve failed: " << ret << "\n" << RES;
 	}
 	else {				// PARENT
-		wait(NULL);
+		//wait(NULL);
 		std::cout << "    Start Parent\n";
-		char buff[1000];
+		//char buff[1000];
 
-		ret = dup2(_cgi.getPipeCgiOut_0(), 0);		// parent reads from cgi via pipe fd_out
-		if (ret == -1)
-			std::cout << RED "Error dup2() of PipeCgiOut_0, parent\n" RES;
-		// close(_cgi.getPipeCgiOut_1());
+		//close(_cgi.getPipeCgiOut_1());
+		close(_cgi.getPipeCgiIn_0());
 
 
-		// ret = dup2(_cgi.getPipeCgiIn_1()   ,  1);	// parent writes to cgi via pipe fd_in
+		// ret = dup2(_cgi.getPipeCgiOut_0(), 0);		// parent reads from cgi via pipe fd_out
 		// if (ret == -1)
-		// 	std::cout << RED "Error dup2() of PipeCgiIn_1, parent\n" RES;
-		// close(_cgi.getPipeCgiIn_0());
+		// 	std::cout << RED "Error dup2() of PipeCgiOut_0, parent\n" RES;
 
+		std::cout << "            parent a)\n";
 
-		memset(buff, '\0', 1000);
-		ret = read(_cgi.getPipeCgiOut_0(), buff, 999);
+		ret = dup2(_cgi.getPipeCgiIn_1()   ,  1);	// parent writes to cgi via pipe fd_in
+		if (ret == -1)
+		 	std::cout << RED "Error dup2() of PipeCgiIn_1, parent\n" RES;
+
+		std::cout << "            parent b)\n";
+
+		//memset(buff, '\0', 1000);
+		//ret = read(_cgi.getPipeCgiOut_0(), buff, 999);
 		//check ret
-		std::cout << YEL"Ret: read from CGI, from _fd_out[0]:  " << ret << "\n"RES;
-		incomingStr.append(buff);	// HOW TO KEEP APPENDING, IF THERE IS MORE DATA THEN BUFFER SIZE ???
+		//std::cout << YEL"Ret: read from CGI, from _fd_out[0]:  " << ret << "\n" RES;
+		//incomingStr.append(buff);	// HOW TO KEEP APPENDING, IF THERE IS MORE DATA THEN BUFFER SIZE ???
 		//std::cout << BLU "\n       All content read from CGI\n[" << incomingStr << "]\n" << RES;
 		//std::cout << BLU "\n       End parent\n" << RES;
 	}
