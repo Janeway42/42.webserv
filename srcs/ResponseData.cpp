@@ -74,7 +74,8 @@ void ResponseData::setResponse(struct kevent& event) {
 	// IF NOT, THEN CHECK IF AUTOINDEX IS ON,
 	// 			IF YES, SEND HTML WITH FOLDER CONTENT
 	//			IF NOT, SEND ERROR PAGE, NOT ALLOWED ?
-	if (storage->getRequestData().getIsFolder() == true) {
+	// if (storage->getRequestData().getIsFolder() == true) {
+	if (storage->getRequestData().getIsFolder() == true && _isCgi == false) {
 		std::cout << YEL "The Path is a folder: check for a default index file and/or autoindex on/off\n" << RES;
 		std::cout << YEL "           Stored server root folder: [" << storage->getServerData().getRootDirectory() << "]\n" RES;
 	//	std::cout << YEL "          local var. for root folder: [" << serverRootDir << "]\n" RES;
@@ -136,10 +137,11 @@ void ResponseData::setResponse(struct kevent& event) {
 		//}
 	}
 	// IF NOT A FOLDER
-	else {	// IF TEXTFILE
+	else if (storage->getRequestData().getIsFolder() == false && _isCgi == false) {	// IF TEXTFILE
         std::cout << RED "The path is a file: [" << _responsePath << "]\n";
 		if (storage->getRequestData().getRequestContentType().compare("text/html") == 0)
-			_responseBody = streamFile(storage->getServerData().getRootDirectory() + "/" + _responsePath);
+			//_responseBody = streamFile(storage->getServerData().getRootDirectory() + "/" + _responsePath);
+			_responseBody = streamFile(_responsePath);
 		else {	// IF IMAGE, FULL RESPONSE IS CREATED IN setImage()
 			_fullResponse = setImage(storage->getResponseData().getResponsePath());
 			// std::cout << BLU "_fullResponse.length(): [\n" << _fullResponse.size() << "\n" RES;
@@ -148,9 +150,10 @@ void ResponseData::setResponse(struct kevent& event) {
 	}
 
 	// B) IF IT IS A CGI:
-	if (_isCgi == true)
+	if (_isCgi == true) {
 		_responseBody = storage->getRequestData().getCgiBody();
-
+		std::cout << YEL "_responseBody from CGI: [" << _responseBody << "]\n";
+	}
 
 	// set up header 
 	int temp = _responseBody.length();

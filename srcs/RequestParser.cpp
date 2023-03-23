@@ -236,9 +236,12 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, struct kevent event, s
 
 // void	Request::chooseMethod_StartAction(int fdClient) {
 void	Request::chooseMethod_StartAction(struct kevent event) {
-	if (_data.getRequestMethod() == "GET" && _data.getQueryString() != "")
-			// callCGI(getRequestData(), fdClient);
-			callCGI(event);
+	std::cout << RED "Start ChooseMethodStartAction()\n" RES ;
+	if (_data.getRequestMethod() == "GET" && _data.getQueryString() != "") {
+		std::cout << RED "     start GET, callCGI\n" RES ;
+		// callCGI(getRequestData(), fdClient);
+		callCGI(event);
+	}
 	if (_data.getRequestMethod() == "POST")
 			callCGI(event);
 	if (_data.getRequestMethod() == "DELETE") {
@@ -263,7 +266,7 @@ void	Request::chooseMethod_StartAction(struct kevent event) {
 
 // void    Request::appendToRequest(const char *str, int fdClient) {
 void    Request::appendToRequest(const char *str, struct kevent event) {
-	//std::cout << PUR << "Start appendToRequest(): _hasBody "<< _hasBody << " _doneParsing " << _doneParsing << " \n" << RES;
+	std::cout << PUR << "Start appendToRequest(): _hasBody "<< _hasBody << " _doneParsing " << _doneParsing << " \n" << RES;
 
 	std::string 			chunk = std::string(str);
 	std::string				strToFind = "\r\n\r\n";
@@ -281,32 +284,32 @@ void    Request::appendToRequest(const char *str, struct kevent event) {
 			parseHeaderAndPath(tmpHeader, event, it);
 			std::cout << PUR << "Found header ending /r/n, maybe there is body\n" << RES;
 			appendLastChunkToBody(it + strToFind.length());
-		}
-	}
-	// if (_headerDone == true) {
-	else if (_headerDone == true) {
-		//std::cout << PUR << "     _headerDone == TRUE\n" << RES;
-		// if (_hasBody == true)
-		if (_hasBody == true && _doneParsing == false) {
-			//std::cout << PUR << "     _hasBody == true && _doneParsing == false\n" << RES;
-			appendToBody(chunk);
-		}
-		if (_doneParsing == true)
+			if (_doneParsing == true)
 			// storeBodyAsFile(_data.getBody());  // Maybe not needed
-			chooseMethod_StartAction(event);
-			// chooseMethod_StartAction(event.ident);
-			// chooseMethod_StartAction(fdClient);
+				chooseMethod_StartAction(event);
+			return ;
+		}
 	}
+	std::cout << PUR << "     _headerDone == TRUE\n" << RES;
+	// if (_hasBody == true)
+	if (_hasBody == true && _doneParsing == false) {
+		//std::cout << PUR << "     _hasBody == true && _doneParsing == false\n" << RES;
+		appendToBody(chunk);
+	}
+	if (_doneParsing == true)
+		// storeBodyAsFile(_data.getBody());  // Maybe not needed
+		chooseMethod_StartAction(event);
+	//}
 }
 
 
 
 // Last chunk means, last chunk of header section, so first chunk of body
 int Request::appendLastChunkToBody(std::string::size_type it) {
-	//std::cout << GRN << "start appendlastchunktobody()\n" << RES;
+	std::cout << GRN << "start appendlastchunktobody()\n" << RES;
 	//std::cout << GRN << "    getTemp() [" << _data.getTemp() << "]\n" RES;// sleep(2);
 	_data.setBody(_data.getTemp().substr(it));
-	//std::cout << GRN << "    Body [" << _data.getBody() << "]\n" RES;// sleep(2);
+	std::cout << "    Body [" GRN << _data.getBody() << "]\n" RES;// sleep(2);
 
 	if (_data.getBody().length() > _data.getRequestContentLength()) {   // Compare body length
 		std::cout << RED << "Error: Body-Length, first chunk (" << _data.getBody().length() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;
@@ -341,13 +344,15 @@ int Request::appendLastChunkToBody(std::string::size_type it) {
 	}
 	// Timeout ???
 	// 		In case of wrong header, body length bigger than body, but body is already done, 
+	std::cout << CYN << "    Body first chunk [" << _data.getBody() << "]\n" RES;// sleep(2);
+
 	return (0);
 }
 
 
 
 int Request::appendToBody(std::string req) {
-	//std::cout << RED << "start appendToBOdy(), req [" << req << "\n" << RES;
+	std::cout << RED << "start appendToBOdy(), req [" << req << "\n" << RES;
 	//std::cout << RED << "    body before append: [" << _data.getBody() << "\n" << RES;
 	std::string tmp = _data.getBody();
 	tmp.append(req);
@@ -356,7 +361,7 @@ int Request::appendToBody(std::string req) {
 	
 	if (_data.getBody().length() > _data.getRequestContentLength()) {		// Compare body lenght
 		std::cout << RED << "Error: Body-Length (" << _data.getBody().length() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;// sleep(2);
-		//std::cout << CYN << "       Body [" << _data.getBody() << "]\n" RES;// sleep(2);
+		std::cout << CYN << "       Body [" << _data.getBody() << "]\n" RES;// sleep(2);
         _httpStatus = I_AM_A_TEAPOT;
 		return (1);
 	}

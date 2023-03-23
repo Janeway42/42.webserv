@@ -43,14 +43,16 @@ std::string Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 		if (retFork < 0)
 			std::cout << "Error: Fork failed\n";
 	
-		//close(_cgi.getPipeCgiOut_0());
-		close(_cgi.getPipeCgiIn_1());
+		// close(_cgi.getPipeCgiOut_0());
+		// close(_cgi.getPipeCgiIn_1());
+		std::cout << RED "     child a)\n" << RES;
 
-		// ret = dup2(_cgi.getPipeCgiOut_1()   ,  1);	// cgi writes to parent via pipe fd_out NONBLOCK
-		// if (ret == -1)
+		ret = dup2(_cgi.getPipeCgiOut_1()   ,  1);	// cgi writes to parent via pipe fd_out NONBLOCK
+		if (ret == -1)
 		// 	std::cout << RED "Error dup2() of PipeCgiOut_1, child\n" RES;
 
 
+		std::cout << RED "     child b)\n" << RES;
 		ret = dup2(_cgi.getPipeCgiIn_0()   ,  0);		// cgi reads from parent via pipe fd_out
 		if (ret == -1)
 		 	std::cout << RED "Error dup2() of PipeCgiIn_0, child\n" RES;
@@ -59,6 +61,7 @@ std::string Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 
 		std::cout << RED "Before execve in child\n" << RES;
 		ret = execve(args[0], args, ENV);
+	//	ret = execv(argv[0], const_cast<char**>(argv));
 		std::cout << RED << "Error: Execve failed: " << ret << "\n" << RES;
 	}
 	else {				// PARENT
@@ -66,8 +69,8 @@ std::string Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 		std::cout << "    Start Parent\n";
 		//char buff[1000];
 
-		//close(_cgi.getPipeCgiOut_1());
-		close(_cgi.getPipeCgiIn_0());
+		// close(_cgi.getPipeCgiOut_1());
+		// close(_cgi.getPipeCgiIn_0());
 
 
 		// ret = dup2(_cgi.getPipeCgiOut_0(), 0);		// parent reads from cgi via pipe fd_out
@@ -76,9 +79,9 @@ std::string Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 
 		std::cout << "            parent a)\n";
 
-		ret = dup2(_cgi.getPipeCgiIn_1()   ,  1);	// parent writes to cgi via pipe fd_in
-		if (ret == -1)
-		 	std::cout << RED "Error dup2() of PipeCgiIn_1, parent\n" RES;
+		// ret = dup2(_cgi.getPipeCgiIn_1()   ,  1);	// parent writes to cgi via pipe fd_in
+		// if (ret == -1)
+		//  	std::cout << RED "Error dup2() of PipeCgiIn_1, parent\n" RES;
 
 		std::cout << "            parent b)\n";
 

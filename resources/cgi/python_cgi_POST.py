@@ -1,98 +1,29 @@
 #!/usr/bin/python
+print("Start python script")
 
 import os   # TO ACCESS execve ENV variables
 import sys	# to read from std input
 
-
-# TO READ FROM STDIN, FROM PIPE
-print ("<br><br><h3>THIS IS PYTHON SCRIPT:</h3>")
-
-content_lenght = int(os.environ.get('CONTENT_LENGTH', 0))   ### is this int ok if length is size_t ??
-print ("<p>BODY CONTENT_LENGTH: <span style='background-color:lavender; padding:1%;'>")
-print (content_lenght)
-print ("</span></p>")
-
-# for line in sys.stdin:
-# 	print ("Print python line [" + line + "]")
-# 	print ("    len(line): ", len(line))
-# 	# print (len(line))
-# 	# if len(line) == content_lenght:
-# 	# if len(line) == 22:
-# 	# 	print ("YES THE SAME ------------")
-# 	# 	print (line)
-# 	# 	break
-# 	# print ("]")
-
-# sys.stdin.close()
-
-# request_body = sys.stdin.read(content_lenght)
-
-# print ("Print python request_body [")
-# print (request_body)
-# print ("]")
-
-
-##################################################
-# Set the buffer size to read from the pipe
-BUFFER_SIZE = 1024
-
-while True:
-    # Read data from the pipe's reading end
-	print ("Python while loop: ")
-	data = os.read(sys.stdin.fileno(), BUFFER_SIZE)
-	
-    # If there's no data, break out of the loop
-	if not data:
-		break
-	print ("Print python line [[[" + data + "]]]")
-
-	
-    # Print the data to stdout
-    # sys.stdout.write(data.decode('utf-8'))
-    # sys.stdout.flush()
-sys.stdin.close()
-
-##################################################
-
-
-# for param in os.environ.keys():
-# 	# print ("<b>%30s</b>: %s</br>") % (param, os.environ[param])
-# 	# print (param, os.environ[param])
-# 	if param == 'REQUEST_METHOD':
-# 		URL = os.environ[param]
-# 		print("<p>FOUND METHOD:")
-# 		print ("<span style='background-color:plum; padding:1%;'>" + URL + "</span><p>")
-# 	if param == 'QUERY_STRING':
-# 		URL = os.environ[param]
-# 		print("<p>FOUND QUERY STRING:")
-# 		print ("<span style='background-color:cornsilk; padding:1%;'>" + URL + "</span><p>")
-# 	else:
-# 		URL="DEFAULT=default"
+import cgi, cgitb
+cgitb.enable()	# detailed errors msgs
+# cgitb.enable(display=0, logdir="/path/to/logdir")
 
 
 
-# # from urllib.parse import urlparse, parse_qs # why is this not good ??
-# from urlparse import urlparse, parse_qs
-# parsed_result = urlparse(URL)
-# parse_qs(parsed_result.query)
+### To get at submitted form data, use the FieldStorage class.
+# If the form contains non-ASCII characters, use the encoding keyword parameter set to the value of the encoding defined for the document (Content-Type header).
+# FieldStorage class reads the form contents from the standard input OR the environment (depending on the value of various environment variables set according to the CGI standard). Since it may consume ??? standard input, it should be instantiated only once.
 
 
-# print ("<p>PARSED RESULT: <span style='background-color:lavender; padding:1%;'>")
-# print (parsed_result)
-# print ("</span></p>")
+form = cgi.FieldStorage()
+# if "street" not in form or "city" not in form:
+# 	print("<H1>Error</H1>")
+# 	print("Please fill in the street and city fields.")
+# 	exit
 
 
-# dict_result = parse_qs(parsed_result.path)
-# print ("<p>EXTRACTED QUERY STRING:")
-# print ("<span style='background-color:darkkhaki; padding:1%;'>")
-# print (dict_result)
-# print ("</span></p>")
+# print("<p>street:", form["street"].value)
+# print("<p>city:", form["city"].value)
 
 
-# print ("<div style='width:fit-content; padding:5%; margin: 10% 0% 0% 10%; border:1px solid; background-color: linen; border-radius: 4px';><h1>Congratulations!</h1>")
-
-### THESE ARE CAUSING ERROR WITH POST METHOD, BECAUSE THEY DON'T EXIST IN THE QUERY STRING
-# print ("<h3>      Your fruit is: <span style='background-color:bisque; padding:1%;'>" + dict_result['fruit'][0] + "</span></h3>")
-#print ("<h3>    Your vegetable is: <span style='background-color:coral; padding:1%'>" + dict_result['vegetable'][0] + "</h3>")
-
-########## ######## ############## ########### ###########
+print("End python script")
