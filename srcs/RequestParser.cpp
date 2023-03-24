@@ -234,10 +234,13 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, struct kevent event, s
 
 
 
-// void	Request::chooseMethod_StartAction(int fdClient) {
 void	Request::chooseMethod_StartAction(struct kevent event) {
 	std::cout << RED "Start ChooseMethodStartAction()\n" RES ;
 	if (_data.getRequestMethod() == "GET" && _data.getQueryString() != "") {
+		if (_data.getRequestMethod() == "GET" && _data.getQueryString() != "") {
+			_data.setBody(_data.getQueryString());	// querystring copied to _body, because this body goes to cgi
+			std::cout << "        body [" << PUR << _data.getBody() << RES << "]\n";
+		}
 		std::cout << RED "     start GET, callCGI\n" RES ;
 		// callCGI(getRequestData(), fdClient);
 		callCGI(event);
@@ -296,10 +299,10 @@ void    Request::appendToRequest(const char *str, struct kevent event) {
 		//std::cout << PUR << "     _hasBody == true && _doneParsing == false\n" << RES;
 		appendToBody(chunk);
 	}
-	if (_doneParsing == true)
+	if (_doneParsing == true) {
 		// storeBodyAsFile(_data.getBody());  // Maybe not needed
 		chooseMethod_StartAction(event);
-	//}
+	}
 }
 
 

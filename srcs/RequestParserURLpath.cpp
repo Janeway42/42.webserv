@@ -43,57 +43,36 @@ std::string Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 		if (retFork < 0)
 			std::cout << "Error: Fork failed\n";
 	
-		// close(_cgi.getPipeCgiOut_0());
-		// close(_cgi.getPipeCgiIn_1());
+		close(_cgi.getPipeCgiOut_0());
+		close(_cgi.getPipeCgiIn_1());
+
 		std::cout << RED "     child a)\n" << RES;
-
-		ret = dup2(_cgi.getPipeCgiOut_1()   ,  1);	// cgi writes to parent via pipe fd_out NONBLOCK
-		if (ret == -1)
-		// 	std::cout << RED "Error dup2() of PipeCgiOut_1, child\n" RES;
-
-
-		std::cout << RED "     child b)\n" << RES;
 		ret = dup2(_cgi.getPipeCgiIn_0()   ,  0);		// cgi reads from parent via pipe fd_out
 		if (ret == -1)
 		 	std::cout << RED "Error dup2() of PipeCgiIn_0, child\n" RES;
+		close(_cgi.getPipeCgiIn_0());
+		
+		//sleep(1);
+		std::cout << RED "     child b)\n" << RES;
+		ret = dup2(_cgi.getPipeCgiOut_1()   ,  1);	// cgi writes to parent via pipe fd_out NONBLOCK
+		if (ret == -1)
+		 	std::cout << RED "Error dup2() of PipeCgiOut_1, child\n" RES;
+		//close(_cgi.getPipeCgiOut_1());
 
-
-
-		std::cout << RED "Before execve in child\n" << RES;
+		std::cerr << RED "Before execve in child\n" << RES;
 		ret = execve(args[0], args, ENV);
-	//	ret = execv(argv[0], const_cast<char**>(argv));
-		std::cout << RED << "Error: Execve failed: " << ret << "\n" << RES;
+	//	ret = execv(args[0], const_cast<char**>(args));
+		std::cerr << RED << "Error: Execve failed: " << ret << "\n" << RES;
 	}
 	else {				// PARENT
 		//wait(NULL);
-		std::cout << "    Start Parent\n";
-		//char buff[1000];
-
-		// close(_cgi.getPipeCgiOut_1());
-		// close(_cgi.getPipeCgiIn_0());
-
-
-		// ret = dup2(_cgi.getPipeCgiOut_0(), 0);		// parent reads from cgi via pipe fd_out
-		// if (ret == -1)
-		// 	std::cout << RED "Error dup2() of PipeCgiOut_0, parent\n" RES;
-
-		std::cout << "            parent a)\n";
-
-		// ret = dup2(_cgi.getPipeCgiIn_1()   ,  1);	// parent writes to cgi via pipe fd_in
-		// if (ret == -1)
-		//  	std::cout << RED "Error dup2() of PipeCgiIn_1, parent\n" RES;
-
-		std::cout << "            parent b)\n";
-
-		//memset(buff, '\0', 1000);
-		//ret = read(_cgi.getPipeCgiOut_0(), buff, 999);
-		//check ret
-		//std::cout << YEL"Ret: read from CGI, from _fd_out[0]:  " << ret << "\n" RES;
-		//incomingStr.append(buff);	// HOW TO KEEP APPENDING, IF THERE IS MORE DATA THEN BUFFER SIZE ???
-		//std::cout << BLU "\n       All content read from CGI\n[" << incomingStr << "]\n" << RES;
-		//std::cout << BLU "\n       End parent\n" << RES;
+		
+		std::cerr << "    Start Parent\n";
+		close(_cgi.getPipeCgiOut_1());
+		close(_cgi.getPipeCgiIn_0());
+		//std::cout << BLU "\n       End runExecve()\n" << RES;
 	}
-	return (incomingStr);
+	return (incomingStr);	// just ""  , func can be set to void
 }
 
 
@@ -158,13 +137,15 @@ void Request::callCGI(struct kevent event) {
 	// (void)fdClient;
 	_data.setCgiBody(runExecve(env, args, event));
 
-	std::cout << "Stored body from CGI: [\n" << BLU << _data.getCgiBody() << RES << "]\n";
+	//std::cout << "Stored body from CGI: [\n" << BLU << _data.getCgiBody() << RES << "]\n";
 
 	// Cleanup
 	for (size_t j = 0; j < temp.size(); j++) {
 		delete env[j];
 	}
 	delete[] env;
+	std::cout << BLU "\n       End callCGI()\n" << RES;
+
 }
 
 
@@ -266,11 +247,13 @@ void Request::storePathParts_and_FormData(std::string path) {
 	if (queryString[0] == '?') 	// Skip the '?' in the path
 		queryString = &queryString[1];
 
-	if (_data.getRequestMethod() == "GET")
+	if (_data.getRequestMethod() == "GET") {
 		_data.setQueryString(queryString);
+		// _data.setBody(queryString);  // too early
+	}
 
 	std::cout << "Stored GET _queryString [\n" << BLU << _data.getQueryString() << RES << "]\n";
-	std::cout << "Stored GET _body [\n" << BLU << _data.getBody() << RES << "]\n" << RES;
+	std::cout << "Stored GET _body [\n"        << BLU << _data.getBody() << RES << "]\n" << RES;
 
 	storeFormData(queryString);	// maybe not needed (the whole vector and map)
 	// if the cgi script can handle the whole queryString
@@ -372,6 +355,7 @@ static void printPathParts(std::string str, RequestData reqData) {
 	std::cout << "Path first part: [" << PUR << reqData.getPathFirstPart() << RES << "]\n";
 	std::cout << "File/Folder:     [" << PUR << reqData.getPathLastWord() << RES << "]\n";
 	std::cout << "File extention:  [" << PUR << reqData.getFileExtention() << RES << "]\n";
+	std::cout << "Body:            [" << PUR << reqData.getBody() << RES << "]\n";
 
 	std::map<std::string, std::string> formData;
 	formData = reqData.getFormData();
@@ -495,7 +479,7 @@ int Request::parsePath(std::string str, struct kevent event) {
 		
 		// path is not extracted correctly
 		// _data.setQueryString(getRequestBody());
-		_data.setQueryString(_data.getBody());
+		//_data.setQueryString(_data.getBody());
 	}
 
 	ret = checkIfPathExists(_data.getPath(), event);

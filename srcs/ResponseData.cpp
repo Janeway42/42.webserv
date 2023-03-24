@@ -92,7 +92,7 @@ void ResponseData::setResponse(struct kevent& event) {
 			}
 			// IF PATH IS A FOLDER INSIDE THE ROOT FOLDER
 			else {
-				std::cout << YEL "          The Path is a folder inside the root: [" << storage->getRequestData().getPath() << "]\n" RES;
+				std::cout << YEL "          The URLpath is a folder inside the root: [" << storage->getRequestData().getPath() << "]\n" RES;
 
 				// Here it should compare the path with available locations.
 				// If a location is valid in the config file, then take the default index file inside that location
@@ -100,12 +100,14 @@ void ResponseData::setResponse(struct kevent& event) {
 				std::vector<ServerLocation> location_data_vector = storage->getServerData().getLocationBlocks();
 				size_t i;
 				for (i = 0; i < location_data_vector.size(); i++) {
-                    std::cout << GRE "   ........ location uri: [" << location_data_vector[i].getLocationUriName() << "]\n";
+                    std::cout << GRE "   .... incoming URLpath: [" << storage->getRequestData().getPath() << "]\n";
+                    std::cout << GRE "   ... location URI name: [" << location_data_vector[i].getLocationUriName() << "]\n";
                     std::cout << GRE "   ... location root dir: [" << location_data_vector[i].getRootDirectory() << "]\n";
                     std::cout << GRE "   ....... _responsePath: [" << _responsePath << "]\n";
-					if (location_data_vector[i].getRootDirectory() == _responsePath) {// TODO here it should be getLocationUriName()
-						_responsePath = _responsePath + "/" + location_data_vector[i].getIndexFile();
-                    	std::cout << BLU "   ....... FinalPath: [" << _responsePath << "]\n";
+					// if (location_data_vector[i].getRootDirectory() == _responsePath) {// TODO here it should be getLocationUriName()
+					if (location_data_vector[i].getLocationUriName() == storage->getRequestData().getPath()) {// TODO here it should be getLocationUriName()
+						_responsePath = location_data_vector[i].getRootDirectory() + "/" + location_data_vector[i].getIndexFile();
+                    	std::cout << BLU "   ....... FinalPath: [" << location_data_vector[i].getRootDirectory() << "]\n";
 						break ;
 					}
 				}

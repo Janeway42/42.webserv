@@ -178,6 +178,8 @@ void WebServer::readRequest(struct kevent& event)
                     std::cout << "response success\n";
                 }
 
+				// if (storage->getRequestData().getRequestMethod() != "POST" && storage->getRequestData().getQueryString() == "")	// added Jaka, if POST, it should not yet create the response, but write to Cgi
+				//sleep(2);
 				if (storage->getRequestData().getRequestMethod() != "POST")	// added Jaka, if POST, it should not yet create the response, but write to Cgi
 					storage->getResponseData().setResponse(event);
 				addFilter(event.ident, event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, success READ");
@@ -202,13 +204,19 @@ void WebServer::sendResponse(struct kevent& event)
         std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CGI, write to CGI  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
 		//buffer = storage->getResponseData().getResponseBody();
 		// Jaka: Set buffer string to the point, from where previous chunk of body was sent
-		buffer = storage->getResponseData().getResponseBody().substr(storage->getCgiData().getBytesToCgi());
+		std::cout << "       getBody().length() " << storage->getRequestData().getBody().length() << "\n";
+		std::cout << "                getBody() [" << BLU << storage->getRequestData().getBody() << RES "]\n";
+
+		// buffer = storage->getResponseData().getResponseBody().substr(storage->getCgiData().getBytesToCgi()); // changed jaka: If POST, the _body is to be sent to cgi
+		//sleep(2);
+		buffer = storage->getRequestData().getBody().substr(storage->getCgiData().getBytesToCgi());				//               If GET, I also put the query string in the _body
+																												//               	So now it comes to CGI as ENV and as BODY
 		ssize_t ret = write(storage->getCgiData().getPipeCgiIn_1(), buffer.c_str(), buffer.length());
-		std::cout << "     ret write: " << ret << "body.lenght() " << storage->getRequestData().getBody().length() << "\n";
-		sleep(5);
+		std::cout << "        ret write: " << ret << "\n";
 
 		if (ret == -1)
 		{
+			std::cout << "    send response ret == -1\n";
 			storage->setHttpStatus(INTERNAL_SERVER_ERROR);
 			storage->getResponseData().setResponse(event);
 			addFilter(storage->getFdClient(), event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, ret = -1 on _fd_in[1]");    //  this allows client write 
@@ -218,11 +226,10 @@ void WebServer::sendResponse(struct kevent& event)
 		{
 			storage->getCgiData().setBytesToCgi(ret);
 			// Jaka -  keep track of what has been sent-> change file to be written if necessary
-			std::cout << "    current getBytesToCGI " << storage->getCgiData().getBytesToCgi() << "\n";
+			std::cout << RES "    current sent getBytesToCGI " << storage->getCgiData().getBytesToCgi() << "\n" RES;
 
 
 			if (storage->getCgiData().getBytesToCgi() == (storage->getRequestData()).getBody().length())
-			// if (storage->getCgiData().getBytesToCgi() > (storage->getRequestData()).getBody().length())		// jaka, to test
 			{
                 std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ CGI Response sent ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
                 removeFilter(event, EVFILT_WRITE, "failed kevent EV_DELETE, EVFILT_WRITE - success on _fd_in[1]");
@@ -244,7 +251,8 @@ void WebServer::sendResponse(struct kevent& event)
 
 		std::string content = storage->getResponseData().getFullResponse();
         //std::cout << GRN << "Full Response:\n" RES << storage->getResponseData().getFullResponse() << RES << std::endl;
-        std::cout << GRN << "Full Response size:\n" RES << content.size() << RES << std::endl;
+        std::cout << GRN << "Full Response size: " RES << content.size() << RES << std::endl;
+        std::cout << GRN << "       fullResponse: [" RES << content<< RES "]\n" << std::endl;
         unsigned long myRet;
 		storage->getResponseData().setCurrentLength(content.size());
 
