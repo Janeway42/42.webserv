@@ -4,11 +4,6 @@
 
 #include "Parser.hpp"
 
-///** Default Constructor */
-//Parser::Parser() {
-//
-//}
-
 std::string Parser::keyParser(std::string & lineContent, std::string const & keyToFind) {
     if (not lineContent.empty() || not keyToFind.empty()) {
         if (lineContent.find(keyToFind) != std::string::npos) {

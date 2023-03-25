@@ -111,7 +111,7 @@ void ConfigFileParser::parseFileServerBlock(std::ifstream & configFile) {
             continue;
         }
         if (lineContent.find("error_page") != std::string::npos) {
-            _server_data.setErrorPage(keyParser(lineContent, "error_page"));
+            _server_data.setErrorPages(keyParser(lineContent, "error_page"));
             continue;
         }
         if (lineContent.find("port_redirection") != std::string::npos) {
@@ -121,7 +121,11 @@ void ConfigFileParser::parseFileServerBlock(std::ifstream & configFile) {
         /** Checking for cgi or location/cgi blocks */
         if (lineContent.find("location") != std::string::npos && lineContent.find('{') != std::string::npos) {
             ServerLocation _server_location(ServerLocation(_server_data.getRootDirectory(), _server_data.getIndexFile()));
-            _server_location.setLocationPath(keyParser(lineContent, "location"));
+            std::string locationValue = keyParser(lineContent, "location");
+            if (not locationValue.empty() && locationValue[0] == '.') {
+                _server_location.setLocationAsCgi(true);
+            }
+            _server_location.setLocation(locationValue);
             parseFileLocationBlock(configFile, _server_data, _server_location);
             continue;
         }
@@ -176,7 +180,6 @@ void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile, Server
         }
         if (lineContent.find("interpreter_path") != std::string::npos) {
             _server_location.setInterpreterPath(keyParser(lineContent, "interpreter_path"));
-            _server_location.setLocationAsCgi(true);
             interpreterPathAlreadyChecked = true;
             continue;
         }
