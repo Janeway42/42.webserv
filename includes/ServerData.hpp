@@ -21,7 +21,7 @@ class ServerData : public Parser {
         std::string _root_directory;
         std::string _index_file;
         unsigned int _client_max_body_size;
-        std::string _error_page;
+        std::vector<std::string> _error_page;
         unsigned int _port_redirection;
         /* As more than 1 location block can be added to a server block */
         std::vector<ServerLocation> _location_data_vector;
@@ -41,7 +41,7 @@ class ServerData : public Parser {
         std::string getRootDirectory() const;
         std::string getIndexFile() const;
         unsigned int getClientMaxBodySize() const;
-        std::string getErrorPage() const;
+        std::vector<std::string> getErrorPages() const;
         unsigned int getPortRedirection() const;
         std::vector<ServerLocation> & getLocationBlocks();
         int getListeningSocket() const;
@@ -54,7 +54,7 @@ class ServerData : public Parser {
         void setRootDirectory(std::string const & rootDirectory);
         void setIndexFile(std::string const & indexFile);
         void setClientMaxBodySize(std::string const & bodySize);
-        void setErrorPage(std::string const & errorPage);
+        void setErrorPages(std::string const & errorPage);
         void setPortRedirection(std::string const & portRedirection);
         void setListeningSocket();
 

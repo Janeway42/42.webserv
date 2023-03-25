@@ -4,6 +4,8 @@
 //ServerLocation::ServerLocation()// todo private???
 //    /** Initializing default values for the location block */
 //    : _is_location_cgi(false),
+//    _location_uri_name(std::string()),
+//    _location_cgi_extension(std::string()),
 //    _root_directory(std::string()),
 //    _allow_methods(),
 //    _index_file(std::string()),
@@ -19,6 +21,7 @@ ServerLocation::ServerLocation(std::string const & server_root_directory, std::s
     /** Initializing default values for the location block */
     : _is_location_cgi(false),
     _location_uri_name(std::string()),
+    _location_cgi_extension(std::string()),
     _root_directory(server_root_directory),
     _index_file(server_index_file),
     _auto_index(false),
@@ -34,6 +37,7 @@ ServerLocation::~ServerLocation() {
     /** Cleaning default values for the location block */
     _is_location_cgi = false;
     _location_uri_name.clear();
+    _location_cgi_extension.clear();
     _root_directory.clear();
     _allow_methods = std::vector<AllowMethods>(NONE);
     _index_file.clear();
@@ -54,6 +58,10 @@ bool ServerLocation::isLocationCgi() const {
 
 std::string ServerLocation::getLocationUriName() const {
     return _location_uri_name;
+}
+
+std::string ServerLocation::getLocationCgiExtension() const {
+    return _location_cgi_extension;
 }
 
 std::string ServerLocation::getRootDirectory() const {
@@ -87,19 +95,30 @@ void ServerLocation::setLocationAsCgi(bool isCgi) {
     _is_location_cgi = isCgi;
 }
 
-void ServerLocation::setLocationPath(std::string const & locationPath) {
-    /* not mandatory | if request contains an uri directory path, it can be made accessible by making it a location block */
-    if (not locationPath.empty()) {
-        std::string location_path = addRootDirectoryPath(_root_directory, locationPath);
-        PathType type = pathType(location_path);
-        if (type == DIRECTORY) {
-            _location_uri_name = addCurrentDirPath(location_path) + location_path;
-        } else if (type == PATH_TYPE_ERROR) {
-            throw ParserException(CONFIG_FILE_ERROR("location block", MISSING));
+void ServerLocation::setLocation(std::string const & location) {
+    /* mandatory | if request contains an uri directory path, it can be made accessible by making it a location block */
+    if (not location.empty()) {
+        if (isLocationCgi()) {
+            if (location[0] == '.') {
+                _location_cgi_extension = location;
+                return ;
+            } else {
+                throw ParserException(CONFIG_FILE_ERROR("location block cgi extension", NOT_SUPPORTED));
+            }
         } else {
-            throw ParserException(CONFIG_FILE_ERROR("location block", NOT_SUPPORTED));
+            std::string ::const_iterator it;
+            for (it = location.cbegin(); it != location.cend(); it++) {
+                if (*it < 43 || *it > 126) {
+                    std::cout << "it: [" << *it << "]" << std::endl;
+
+                    throw ParserException(CONFIG_FILE_ERROR("location block value", NOT_SUPPORTED));
+                }
+            }
+            _location_uri_name = location;
+            return ;
         }
     }
+    throw ParserException(CONFIG_FILE_ERROR("location block value", MANDATORY));
 }
 
 void ServerLocation::setRootDirectory(std::string const & rootDirectory) {

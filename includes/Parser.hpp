@@ -17,7 +17,7 @@
 # define RES     "\033[0m"
 
 // We can find more status here: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
-// todo: I put the ones i found interesting here but we can delete the ones we dont use later if wanted/needed
+// I put the ones I found interesting here, but we can delete the ones we don't use later if wanted/needed
 enum HttpStatus {
     NO_STATUS = 0,
     /** Information responses */
@@ -80,27 +80,7 @@ enum DataType {// todo: Maybe not used
     BODY
 };
 
-/** If the error message will be useful for the http response then a $responseStatusCode will be set.
- * Otherwise $responseStatusCode will be set to zero.
- */
-//struct parser_error {
-//    unsigned short responseStatusCode;// todo change it just to errorCode?
-//    std::string errorMessage;
-//} parserError[] = {
-//        {   0,     "Key is not supported"},
-//        {   0,     "Value is not a string"},
-//        {   0,     "Value is not a relative or full path"},
-//        {   0,     "Value is not a full path"},
-//        {   0,     "Value is not a .html file"},
-//        {   0,     "Value is not an allowed port"},
-//        {   0,     "Value is not a string"},
-//        {   0,     "Value is not a string"},
-//        {   0,     "Value is not a string"},
-//        {   400,   "Value is not a string"},
-//        {  404,   "Key ServerLocation is not supported"},
-//};
-
-/** Error Macros */
+/** Parsing error Macros */
 #define NOT_SUPPORTED 0
 #define MANDATORY 1
 #define MISSING 2
@@ -109,8 +89,9 @@ enum DataType {// todo: Maybe not used
                                                 : (RES key RED" is missing"))
 
 class Parser {
+    private:
+//        Parser() {};
     public:
-//        Parser();
         virtual std::string keyParser(std::string & lineContent, std::string const & keyToFind);
         virtual std::string getOneCleanValueFromKey(std::string & contentLine, std::string const & key);
         virtual DataType getValueType(std::string & lineContent);

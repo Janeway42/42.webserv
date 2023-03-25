@@ -42,8 +42,13 @@ int main(int ac, char **av) {
                 unsigned int clientMaxBodySize = it_server->getClientMaxBodySize();
                 std::cout << GRE << std::left << std::setw(30) << "\"client_max_body_size\": " << clientMaxBodySize << RES << std::endl;
 
-                std::string errorPage = it_server->getErrorPage();
-                std::cout << GRE << std::left << std::setw(30) << "\"error_page\": " << errorPage << RES << std::endl;
+                std::vector<std::string> errorPages = it_server->getErrorPages();
+                std::cout << GRE << std::left << std::setw(30) << "\"error_page\": "<< RES;
+                std::vector<std::string>::const_iterator it_location_error_pages;
+                for (it_location_error_pages = errorPages.cbegin(); it_location_error_pages != errorPages.cend(); ++it_location_error_pages) {
+                    std::cout << GRE << "" << *it_location_error_pages << " " << RES;
+                }
+                std::cout << std::endl;
 
                 unsigned int portRedirection = it_server->getPortRedirection();
                 std::cout << GRE << std::left << std::setw(30) << "\"port_redirection\": " << portRedirection << RES << std::endl;
@@ -58,8 +63,8 @@ int main(int ac, char **av) {
                         std::cout << "Is this location a CGI location: " << it_location->isLocationCgi() << std::endl;
                         std::cout << "Server block and location block index files can be used for requests that match this location: " << it_location->useServerBlockIndexFile << std::endl;
 
-                        std::string locationDirectory = it_location->getLocationUriName();
-                        std::cout << GRE << std::left << std::setw(30) << "\"location\": " << locationDirectory << RES << std::endl;
+                        std::string locationCgiExtension = it_location->getLocationCgiExtension();
+                        std::cout << GRE << std::left << std::setw(30) << "\"location\": " << locationCgiExtension << RES << std::endl;
 
                         std::string cgiLocationRootDirectory = it_location->getRootDirectory();
                         std::cout << GRE << std::left << std::setw(30) << "\"root_directory\": " << cgiLocationRootDirectory << RES << std::endl;

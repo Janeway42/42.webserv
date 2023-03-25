@@ -7,6 +7,7 @@
 #include <sys/event.h>
 
 #include <arpa/inet.h>
+#include <sstream>
 
 /** Default constructor */
 ServerData::ServerData()
@@ -17,7 +18,7 @@ ServerData::ServerData()
     _root_directory(_server_name),
     _index_file("index.html"),
     _client_max_body_size(1024),
-    _error_page(""),
+    _error_page(std::vector<std::string>()),
     _port_redirection(0) {
     std::cout << PUR << "ServerData Default constructor" << RES << std::endl;
 }
@@ -76,7 +77,7 @@ unsigned int ServerData::getClientMaxBodySize() const {
     return _client_max_body_size;
 }
 
-std::string ServerData::getErrorPage() const {
+std::vector<std::string> ServerData::getErrorPages() const {
     return _error_page;
 }
 
@@ -253,15 +254,22 @@ void ServerData::setClientMaxBodySize(std::string const & bodySize) {
     }
 }
 
-void ServerData::setErrorPage(std::string const & errorPage) {
+/* The Http Request class has to check if the file exists, using something like:
+ * if (pathType(addRootDirectoryPath(servers.getRootDirectory(), servers.getLocationBlocks().getErrorPages())) == REG_FILE) */
+void ServerData::setErrorPages(std::string const & errorPage) {
     /* not mandatory | default: empty, no set error page, webserver will decide */
     if (not errorPage.empty()) {
-        std::string error_page = addRootDirectoryPath(_root_directory, errorPage);
-        if (pathType(error_page) == REG_FILE) {
-            _error_page = addCurrentDirPath(error_page) + error_page;
-        } else {
-            throw ParserException(CONFIG_FILE_ERROR("error_page", NOT_SUPPORTED));
+        std::vector<std::string> error_page_vector;
+        std::string error_page;
+        std::stringstream ss(errorPage);
+        while(getline(ss, error_page, ' ')){
+            if (error_page.find(".html") != std::string::npos) {
+                error_page_vector.push_back(error_page);
+            } else {
+                throw ParserException(CONFIG_FILE_ERROR("error_page", NOT_SUPPORTED));
+            }
         }
+        _error_page = error_page_vector;
     }
 }
 
