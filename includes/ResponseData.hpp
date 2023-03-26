@@ -38,10 +38,10 @@ class ResponseData: public Parser
 
 		// ***************************************************************************
 		// added jaka
-		size_t			getCurrentLength(); // jaka
+		//size_t		getCurrentLength(); // jaka
 		size_t			getSentSoFar(); // jaka
 		std::string&	eraseSentChunkFromFullResponse(unsigned long retBytes); // to erase the sent chunk from the remaining response content
-		void 			setCurrentLength(size_t len);
+		//void 			setCurrentLength(size_t len);
 		void			increaseSentSoFar(size_t bytesSent);
 		// ***************************************************************************
 

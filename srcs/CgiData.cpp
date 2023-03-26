@@ -23,8 +23,8 @@ void CgiData::createPipes(int kq, struct kevent & event)
 	fcntl(_fd_in[1], F_SETFL, O_NONBLOCK);
 	fcntl(_fd_out[0], F_SETFL, O_NONBLOCK);
 
-	fcntl(_fd_in[0], F_SETFL, O_NONBLOCK);	// added jaka
-	fcntl(_fd_out[1], F_SETFL, O_NONBLOCK);	// added jaka
+	//fcntl(_fd_in[0], F_SETFL, O_NONBLOCK);	// added jaka
+	//fcntl(_fd_out[1], F_SETFL, O_NONBLOCK);	// added jaka
 
 	std::cout << YEL "Created pipes:  in[0]" << _fd_in[0] << ",  in[1]" << _fd_in[1] 
 							   << ", out[0]" << _fd_out[0] << ", out[1]" << _fd_out[1] << " \n" RES; 

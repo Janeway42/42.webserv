@@ -25,7 +25,7 @@
 
 
 
-std::string Request::runExecve(char *ENV[], char *args[], struct kevent event) {
+void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 	//std::cout << BLU << "START runExeve\n" << RES;
 	(void)event;
 
@@ -34,7 +34,6 @@ std::string Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 
 	int ret = 0;
 	pid_t		retFork;
-	std::string	incomingStr = "";
 
 	retFork = fork();
 
@@ -46,18 +45,16 @@ std::string Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 		close(_cgi.getPipeCgiOut_0());
 		close(_cgi.getPipeCgiIn_1());
 
-		std::cout << RED "     child a)\n" << RES;
 		ret = dup2(_cgi.getPipeCgiIn_0()   ,  0);		// cgi reads from parent via pipe fd_out
 		if (ret == -1)
 		 	std::cout << RED "Error dup2() of PipeCgiIn_0, child\n" RES;
 		close(_cgi.getPipeCgiIn_0());
 		
 		//sleep(1);
-		std::cout << RED "     child b)\n" << RES;
 		ret = dup2(_cgi.getPipeCgiOut_1()   ,  1);	// cgi writes to parent via pipe fd_out NONBLOCK
 		if (ret == -1)
 		 	std::cout << RED "Error dup2() of PipeCgiOut_1, child\n" RES;
-		//close(_cgi.getPipeCgiOut_1());
+		close(_cgi.getPipeCgiOut_1());
 
 		std::cerr << RED "Before execve in child\n" << RES;
 		ret = execve(args[0], args, ENV);
@@ -71,8 +68,9 @@ std::string Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 		close(_cgi.getPipeCgiOut_1());
 		close(_cgi.getPipeCgiIn_0());
 		//std::cout << BLU "\n       End runExecve()\n" << RES;
+		sleep(1);
 	}
-	return (incomingStr);	// just ""  , func can be set to void
+	return ;	// just ""  , func can be set to void
 }
 
 
@@ -135,7 +133,8 @@ void Request::callCGI(struct kevent event) {
 
 	// (void)ENV;
 	// (void)fdClient;
-	_data.setCgiBody(runExecve(env, args, event));
+	//_data.setCgiBody(runExecve(env, args, event));
+	runExecve(env, args, event);
 
 	//std::cout << "Stored body from CGI: [\n" << BLU << _data.getCgiBody() << RES << "]\n";
 
@@ -144,7 +143,7 @@ void Request::callCGI(struct kevent event) {
 		delete env[j];
 	}
 	delete[] env;
-	std::cout << BLU "\n       End callCGI()\n" << RES;
+	//std::cout << BLU "\n       End callCGI()\n" << RES;
 
 }
 

@@ -319,17 +319,17 @@ std::string&	ResponseData::eraseSentChunkFromFullResponse(unsigned long retBytes
 	return (_fullResponse.erase(0, retBytes));
 }
 
-size_t	ResponseData::getCurrentLength() { // jaka
-	return (_lengthFullResponse);
-}
+// size_t	ResponseData::getCurrentLength() { // jaka
+// 	return (_lengthFullResponse);
+// }
 
 size_t	ResponseData::getSentSoFar() { // jaka
 	return (_bytesToClient);
 }
 
-void 	ResponseData::setCurrentLength(size_t len) {
-	_lengthFullResponse = len;
-}
+// void 	ResponseData::setCurrentLength(size_t len) {
+// 	_lengthFullResponse = len;
+// }
 
 void	ResponseData::increaseSentSoFar(size_t bytesSent) {
 	_bytesToClient += bytesSent;
