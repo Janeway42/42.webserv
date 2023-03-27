@@ -7,7 +7,7 @@
 [33m    root_directory              resources;[0m
 [33m    index_file                  ;[0m
 [33m	client_max_body_size        2048;[0m
-[33m	error_page                  ./resources/error_pages/400BadRequest.html;[0m
+[33m	error_page                  400.html 401.html 403.html 500.html;[0m
 [33m	port_redirection            80088;[0m
 [36mServerLocation Overloaded constructor[0m
 [33m    location server_root {[0m
@@ -17,281 +17,38 @@
 [33m        auto_index              on;[0m
 [36mServerLocation Destructor[0m
 [36mServerLocation Overloaded constructor[0m
-[33m    location cgi {[0m
+[33m    location .py {[0m
 [33m        root_directory          cgi;[0m
 [33m        interpreter_path        /usr/bin/python3;[0m
 [33m        script_extension        .py;[0m
 [33m        index_file              cgi_index.html;[0m
 [36mServerLocation Destructor[0m
 [36mServerLocation Destructor[0m
+[36mServerLocation Overloaded constructor[0m
+[33m    location cgi {[0m
+[33m        root_directory          cgi;[0m
+[33m        index_file              cgi_index.html;[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
 [35mServerData Copy constructor[0m
 [35mServerData Destructor[0m
 [36mServerLocation Destructor[0m
 [36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
 [35mServerData Copy constructor[0m
 Server blocks quantity: 1
-Location block quantity: 2
+Location block quantity: 3
 IP ADDRESS: localhost
 PORT: 8080
-LEAVING WEBSERV CONSTRUCTOR
 [34mConfigFileParser Destructor[0m
 ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
 [35mServerData Destructor[0m
 [36mServerLocation Destructor[0m
 [36mServerLocation Destructor[0m
-[35mServerData Default constructor[0m
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ New client connection ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-READ REQUEST
-[35mStart appendToRequest(): _hasBody 0 _doneParsing 0 
-[0m[35m     _headerDone == TRUE
-[0mREAD REQUEST
-[35mStart appendToRequest(): _hasBody 0 _doneParsing 0 
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[42m[33mREQUEST METHOD: GET[0m
-[31mserver root path: ./resources
-[0m[32mStart parse path: [/]
-[32mPath with pre-pended root folder [./resources]
-[0m[33mSimple GET (there is no FORM or POST method, also the '?' not found)
-[0m[32mStart CheckIfFIleExists(), path [./resources] 
-[0m[32mFile/folder ./resources exists
-[0m[32mStart checkTypeofFile(), path [./resources] [0m[36mis a directory
-[32mThere is no extention in the last name
-[0mFound path:      [[34m/[0m]
-Path:            [[35m./resources[0m]
-Path first part: [[35m.[0m]
-File/Folder:     [[35m/resources[0m]
-File extention:  [[35m[0m]
-Body:            [[35m[0m]
-Form Data:    [33m(not present)
-[0m
-[35mFound header ending /r/n, maybe there is body
-[0m[32mstart appendlastchunktobody()
-[0m    Body [[32m]
-[0m[32m    _doneparsing == true
-[0m[32mOK (there is no body)
-[0m[31mcontent type: []
-[0m[31mStart ChooseMethodStartAction()
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Sending response ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-response success
-[33mStart setResponse()
-[0m[32m_responsePath: [[./resources]]
-[0m[33mThe Path is a folder: check for a default index file and/or autoindex on/off
-[0m[33m           Stored server root folder: [./resources]
-[0m[33m                The Path is the root: [./resources]
-[0m[33m                       _responsePath: [./resources/index.html]
-[0mFile to be streamed: ./resources/index.html
-Streamed: temp turned off by jaka
-[33m                              getHttpStatus(): [0]
-[0m[33m                           response path: [./resources/index.html]
-[0m[33m    content type should now be text/html: [[0m]
-SEND RESPONSE
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT, send to CLIENT  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[32mFull Response size: [0m331[0m
-[32m       fullResponse: [[0mHTTP/1.1 200 OK
-Content-Type: 
-Content-Length: 275
-
-
-<head>
-  <!-- to disable favicon -->
-    <link rel="icon" href="data:,">
-</head>
-
-
-<body>
-
-<h3> This is the file INDEX.HTML (in the folder ./resources)</h3>
-
-<p> Here it should display the default index.html </p>
-<p> or the folder content, if autoindex is ON.</p>
-
-
-</body>
-
-[0m]
-
-[33mcontent size: 331[0m
-[33mSENDING CHUNK,  remaining response length: 331[0m
-[36m    Sent chunk 331,  sentSoFar 331
-[0mSEND RESPONSE
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT, send to CLIENT  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[32mFull Response size: [0m0[0m
-[32m       fullResponse: [[0m[0m]
-
-[33mcontent size: 0[0m
-[33mSENDING CHUNK,  remaining response length: 0[0m
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Response sent ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[36mCLOSE CLIENT[0m
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mServerLocation Destructor[0m
 [35mServerData Destructor[0m
 [36mServerLocation Destructor[0m
 [36mServerLocation Destructor[0m
-[35mServerData Default constructor[0m
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ New client connection ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-READ REQUEST
-[35mStart appendToRequest(): _hasBody 0 _doneParsing 0 
-[0m[35m     _headerDone == TRUE
-[0mREAD REQUEST
-[35mStart appendToRequest(): _hasBody 0 _doneParsing 0 
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[42m[33mREQUEST METHOD: GET[0m
-[31mserver root path: ./resources
-[0m[32mStart parse path: [/index_just_text.html]
-[32m  No '?', no cgi path needed
-[0m[32mPath with pre-pended root folder [./resources/index_just_text.html]
-[0m[33mSimple GET (there is no FORM or POST method, also the '?' not found)
-[0m[32mStart CheckIfFIleExists(), path [./resources/index_just_text.html] 
-[0m[32mFile/folder ./resources/index_just_text.html exists
-[0m[32mStart checkTypeofFile(), path [./resources/index_just_text.html] [0m[36mis a file
-[0mFound path:      [[34m/index_just_text.html[0m]
-Path:            [[35m./resources/index_just_text.html[0m]
-Path first part: [[35m./resources[0m]
-File/Folder:     [[35m/index_just_text.html[0m]
-File extention:  [[35m.html[0m]
-Body:            [[35m[0m]
-Form Data:    [33m(not present)
-[0m
-[35mFound header ending /r/n, maybe there is body
-[0m[32mstart appendlastchunktobody()
-[0m    Body [[32m]
-[0m[32m    _doneparsing == true
-[0m[32mOK (there is no body)
-[0m[31mcontent type: [text/html]
-[0m[31mStart ChooseMethodStartAction()
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Sending response ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-response success
-[33mStart setResponse()
-[0m[32m_responsePath: [[./resources/index_just_text.html]]
-[0m[31mThe path is a file: [./resources/index_just_text.html]
-File to be streamed: ./resources/index_just_text.html
-Streamed: temp turned off by jaka
-SEND RESPONSE
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT, send to CLIENT  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[32mFull Response size: [0m961[0m
-[32m       fullResponse: [[0mHTTP/1.1 200 OK
-Content-Type: text/html
-Content-Length: 896
-
-
-<head>
-  <!-- to disable favicon -->
-    <link rel="icon" href="data:,">
-</head>
-
-
-<body>
-
-<p> This is the file index_just_text.html</p>
-
-<p>
-  Lorem Ipsum comes from a latin text written in 45BC by Roman statesman, lawyer, scholar, and philosopher, Marcus Tullius Cicero. The text is titled "de Finibus Bonorum et Malorum" which means "The Extremes of Good and Evil". The most common form of Lorem ipsum is the following:
-</p>
-
-<p>
-  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-</p>
-
-</body>
-
-[0m]
-
-[33mcontent size: 961[0m
-[33mSENDING CHUNK,  remaining response length: 961[0m
-[36m    Sent chunk 961,  sentSoFar 961
-[0mSEND RESPONSE
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT, send to CLIENT  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[32mFull Response size: [0m0[0m
-[32m       fullResponse: [[0m[0m]
-
-[33mcontent size: 0[0m
-[33mSENDING CHUNK,  remaining response length: 0[0m
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Response sent ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[36mCLOSE CLIENT[0m
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[35mServerData Destructor[0m
 [36mServerLocation Destructor[0m
-[36mServerLocation Destructor[0m
-[35mServerData Default constructor[0m
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ New client connection ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-READ REQUEST
-[35mStart appendToRequest(): _hasBody 0 _doneParsing 0 
-[0m[35m     _headerDone == TRUE
-[0mREAD REQUEST
-[35mStart appendToRequest(): _hasBody 0 _doneParsing 0 
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[42m[33mREQUEST METHOD: GET[0m
-[31mserver root path: ./resources
-[0m[32mStart parse path: [/index.html]
-[32m  No '?', no cgi path needed
-[0m[32mPath with pre-pended root folder [./resources/index.html]
-[0m[33mSimple GET (there is no FORM or POST method, also the '?' not found)
-[0m[32mStart CheckIfFIleExists(), path [./resources/index.html] 
-[0m[32mFile/folder ./resources/index.html exists
-[0m[32mStart checkTypeofFile(), path [./resources/index.html] [0m[36mis a file
-[0mFound path:      [[34m/index.html[0m]
-Path:            [[35m./resources/index.html[0m]
-Path first part: [[35m./resources[0m]
-File/Folder:     [[35m/index.html[0m]
-File extention:  [[35m.html[0m]
-Body:            [[35m[0m]
-Form Data:    [33m(not present)
-[0m
-[35mFound header ending /r/n, maybe there is body
-[0m[32mstart appendlastchunktobody()
-[0m    Body [[32m]
-[0m[32m    _doneparsing == true
-[0m[32mOK (there is no body)
-[0m[31mcontent type: [text/html]
-[0m[31mStart ChooseMethodStartAction()
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Sending response ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-response success
-[33mStart setResponse()
-[0m[32m_responsePath: [[./resources/index.html]]
-[0m[31mThe path is a file: [./resources/index.html]
-File to be streamed: ./resources/index.html
-Streamed: temp turned off by jaka
-SEND RESPONSE
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT, send to CLIENT  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[32mFull Response size: [0m340[0m
-[32m       fullResponse: [[0mHTTP/1.1 200 OK
-Content-Type: text/html
-Content-Length: 275
-
-
-<head>
-  <!-- to disable favicon -->
-    <link rel="icon" href="data:,">
-</head>
-
-
-<body>
-
-<h3> This is the file INDEX.HTML (in the folder ./resources)</h3>
-
-<p> Here it should display the default index.html </p>
-<p> or the folder content, if autoindex is ON.</p>
-
-
-</body>
-
-[0m]
-
-[33mcontent size: 340[0m
-[33mSENDING CHUNK,  remaining response length: 340[0m
-[36m    Sent chunk 340,  sentSoFar 340
-[0mSEND RESPONSE
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT, send to CLIENT  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[32mFull Response size: [0m0[0m
-[32m       fullResponse: [[0m[0m]
-
-[33mcontent size: 0[0m
-[33mSENDING CHUNK,  remaining response length: 0[0m
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Response sent ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[36mCLOSE CLIENT[0m
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[35mServerData Destructor[0m
-[36mServerLocation Destructor[0m
-[36mServerLocation Destructor[0m
+[31mServerData error: failed bind: 48[0m

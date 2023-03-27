@@ -29,3 +29,4 @@ function testURLpath {
 testURLpath "localhost:8080"                        "localhost:8080"
 testURLpath "localhost:8080/index_just_text.html"   "localhost:index_just_text.html"
 testURLpath "localhost:8080/index.html"             "localhost:index.html"
+testURLpath "localhost:8080/cgi/index.html"         "localhost:cgi/index.html"

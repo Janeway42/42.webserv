@@ -41,8 +41,7 @@ class Request : public Parser {
 		bool		_doneParsing;
 		HttpStatus 	_httpStatus;
 		bool 		_hasBody;
-		ServerData  _server;
-	
+		ServerData  _server;	
 
 
 		void        parseHeaderAndPath(std::string & tmpHeader, struct kevent event, std::string::size_type it);

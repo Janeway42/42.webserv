@@ -70,7 +70,6 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 		//std::cout << BLU "\n       End runExecve()\n" << RES;
 		sleep(1);
 	}
-	return ;	// just ""  , func can be set to void
 }
 
 
@@ -439,16 +438,18 @@ int Request::parsePath(std::string str, struct kevent event) {
 	if ((path[0] == '/' && path != "/" && path.find("?") != std::string::npos)	 	// yes, CGI path needed
 		|| _data.getRequestMethod() == "POST"   ) {
 		std::cout << GRN << "  YES '?', The cgi path is needed\n" RES;
-		path = getServerData().getRootDirectory() + "/cgi/" + path;		//   ***** a) // TODO 	SHOULD BE PRE PENDED WITH THE ROOT DIRECTORY OF THE LOCATION, NOT THE PATH FROM THE REQUEST
+		// path = getServerData().getRootDirectory() + "/cgi/" + path;		//   ***** a) // TODO 	SHOULD BE PRE PENDED WITH THE ROOT DIRECTORY OF THE LOCATION, NOT THE PATH FROM THE REQUEST
+		path = getServerData().getRootDirectory()    + path;		//   ***** a) // TODO 	SHOULD BE PRE PENDED WITH THE ROOT DIRECTORY OF THE LOCATION, NOT THE PATH FROM THE REQUEST
 		getResponseData().setIsCgi(true);
 	}
 	if (path[0] == '/' && path == "/")
 		path = getServerData().getRootDirectory();// TODO 	SHOULD BE PRE PENDED WITH THE ROOT DIRECTORY OF THE LOCATION, NOT THE PATH FROM THE REQUEST
+	
 	if (path[0] != '/')
-	if (path == "./") {
-		path = getServerData().getRootDirectory();// TODO 	SHOULD BE PRE PENDED WITH THE ROOT DIRECTORY OF THE LOCATION, NOT THE PATH FROM THE REQUEST
-		std::cout << GRN << "Path is the root '/'    [" << path << "]\n" RES;
-	}
+		if (path == "./") {
+			path = getServerData().getRootDirectory();// TODO 	SHOULD BE PRE PENDED WITH THE ROOT DIRECTORY OF THE LOCATION, NOT THE PATH FROM THE REQUEST
+			std::cout << GRN << "Path is the root '/'    [" << path << "]\n" RES;
+		}
 	std::cout << GRN << "Path with pre-pended root folder [" << path << "]\n" RES;// TODO 	SHOULD BE PRE PENDED WITH THE ROOT DIRECTORY OF THE LOCATION, NOT THE PATH FROM THE REQUEST
 
 	if (path.back() == '/'  && (path.find("?") == std::string::npos)) {
