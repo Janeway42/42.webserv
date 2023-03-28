@@ -74,49 +74,54 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 
 
 
-
 void Request::callCGI(struct kevent event) {
 	std::cout << RED << "START CALL_CGI, cgi path: " << _data.getPath() << "\n" << RES;
 	//(void)reqData;
 
 	// Declare all necessary variables
-	std::string comspec			= "COMSPEC=";
 	std::string request_method	= "REQUEST_METHOD=";
+	std::string content_type	= "CONTENT_TYPE=";
+	std::string content_length	= "CONTENT_LENGTH=";
 	std::string query_string	= "QUERY_STRING=";
 	std::string server_name		= "SERVER_NAME=";
-	std::string content_length	= "CONTENT_LENGTH=";
+	std::string comspec			= "COMSPEC=";
+
+	// Convert length to string
+	std::stringstream ssContLen;
+	ssContLen << _data.getRequestContentLength();
 
 	// Declare a vector and fill it with variables, with attached =values
 	std::vector<std::string> temp;
-	temp.push_back(comspec.append("default"));
 	temp.push_back(request_method.append(_data.getRequestMethod()));
+	temp.push_back(content_type.append(_data.getRequestContentType()));
+	temp.push_back(content_length.append(ssContLen.str()));
 	temp.push_back(query_string.append(_data.getQueryString()));
 	temp.push_back(server_name.append("default"));
-
-	std::stringstream ss;	// convert length int to string variable
-	ss << _data.getRequestContentLength();
-	temp.push_back(content_length.append(ss.str()));
+	temp.push_back(comspec.append("default"));
 
 	// std::cout << "Size of vector temp: " << temp.size() << "\n";
 	// std::cout << YEL << "POST BODY: " << temp[2] << "\n" << RES;
 	// BY HERE, THE HUGE BODY IS STORED OK
 
 	// Make a char** array and copy all content of the above vector
-	char **env = new char*[temp.size()  + 1];
+	std::cout << GRN " ...... TEMP SIZE:  " << temp.size() << " \n" << RES "\n";
+
+	char **env = new char*[temp.size() + 1];
 
 	size_t i = 0;
 	for (i = 0; i < temp.size(); i++) {
 		env[i] = new char[temp[i].length() + 1];
 		strcpy(env[i], temp[i].c_str());
 	}
-	env[i] = NULL;
+	env[i] = nullptr;
 	//std::cout << YEL << "POST BODY ENV : " << env[2] << "\n" << RES;
 	// BY HERE, THE HUGE BODY IS STORED OK
 
 	// Just for printing
-	//for (i = 0; env[i]; i++) {
-	//   std::cout << env[i] << std::endl;
-	//}
+	std::cout << GRN "STORED ENV:\n" << RES "\n";
+	for (i = 0; env[i]; i++) {
+	  std::cout << "    " << i+1 << " " << env[i] << std::endl;
+	}
 
 	// char *args[3];
 	// args[0] = (char *)"/usr/bin/php";   // Make sure the path is correct on Mac/Linux
@@ -494,7 +499,7 @@ int Request::parsePath(std::string str, struct kevent event) {
 
 	// What in case of GET??
 	checkTypeOfFile();
-	_data.setRequestContentType(_data.getFileExtention());
+	_data.setResponseContentType(_data.getFileExtention());
 
 	printPathParts(str, getRequestData());
 	return (0);

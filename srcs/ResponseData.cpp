@@ -81,7 +81,7 @@ void ResponseData::setResponse(struct kevent& event) {
 	//	std::cout << YEL "          local var. for root folder: [" << serverRootDir << "]\n" RES;
 	//	std::cout << YEL "                             getPath: [" << storage->getRequestData().getPath() << "]\n" RES;
 
-		//if (storage->getRequestData().getRequestContentType().compare("text/html") == 0) {		// IF FOLDER, THE CONT. TYPE SHOULD BE text.html
+		//if (storage->getRequestData().getResponseContentType().compare("text/html") == 0) {		// IF FOLDER, THE CONT. TYPE SHOULD BE text.html
 			
 			// IF PATH IS THE SERVER ROOT "./"  (  ./resources/  )
 			if (storage->getRequestData().getPath() == serverRootDir) {		// The path matches the server root
@@ -135,13 +135,13 @@ void ResponseData::setResponse(struct kevent& event) {
 			_responseBody = streamFile(_responsePath);
 			std::cout << YEL "                              getHttpStatus(): [" << storage->getHttpStatus() << "]\n" RES;// todo JOYCE map enums to strings
 			std::cout << YEL "                           response path: [" << _responsePath << "]\n" RES;
-			std::cout << YEL "    content type should now be text/html: [" << storage->getRequestData().getRequestContentType() << RES "]\n";
+			std::cout << YEL "    content type should now be text/html: [" << storage->getRequestData().getResponseContentType() << RES "]\n";
 		//}
 	}
 	// IF NOT A FOLDER
 	else if (storage->getRequestData().getIsFolder() == false && _isCgi == false) {	// IF TEXTFILE
         std::cout << RED "The path is a file: [" << _responsePath << "]\n";
-		if (storage->getRequestData().getRequestContentType().compare("text/html") == 0)
+		if (storage->getRequestData().getResponseContentType().compare("text/html") == 0)
 			//_responseBody = streamFile(storage->getServerData().getRootDirectory() + "/" + _responsePath);
 			_responseBody = streamFile(_responsePath);
 		else {	// IF IMAGE, FULL RESPONSE IS CREATED IN setImage()
@@ -179,7 +179,7 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
 	Request *storage = (Request *)event.udata;
 	std::string status;
 
-	std::string fileType = storage->getRequestData().getRequestContentType();
+	std::string fileType = storage->getRequestData().getResponseContentType();	// fileType not used ?
 
 	switch (storage->getHttpStatus())
 	{
@@ -211,7 +211,8 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
 			(storage->getResponseData()).setResponsePath("resources/error_pages/403Forbidden.html");
 		default:
 			status = "HTTP/1.1 200 OK\n"  
-					"Content-Type: " + storage->getRequestData().getRequestContentType() + "\n";	// jaka
+						"Content-Type: text/html\n";
+					// "Content-Type: " + storage->getRequestData().getResponseContentType() + "\n";	// jaka
 			//  _responsePath = storage->getRequestData().getHttpPath();							// jaka: this is old, should be getPath()
 			_responsePath = storage->getRequestData().getPath();
 			std::cout << GRN "_responsePath: [[" << _responsePath << "]]\n" RES;

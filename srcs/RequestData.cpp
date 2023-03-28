@@ -20,7 +20,7 @@ RequestData::RequestData() {
 	_queryString		= "";
 	_cgiBody			= "";
 
-	_reqContentType 	= "text/html";
+	_responseContentType 	= "text/html";
 //	_formList			= NULL;	// ???
 //	_formData			= NULL;	// ???
 }
@@ -74,8 +74,12 @@ const std::string RequestData::getRequestAccept() const {
 size_t RequestData::getRequestContentLength() const {
 	return _reqContentLength;
 }
+const std::string RequestData::getResponseContentType() const {
+	return _responseContentType;
+}
+
 const std::string RequestData::getRequestContentType() const {
-	return _reqContentType;
+	return _requestContentType;
 }
 
 
@@ -166,20 +170,24 @@ void RequestData::setRequestContentLength(std::string reqContentLength)
 	_reqContentLength = stoi(reqContentLength); // is STOI allowed ???
 }
 
-void RequestData::setRequestContentType(std::string fileExtention)
+void RequestData::setResponseContentType(std::string fileExtention)
 {
 	if (fileExtention == ".html")
-		_reqContentType = "text/html";
+		_responseContentType = "text/html";
 	else if (fileExtention == ".jpg")
-		_reqContentType = "image/jpg";
+		_responseContentType = "image/jpg";
 	else if (fileExtention == ".png")
-		_reqContentType = "image/png";
+		_responseContentType = "image/png";
 	else if (fileExtention == ".ico")
-		_reqContentType = "image/x-con";
+		_responseContentType = "image/x-con";
 	else if (fileExtention == "")			// Not sure if needed,
-		_reqContentType = "";				// in case of no suffix
+		_responseContentType = "";				// in case of no suffix
+	//_responseContentType = str;
 }
 
+void RequestData::setRequestContentType(std::string str) {
+	_requestContentType = str;
+}
 
 
 

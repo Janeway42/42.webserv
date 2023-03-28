@@ -119,7 +119,7 @@ void WebServer::handleTimeout(struct kevent &event)
 
 void WebServer::readRequest(struct kevent& event)
 {
-	std::cout << "Start READ REQUEST\n";
+	//std::cout << "Start READ REQUEST\n";
 
 	char buffer[BUFFER_SIZE];
 	memset(&buffer, '\0', BUFFER_SIZE); // cpp equivalent ? 
@@ -172,7 +172,7 @@ void WebServer::readRequest(struct kevent& event)
 		else if (storage->getDone() == false)
 		{
 			storage->appendToRequest(buffer, event);
-			std::cout << CYN "    returned from ATR(), _parsingDone: " << storage->getDone() << ", isCGI: " << storage->getResponseData().getIsCgi() << "\n" RES;
+			//std::cout << CYN "    returned from ATR(), _parsingDone: " << storage->getDone() << ", isCGI: " << storage->getResponseData().getIsCgi() << "\n" RES;
 
 
 			// if (storage->getHttpStatus() != NO_STATUS || storage->getDone() == true)				// new Jaka: getIsCGI()

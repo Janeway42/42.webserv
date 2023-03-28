@@ -1,6 +1,6 @@
 <head>
     <!-- to disable favicon -->
-      <link rel="icon" href="data:,">
+      <!-- <link rel="icon" href="data:,"> -->
   </head>
   
   
@@ -26,9 +26,6 @@
 
 </form> <br><br><br>
   
-
-
-
 <!-- <form action="response_post.php" method="post"> -->
 <form action="python_cgi_POST.py" method="post">
 <!--<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">-->
@@ -46,5 +43,12 @@
 </form> <br><br><br>
 
 
+<fieldset style="background: #fff3f3; border: 2px solid #fbd58f;">
+  <legend> UPLOAD FILE/IMAGE (method POST) </legend>
+   <form  action="python_cgi_upload.py" method="post" enctype="multipart/form-data">
+    Select file/image: <br>
+    <input type="file" name="filename" id="fileToUpload">
+    <input type="submit" value="Upload">
+  </form> <br>
 
   </body>

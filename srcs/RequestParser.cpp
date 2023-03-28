@@ -172,6 +172,8 @@ int Request::storeWordsFromFirstLine(std::string firstLine) {
 
 
 int Request::storeWordsFromOtherLine(std::string otherLine) {
+	//std::cout << GRN " .... .... header line: [" << otherLine << "]\n" RES;
+
 	std::vector<std::string> arr;
 	std::istringstream is(otherLine);
 	std::string wordd;
@@ -196,9 +198,12 @@ int Request::storeWordsFromOtherLine(std::string otherLine) {
 				iter++;
 				_data.setRequestContentLength(*iter);
 			}
-			else if (*iter == "Content-Type:") {
-				iter++;
-				_data.setRequestContentType(*iter);
+			else if ((*iter).substr(0, 13) == "Content-Type:") {
+				iter++;		//				multipart;		boundary ---									
+				_data.setRequestContentType((*iter) + " " + *(++iter));
+				//std::cout << RED " .... .... header line *Iter: [" << *iter << "]\n" RES;
+				//std::cout << RED " .... .... header line Content-Type: [" << _data.getRequestContentType() << "]\n" RES;
+
 			}
 			// else
 			// 	std::cout << RED << "Error: This method is not recognized - other line\n" << RES;
@@ -265,7 +270,7 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, struct kevent event, s
 
 // void    Request::appendToRequest(const char *str, int fdClient) {
 void    Request::appendToRequest(const char *str, struct kevent event) {
-	std::cout << PUR << "Start appendToRequest(): _hasBody "<< _hasBody << " _doneParsing " << _doneParsing << " \n" << RES;
+	//std::cout << PUR << "Start appendToRequest(): _hasBody "<< _hasBody << " _doneParsing " << _doneParsing << " \n" << RES;
 
 	std::string 			chunk = std::string(str);
 	std::string				strToFind = "\r\n\r\n";
@@ -286,7 +291,7 @@ void    Request::appendToRequest(const char *str, struct kevent event) {
 			return ;
 		}
 	}
-	std::cout << PUR << "     _headerDone == TRUE\n" << RES;
+	//std::cout << PUR << "     _headerDone == TRUE\n" << RES;
 	if (_hasBody == true && _doneParsing == false) {
 		appendToBody(chunk);
 	}
@@ -315,7 +320,7 @@ int Request::appendLastChunkToBody(std::string::size_type it) {
 		if (_data.getBody().length() == 0 && _data.getRequestContentLength() == 0) {    // Compare body lenght
 			std::cout << GRE << "OK (there is no body)\n" << RES;
 			_hasBody = false;
-			std::cout << RED "content type: [" << _data.getRequestContentType() << "]\n" RES;
+			std::cout << RED "content type: [" << _data.getResponseContentType() << "]\n" RES;
 			return (0);
 		}
 		std::cout << GRE << "OK: Body-Length is as expected Content-Length\n" << RES;
@@ -333,7 +338,7 @@ int Request::appendLastChunkToBody(std::string::size_type it) {
 
 
 int Request::appendToBody(std::string req) {
-	std::cout << RED << "start appendToBOdy(), req [" << req << "\n" << RES;
+	//std::cout << RED << "start appendToBOdy(), req [" << req << "\n" << RES;
 	//std::cout << RED << "    body before append: [" << _data.getBody() << "\n" << RES;
 	std::string tmp = _data.getBody();
 	tmp.append(req);
@@ -351,13 +356,13 @@ int Request::appendToBody(std::string req) {
 
 		if (_data.getRequestMethod() == "POST") {
 			//std::cout << GRE "      ....    store _body into _queryString\n" RES;
-			_data.setQueryString(_data.getBody());					// querystring not needed, just to print it
+			//_data.setQueryString(_data.getBody());					// querystring not needed, just to print it
 			getResponseData().setResponseBody(_data.getBody());		// _responseBody to be sent to CGI
 			storeFormData(_data.getBody());	// maybe not needed
 		}
 		_doneParsing = true;
 		//std::cout << "HEADER: [" BLU << _header << RES "]\n";	// sleep(1);
-		std::cout << "BODY:   [" BLU << _data.getBody()   << RES "]\n\n";	// sleep(1);
+		//std::cout << "BODY:   [" BLU << _data.getBody()   << RES "]\n\n";	// sleep(1);
 		return (0);
 	}
 	//std::cout << RED << "End appendToBody()\n" << RES;
@@ -378,7 +383,7 @@ void Request::printStoredRequestData(Request &request) {
 	std::cout << "Host:           [" << reqData.getRequestHost() << "]\n";
 	std::cout << "Accept:         [" << reqData.getRequestAccept() << "]\n";
 	std::cout << "Content-Length: [" << reqData.getRequestContentLength() << "]\n";
-	std::cout << "Content-Type:   [" << reqData.getRequestContentType() << "]\n" RES;
+	std::cout << "Content-Type:   [" << reqData.getResponseContentType() << "]\n" RES;
 	// PRINT BODY
 //	std::cout << "REQUEST BODY:\n[" PUR << request.getRequestBody() << RES "]\n";
 }

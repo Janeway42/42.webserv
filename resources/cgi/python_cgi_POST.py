@@ -60,20 +60,7 @@ for field_name in form.keys():
 
 
 
-
-
-
-# from werkzeug.formparser import FileStorage
-# # create a FileStorage object from stdin
-# file_storage = FileStorage(sys.stdin.buffer)
-# # read from the FileStorage object until the end of the data is reached
-# while True:
-#     data = file_storage.read(1024)
-#     if not data:
-#         break
-# # do something with the data
-# # close the FileStorage object
-# file_storage.close()
+#time.sleep(5)
 
 
 # if "street" not in form or "city" not in form:

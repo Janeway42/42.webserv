@@ -50,7 +50,8 @@ print("")
 
 ##################################################
 # Set the buffer size to read from the pipe
-BUFFER_SIZE = 50
+# BUFFER_SIZE = 50
+BUFFER_SIZE = 4096
 
 data = ""
 
