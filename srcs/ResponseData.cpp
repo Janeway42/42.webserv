@@ -77,20 +77,20 @@ void ResponseData::setResponse(struct kevent& event) {
 		std::cout << YEL "The Path is a folder: check for a default index file and/or autoindex on/off\n" << RES;
 		std::cout << YEL "           Stored server root folder: [" << storage->getServerData().getRootDirectory() << "]\n" RES;
 	//	std::cout << YEL "          local var. for root folder: [" << serverRootDir << "]\n" RES;
-	//	std::cout << YEL "                             getPath: [" << storage->getRequestData().getPath() << "]\n" RES;
+	//	std::cout << YEL "                             getPath: [" << storage->getRequestData().getURLPath() << "]\n" RES;
 
 		//if (storage->getRequestData().getRequestContentType().compare("text/html") == 0) {		// IF FOLDER, THE CONT. TYPE SHOULD BE text.html
 			
 			// IF PATH IS THE SERVER ROOT "./"  (  ./resources/  )
-			if (storage->getRequestData().getPath() == serverRootDir) {		// The path matches the server root
-				std::cout << YEL "                The Path is the root: [" << storage->getRequestData().getPath() << "]\n" RES;
+			if (storage->getRequestData().getURLPath() == serverRootDir) {		// The path matches the server root
+				std::cout << YEL "                The Path is the root: [" << storage->getRequestData().getURLPath() << "]\n" RES;
 				_responsePath = storage->getServerData().getRootDirectory() + "/" + storage->getServerData().getIndexFile();
 				_responsePath = storage->getServerData().getRootDirectory() + "/" + storage->getServerData().getIndexFile();
 				std::cout << YEL "                       _responsePath: [" << _responsePath << "]\n" RES;
 			}
 			// IF PATH IS A FOLDER INSIDE THE ROOT FOLDER
 			else {
-				std::cout << YEL "          The Path is a folder inside the root: [" << storage->getRequestData().getPath() << "]\n" RES;
+				std::cout << YEL "          The Path is a folder inside the root: [" << storage->getRequestData().getURLPath() << "]\n" RES;
 
 				// Here it should compare the path with available locations.
 				// If a location is valid in the config file, then take the default index file inside that location
@@ -101,7 +101,7 @@ void ResponseData::setResponse(struct kevent& event) {
                     std::cout << GRE "   ........ location uri: [" << location_data_vector[i].getLocationUriName() << "]\n";
                     std::cout << GRE "   ... location root dir: [" << location_data_vector[i].getRootDirectory() << "]\n";
                     std::cout << GRE "   ....... _responsePath: [" << _responsePath << "]\n";
-					if (location_data_vector[i].getRootDirectory() == _responsePath) {// TODO here it should be getLocationUriName()
+					if (location_data_vector[i].getLocationUriName() == _responsePath) {// TODO here it should be getLocationUriName()
 						_responsePath = _responsePath + "/" + location_data_vector[i].getIndexFile();
                     	std::cout << BLU "   ....... FinalPath: [" << _responsePath << "]\n";
 						break ;
@@ -204,8 +204,8 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
 		default:
 			status = "HTTP/1.1 200 OK\n"  
 					"Content-Type: " + storage->getRequestData().getRequestContentType() + "\n";	// jaka
-			//  _responsePath = storage->getRequestData().getHttpPath();							// jaka: this is old, should be getPath()
-			_responsePath = storage->getRequestData().getPath();
+			//  _responsePath = storage->getRequestData().getHttpPath();							// jaka: this is old, should be getURLPath()
+			_responsePath = storage->getRequestData().getURLPath();
 			std::cout << GRN "_responsePath: [[" << _responsePath << "]]\n" RES;
 			break;
 	}
