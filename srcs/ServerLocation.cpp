@@ -108,9 +108,7 @@ void ServerLocation::setLocation(std::string const & location) {
         } else {
             std::string ::const_iterator it;
             for (it = location.cbegin(); it != location.cend(); it++) {
-                if (*it < 43 || *it > 126) {
-                    std::cout << "it: [" << *it << "]" << std::endl;
-
+                if (*it < 48 || *it > 126) {
                     throw ParserException(CONFIG_FILE_ERROR("location block value", NOT_SUPPORTED));
                 }
             }
@@ -127,7 +125,7 @@ void ServerLocation::setRootDirectory(std::string const & rootDirectory) {
         std::string root_directory = addRootDirectoryPath(_root_directory, rootDirectory);
         PathType type = pathType(root_directory);
         if (type == DIRECTORY) {
-            _root_directory = addCurrentDirPath(root_directory) + root_directory;
+            _root_directory = addCurrentDirPath(root_directory) + root_directory + '/' + _location_uri_name;
         } else if (type == PATH_TYPE_ERROR) {
             throw ParserException(CONFIG_FILE_ERROR("root_directory", MISSING));
         } else {
