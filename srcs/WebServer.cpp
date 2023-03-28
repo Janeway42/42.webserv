@@ -423,13 +423,13 @@ void	WebServer::chooseMethod_StartCGI(struct kevent event, Request * storage) {
 	if (storage->getRequestData().getRequestMethod() == "DELETE") {
 		std::cout << GRN_BG << "DELETE METHOD" << RES << std::endl;
 		/* DELETE deletes a resource (specified in URI) */
-		if (storage->pathType(storage->getRequestData().getPath()) != REG_FILE) {
+		if (storage->pathType(storage->getRequestData().getURLPath()) != REG_FILE) {
 			std::cout << RED_BG << "ERROR 404 Not Found" << RES << std::endl;
 			// status error 404 Not Found -> Server cannot find the requested resource.
 		}
 		// cgi or just delete the file literally? It's not with CGI: Your program should call the CGI with the file requested as first argument.
 		// How to delete a file froma  direcory: https://codescracker.com/cpp/program/cpp-program-delete-file.htm#:~:text=To%20delete%20any%20file%20from,used%20to%20delete%20a%20file.
-		if (remove(storage->getRequestData().getPath().c_str()) != 0) {
+		if (remove(storage->getRequestData().getURLPath().c_str()) != 0) {
 			std::cout << RED_BG << "ERROR 204 No Content" << RES << std::endl;
 			// 500 Internal Server Error -> Server encountered an unexpected condition that prevented it from fulfilling the request.
 		}

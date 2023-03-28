@@ -75,7 +75,7 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 
 
 void Request::callCGI(struct kevent event) {
-	std::cout << RED << "START CALL_CGI, cgi path: " << _data.getPath() << "\n" << RES;
+	std::cout << RED << "START CALL_CGI, cgi path: " << _data.getURLPath() << "\n" << RES;
 	//(void)reqData;
 
 	// Declare all necessary variables
@@ -130,7 +130,7 @@ void Request::callCGI(struct kevent event) {
 
 	char *args[3];
 	args[0] = (char *)"/usr/bin/python";
-	std::string tempPath = _data.getPath();
+	std::string tempPath = _data.getURLPath();
 	char *path = (char *)tempPath.c_str();	//  ie: "./resources/cgi//python_cgi_GET.py"
 	args[1] = path;
 	args[2] = NULL;
@@ -238,8 +238,9 @@ void Request::storePathParts_and_FormData(std::string path) {
 	int			temp		= path.find_first_of("?");
 	std::string tempStr		= path.substr(0, temp);
 
-	_data.setPath(path.substr(0, temp));
-	//std::cout << CYN "StorePathParts() " << _data.getPath() << "\n" << RES;
+	_data.setURLPath(path.substr(0, temp));// TODO change to accept not full path??
+    _data.setFullPath(path);// todo keep?
+	//std::cout << CYN "StorePathParts() " << _data.getURLPath() << "\n" << RES;
 	int posLastSlash 		= tempStr.find_last_of("/");
 	int	posFirstQuestMark	= path.find_first_of("?");
 	std::string	queryString	= path.substr(temp, std::string::npos);
@@ -276,10 +277,12 @@ void Request::storePath_and_FolderName(std::string path) {
 
 	// Check if there is query '?' and store path before it
 	// Probably not needed searching for query here, because the method is POST,  so query not possible
-	_data.setPath(path);
+	_data.setURLPath(path);// TODO change to accept not full path??
+    _data.setFullPath(path);// todo keep?
 	pos1 = path.find_first_of("?");
 	if (pos1 != std::string::npos)
-		_data.setPath(path.substr(0, pos1));
+		_data.setURLPath(path.substr(0, pos1));// TODO change to accept not full path??
+        _data.setFullPath(path);// todo keep?
 
 	pos1	= 0;
 	pos2	= path.find_first_of("/");
@@ -309,10 +312,10 @@ char* ENV[25] = {
 
 
 int Request::checkTypeOfFile() {
-	std::cout << GRN << "Start checkTypeofFile(), path [" << _data.getPath() << "] " RES;
+	std::cout << GRN << "Start checkTypeofFile(), path [" << _data.getURLPath() << "] " RES;
 
-	std::string path = _data.getPath();
-	std::string temp = _data.getPath();
+	std::string path = _data.getURLPath();
+	std::string temp = _data.getURLPath();
 
 
 	// CHECK IF THE PATH IS A FILE OR FOLDER, REGARDLES IF IT HAS ANY EXTENTION
@@ -354,9 +357,9 @@ static void printPathParts(std::string str, RequestData reqData) {
 
 	std::cout << "Found path:      [" << BLU << str << RES << "]\n";
 //	std::cout << "Path trimmed:    [" << BLU << strTrim << RES << "]\n";
-	std::cout << "Path:            [" << PUR << reqData.getPath() << RES << "]\n";
-	std::cout << "Path first part: [" << PUR << reqData.getPathFirstPart() << RES << "]\n";
-	std::cout << "File/Folder:     [" << PUR << reqData.getPathLastWord() << RES << "]\n";
+	std::cout << "Path:            [" << PUR << reqData.getURLPath() << RES << "]\n";
+	std::cout << "Path first part: [" << PUR << reqData.getURLPathFirstPart() << RES << "]\n";
+	std::cout << "File/Folder:     [" << PUR << reqData.getURLPathLastWord() << RES << "]\n";
 	std::cout << "File extention:  [" << PUR << reqData.getFileExtention() << RES << "]\n";
 	std::cout << "Body:            [" << PUR << reqData.getBody() << RES << "]\n";
 
@@ -447,7 +450,7 @@ int Request::parsePath(std::string str, struct kevent event) {
 		path = getServerData().getRootDirectory()    + path;		//   ***** a) // TODO 	SHOULD BE PRE PENDED WITH THE ROOT DIRECTORY OF THE LOCATION, NOT THE PATH FROM THE REQUEST
 		getResponseData().setIsCgi(true);
 	}
-	if (path[0] == '/' && path == "/")
+	if (path[0] == '/' && path == "/")// todo && ?
 		path = getServerData().getRootDirectory();// TODO 	SHOULD BE PRE PENDED WITH THE ROOT DIRECTORY OF THE LOCATION, NOT THE PATH FROM THE REQUEST
 	
 	if (path[0] != '/')
@@ -466,7 +469,8 @@ int Request::parsePath(std::string str, struct kevent event) {
 		// else if ((ret = path.find("?")) == std::string::npos ) {
 	else if ((ret = path.find("?")) == std::string::npos && _data.getRequestMethod() != "POST") {
 		std::cout << YEL << "Simple GET (there is no FORM or POST method, also the '?' not found)\n" << RES;
-		_data.setPath(path);
+		_data.setURLPath(path);// TODO change to accept not full path
+        _data.setFullPath(path);
 		int pos			= 0;
 		pos				= path.find_last_of("/");
 		_data.setPathFirstPart(path.substr(0, pos));
@@ -487,7 +491,7 @@ int Request::parsePath(std::string str, struct kevent event) {
 		//_data.setQueryString(_data.getBody());
 	}
 
-	ret = checkIfPathExists(_data.getPath(), event);
+	ret = checkIfPathExists(_data.getURLPath(), event);
 	if (ret != 0)	{ // What in case of root only "/"  ???
 		std::cout << RED << "ret " << ret << ", file not found, should set error to 404)\n" << RES;
         setHttpStatus(NOT_FOUND);

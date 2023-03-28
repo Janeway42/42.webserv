@@ -13,6 +13,7 @@ RequestData::RequestData() {
 	_reqBody			= "";
 	
 	_path				= "default";
+    _full_path				= "default";
 	_pathFirstPart		= "default";
 	_pathLastWord		= "default";
 	_fileExtention		= "";
@@ -84,14 +85,17 @@ const std::string RequestData::getRequestContentType() const {
 
 
 // PATH PARTS AND QUERY_STRING (FORM DATA)
-const std::string RequestData::getPath() const {
-// std::string RequestData::getPath() {
+const std::string RequestData::getURLPath() const {
+// std::string RequestData::getURLPath() {
 	return _path;
 }
-const std::string RequestData::getPathFirstPart() const {
+const std::string RequestData::getFullPath() const {
+    return _full_path;
+}
+const std::string RequestData::getURLPathFirstPart() const {
 	return _pathFirstPart;
 }
-const std::string RequestData::getPathLastWord() const {
+const std::string RequestData::getURLPathLastWord() const {
 	return _pathLastWord;
 }
 const std::string RequestData::getFileExtention() const {
@@ -192,8 +196,11 @@ void RequestData::setRequestContentType(std::string str) {
 
 
 // PATH PARTS AND QUERY_STRING (FORM DATA)
-void RequestData::setPath(std::string path) {
+void RequestData::setURLPath(std::string path) {
 	_path = path;
+}
+void RequestData::setFullPath(std::string path) {
+	_full_path = path;
 }
 void RequestData::setPathFirstPart(std::string pathFirstPart) {
 	_pathFirstPart = pathFirstPart;
