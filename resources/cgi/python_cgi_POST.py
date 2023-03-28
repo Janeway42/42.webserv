@@ -1,66 +1,86 @@
 #!/usr/bin/python
 
+import time
 import os   # TO ACCESS execve ENV variables
 import sys	# to read from std input
 
+import cgi, cgitb
+# cgitb.enable()	# detailed errors msgs
+# cgitb.enable(display=0, logdir="/path/to/logdir")
 
-# TO READ FROM STDIN, FROM PIPE
-print ("<br><br><h3>THIS IS COMING FROM PYTHON SCRIPT:</h3>")
-
-content_lenght = int(os.environ.get('CONTENT_LENGTH', 0))   ### is this int ok if length is size_t ??
-print ("<p>BODY CONTENT_LENGTH: <span style='background-color:lavender; padding:1%;'>")
-print (content_lenght)
-print ("</span></p>")
-
-request_body = sys.stdin.read(content_lenght)
+print("<p>")
+print(" ... The Start of python script ...")
+sys.stderr.write('START PYTHON SCRIPT ( via stderr)\n')
 
 
+### To get at submitted form data, use the FieldStorage class.
+# If the form contains non-ASCII characters, use the encoding keyword parameter set to the value of the encoding defined for the document (Content-Type header).
+# FieldStorage class reads the form contents from the standard input OR the environment (depending on the value of various environment variables set according to the CGI standard). Since it may consume ??? standard input, it should be instantiated only once.
 
 
-# for l in sys.stdin:
-# 	print (l)
+# WITHOUT SLEEP, NOTHING COMES YET TO THE FieldStoraeg() 
+# AND IT THEREFORE GIVES PYTHON ERROR: [Errno 35] Resource temporarily unavailable
+# time.sleep(2)
+
+
+class StdinStream(object):
+    def __init__(self, bufsize=8192):
+        self.bufsize = bufsize
+
+    def read(self, size=-1):
+        if size == -1:
+            # read until EOF
+            return sys.stdin.read()
+        else:
+            # read in chunks until size bytes are read or EOF is reached
+            chunks = []
+            remaining = size
+            while remaining > 0:
+                chunk = sys.stdin.read(min(self.bufsize, remaining))
+                if not chunk:
+                    break
+                chunks.append(chunk)
+                remaining -= len(chunk)
+            return ''.join(chunks)
+
+form = cgi.FieldStorage(fp=StdinStream(), environ={'REQUEST_METHOD': 'POST'})
+# print(form)
+sys.stderr.write('FORM IS [' + str(form) + ']\n')
+
+
+# iterate over the fields in the form
+for field_name in form.keys():
+    field = form[field_name]
+    sys.stderr.write('   Field is [' + str(field) + ']\n')
+    print(field)
+    
+
+    # process the field data here
 
 
 
 
-# for param in os.environ.keys():
-# 	# print ("<b>%30s</b>: %s</br>") % (param, os.environ[param])
-# 	# print (param, os.environ[param])
-# 	if param == 'REQUEST_METHOD':
-# 		URL = os.environ[param]
-# 		print("<p>FOUND METHOD:")
-# 		print ("<span style='background-color:plum; padding:1%;'>" + URL + "</span><p>")
-# 	if param == 'QUERY_STRING':
-# 		URL = os.environ[param]
-# 		print("<p>FOUND QUERY STRING:")
-# 		print ("<span style='background-color:cornsilk; padding:1%;'>" + URL + "</span><p>")
-# 	else:
-# 		URL="DEFAULT=default"
+#time.sleep(5)
+
+
+# if "street" not in form or "city" not in form:
+# 	print("<H1>Error</H1>")
+# 	print("Please fill in the street and city fields.")
+# 	exit
+
+# print("<p>street:", form["street"].value)
+# print("<p>city:", form["city"].value)
+# print("<p>fruit:", form["fruit"].value)
+# print("<p>vegetable:", form["vegetable"].value)
+# print(form)
+# print("Print form field fruit:")
+# for fruit in form["fruit"]:
+#     print(fruit)
 
 
 
-# # from urllib.parse import urlparse, parse_qs # why is this not good ??
-# from urlparse import urlparse, parse_qs
-# parsed_result = urlparse(URL)
-# parse_qs(parsed_result.query)
+sys.stderr.write('END PYTHON SCRIPT (via stderr)\n')
+# sys.stderr.write(form_data)
+print(" ... The End of Python Script ... ")
+print("</p>")
 
-
-# print ("<p>PARSED RESULT: <span style='background-color:lavender; padding:1%;'>")
-# print (parsed_result)
-# print ("</span></p>")
-
-
-# dict_result = parse_qs(parsed_result.path)
-# print ("<p>EXTRACTED QUERY STRING:")
-# print ("<span style='background-color:darkkhaki; padding:1%;'>")
-# print (dict_result)
-# print ("</span></p>")
-
-
-# print ("<div style='width:fit-content; padding:5%; margin: 10% 0% 0% 10%; border:1px solid; background-color: linen; border-radius: 4px';><h1>Congratulations!</h1>")
-
-### THESE ARE CAUSING ERROR WITH POST METHOD, BECAUSE THEY DON'T EXIST IN THE QUERY STRING
-# print ("<h3>      Your fruit is: <span style='background-color:bisque; padding:1%;'>" + dict_result['fruit'][0] + "</span></h3>")
-#print ("<h3>    Your vegetable is: <span style='background-color:coral; padding:1%'>" + dict_result['vegetable'][0] + "</h3>")
-
-########## ######## ############## ########### ###########

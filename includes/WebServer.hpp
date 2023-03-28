@@ -42,6 +42,9 @@ class WebServer
 		bool isListeningSocket(int fd);
 		ServerData * getSpecificServer(int fd);
 
+		void	chooseMethod_StartCGI(struct kevent event, Request* storage); 	// added Jaka
+
+
 		void sendProcesssedResponse(struct kevent& event);
 		std::string streamFile(std::string file);
 		//void sendResponseFile(struct kevent& event, std::string file);

@@ -1,0 +1,54 @@
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Config File ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[34mConfigFileParser Overloaded constructor[0m
+[35mServerData Default constructor[0m
+[33m    server_name                 localhost;[0m
+[33m    listens_to                  8080;[0m
+[33m    ip_address                  ;[0m
+[33m    root_directory              resources;[0m
+[33m    index_file                  ;[0m
+[33m	client_max_body_size        2048;[0m
+[33m	error_page                  400.html 401.html 403.html 500.html;[0m
+[33m	port_redirection            80088;[0m
+[36mServerLocation Overloaded constructor[0m
+[33m    location server_root {[0m
+[33m        root_directory          ./resources/location_random_dir;[0m
+[33m        allow_methods           POST DELETE;[0m
+[33m        index_file              index_test.html;[0m
+[33m        auto_index              on;[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Overloaded constructor[0m
+[33m    location .py {[0m
+[33m        root_directory          cgi;[0m
+[33m        interpreter_path        /usr/bin/python3;[0m
+[33m        script_extension        .py;[0m
+[33m        index_file              cgi_index.html;[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Overloaded constructor[0m
+[33m    location cgi {[0m
+[33m        root_directory          cgi;[0m
+[33m        index_file              cgi_index.html;[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[35mServerData Copy constructor[0m
+[35mServerData Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[35mServerData Copy constructor[0m
+Server blocks quantity: 1
+Location block quantity: 3
+IP ADDRESS: localhost
+PORT: 8080
+[34mConfigFileParser Destructor[0m
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[35mServerData Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[35mServerData Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[31mServerData error: failed bind: 48[0m

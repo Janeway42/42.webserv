@@ -54,6 +54,7 @@ static int checkIfPathExists(const std::string& path, struct kevent event) {
 // If it is an image, then setImage() is called, where both header and body are created, and
 // then setResponse() returns this full content, ready to be sent.
 void ResponseData::setResponse(struct kevent& event) {
+	std::cout << YEL "Start setResponse()\n" << RES;
 	
 	Request *storage = (Request *)event.udata;	
 	_responseHeader += setResponseStatus(event);
@@ -73,13 +74,14 @@ void ResponseData::setResponse(struct kevent& event) {
 	// IF NOT, THEN CHECK IF AUTOINDEX IS ON,
 	// 			IF YES, SEND HTML WITH FOLDER CONTENT
 	//			IF NOT, SEND ERROR PAGE, NOT ALLOWED ?
-	if (storage->getRequestData().getIsFolder() == true) {
+	// if (storage->getRequestData().getIsFolder() == true) {
+	if (storage->getRequestData().getIsFolder() == true && _isCgi == false) {
 		std::cout << YEL "The Path is a folder: check for a default index file and/or autoindex on/off\n" << RES;
 		std::cout << YEL "           Stored server root folder: [" << storage->getServerData().getRootDirectory() << "]\n" RES;
 	//	std::cout << YEL "          local var. for root folder: [" << serverRootDir << "]\n" RES;
-	//	std::cout << YEL "                             getPath: [" << storage->getRequestData().getURLPath() << "]\n" RES;
+	//	std::cout << YEL "                             getURLPath: [" << storage->getRequestData().getURLPath() << "]\n" RES;
 
-		//if (storage->getRequestData().getRequestContentType().compare("text/html") == 0) {		// IF FOLDER, THE CONT. TYPE SHOULD BE text.html
+		//if (storage->getRequestData().getResponseContentType().compare("text/html") == 0) {		// IF FOLDER, THE CONT. TYPE SHOULD BE text.html
 			
 			// IF PATH IS THE SERVER ROOT "./"  (  ./resources/  )
 			if (storage->getRequestData().getURLPath() == serverRootDir) {		// The path matches the server root
@@ -90,7 +92,7 @@ void ResponseData::setResponse(struct kevent& event) {
 			}
 			// IF PATH IS A FOLDER INSIDE THE ROOT FOLDER
 			else {
-				std::cout << YEL "          The Path is a folder inside the root: [" << storage->getRequestData().getURLPath() << "]\n" RES;
+				std::cout << YEL "          The URLpath is a folder inside the root: [" << storage->getRequestData().getURLPath() << "]\n" RES;
 
 				// Here it should compare the path with available locations.
 				// If a location is valid in the config file, then take the default index file inside that location
@@ -98,12 +100,14 @@ void ResponseData::setResponse(struct kevent& event) {
 				std::vector<ServerLocation> location_data_vector = storage->getServerData().getLocationBlocks();
 				size_t i;
 				for (i = 0; i < location_data_vector.size(); i++) {
-                    std::cout << GRE "   ........ location uri: [" << location_data_vector[i].getLocationUriName() << "]\n";
+                    std::cout << GRE "   .... incoming URLpath: [" << storage->getRequestData().getURLPath() << "]\n";
+                    std::cout << GRE "   ... location URI name: [" << location_data_vector[i].getLocationUriName() << "]\n";
                     std::cout << GRE "   ... location root dir: [" << location_data_vector[i].getRootDirectory() << "]\n";
                     std::cout << GRE "   ....... _responsePath: [" << _responsePath << "]\n";
-					if (location_data_vector[i].getLocationUriName() == _responsePath) {// TODO here it should be getLocationUriName()
-						_responsePath = _responsePath + "/" + location_data_vector[i].getIndexFile();
-                    	std::cout << BLU "   ....... FinalPath: [" << _responsePath << "]\n";
+					// if (location_data_vector[i].getRootDirectory() == _responsePath) {// TODO here it should be getLocationUriName()
+					if (location_data_vector[i].getLocationUriName() == storage->getRequestData().getURLPath()) {// TODO here it should be getLocationUriName()
+						_responsePath = location_data_vector[i].getRootDirectory() + "/" + location_data_vector[i].getIndexFile();
+                    	std::cout << BLU "   ....... FinalPath: [" << location_data_vector[i].getRootDirectory() << "]\n";
 						break ;
 					}
 				}
@@ -131,14 +135,15 @@ void ResponseData::setResponse(struct kevent& event) {
 			_responseBody = streamFile(_responsePath);
 			std::cout << YEL "                              getHttpStatus(): [" << storage->getHttpStatus() << "]\n" RES;// todo JOYCE map enums to strings
 			std::cout << YEL "                           response path: [" << _responsePath << "]\n" RES;
-			std::cout << YEL "    content type should now be text/html: [" << storage->getRequestData().getRequestContentType() << RES "]\n";
+			std::cout << YEL "    content type should now be text/html: [" << storage->getRequestData().getResponseContentType() << RES "]\n";
 		//}
 	}
 	// IF NOT A FOLDER
-	else {	// IF TEXTFILE
+	else if (storage->getRequestData().getIsFolder() == false && _isCgi == false) {	// IF TEXTFILE
         std::cout << RED "The path is a file: [" << _responsePath << "]\n";
-		if (storage->getRequestData().getRequestContentType().compare("text/html") == 0)
-			_responseBody = streamFile(storage->getServerData().getRootDirectory() + "/" + _responsePath);
+		if (storage->getRequestData().getResponseContentType().compare("text/html") == 0)
+			//_responseBody = streamFile(storage->getServerData().getRootDirectory() + "/" + _responsePath);
+			_responseBody = streamFile(_responsePath);
 		else {	// IF IMAGE, FULL RESPONSE IS CREATED IN setImage()
 			_fullResponse = setImage(storage->getResponseData().getResponsePath());
 			// std::cout << BLU "_fullResponse.length(): [\n" << _fullResponse.size() << "\n" RES;
@@ -147,9 +152,10 @@ void ResponseData::setResponse(struct kevent& event) {
 	}
 
 	// B) IF IT IS A CGI:
-	if (_isCgi == true)
+	if (_isCgi == true) {
 		_responseBody = storage->getRequestData().getCgiBody();
-
+		std::cout << YEL "Content from CGI:\n[\n" RES << _responseBody << YEL "]\n" RES;
+	}
 
 	// set up header 
 	int temp = _responseBody.length();
@@ -162,6 +168,8 @@ void ResponseData::setResponse(struct kevent& event) {
 
 	// std::cout << YEL "complete response header: [" << _responseHeader << "]\n";
 	_fullResponse += _responseHeader + _responseBody;
+	std::cout << YEL "\n_fullResponse:\n[\n" RES << _fullResponse << YEL "]\n" RES;
+
 }
 
 
@@ -171,7 +179,7 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
 	Request *storage = (Request *)event.udata;
 	std::string status;
 
-	std::string fileType = storage->getRequestData().getRequestContentType();
+	std::string fileType = storage->getRequestData().getResponseContentType();	// fileType not used ?
 
 	switch (storage->getHttpStatus())
 	{
@@ -203,7 +211,8 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
 			(storage->getResponseData()).setResponsePath("resources/error_pages/403Forbidden.html");
 		default:
 			status = "HTTP/1.1 200 OK\n"  
-					"Content-Type: " + storage->getRequestData().getRequestContentType() + "\n";	// jaka
+						"Content-Type: text/html\n";
+					// "Content-Type: " + storage->getRequestData().getResponseContentType() + "\n";	// jaka
 			//  _responsePath = storage->getRequestData().getHttpPath();							// jaka: this is old, should be getURLPath()
 			_responsePath = storage->getRequestData().getURLPath();
 			std::cout << GRN "_responsePath: [[" << _responsePath << "]]\n" RES;
@@ -313,17 +322,17 @@ std::string&	ResponseData::eraseSentChunkFromFullResponse(unsigned long retBytes
 	return (_fullResponse.erase(0, retBytes));
 }
 
-size_t	ResponseData::getCurrentLength() { // jaka
-	return (_lengthFullResponse);
-}
+// size_t	ResponseData::getCurrentLength() { // jaka
+// 	return (_lengthFullResponse);
+// }
 
 size_t	ResponseData::getSentSoFar() { // jaka
 	return (_bytesToClient);
 }
 
-void 	ResponseData::setCurrentLength(size_t len) {
-	_lengthFullResponse = len;
-}
+// void 	ResponseData::setCurrentLength(size_t len) {
+// 	_lengthFullResponse = len;
+// }
 
 void	ResponseData::increaseSentSoFar(size_t bytesSent) {
 	_bytesToClient += bytesSent;

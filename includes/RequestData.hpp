@@ -26,7 +26,8 @@ class RequestData {
 		std::string _reqHost;
 		std::string _reqAccept;
 		int         _reqContentLength;
-		std::string _reqContentType;
+		std::string _requestContentType;
+		std::string _responseContentType;
 
 		// PARTS OF URL PATH AND FORM DATA
 		std::string _path;                      	// ie: /kostja.se/folderA/folderB/index.html
@@ -68,11 +69,12 @@ class RequestData {
 		const std::string getRequestAccept() const;
 		size_t         	  getRequestContentLength() const;
 		const std::string getRequestContentType() const;
+		const std::string getResponseContentType() const;
 
 		const std::string 							getURLPath()const;
 		const std::string 							getFullPath()const;
-		const std::string 							getPathFirstPart()const;	// maybe not needed
-		const std::string							getPathLastWord() const;	// maybe not needed
+		const std::string 							getURLPathFirstPart()const;	// maybe not needed
+		const std::string							getURLPathLastWord() const;	// maybe not needed
 		const std::string							getFileExtention() const;
 		bool										getIsFolder() const;
 		const std::string							getQueryString() const;
@@ -101,6 +103,7 @@ class RequestData {
 		void setRequestAccept(std::string reqAccept);
 		void setRequestContentLength(std::string reqAccept);
 		void setRequestContentType(std::string reqAccept);
+		void setResponseContentType(std::string reqAccept);
 
 		// Path parts and Form Data
 		void setURLPath(std::string path);

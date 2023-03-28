@@ -172,6 +172,8 @@ int Request::storeWordsFromFirstLine(std::string firstLine) {
 
 
 int Request::storeWordsFromOtherLine(std::string otherLine) {
+	//std::cout << GRN " .... .... header line: [" << otherLine << "]\n" RES;
+
 	std::vector<std::string> arr;
 	std::istringstream is(otherLine);
 	std::string wordd;
@@ -196,9 +198,12 @@ int Request::storeWordsFromOtherLine(std::string otherLine) {
 				iter++;
 				_data.setRequestContentLength(*iter);
 			}
-			else if (*iter == "Content-Type:") {
-				iter++;
-				_data.setRequestContentType(*iter);
+			else if ((*iter).substr(0, 13) == "Content-Type:") {
+				iter++;		//				multipart;		boundary ---									
+				_data.setRequestContentType((*iter) + " " + *(++iter));
+				//std::cout << RED " .... .... header line *Iter: [" << *iter << "]\n" RES;
+				//std::cout << RED " .... .... header line Content-Type: [" << _data.getRequestContentType() << "]\n" RES;
+
 			}
 			// else
 			// 	std::cout << RED << "Error: This method is not recognized - other line\n" << RES;
@@ -222,127 +227,127 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, struct kevent event, s
 	_headerDone = true;
 	//std::cout << "HEADER: [" << BLU << _header << RES "]\n";	// sleep(1);
 	parseHeader(_data.getHeader());
-	std::cout << RED "server root path: " << getServerData().getRootDirectory() << "\n"RES;
+	std::cout << RED "server root path: " << getServerData().getRootDirectory() << "\n" RES;
 	parsePath(_data.getHttpPath(), event);	// IF FILE NOT FOUND 404, IT COULD JUST CLOSE THE CONNECTION AND STOP
 
 	if (_data.getRequestContentLength() == 0){
 		// if (_data.getRequestMethod() == "GET" && _data.getQueryString() != "")
-		//	; //callCGI(getRequestData(), fdClient); // moved to chooseMethod_StartAction()
+		//	; //callCGI(getRequestData(), fdClient); 		// moved to chooseMethod_StartAction()
 		_doneParsing = true;
     }
 }
 
 
-
-// void	Request::chooseMethod_StartAction(int fdClient) {
-void	Request::chooseMethod_StartAction(struct kevent event) {
-	if (_data.getRequestMethod() == "GET" && _data.getQueryString() != "")
-			// callCGI(getRequestData(), fdClient);
-			callCGI(event);
-	if (_data.getRequestMethod() == "POST")
-			callCGI(event);
-	if (_data.getRequestMethod() == "DELETE") {
-		std::cout << GRN_BG << "DELETE METHOD" << RES << std::endl;
-		/* DELETE deletes a resource (specified in URI) */
-		if (pathType(_data.getURLPath()) != REG_FILE) {
-			std::cout << RED_BG << "ERROR 404 Not Found" << RES << std::endl;
-			// status error 404 Not Found -> Server cannot find the requested resource.
-		}
-		// cgi or just delete the file literally? It's not with CGI: Your program should call the CGI with the file requested as first argument.
-		// How to delete a file froma  direcory: https://codescracker.com/cpp/program/cpp-program-delete-file.htm#:~:text=To%20delete%20any%20file%20from,used%20to%20delete%20a%20file.
-		if (remove(_data.getURLPath().c_str()) != 0) {
-			std::cout << RED_BG << "ERROR 204 No Content" << RES << std::endl;
-			// 500 Internal Server Error -> Server encountered an unexpected condition that prevented it from fulfilling the request.
-		}
-			/* On successful deletion, it returns HTTP response status code 204 (No Content) */
-		// _doneParsing = true;    // 
-	}
-}
+// Jaka: moved to the WebServer
+// void	Request::chooseMethod_StartAction(struct kevent event) {
+// 	std::cout << RED "Start ChooseMethodStartAction()\n" RES ;
+// 	if (_data.getRequestMethod() == "GET" && _data.getQueryString() != "") {
+// 		std::cout << RED "     start GET, callCGI\n" RES ;
+// 		// callCGI(getRequestData(), fdClient);
+// 		callCGI(event);
+// 	}
+// 	if (_data.getRequestMethod() == "POST")
+// 			callCGI(event);
+// 	if (_data.getRequestMethod() == "DELETE") {
+// 		std::cout << GRN_BG << "DELETE METHOD" << RES << std::endl;
+// 		/* DELETE deletes a resource (specified in URI) */
+// 		if (pathType(_data.getURLPath()) != REG_FILE) {
+// 			std::cout << RED_BG << "ERROR 404 Not Found" << RES << std::endl;
+// 			// status error 404 Not Found -> Server cannot find the requested resource.
+// 		}
+// 		// cgi or just delete the file literally? It's not with CGI: Your program should call the CGI with the file requested as first argument.
+// 		// How to delete a file froma  direcory: https://codescracker.com/cpp/program/cpp-program-delete-file.htm#:~:text=To%20delete%20any%20file%20from,used%20to%20delete%20a%20file.
+// 		if (remove(_data.getURLPath().c_str()) != 0) {
+// 			std::cout << RED_BG << "ERROR 204 No Content" << RES << std::endl;
+// 			// 500 Internal Server Error -> Server encountered an unexpected condition that prevented it from fulfilling the request.
+// 		}
+// 			/* On successful deletion, it returns HTTP response status code 204 (No Content) */
+// 		// _doneParsing = true;    // 
+// 	}
+// }
 
 
 
 // void    Request::appendToRequest(const char *str, int fdClient) {
 void    Request::appendToRequest(const char *str, struct kevent event) {
+	//std::cout << PUR << "Start appendToRequest(): _hasBody "<< _hasBody << " _doneParsing " << _doneParsing << " \n" << RES;
+
 	std::string 			chunk = std::string(str);
 	std::string				strToFind = "\r\n\r\n";
 	std::string::size_type	it;
 	std::string				tmpHeader;
 
-	_hasBody = false;
-	std::cout << GRE << "Request Chunk: " << RES << str << std::endl;
+	//std::cout << GRE << "Request Chunk: " << RES << str << std::endl;
 	if (_headerDone == false) {
 		//std::cout << PUR << "     _headerDone == FALSE\n" << RES;
 		_data.setTemp(_data.getTemp() + chunk);
 
 		if ((it = _data.getTemp().find(strToFind)) != std::string::npos) {
-			// parseHeaderAndPath(tmpHeader, fdClient, it);
 			parseHeaderAndPath(tmpHeader, event, it);
 			std::cout << PUR << "Found header ending /r/n, maybe there is body\n" << RES;
 			appendLastChunkToBody(it + strToFind.length());
+		//	if (_doneParsing == true)
+		//		chooseMethod_StartAction(event);
+			return ;
 		}
 	}
-	if (_headerDone == true) {
-		std::cout << PUR << "     _headerDone == TRUE\n" << RES;
-		// if (_hasBody == true)
-		if (_hasBody == true && _doneParsing == false)
-			appendToBody(chunk);
-		if (_doneParsing == true)
-			// storeBodyAsFile(_data.getBody());  // Maybe not needed
-			chooseMethod_StartAction(event);
-			// chooseMethod_StartAction(event.ident);
-			// chooseMethod_StartAction(fdClient);
+	//std::cout << PUR << "     _headerDone == TRUE\n" << RES;
+	if (_hasBody == true && _doneParsing == false) {
+		appendToBody(chunk);
 	}
+//	if (_doneParsing == true) {
+//		chooseMethod_StartAction(event);
+//	}
 }
 
 
 
 // Last chunk means, last chunk of header section, so first chunk of body
 int Request::appendLastChunkToBody(std::string::size_type it) {
+	std::cout << GRN << "start appendlastchunktobody()\n" << RES;
 	_data.setBody(_data.getTemp().substr(it));
+	std::cout << "    Body [" GRN << _data.getBody() << "]\n" RES;
+
 	if (_data.getBody().length() > _data.getRequestContentLength()) {   // Compare body length
 		std::cout << RED << "Error: Body-Length, first chunk (" << _data.getBody().length() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;
         _httpStatus = I_AM_A_TEAPOT;
 		return (1);
 	}
 	if (_data.getBody().length() == _data.getRequestContentLength()) {
+		std::cout << GRN << "    _doneparsing == true\n" << RES;
+
 		_doneParsing = true;
 		if (_data.getBody().length() == 0 && _data.getRequestContentLength() == 0) {    // Compare body lenght
 			std::cout << GRE << "OK (there is no body)\n" << RES;
 			_hasBody = false;
-
-
-			std::cout << RED "content type: [" << _data.getRequestContentType() << "]\n" RES;
-
+			std::cout << RED "content type: [" << _data.getResponseContentType() << "]\n" RES;
 			return (0);
 		}
 		std::cout << GRE << "OK: Body-Length is as expected Content-Length\n" << RES;
 		_doneParsing = true; // otherwise it went to appendToBody, and appended more stuff, so the body lenght became larger then expected
-		std::cout << CYN << "    Body [" << _data.getBody() << "]\n" RES;// sleep(2);
-
-		//if (_doneParsing == true && _data.getRequestMethod() == "POST") { // can delete doneParsing == true
-		//	std::cout << "      doneparsing true and POST true, call CGI\n";
-		//	std::cout << "      _body: [" << _data.getBody() << "]\n"; 
-		//	parsePath(_data.getHttpPath());	// Jaka: Probably not needed here?? Already done in parseHeaderAndpath
-		//	std::cout << "      getQueryString: [" << getRequestData().getQueryString() << "]\n"; 
-		//	// callCGI(getRequestData(), fdClient); // moved to ChooseMethod_StartAction()
-		//}
+		std::cout << CYN << "    Body first chunk [" << _data.getBody() << "]\n" RES;// sleep(2);
 		return (0);
 	}
 	// Timeout ???
 	// 		In case of wrong header, body length bigger than body, but body is already done, 
+	std::cout << CYN << "    Body first chunk [" << _data.getBody() << "]\n" RES;
+
 	return (0);
 }
 
 
 
 int Request::appendToBody(std::string req) {
+	//std::cout << RED << "start appendToBOdy(), req [" << req << "\n" << RES;
+	//std::cout << RED << "    body before append: [" << _data.getBody() << "\n" << RES;
 	std::string tmp = _data.getBody();
 	tmp.append(req);
 	_data.setBody(tmp);
+	//std::cout << CYN << "    body after append:  [" << _data.getBody() << "]\n" << RES;
 	
 	if (_data.getBody().length() > _data.getRequestContentLength()) {		// Compare body lenght
 		std::cout << RED << "Error: Body-Length (" << _data.getBody().length() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;// sleep(2);
-		std::cout << CYN << "       Body [" << _data.getBody() << "]\n" RES;// sleep(2);
+		std::cout << CYN << "       Body [" << _data.getBody() << "]\n" RES;
         _httpStatus = I_AM_A_TEAPOT;
 		return (1);
 	}
@@ -350,15 +355,17 @@ int Request::appendToBody(std::string req) {
 		std::cout << GRE "OK: Done parsing.\n" RES;
 
 		if (_data.getRequestMethod() == "POST") {
-			std::cout << GRE "      ....    store _body into _queryString\n" RES;
-			_data.setQueryString(_data.getBody());
+			//std::cout << GRE "      ....    store _body into _queryString\n" RES;
+			//_data.setQueryString(_data.getBody());					// querystring not needed, just to print it
+			getResponseData().setResponseBody(_data.getBody());		// _responseBody to be sent to CGI
 			storeFormData(_data.getBody());	// maybe not needed
 		}
 		_doneParsing = true;
 		//std::cout << "HEADER: [" BLU << _header << RES "]\n";	// sleep(1);
-		//std::cout << "BODY:   [" BLU << _body   << RES "]\n\n";	// sleep(1);
+		//std::cout << "BODY:   [" BLU << _data.getBody()   << RES "]\n\n";	// sleep(1);
 		return (0);
 	}
+	//std::cout << RED << "End appendToBody()\n" << RES;
 	return (0);
 }
 
@@ -376,7 +383,7 @@ void Request::printStoredRequestData(Request &request) {
 	std::cout << "Host:           [" << reqData.getRequestHost() << "]\n";
 	std::cout << "Accept:         [" << reqData.getRequestAccept() << "]\n";
 	std::cout << "Content-Length: [" << reqData.getRequestContentLength() << "]\n";
-	std::cout << "Content-Type:   [" << reqData.getRequestContentType() << "]\n" RES;
+	std::cout << "Content-Type:   [" << reqData.getResponseContentType() << "]\n" RES;
 	// PRINT BODY
 //	std::cout << "REQUEST BODY:\n[" PUR << request.getRequestBody() << RES "]\n";
 }
