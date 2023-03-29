@@ -20,7 +20,7 @@ sys.stderr.write('START PYTHON SCRIPT ( via stderr)\n')
 
 # WITHOUT SLEEP, NOTHING COMES YET TO THE FieldStoraeg() 
 # AND IT THEREFORE GIVES PYTHON ERROR: [Errno 35] Resource temporarily unavailable
-# time.sleep(2)
+time.sleep(2)
 
 
 class StdinStream(object):

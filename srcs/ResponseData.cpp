@@ -133,9 +133,9 @@ void ResponseData::setResponse(struct kevent& event) {
 
 
 			_responseBody = streamFile(_responsePath);
-			std::cout << YEL "                              getHttpStatus(): [" << storage->getHttpStatus() << "]\n" RES;// todo JOYCE map enums to strings
-			std::cout << YEL "                           response path: [" << _responsePath << "]\n" RES;
-			std::cout << YEL "    content type should now be text/html: [" << storage->getRequestData().getResponseContentType() << RES "]\n";
+			std::cout << YEL "   getHttpStatus(): [" << storage->getHttpStatus() << "]\n" RES;// todo JOYCE map enums to strings
+			std::cout << YEL "   response path:   [" << _responsePath << "]\n" RES;
+			std::cout << YEL "   content type:    [" << storage->getRequestData().getResponseContentType() << RES "]\n";
 		//}
 	}
 	// IF NOT A FOLDER
@@ -168,7 +168,7 @@ void ResponseData::setResponse(struct kevent& event) {
 
 	// std::cout << YEL "complete response header: [" << _responseHeader << "]\n";
 	_fullResponse += _responseHeader + _responseBody;
-	std::cout << YEL "\n_fullResponse:\n[\n" RES << _fullResponse << YEL "]\n" RES;
+	//std::cout << YEL "\n_fullResponse:\n[\n" RES << _fullResponse << YEL "]\n" RES;
 
 }
 
@@ -255,8 +255,9 @@ std::string ResponseData::setImage(std::string imagePath) {
 	headerBlock.append("accept-ranges: bytes\r\n");
 	std::string contentLen = "Content-Length: ";
 	std::string temp = std::to_string(content.size());
-	headerBlock.append(contentLen);
+	std::cout << "from setImage: content-length: " << temp << "\n";
 	contentLen.append(temp);
+	headerBlock.append(contentLen);
 	headerBlock.append("\r\n\r\n");
 
 	headerBlock.append(content);
