@@ -15,7 +15,8 @@
 #include "ConfigFileParser.hpp"
 
 #define MAX_EVENTS 100
-#define BUFFER_SIZE 50
+// #define BUFFER_SIZE 4096
+#define BUFFER_SIZE 100
 
 class WebServer
 {

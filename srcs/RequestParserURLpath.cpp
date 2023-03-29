@@ -68,7 +68,7 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 		close(_cgi.getPipeCgiOut_1());
 		close(_cgi.getPipeCgiIn_0());
 		//std::cout << BLU "\n       End runExecve()\n" << RES;
-		sleep(1);
+		// sleep(1);
 	}
 }
 

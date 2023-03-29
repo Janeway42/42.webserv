@@ -119,7 +119,7 @@ void WebServer::handleTimeout(struct kevent &event)
 
 void WebServer::readRequest(struct kevent& event)
 {
-	//std::cout << "Start READ REQUEST\n";
+	std::cout << "Start READ REQUEST\n";
 
 	char buffer[BUFFER_SIZE];
 	memset(&buffer, '\0', BUFFER_SIZE); // cpp equivalent ? 
@@ -161,6 +161,7 @@ void WebServer::readRequest(struct kevent& event)
 	else if ((int)event.ident == storage->getFdClient()) // the event belongs to the client fd 
 	{
 		int ret = recv(event.ident, &buffer, BUFFER_SIZE - 1, 0);
+		std::cout << "    recv: " << ret << "\n";
 
 		if (ret <= 0) // kq will NEVER send a READ event if there is nothing to receive thus ret == 0 will never happen  
 		{
@@ -172,7 +173,7 @@ void WebServer::readRequest(struct kevent& event)
 		else if (storage->getDone() == false)
 		{
 			storage->appendToRequest(buffer, event);
-			//std::cout << CYN "    returned from ATR(), _parsingDone: " << storage->getDone() << ", isCGI: " << storage->getResponseData().getIsCgi() << "\n" RES;
+			std::cout << CYN "    returned from ATR(), _parsingDone: " << storage->getDone() << ", isCGI: " << storage->getResponseData().getIsCgi() << "\n" RES;
 
 
 			// if (storage->getHttpStatus() != NO_STATUS || storage->getDone() == true)				// new Jaka: getIsCGI()
@@ -190,6 +191,7 @@ void WebServer::readRequest(struct kevent& event)
 				removeFilter(event, EVFILT_READ, "failed kevent eof - read failure");
 			}
 			else if (storage->getDone() == true && storage->getResponseData().getIsCgi() == true) {
+				std::cout << "    ReadRequest: Done receiveing the request, start CGI\n";
 				removeFilter(event, EVFILT_READ, "failed kevent eof - read failure"); // ??? jaka
 				chooseMethod_StartCGI(event, storage);
 			}
@@ -212,7 +214,8 @@ void WebServer::sendResponse(struct kevent& event)
 		//buffer = storage->getResponseData().getResponseBody();
 		// Jaka: Set buffer string to the point, from where previous chunk of body was sent
 		std::cout << "       getBody().length() " << storage->getRequestData().getBody().length() << "\n";
-		std::cout << "                getBody() [" << BLU << storage->getRequestData().getBody() << RES "]\n";
+		std::cout << "                getBody() [ temp disabled by jaka ]\n";
+		// std::cout << "                getBody() [" << BLU << storage->getRequestData().getBody() << RES "]\n";
 
 		// buffer = storage->getResponseData().getResponseBody().substr(storage->getCgiData().getBytesToCgi()); // changed jaka: If POST, the _body is to be sent to cgi
 		//sleep(2);
@@ -315,7 +318,7 @@ void WebServer::newClient(struct kevent event, ServerData * specificServer)
 	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 		throw ServerException("failed kevent EV_ADD, EVFILT_READ, new client");
 
-	int time = 5 * 1000;     // needs to be 30 for final version -----------------------------------------
+	int time = 30 * 1000;     // needs to be 30 for final version -----------------------------------------
 	EV_SET(&evSet, fd, EVFILT_TIMER, EV_ADD, 0, time, storage); 
 	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 		throw ServerException("failed kevent EV_ADD, EVFILT_TIMER, new client");
