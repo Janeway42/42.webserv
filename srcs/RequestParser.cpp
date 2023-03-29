@@ -199,8 +199,12 @@ int Request::storeWordsFromOtherLine(std::string otherLine) {
 				_data.setRequestContentLength(*iter);
 			}
 			else if ((*iter).substr(0, 13) == "Content-Type:") {
-				iter++;		//				multipart;		boundary ---									
-				_data.setRequestContentType((*iter) + " " + *(++iter));
+				iter++;		
+				if ((*iter).find("multipart") == std::string::npos)	
+					_data.setRequestContentType(*iter);
+				else			//				multipart;		boundary ---
+					_data.setRequestContentType((*iter) + " " + *(++iter));
+				
 				//std::cout << RED " .... .... header line *Iter: [" << *iter << "]\n" RES;
 				//std::cout << RED " .... .... header line Content-Type: [" << _data.getRequestContentType() << "]\n" RES;
 

@@ -104,7 +104,7 @@ void Request::callCGI(struct kevent event) {
 	// BY HERE, THE HUGE BODY IS STORED OK
 
 	// Make a char** array and copy all content of the above vector
-	std::cout << GRN " ...... TEMP SIZE:  " << temp.size() << " \n" << RES "\n";
+	//std::cout << GRN " ...... TEMP SIZE:  " << temp.size() << " \n" << RES "\n";
 
 	char **env = new char*[temp.size() + 1];
 
@@ -118,7 +118,7 @@ void Request::callCGI(struct kevent event) {
 	// BY HERE, THE HUGE BODY IS STORED OK
 
 	// Just for printing
-	std::cout << GRN "STORED ENV:\n" << RES "\n";
+	std::cout << GRN "STORED ENV:\n" RES;
 	for (i = 0; env[i]; i++) {
 	  std::cout << "    " << i+1 << " " << env[i] << std::endl;
 	}

@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import os   # TO ACCESS execve ENV variables
+import time
 import sys	# to read from std input
 
 import cgi, cgitb
@@ -10,8 +11,8 @@ import cgi, cgitb
 print ("<br><br><h3>THIS IS PYTHON SCRIPT:</h3>")
 
 
-
-exit()
+time.sleep(2)
+# exit()
 
 
 # for l in sys.stdin:

@@ -259,6 +259,7 @@ void WebServer::sendResponse(struct kevent& event)
 
 		std::string content = storage->getResponseData().getFullResponse();
 		std::cout << GRN << "Full Response size: " RES << content.size() << RES << std::endl;
+		//std::cout << GRN << "Full Response Content:  Temp disabled by Jaka\n" RES << std::endl;
 		std::cout << GRN << "Full Response Content:\n[\n" RES << content<< GRN "]\n" RES << std::endl;
 		unsigned long myRet = 0;
 
