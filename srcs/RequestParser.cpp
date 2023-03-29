@@ -221,7 +221,6 @@ int Request::storeWordsFromOtherLine(std::string otherLine) {
 */
 
 
-// void Request::parseHeaderAndPath(std::string & tmpHeader, int fdClient, std::string::size_type it) {
 void Request::parseHeaderAndPath(std::string & tmpHeader, struct kevent event, std::string::size_type it) {
     std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
 	_hasBody = true;
@@ -229,9 +228,9 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, struct kevent event, s
 	tmpHeader.append(_data.getTemp().substr(0, it));
 	_data.setHeader(tmpHeader);
 	_headerDone = true;
-	//std::cout << "HEADER: [" << BLU << _header << RES "]\n";	// sleep(1);
+	std::cout << RED "STORED HEADER: \n" << tmpHeader << "\n" RES;
 	parseHeader(_data.getHeader());
-	std::cout << RED "server root path: " << getServerData().getRootDirectory() << "\n" RES;
+	//std::cout << RED "server root path: " << getServerData().getRootDirectory() << "\n" RES;
 	parsePath(_data.getHttpPath(), event);	// IF FILE NOT FOUND 404, IT COULD JUST CLOSE THE CONNECTION AND STOP
 
 	if (_data.getRequestContentLength() == 0){
@@ -271,7 +270,6 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, struct kevent event, s
 // }
 
 
-
 // void    Request::appendToRequest(const char *str, int fdClient) {
 void    Request::appendToRequest(const char *str, struct kevent event) {
 	//std::cout << PUR << "Start appendToRequest(): _hasBody "<< _hasBody << " _doneParsing " << _doneParsing << " \n" << RES;
@@ -297,11 +295,13 @@ void    Request::appendToRequest(const char *str, struct kevent event) {
 	}
 	//std::cout << PUR << "     _headerDone == TRUE\n" << RES;
 	if (_hasBody == true && _doneParsing == false) {
+		std::cout << "AppenToBody chunk [" << chunk << "]\n";
 		appendToBody(chunk);
 	}
 //	if (_doneParsing == true) {
 //		chooseMethod_StartAction(event);
 //	}
+	std::cout << PUR << "DONE appendToRequest()\n" << RES;
 }
 
 
@@ -342,7 +342,7 @@ int Request::appendLastChunkToBody(std::string::size_type it) {
 
 
 int Request::appendToBody(std::string req) {
-	//std::cout << RED << "start appendToBOdy(), req [" << req << "\n" << RES;
+	// std::cout << RED << "start appendToBOdy(), current len, " << _data.getBody().length() << " expected len: " << _data.getRequestContentLength() << "\n" RES;
 	//std::cout << RED << "    body before append: [" << _data.getBody() << "\n" << RES;
 	std::string tmp = _data.getBody();
 	tmp.append(req);
@@ -370,6 +370,7 @@ int Request::appendToBody(std::string req) {
 		return (0);
 	}
 	//std::cout << RED << "End appendToBody()\n" << RES;
+	std::cout << RED << "END appendToBOdy(), current len, " << _data.getBody().length() << " expected len: " << _data.getRequestContentLength() << "\n" RES;
 	return (0);
 }
 
