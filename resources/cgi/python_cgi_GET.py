@@ -11,7 +11,7 @@ import cgi, cgitb
 print ("<br><br><h3>THIS IS PYTHON SCRIPT:</h3>")
 
 
-time.sleep(2)
+# time.sleep(2)
 # exit()
 
 

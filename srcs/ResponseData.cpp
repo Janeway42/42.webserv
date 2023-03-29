@@ -154,7 +154,7 @@ void ResponseData::setResponse(struct kevent& event) {
 	// B) IF IT IS A CGI:
 	if (_isCgi == true) {
 		_responseBody = storage->getRequestData().getCgiBody();
-		std::cout << YEL "Content from CGI:\n[\n" RES << _responseBody << YEL "]\n" RES;
+		// std::cout << YEL "Content from CGI:\n[\n" RES << _responseBody << YEL "]\n" RES;
 	}
 
 	// set up header 

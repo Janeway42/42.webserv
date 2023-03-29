@@ -36,6 +36,7 @@ class CgiData: public Parser
 		void	setBytesToCgi(int val);
 		void	setPipesDone(bool val);
 		void	resetPipeIn(); 
+		void	resetPipeOut();
 	
 		class CgiException: public std::exception
         {

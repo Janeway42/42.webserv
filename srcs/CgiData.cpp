@@ -106,7 +106,10 @@ void CgiData::setPipesDone(bool val)
 
 void CgiData::resetPipeIn()
 {
-	//_fd_in[0] = -1;	// added jaka
 	_fd_in[1] = -1;
 }
 
+void CgiData::resetPipeOut()
+{
+	_fd_out[0] = -1;
+}
