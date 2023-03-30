@@ -21,7 +21,8 @@ if fileitem.filename:
    # directory traversal attacks
    fn = os.path.basename(fileitem.filename)
    try:
-       with open('/Users/jmurovec/Desktop/projects/webservCJJ_28mar00/resources/uploads/' + fn, 'wb') as f:
+       parent_dir = os.getcwd()
+       with open(parent_dir + '/resources/uploads/' + fn, 'wb') as f:
            f.write(fileitem.file.read())
          #   message = 'The file ' + fn + ' was uploaded successfully'
    except IOError as e:
@@ -34,7 +35,7 @@ if fileitem.filename:
 
 
 # Define the path to the folder you want to list
-folder_path = "/Users/jmurovec/Desktop/projects/webservCJJ_28mar00/resources/uploads/"
+folder_path = parent_dir + '/resources/uploads/'
 
 # Define the HTML template
 html_template = """

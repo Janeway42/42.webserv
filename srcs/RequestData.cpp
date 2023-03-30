@@ -10,7 +10,7 @@ RequestData::RequestData() {
     _reqHost 			= "default Host";	// not sure if all these are needed
     _reqContentLength	= 0;
 	_reqHeader			= "";
-	_reqBody			= "";
+	//_reqBody			= "";		// does not need setting to "", it is now a vector
 	
 	_path				= "default";
     _full_path				= "default";
@@ -58,7 +58,10 @@ const std::string RequestData::getHttpVersion() const {
 const std::string RequestData::getHeader() const {
 	return _reqHeader;
 }
-const std::string RequestData::getBody() const {
+// const std::string RequestData::getBody() const {
+// 	return _reqBody;
+// }
+const std::vector<uint8_t> RequestData::getBody() const {
 	return _reqBody;
 }
 const std::string RequestData::getTemp() const {
@@ -145,7 +148,11 @@ void RequestData::setHttpVersion(std::string reqHttpVersion)
 	_reqHttpVersion = reqHttpVersion;
 }
 
-void RequestData::setBody(std::string reqBody)
+// void RequestData::setBody(std::string reqBody)
+// {
+// 	_reqBody = reqBody;
+// }
+void RequestData::setBody(std::vector<uint8_t> reqBody)
 {
 	_reqBody = reqBody;
 }

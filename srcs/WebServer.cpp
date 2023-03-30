@@ -50,8 +50,9 @@ void WebServer::runServer()
 //	int loop1 = 0;
 	while (1)
 	{
-	//	std::cout << "WHILE LOOP ------------------------------" << loop1 << std::endl;
+		std::cout << "WHILE LOOP ------------------------------\n";
 		int nr_events = kevent(_kq, NULL, 0, evList, MAX_EVENTS, NULL);
+		std::cout << "     a)\n";
 
 		if (nr_events < 1)
 			throw ServerException("failed number events"); // for error:: it needs to return to kevent and try to get the events again. Thus nothing :D
@@ -59,6 +60,7 @@ void WebServer::runServer()
 		{
 			for (i = 0; i < nr_events; i++)
 			{
+				std::cout << BLU "Kqueue, events " << nr_events << ",   i: " << i << "\n" RES;
 				ServerData* specificServer = getSpecificServer(evList[i].ident);
 
 				if (evList[i].flags & EV_ERROR)
@@ -181,13 +183,14 @@ void WebServer::readRequest(struct kevent& event)
 		}
 		else if (storage->getDone() == false)
 		{
-			storage->appendToRequest(buffer, event);
+			storage->appendToRequest(buffer, ret, event);
 			std::cout << CYN "    returned from ATR(), _parsingDone: " << storage->getDone() << ", isCGI: " << storage->getResponseData().getIsCgi() << "\n" RES;
 
 
 			// if (storage->getHttpStatus() != NO_STATUS || storage->getDone() == true)				// new Jaka: getIsCGI()
 			if (storage->getHttpStatus() != NO_STATUS || (storage->getDone() == true && storage->getResponseData().getIsCgi() == false))
 			{
+				std::cout << CYN "           ReadRequest: B)\n" RES;
 				if (storage->getHttpStatus() != NO_STATUS)
 					std::cout << "error parsing - sending response - failure, error " << storage->getHttpStatus() << "\n";// TODO JOYCE MAP ENUM TO STRING
 				else if (storage->getDone() == true) {
@@ -200,12 +203,14 @@ void WebServer::readRequest(struct kevent& event)
 				removeFilter(event, EVFILT_READ, "failed kevent eof - read failure");
 			}
 			else if (storage->getDone() == true && storage->getResponseData().getIsCgi() == true) {
-				std::cout << "    ReadRequest: Done receiveing the request, start CGI\n";
+				std::cout << CYN "          ReadRequest: C) Done receiving the request, start CGI\n" RES;
 				removeFilter(event, EVFILT_READ, "failed kevent eof - read failure"); // ??? jaka
 				chooseMethod_StartCGI(event, storage);
 			}
 		}
 	}
+	std::cout << CYN "   ReadRequest: END)\n" RES;
+
 }
 
 
@@ -214,7 +219,9 @@ void WebServer::sendResponse(struct kevent& event)
 	std::cout << "Start SEND RESPONSE\n";
 
 	Request *storage = (Request*)event.udata;
-	std::string buffer;
+	// std::string buffer;
+	std::vector<uint8_t> tmpBody = storage->getRequestData().getBody();
+	const char* buffer;	// the reqBody is now stored as vector, must go to write() as char*
 
 	// 																	  Jaka changed the name to:  getPipeCgiIn_1()
 	if ((int)event.ident == (storage->getCgiData()).getPipeCgiIn_1())  // write to CGI - we send the info // the event belong to the pipe fd: _fd_in[1]
@@ -222,15 +229,18 @@ void WebServer::sendResponse(struct kevent& event)
 		std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CGI, write to CGI  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
 		//buffer = storage->getResponseData().getResponseBody();
 		// Jaka: Set buffer string to the point, from where previous chunk of body was sent
-		std::cout << "       getBody().length() " << storage->getRequestData().getBody().length() << "\n";
+		std::cout << "       getBody().length() " << storage->getRequestData().getBody().size() << "\n";
 		std::cout << "                getBody() [ temp disabled by jaka ]\n";
 		// std::cout << "                getBody() [" << BLU << storage->getRequestData().getBody() << RES "]\n";
 
 		// buffer = storage->getResponseData().getResponseBody().substr(storage->getCgiData().getBytesToCgi()); // changed jaka: If POST, the _body is to be sent to cgi
 		//sleep(2);
-		buffer = storage->getRequestData().getBody().substr(storage->getCgiData().getBytesToCgi());				//  If GET, I also put the query string in the _body
+		std::vector<uint8_t>::iterator startPoint = tmpBody.begin() + storage->getCgiData().getBytesToCgi();
+		std::vector<uint8_t>::iterator endPoint   = tmpBody.end();
+		std::vector<uint8_t> bodyChunk(startPoint, endPoint);
+		buffer = reinterpret_cast<const char *>(bodyChunk.data());				//  If GET, I also put the query string in the _body
 																												//	So now it comes to CGI as ENV and as BODY
-		ssize_t ret = write(storage->getCgiData().getPipeCgiIn_1(), buffer.c_str(), buffer.length());
+		ssize_t ret = write(storage->getCgiData().getPipeCgiIn_1(), buffer, static_cast<std::size_t>(endPoint - startPoint));
 		std::cout << "        Returned write: " << ret << "\n";
 
 		if (ret == -1)
@@ -247,7 +257,7 @@ void WebServer::sendResponse(struct kevent& event)
 			storage->getCgiData().setBytesToCgi(ret);
 			std::cout << RES "    current sent getBytesToCGI " << storage->getCgiData().getBytesToCgi() << "\n" RES;
 
-			if (storage->getCgiData().getBytesToCgi() == (storage->getRequestData()).getBody().length())
+			if (storage->getCgiData().getBytesToCgi() == (storage->getRequestData()).getBody().size())
 			{
 				std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ CGI Response sent ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
 				removeFilter(event, EVFILT_WRITE, "failed kevent EV_DELETE, EVFILT_WRITE - success on _fd_in[1]");

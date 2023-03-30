@@ -92,30 +92,30 @@ void Request::parseHeader(std::string header) {
 		} else if (i > 0 && lineContent != "\r") {	// OTHER HEADER LINES
 			storeWordsFromOtherLine(lineContent);
 			// Store key:value pairs into vector or map
-		} else if (i > 0 && lineContent == "\r") {	// Not sure if this \r is 100% good
-			// START READING BODY
-			//	std::cout << YEL << "Found end of header block, begin of Body\n" << RES;
-			storeBody(is);
-			break ;
 		}
+		// else if (i > 0 && lineContent == "\r") {	// Not sure if this \r is 100% good
+		// 	// START READING BODY
+		// 	//	std::cout << YEL << "Found end of header block, begin of Body\n" << RES;
+		// 	storeBody(is);
+		// 	break ;
+		// }
 		i++;
 	}
 }
 
-void Request::storeBody(std::istringstream &iss)
-{
-	std::string lineContent;
-	std::string tmp;
+// void Request::storeBody(std::istringstream &iss)
+// {
+// 	std::string lineContent;
+// 	std::string tmp;
 
-	while (std::getline(iss, lineContent)) {
-		tmp = _data.getBody();
-		tmp.append(lineContent);
-		_data.setBody(tmp);
-		// _body.append(lineContent);
-	}
-	std::cout << YEL "body [" << _data.getBody() << "]\n" << RES;
-
-}
+// 	while (std::getline(iss, lineContent)) {
+// 		tmp = _data.getBody();
+// 		tmp.append(lineContent);
+// 		_data.setBody(tmp);
+// 		// _body.append(lineContent);
+// 	}
+// 	std::cout << YEL "body [" << _data.getBody() << "]\n" << RES;
+// }
 
 
 // MAYBE WON'T BE NEEDED
@@ -271,12 +271,12 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, struct kevent event, s
 
 
 // void    Request::appendToRequest(const char *str, int fdClient) {
-void    Request::appendToRequest(const char *str, struct kevent event) {
+void    Request::appendToRequest(const char str[], size_t len, struct kevent event) {
 	//std::cout << PUR << "Start appendToRequest(): _hasBody "<< _hasBody << " _doneParsing " << _doneParsing << " \n" << RES;
 
 	std::string 			chunk = std::string(str);
 	std::string				strToFind = "\r\n\r\n";
-	std::string::size_type	it;
+	std::string::size_type	it, it2;
 	std::string				tmpHeader;
 
 	//std::cout << GRE << "Request Chunk: " << RES << str << std::endl;
@@ -287,16 +287,20 @@ void    Request::appendToRequest(const char *str, struct kevent event) {
 		if ((it = _data.getTemp().find(strToFind)) != std::string::npos) {
 			parseHeaderAndPath(tmpHeader, event, it);
 			std::cout << PUR << "Found header ending /r/n, maybe there is body\n" << RES;
-			appendLastChunkToBody(it + strToFind.length());
-		//	if (_doneParsing == true)
-		//		chooseMethod_StartAction(event);
+			//std::cout << PUR << "size_type 'it' value: " << it << "\n" << RES;
+			it2 = chunk.find(strToFind) + strToFind.length();	// needed to find the start of body, as char*, not std::string, because body will be vector
+			std::cout << "print start of body [" << PUR << str + it2 << "]\n" << RES;
+			
+			//appendLastChunkToBody(it + strToFind.length());
+			appendLastChunkToBody2(str + it2, len - it2); // jaka, changed to vector
 			return ;
 		}
 	}
 	//std::cout << PUR << "     _headerDone == TRUE\n" << RES;
 	if (_hasBody == true && _doneParsing == false) {
-		std::cout << "AppenToBody chunk [" << chunk << "]\n";
-		appendToBody(chunk);
+		//std::cout << "AppenToBody chunk [" << chunk << "]\n";
+		appendToBody(str, len);	// changed to char*, because it needs to become a vector
+		// appendToBody(chunk);
 	}
 //	if (_doneParsing == true) {
 //		chooseMethod_StartAction(event);
@@ -307,21 +311,23 @@ void    Request::appendToRequest(const char *str, struct kevent event) {
 
 
 // Last chunk means, last chunk of header section, so first chunk of body
-int Request::appendLastChunkToBody(std::string::size_type it) {
+int Request::appendLastChunkToBody2(const char *str, size_t len) {
 	std::cout << GRN << "start appendlastchunktobody()\n" << RES;
-	_data.setBody(_data.getTemp().substr(it));
-	std::cout << "    Body [" GRN << _data.getBody() << "]\n" RES;
 
-	if (_data.getBody().length() > _data.getRequestContentLength()) {   // Compare body length
-		std::cout << RED << "Error: Body-Length, first chunk (" << _data.getBody().length() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;
+	std::vector<uint8_t> tempVec(str, str + len); // convert adn assign str to vector
+	_data.setBody(tempVec);
+	std::cout << YEL "Body:\n" RES;
+	std::copy(tempVec.begin(), tempVec.end(), std::ostream_iterator<uint8_t>(std::cout));  // just to print
+
+	if (_data.getBody().size() > _data.getRequestContentLength()) {   // Compare body length
+		std::cout << RED << "Error: Body-Length, first chunk (" << _data.getBody().size() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;
         _httpStatus = I_AM_A_TEAPOT;
 		return (1);
 	}
-	if (_data.getBody().length() == _data.getRequestContentLength()) {
+	if (_data.getBody().size() == _data.getRequestContentLength()) {
 		std::cout << GRN << "    _doneparsing == true\n" << RES;
-
 		_doneParsing = true;
-		if (_data.getBody().length() == 0 && _data.getRequestContentLength() == 0) {    // Compare body lenght
+		if (_data.getBody().size() == 0 && _data.getRequestContentLength() == 0) {    // Compare body lenght
 			std::cout << GRE << "OK (there is no body)\n" << RES;
 			_hasBody = false;
 			std::cout << RED "content type: [" << _data.getResponseContentType() << "]\n" RES;
@@ -329,50 +335,124 @@ int Request::appendLastChunkToBody(std::string::size_type it) {
 		}
 		std::cout << GRE << "OK: Body-Length is as expected Content-Length\n" << RES;
 		_doneParsing = true; // otherwise it went to appendToBody, and appended more stuff, so the body lenght became larger then expected
-		std::cout << CYN << "    Body first chunk [" << _data.getBody() << "]\n" RES;// sleep(2);
+		std::cout << YEL "Body:\n" RES;
+		//std::copy(_data.getBody().begin(), _data.getBody().end(), std::ostream_iterator<uint8_t>(std::cout));  // just to print
+		// std::cout << CYN << "    Body first chunk [" << _data.getBody() << "]\n" RES;// sleep(2);
 		return (0);
 	}
 	// Timeout ???
 	// 		In case of wrong header, body length bigger than body, but body is already done, 
-	std::cout << CYN << "    Body first chunk [" << _data.getBody() << "]\n" RES;
+	std::cout << YEL "Body:\n" RES;
+	//std::copy(_data.getBody().begin(), _data.getBody().end(), std::ostream_iterator<uint8_t>(std::cout));  // just to print
 
 	return (0);
 }
 
 
+// Disabled Jaka, trying new version above
+// // Last chunk means, last chunk of header section, so first chunk of body
+// int Request::appendLastChunkToBody(std::string::size_type it) {
+// 	std::cout << GRN << "start appendlastchunktobody()\n" << RES;
+// 	_data.setBody(_data.getTemp().substr(it));
+// 	std::cout << "    Body [" GRN << _data.getBody() << "]\n" RES;
 
-int Request::appendToBody(std::string req) {
+// 	if (_data.getBody().length() > _data.getRequestContentLength()) {   // Compare body length
+// 		std::cout << RED << "Error: Body-Length, first chunk (" << _data.getBody().length() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;
+//         _httpStatus = I_AM_A_TEAPOT;
+// 		return (1);
+// 	}
+// 	if (_data.getBody().length() == _data.getRequestContentLength()) {
+// 		std::cout << GRN << "    _doneparsing == true\n" << RES;
+
+// 		_doneParsing = true;
+// 		if (_data.getBody().length() == 0 && _data.getRequestContentLength() == 0) {    // Compare body lenght
+// 			std::cout << GRE << "OK (there is no body)\n" << RES;
+// 			_hasBody = false;
+// 			std::cout << RED "content type: [" << _data.getResponseContentType() << "]\n" RES;
+// 			return (0);
+// 		}
+// 		std::cout << GRE << "OK: Body-Length is as expected Content-Length\n" << RES;
+// 		_doneParsing = true; // otherwise it went to appendToBody, and appended more stuff, so the body lenght became larger then expected
+// 		std::cout << CYN << "    Body first chunk [" << _data.getBody() << "]\n" RES;// sleep(2);
+// 		return (0);
+// 	}
+// 	// Timeout ???
+// 	// 		In case of wrong header, body length bigger than body, but body is already done, 
+// 	std::cout << CYN << "    Body first chunk [" << _data.getBody() << "]\n" RES;
+// 	return (0);
+// }
+
+
+int Request::appendToBody(const char* str, size_t len) {
 	// std::cout << RED << "start appendToBOdy(), current len, " << _data.getBody().length() << " expected len: " << _data.getRequestContentLength() << "\n" RES;
 	//std::cout << RED << "    body before append: [" << _data.getBody() << "\n" << RES;
-	std::string tmp = _data.getBody();
-	tmp.append(req);
+	std::vector<uint8_t> newChunk(str, str + len); // convert adn assign str to vector
+
+	std::vector<uint8_t> tmp = _data.getBody();
+	tmp.insert(tmp.end(), newChunk.begin(), newChunk.end());
 	_data.setBody(tmp);
 	//std::cout << CYN << "    body after append:  [" << _data.getBody() << "]\n" << RES;
 	
-	if (_data.getBody().length() > _data.getRequestContentLength()) {		// Compare body lenght
-		std::cout << RED << "Error: Body-Length (" << _data.getBody().length() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;// sleep(2);
-		std::cout << CYN << "       Body [" << _data.getBody() << "]\n" RES;
+	if (_data.getBody().size() > _data.getRequestContentLength()) {		// Compare body lenght
+		std::cout << RED << "Error: Body-Length (" << _data.getBody().size() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;// sleep(2);
+		std::cout << YEL "Body:\n" RES;
+		std::copy(_data.getBody().begin(), _data.getBody().end(), std::ostream_iterator<uint8_t>(std::cout));  // just to print
         _httpStatus = I_AM_A_TEAPOT;
 		return (1);
 	}
-	else if (_data.getBody().length() == _data.getRequestContentLength()) {
+	else if (_data.getBody().size() == _data.getRequestContentLength()) {
 		std::cout << GRE "OK: Done parsing.\n" RES;
 
-		if (_data.getRequestMethod() == "POST") {
+		// DISABLED, NO LONGER USED, jaka
+		//if (_data.getRequestMethod() == "POST") {
 			//std::cout << GRE "      ....    store _body into _queryString\n" RES;
 			//_data.setQueryString(_data.getBody());					// querystring not needed, just to print it
-			getResponseData().setResponseBody(_data.getBody());		// _responseBody to be sent to CGI
-			storeFormData(_data.getBody());	// maybe not needed
-		}
+			// getResponseData().setResponseBody(_data.getBody());		// _responseBody to be sent to CGI
+			//storeFormData(_data.getBody());	// maybe not needed
+		//}
 		_doneParsing = true;
 		//std::cout << "HEADER: [" BLU << _header << RES "]\n";	// sleep(1);
 		//std::cout << "BODY:   [" BLU << _data.getBody()   << RES "]\n\n";	// sleep(1);
 		return (0);
 	}
 	//std::cout << RED << "End appendToBody()\n" << RES;
-	std::cout << RED << "END appendToBOdy(), current len, " << _data.getBody().length() << " expected len: " << _data.getRequestContentLength() << "\n" RES;
+	std::cout << RED << "END appendToBOdy(), current len, " << _data.getBody().size() << " expected len: " << _data.getRequestContentLength() << "\n" RES;
 	return (0);
 }
+
+// Disabled Jaka, trying new version above
+// int Request::appendToBody(std::string req) {
+// 	// std::cout << RED << "start appendToBOdy(), current len, " << _data.getBody().length() << " expected len: " << _data.getRequestContentLength() << "\n" RES;
+// 	//std::cout << RED << "    body before append: [" << _data.getBody() << "\n" << RES;
+// 	std::string tmp = _data.getBody();
+// 	tmp.append(req);
+// 	_data.setBody(tmp);
+// 	//std::cout << CYN << "    body after append:  [" << _data.getBody() << "]\n" << RES;
+	
+// 	if (_data.getBody().length() > _data.getRequestContentLength()) {		// Compare body lenght
+// 		std::cout << RED << "Error: Body-Length (" << _data.getBody().length() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;// sleep(2);
+// 		std::cout << CYN << "       Body [" << _data.getBody() << "]\n" RES;
+//         _httpStatus = I_AM_A_TEAPOT;
+// 		return (1);
+// 	}
+// 	else if (_data.getBody().length() == _data.getRequestContentLength()) {
+// 		std::cout << GRE "OK: Done parsing.\n" RES;
+
+// 		if (_data.getRequestMethod() == "POST") {
+// 			//std::cout << GRE "      ....    store _body into _queryString\n" RES;
+// 			//_data.setQueryString(_data.getBody());					// querystring not needed, just to print it
+// 			getResponseData().setResponseBody(_data.getBody());		// _responseBody to be sent to CGI
+// 			storeFormData(_data.getBody());	// maybe not needed
+// 		}
+// 		_doneParsing = true;
+// 		//std::cout << "HEADER: [" BLU << _header << RES "]\n";	// sleep(1);
+// 		//std::cout << "BODY:   [" BLU << _data.getBody()   << RES "]\n\n";	// sleep(1);
+// 		return (0);
+// 	}
+// 	//std::cout << RED << "End appendToBody()\n" << RES;
+// 	std::cout << RED << "END appendToBOdy(), current len, " << _data.getBody().length() << " expected len: " << _data.getRequestContentLength() << "\n" RES;
+// 	return (0);
+// }
 
 
 
