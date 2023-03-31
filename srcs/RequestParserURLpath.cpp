@@ -56,7 +56,7 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 		 	std::cout << RED "Error dup2() of PipeCgiOut_1, child\n" RES;
 		close(_cgi.getPipeCgiOut_1());
 
-		std::cerr << RED "Before execve in child\n" << RES;
+	//	std::cerr << RED "Before execve in child\n" << RES;
 		ret = execve(args[0], args, ENV);
 	//	ret = execv(args[0], const_cast<char**>(args));
 		std::cerr << RED << "Error: Execve failed: " << ret << "\n" << RES;
@@ -150,12 +150,6 @@ void Request::callCGI(struct kevent event) {
 	//std::cout << BLU "\n       End callCGI()\n" << RES;
 
 }
-
-
-
-
-
-
 
 
 

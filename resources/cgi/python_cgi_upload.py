@@ -42,12 +42,13 @@ html_template = """
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Folder Contents</title>
+	<h4><a href='cgi_index.html'> Main Page </a></h4>
+    <title>Folder Content</title>
 </head>
 <body>
-    <h1>Folder Contents:</h1>
+    <h1>Upload Folder Contents:</h1>
     <ul>
-        {}
+        <a href=''> {} </a>
     </ul>
 </body>
 </html>
@@ -58,7 +59,7 @@ html_template = """
 item_template = """
 <li>
     {}
-    <form method="delete" action="">
+    <form method="post" action="python_cgi_delete.py">
         <input type="hidden" name="delete" value="{}">
         <input type="submit" value="Delete">
     </form>
@@ -84,7 +85,7 @@ for item in os.listdir(folder_path):
 html = html_template.format(items_html)
 
 # Set the content type to HTML
-print("Content-type:text/html\r\n\r\n")
+# print("Content-type:text/html\r\n\r\n")
 
 # Output the HTML page
 print(html)

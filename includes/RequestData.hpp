@@ -17,9 +17,10 @@ class RequestData {
 		std::string _reqHttpVersion;
 
 		// added
-		std::string 		_reqHeader;
+		std::string 			_reqHeader;
 		std::vector<uint8_t> 	_reqBody;		// Changed to vector
-		// std::string 		_reqBody;		
+		size_t					_clientBytesSoFar;
+		// std::string 			_reqBody;		
 	
 		std::string _reqTemp;				
 
@@ -62,8 +63,9 @@ class RequestData {
 
 		const std::string getHeader() const;
 		// const std::string getBody() const;
-		const std::vector<uint8_t> getBody() const;
+		std::vector<uint8_t> & getBody();
 		const std::string getTemp() const;
+		size_t getClientBytesSoFar() const;
 
 
 
@@ -96,8 +98,10 @@ class RequestData {
 		
 		void setHeader(std::string str);
 		// void setBody(std::string str);
-		void setBody(std::vector<uint8_t> str);
+		void setBody(std::vector<uint8_t> & str);
 		void setTemp(std::string str);
+		void setClientBytesSoFar(size_t ret);
+		
 
 
 

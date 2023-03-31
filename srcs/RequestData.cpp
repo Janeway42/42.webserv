@@ -8,8 +8,9 @@ RequestData::RequestData() {
 	_reqHttpPath 		= "default Path";
     _reqHttpVersion 	= "default Version";
     _reqHost 			= "default Host";	// not sure if all these are needed
-    _reqContentLength	= 0;
 	_reqHeader			= "";
+    _reqContentLength	= 0;
+	_clientBytesSoFar	= 0;
 	//_reqBody			= "";		// does not need setting to "", it is now a vector
 	
 	_path				= "default";
@@ -61,13 +62,16 @@ const std::string RequestData::getHeader() const {
 // const std::string RequestData::getBody() const {
 // 	return _reqBody;
 // }
-const std::vector<uint8_t> RequestData::getBody() const {
+std::vector<uint8_t> & RequestData::getBody() {
 	return _reqBody;
 }
 const std::string RequestData::getTemp() const {
 	return _reqTemp;
 }
 
+size_t RequestData::getClientBytesSoFar() const {
+	return _clientBytesSoFar;
+}
 
 const std::string RequestData::getRequestHost() const {
 	return _reqHost;
@@ -152,13 +156,18 @@ void RequestData::setHttpVersion(std::string reqHttpVersion)
 // {
 // 	_reqBody = reqBody;
 // }
-void RequestData::setBody(std::vector<uint8_t> reqBody)
+void RequestData::setBody(std::vector<uint8_t> & reqBody)
 {
 	_reqBody = reqBody;
 }
 void RequestData::setTemp(std::string reqTemp)
 {
 	_reqTemp = reqTemp;
+}
+
+void RequestData::setClientBytesSoFar(size_t ret)
+{
+	_clientBytesSoFar += ret;
 }
 
 void RequestData::setHeader(std::string reqHeader)
