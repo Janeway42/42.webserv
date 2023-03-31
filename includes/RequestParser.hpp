@@ -45,8 +45,10 @@ class Request : public Parser {
 
 
 		void        parseHeaderAndPath(std::string & tmpHeader, struct kevent event, std::string::size_type it);
-		int 		appendLastChunkToBody(std::string::size_type it);
-		int 		appendToBody(std::string request);
+		//int 		appendLastChunkToBody(std::string::size_type it);
+		int 		appendLastChunkToBody2(const char *str, size_t len);
+		// int 		appendToBody(std::string request);
+		int 		appendToBody(const char *str, size_t len);
 		void	    chooseMethod_StartAction(struct kevent event);
 
 	public:
@@ -64,8 +66,8 @@ class Request : public Parser {
 		/** Methods */
 		void		parseHeader(std::string header);
 		int			parsePath(std::string str, struct kevent event);
-		void		appendToRequest(const char *str, struct kevent event);
-		void		storeBody(std::istringstream &iss);
+		void		appendToRequest(const char str[], size_t len, struct kevent event);
+		//void		storeBody(std::istringstream &iss);
 		std::map<std::string, std::string>	storeFormData(std::string pq);
 		void		storePathParts_and_FormData(std::string path);
 		void		storePath_and_FolderName(std::string path);

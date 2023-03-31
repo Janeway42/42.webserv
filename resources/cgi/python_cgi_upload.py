@@ -21,7 +21,8 @@ if fileitem.filename:
    # directory traversal attacks
    fn = os.path.basename(fileitem.filename)
    try:
-       with open('/Users/jmurovec/Desktop/projects/webservCJJ_28mar00/resources/uploads/' + fn, 'wb') as f:
+       parent_dir = os.getcwd()
+       with open(parent_dir + '/resources/uploads/' + fn, 'wb') as f:
            f.write(fileitem.file.read())
          #   message = 'The file ' + fn + ' was uploaded successfully'
    except IOError as e:
@@ -34,19 +35,20 @@ if fileitem.filename:
 
 
 # Define the path to the folder you want to list
-folder_path = "/Users/jmurovec/Desktop/projects/webservCJJ_28mar00/resources/uploads/"
+folder_path = parent_dir + '/resources/uploads/'
 
 # Define the HTML template
 html_template = """
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Folder Contents</title>
+	<h4><a href='cgi_index.html'> Main Page </a></h4>
+    <title>Folder Content</title>
 </head>
 <body>
-    <h1>Folder Contents:</h1>
+    <h1>Upload Folder Contents:</h1>
     <ul>
-        {}
+        <a href=''> {} </a>
     </ul>
 </body>
 </html>
@@ -57,7 +59,7 @@ html_template = """
 item_template = """
 <li>
     {}
-    <form method="delete" action="">
+    <form method="post" action="python_cgi_delete.py">
         <input type="hidden" name="delete" value="{}">
         <input type="submit" value="Delete">
     </form>
@@ -83,7 +85,7 @@ for item in os.listdir(folder_path):
 html = html_template.format(items_html)
 
 # Set the content type to HTML
-print("Content-type:text/html\r\n\r\n")
+# print("Content-type:text/html\r\n\r\n")
 
 # Output the HTML page
 print(html)

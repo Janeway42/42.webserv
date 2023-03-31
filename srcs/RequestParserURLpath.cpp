@@ -56,7 +56,7 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 		 	std::cout << RED "Error dup2() of PipeCgiOut_1, child\n" RES;
 		close(_cgi.getPipeCgiOut_1());
 
-		std::cerr << RED "Before execve in child\n" << RES;
+	//	std::cerr << RED "Before execve in child\n" << RES;
 		ret = execve(args[0], args, ENV);
 	//	ret = execv(args[0], const_cast<char**>(args));
 		std::cerr << RED << "Error: Execve failed: " << ret << "\n" << RES;
@@ -150,12 +150,6 @@ void Request::callCGI(struct kevent event) {
 	//std::cout << BLU "\n       End callCGI()\n" << RES;
 
 }
-
-
-
-
-
-
 
 
 
@@ -257,7 +251,9 @@ void Request::storePathParts_and_FormData(std::string path) {
 	}
 
 	std::cout << "Stored GET _queryString [\n" << BLU << _data.getQueryString() << RES << "]\n";
-	std::cout << "Stored GET _body [\n"        << BLU << _data.getBody() << RES << "]\n" << RES;
+	std::cout << YEL "Body:\n" RES;
+	std::copy(_data.getBody().begin(), _data.getBody().end(), std::ostream_iterator<uint8_t>(std::cout));  // just to print
+	//std::cout << "Stored GET _body [\n"        << BLU << _data.getBody() << RES << "]\n" << RES;
 
 	storeFormData(queryString);	// maybe not needed (the whole vector and map)
 	// if the cgi script can handle the whole queryString
@@ -361,7 +357,9 @@ static void printPathParts(std::string str, RequestData reqData) {
 	std::cout << "Path first part: [" << PUR << reqData.getURLPathFirstPart() << RES << "]\n";
 	std::cout << "File/Folder:     [" << PUR << reqData.getURLPathLastWord() << RES << "]\n";
 	std::cout << "File extention:  [" << PUR << reqData.getFileExtention() << RES << "]\n";
-	std::cout << "Body:            [" << PUR << reqData.getBody() << RES << "]\n";
+	std::cout << YEL "Body:\n" RES;
+	//std::copy(reqData.getBody().begin(), reqData.getBody().end(), std::ostream_iterator<uint8_t>(std::cout));  // just to print
+	// std::cout << "Body:            [" << PUR << reqData.getBody() << RES << "]\n";
 
 	std::map<std::string, std::string> formData;
 	formData = reqData.getFormData();

@@ -41,14 +41,673 @@ Server blocks quantity: 1
 Location block quantity: 3
 IP ADDRESS: localhost
 PORT: 8080
+LEAVING WEBSERV CONSTRUCTOR
 [34mConfigFileParser Destructor[0m
 â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
 [35mServerData Destructor[0m
 [36mServerLocation Destructor[0m
 [36mServerLocation Destructor[0m
 [36mServerLocation Destructor[0m
+[35mServerData Default constructor[0m
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» New client connection â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+Start READ REQUEST
+    recv: 78
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» Start parsing â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+[31mSTORED HEADER: 
+GET / HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+[32mStart parse path: [/]
+[32mPath with pre-pended root folder [./resources]
+[0m[33mSimple GET (there is no FORM or POST method, also the '?' not found)
+[0m[32mStart CheckIfFIleExists(), path [./resources] 
+[0m[32mFile/folder ./resources exists
+[0m[32mStart checkTypeofFile(), path [./resources] [0m[36mis a directory
+[32mThere is no extention in the last name
+[0mFound path:      [[34m/[0m]
+Path:            [[35m./resources[0m]
+Path first part: [[35m.[0m]
+File/Folder:     [[35m/resources[0m]
+File extention:  [[35m[0m]
+Body:            [[35m[0m]
+Form Data:    [33m(not present)
+[0m
+[35mFound header ending /r/n, maybe there is body
+[0m[32mstart appendlastchunktobody()
+[0m    Body [[32m]
+[0m[32m    _doneparsing == true
+[0m[32mOK (there is no body)
+[0m[31mcontent type: []
+[0m[36m    returned from ATR(), _parsingDone: 1, isCGI: 0
+[0mâ»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» Done parsing â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» Sending response â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+[33mStart setResponse()
+[0m[32m_responsePath: [[./resources]]
+[0m[33mThe Path is a folder: check for a default index file and/or autoindex on/off
+[0m[33m           Stored server root folder: [./resources]
+[0m[33m                The Path is the root: [./resources]
+[0m[33m                       _responsePath: [./resources/index.html]
+[0mFile to be streamed: ./resources/index.html
+Streamed: temp turned off by jaka
+[33m   getHttpStatus(): [0]
+[0m[33m   response path:   [./resources/index.html]
+[0m[33m   content type:    [[0m]
+Start SEND RESPONSE
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» This event FD belongs to CLIENT, send to CLIENT  â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+[32mFull Response size: [0m340[0m
+[32mFull Response Content:
+[
+[0mHTTP/1.1 200 OK
+Content-Type: text/html
+Content-Length: 275
+
+
+<head>
+  <!-- to disable favicon -->
+    <link rel="icon" href="data:,">
+</head>
+
+
+<body>
+
+<h3> This is the file INDEX.HTML (in the folder ./resources)</h3>
+
+<p> Here it should display the default index.html </p>
+<p> or the folder content, if autoindex is ON.</p>
+
+
+</body>
+
+[32m]
+[0m
+[36mSENDING CHUNK,  remaining response length: 340[0m
+[36m             Sent chunk: 340,  sentSoFar 340
+[0m[36m  remaining contentSize: 340
+[0mStart SEND RESPONSE
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» This event FD belongs to CLIENT, send to CLIENT  â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+[32mFull Response size: [0m0[0m
+[32mFull Response Content:
+[
+[0m[32m]
+[0m
+[36mSENDING CHUNK,  remaining response length: 0[0m
+[36mALL SENT, CLOSE CLIENT[0m
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» Connection closed â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
 [35mServerData Destructor[0m
 [36mServerLocation Destructor[0m
 [36mServerLocation Destructor[0m
 [36mServerLocation Destructor[0m
-[31mServerData error: failed bind: 48[0m
+[35mServerData Default constructor[0m
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» New client connection â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+Start READ REQUEST
+    recv: 98
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» Start parsing â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+[31mSTORED HEADER: 
+GET /index_just_text.html HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+[32mStart parse path: [/index_just_text.html]
+[32m  No '?', no cgi path needed
+[0m[32mPath with pre-pended root folder [./resources/index_just_text.html]
+[0m[33mSimple GET (there is no FORM or POST method, also the '?' not found)
+[0m[32mStart CheckIfFIleExists(), path [./resources/index_just_text.html] 
+[0m[32mFile/folder ./resources/index_just_text.html exists
+[0m[32mStart checkTypeofFile(), path [./resources/index_just_text.html] [0m[36mis a file
+[0mFound path:      [[34m/index_just_text.html[0m]
+Path:            [[35m./resources/index_just_text.html[0m]
+Path first part: [[35m./resources[0m]
+File/Folder:     [[35m/index_just_text.html[0m]
+File extention:  [[35m.html[0m]
+Body:            [[35m[0m]
+Form Data:    [33m(not present)
+[0m
+[35mFound header ending /r/n, maybe there is body
+[0m[32mstart appendlastchunktobody()
+[0m    Body [[32m]
+[0m[32m    _doneparsing == true
+[0m[32mOK (there is no body)
+[0m[31mcontent type: [text/html]
+[0m[36m    returned from ATR(), _parsingDone: 1, isCGI: 0
+[0mâ»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» Done parsing â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» Sending response â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+[33mStart setResponse()
+[0m[32m_responsePath: [[./resources/index_just_text.html]]
+[0m[31mThe path is a file: [./resources/index_just_text.html]
+File to be streamed: ./resources/index_just_text.html
+Streamed: temp turned off by jaka
+Start SEND RESPONSE
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» This event FD belongs to CLIENT, send to CLIENT  â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+[32mFull Response size: [0m961[0m
+[32mFull Response Content:
+[
+[0mHTTP/1.1 200 OK
+Content-Type: text/html
+Content-Length: 896
+
+
+<head>
+  <!-- to disable favicon -->
+    <link rel="icon" href="data:,">
+</head>
+
+
+<body>
+
+<p> This is the file index_just_text.html</p>
+
+<p>
+  Lorem Ipsum comes from a latin text written in 45BC by Roman statesman, lawyer, scholar, and philosopher, Marcus Tullius Cicero. The text is titled "de Finibus Bonorum et Malorum" which means "The Extremes of Good and Evil". The most common form of Lorem ipsum is the following:
+</p>
+
+<p>
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+</p>
+
+</body>
+
+[32m]
+[0m
+[36mSENDING CHUNK,  remaining response length: 961[0m
+[36m             Sent chunk: 961,  sentSoFar 961
+[0m[36m  remaining contentSize: 961
+[0mStart SEND RESPONSE
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» This event FD belongs to CLIENT, send to CLIENT  â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+[32mFull Response size: [0m0[0m
+[32mFull Response Content:
+[
+[0m[32m]
+[0m
+[36mSENDING CHUNK,  remaining response length: 0[0m
+[36mALL SENT, CLOSE CLIENT[0m
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» Connection closed â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+[35mServerData Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[35mServerData Default constructor[0m
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» New client connection â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+Start READ REQUEST
+    recv: 88
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» Start parsing â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+[31mSTORED HEADER: 
+GET /index.html HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+[32mStart parse path: [/index.html]
+[32m  No '?', no cgi path needed
+[0m[32mPath with pre-pended root folder [./resources/index.html]
+[0m[33mSimple GET (there is no FORM or POST method, also the '?' not found)
+[0m[32mStart CheckIfFIleExists(), path [./resources/index.html] 
+[0m[32mFile/folder ./resources/index.html exists
+[0m[32mStart checkTypeofFile(), path [./resources/index.html] [0m[36mis a file
+[0mFound path:      [[34m/index.html[0m]
+Path:            [[35m./resources/index.html[0m]
+Path first part: [[35m./resources[0m]
+File/Folder:     [[35m/index.html[0m]
+File extention:  [[35m.html[0m]
+Body:            [[35m[0m]
+Form Data:    [33m(not present)
+[0m
+[35mFound header ending /r/n, maybe there is body
+[0m[32mstart appendlastchunktobody()
+[0m    Body [[32m]
+[0m[32m    _doneparsing == true
+[0m[32mOK (there is no body)
+[0m[31mcontent type: [text/html]
+[0m[36m    returned from ATR(), _parsingDone: 1, isCGI: 0
+[0mâ»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» Done parsing â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» Sending response â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+[33mStart setResponse()
+[0m[32m_responsePath: [[./resources/index.html]]
+[0m[31mThe path is a file: [./resources/index.html]
+File to be streamed: ./resources/index.html
+Streamed: temp turned off by jaka
+Start SEND RESPONSE
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» This event FD belongs to CLIENT, send to CLIENT  â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+[32mFull Response size: [0m340[0m
+[32mFull Response Content:
+[
+[0mHTTP/1.1 200 OK
+Content-Type: text/html
+Content-Length: 275
+
+
+<head>
+  <!-- to disable favicon -->
+    <link rel="icon" href="data:,">
+</head>
+
+
+<body>
+
+<h3> This is the file INDEX.HTML (in the folder ./resources)</h3>
+
+<p> Here it should display the default index.html </p>
+<p> or the folder content, if autoindex is ON.</p>
+
+
+</body>
+
+[32m]
+[0m
+[36mSENDING CHUNK,  remaining response length: 340[0m
+[36m             Sent chunk: 340,  sentSoFar 340
+[0m[36m  remaining contentSize: 340
+[0mStart SEND RESPONSE
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» This event FD belongs to CLIENT, send to CLIENT  â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+[32mFull Response size: [0m0[0m
+[32mFull Response Content:
+[
+[0m[32m]
+[0m
+[36mSENDING CHUNK,  remaining response length: 0[0m
+[36mALL SENT, CLOSE CLIENT[0m
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» Connection closed â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+[35mServerData Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[35mServerData Default constructor[0m
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» New client connection â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+Start READ REQUEST
+    recv: 96
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» Start parsing â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+[31mSTORED HEADER: 
+GET /cgi/cgi_index.html HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+[32mStart parse path: [/cgi/cgi_index.html]
+[32m  No '?', no cgi path needed
+[0m[32mPath with pre-pended root folder [./resources/cgi/cgi_index.html]
+[0m[33mSimple GET (there is no FORM or POST method, also the '?' not found)
+[0m[32mStart CheckIfFIleExists(), path [./resources/cgi/cgi_index.html] 
+[0m[32mFile/folder ./resources/cgi/cgi_index.html exists
+[0m[32mStart checkTypeofFile(), path [./resources/cgi/cgi_index.html] [0m[36mis a file
+[0mFound path:      [[34m/cgi/cgi_index.html[0m]
+Path:            [[35m./resources/cgi/cgi_index.html[0m]
+Path first part: [[35m./resources/cgi[0m]
+File/Folder:     [[35m/cgi_index.html[0m]
+File extention:  [[35m.html[0m]
+Body:            [[35m[0m]
+Form Data:    [33m(not present)
+[0m
+[35mFound header ending /r/n, maybe there is body
+[0m[32mstart appendlastchunktobody()
+[0m    Body [[32m]
+[0m[32m    _doneparsing == true
+[0m[32mOK (there is no body)
+[0m[31mcontent type: [text/html]
+[0m[36m    returned from ATR(), _parsingDone: 1, isCGI: 0
+[0mâ»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» Done parsing â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» Sending response â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+[33mStart setResponse()
+[0m[32m_responsePath: [[./resources/cgi/cgi_index.html]]
+[0m[31mThe path is a file: [./resources/cgi/cgi_index.html]
+File to be streamed: ./resources/cgi/cgi_index.html
+Streamed: temp turned off by jaka
+Start SEND RESPONSE
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» This event FD belongs to CLIENT, send to CLIENT  â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+[32mFull Response size: [0m1815[0m
+[32mFull Response Content:
+[
+[0mHTTP/1.1 200 OK
+Content-Type: text/html
+Content-Length: 1749
+
+
+<head>
+    <!-- to disable favicon -->
+      <!-- <link rel="icon" href="data:,"> -->
+  </head>
+  
+  
+  <body>
+  
+  <br>
+  <h3>This is the file cgi_index.html </body></h3>
+  <p>(path  ./resources/cgi/cgi_index.html)</p>
+  
+  <br><br><br>
+
+<form action="python_cgi_GET.py" method="get">
+  <fieldset style="background: #fffdf6; border: 2px solid #caaf38;">
+  <legend> METHOD GET </legend>
+
+ <!--<form action="response_get.html" method="get">     -->
+  <label for="street">Street:</label>
+  <input type="text" id="street" name="street"><br><br>
+  <label for="city">City:</label>
+  <input type="text" id="city" name="city"><br><br>
+  <input type="submit" value="Submit">
+</fieldset>
+
+</form> <br><br><br>
+  
+<!-- <form action="response_post.php" method="post"> -->
+<form action="python_cgi_POST.py" method="post">
+<!--<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">-->
+
+
+  <fieldset style="background: #f6f8ff; border: 2px solid #4238ca;">
+    <legend> METHOD POST </legend>
+    <label for="fruit">Fruit:</label>
+    <input type="text" name="fruit" placeholder="fruit"><br><br>
+    <label for="vegetable">Vegetable:</label>
+    <input type="text" name="vegetable" placeholder="vegetable"><br><br>
+    <!--<input type="text" name="lastname" placeholder="Last name"><br /><br />-->
+    <button type="submit">Submit</button>
+  </fieldset>
+</form> <br><br><br>
+
+
+<fieldset style="background: #fff3f3; border: 2px solid #fbd58f;">
+  <legend> UPLOAD FILE/IMAGE (method POST) </legend>
+   <form  action="python_cgi_upload.py" method="post" enctype="multipart/form-data">
+    Select file/image: <br>
+    <input type="file" name="filename" id="fileToUpload">
+    <input type="submit" value="Upload">
+  </form> <br>
+
+  </body>
+
+[32m]
+[0m
+[36mSENDING CHUNK,  remaining response length: 1815[0m
+[36m             Sent chunk: 1815,  sentSoFar 1815
+[0m[36m  remaining contentSize: 1815
+[0mStart SEND RESPONSE
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» This event FD belongs to CLIENT, send to CLIENT  â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+[32mFull Response size: [0m0[0m
+[32mFull Response Content:
+[
+[0m[32m]
+[0m
+[36mSENDING CHUNK,  remaining response length: 0[0m
+[36mALL SENT, CLOSE CLIENT[0m
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» Connection closed â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+[35mServerData Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[35mServerData Default constructor[0m
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» New client connection â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+Start READ REQUEST
+    recv: 90
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» Start parsing â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+[31mSTORED HEADER: 
+GET /img_36kb.jpg HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+[32mStart parse path: [/img_36kb.jpg]
+[32m  No '?', no cgi path needed
+[0m[32mPath with pre-pended root folder [./resources/img_36kb.jpg]
+[0m[33mSimple GET (there is no FORM or POST method, also the '?' not found)
+[0m[32mStart CheckIfFIleExists(), path [./resources/img_36kb.jpg] 
+[0m[32mFile/folder ./resources/img_36kb.jpg exists
+[0m[32mStart checkTypeofFile(), path [./resources/img_36kb.jpg] [0m[36mis a file
+[0mFound path:      [[34m/img_36kb.jpg[0m]
+Path:            [[35m./resources/img_36kb.jpg[0m]
+Path first part: [[35m./resources[0m]
+File/Folder:     [[35m/img_36kb.jpg[0m]
+File extention:  [[35m.jpg[0m]
+Body:            [[35m[0m]
+Form Data:    [33m(not present)
+[0m
+[35mFound header ending /r/n, maybe there is body
+[0m[32mstart appendlastchunktobody()
+[0m    Body [[32m]
+[0m[32m    _doneparsing == true
+[0m[32mOK (there is no body)
+[0m[31mcontent type: [image/jpg]
+[0m[36m    returned from ATR(), _parsingDone: 1, isCGI: 0
+[0mâ»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» Done parsing â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» Sending response â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+[33mStart setResponse()
+[0m[32m_responsePath: [[./resources/img_36kb.jpg]]
+[0m[31mThe path is a file: [./resources/img_36kb.jpg]
+from setImage: content-length: 35583
+Start SEND RESPONSE
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» This event FD belongs to CLIENT, send to CLIENT  â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+[32mFull Response size: [0m35672[0m
+[32mFull Response Content:
+[
+[0mHTTP/1.1 200 OK
+Content-Type: image/jpg
+accept-ranges: bytes
+Content-Length: 35583
+
+ÿØÿá ŞExif  II*                V       ^   (              i‡    f       H      H            0210‘     †’    À         0100     ÿÿ              b      ASCII   Picsum ID: 237ÿÛ C 		
+ $.' ",#(7),01444'9=82<.342ÿÛ C			2!!22222222222222222222222222222222222222222222222222ÿÂ b" ÿÄ              ÿÄ             ÿÚ    òsyÎ›˜6t¥YlÊqÃÊ‘î ñ‘rSİ2Æ‚ì’D¹Äéª‘5(E!‘t5³”Rµ%­—Ñn]Â`Hö"¡$€sŠËK ¬yY‘U)SGœH‹æ±jÉë1NÙL kƒS:ì‚ª"ŠÅ¹´l¤XvS­Ãg­¦˜a2æ±ÌNm™‹¶ø aş@•¬L2&µ²Z‡†;=|JZ}?<¢}>uô”|Os'ÒØùsÇ¸Œœhì"hhˆ–›ìÚCâW·•ğJo>×KçşÒ5hµñ¦ó(8Ğ`7Fz¶@ğØJ)¶°kzt±45¦ZúàÔKä	É¡A2æŞ	y@q7€ƒ'Bæî¢Hí›ƒÓ¥=¼V-Õ^î-aIİĞZi!â“Uu*GÑµ¾Qìytô²Üİ„¼ÿ šÖu1k^˜âw­•×A<ºr¬TÇÑ%ë=Åˆ4«ˆÊêÉê%B¬`"Á•©Åzé@°;İÄ]ÀÅËÆ”o²–h@÷9C˜`ËBó>æZÈ«ëŠÖõ"c‹DIİÜt[Šôñ4€¡xŞB"‰â·â›ş=ŒëØ›Ç±zºã¹šíl!0
+²÷ˆ„ÎĞ—©EĞv]Šì2õ[¯ÔåÈ|Z±Æˆ!k-ÉVı$¡Í¸/›O?ƒÑÛœÇuwwÖ(95j•µÁÜÄİÜòO•¤fš2á´‰‰‚Ñ5o=±d4wE¯QÓ|İŒkèëÕŞ[óÓ¥f%]àT²€¥…EĞàC§M‚éãÕÛÆÚ=‰<‰`OCÛ_Åõ$ñç=Tù‰='Ë7|¦³µwîâ-:¶¡µƒÃô+Qˆu‹ÑxY¥"6‡‚À´ƒ™ jVNê”¤Ö¥æ ô>ãåşŸığÆµD‚àq–­éótOE>zÕ²\
+¡Â­n÷äô£ÍºíÕvq^ìÉWPÁ­†®±Ï%å·°»r§têtÇ%	V©Æ¦à™úJ÷PFF/µ‘¨˜¨¤1jîˆHÒa@è®)Óê—äŠZ¦—Ñ~uï9t<¢¾4üäw‘ƒRDÔã±Š/Àí”Æ¡y^¥ÚTÔñT¦+(ùVx²±`–AZÏ™¬QwåY:bI7MwL…2fÍ—É×Ï
+££*dŒjÕKU;Eb"¦V8tNŒ3AÉX½H îEeÃWl5ãÕŞD°ì&‘µDX1
++:­‚a€Bğ>¥x=¼¿]çTçuCÊñh%–‘ÕïTù šSÑÊ'¸é­‚MID ëME¯ahãëNUe]!ŠfM6q‡ÎĞ¤] 
+º”mçî§.@šZÊÌq/çŞ=ÔÆ¯¨A˜Åi¥Š@Ğåh»"ÅdI=<½ç{Yaì×“°eĞÏdL	y1,ğ>¿ÉuçNÔ‹t¸SSˆ­xaÚOJ1ô¨*V¤sKñ£³‰»4šâO>Åmgå¥“i`…^`ÈLİrG:¾¢Æç¾iZF•ñmNJé;Î\õæ±†Ì®ç’k7íg^‹5˜¹å\„XĞjHäÅ¸¦L/}så=p´Ìo1Ó˜$¢Å
+¦¡´r´á@õªÈiæA:lSÑù¿Aä¾¥©•,5%R¡%"–ˆ&³Äšö—^ÍŸB+F”å°0ÊÍ•N®ÍÖ Ôê”Ô»H¬›]•Ç¢’FtAÀâ(jİY‚^`nÉÂ_Éú[×Ë*ê¹ttÕg¸³)ŞŠ„»¨˜Pô¤2“ -a£ÊTÜ¦»c¡çhXÉµúğËìŸIPµ–b,[µyùô0«¯qO ~–íYÒÜ"n­Ò¶nzÈ¦ÑÌaú	ÆÄ™äjÂ¢Õ©IsÈxÿ ¬|Ë¦èç¨^=Á¢…+3Zk=¾­¢+1Ã!·EÛ5S2EL°©ÕeËX–~„»w,ñéÕbæyŸ(›Ph¨0º(ZsXÕĞ%eYµ)~`V+×ëdŒ‚6nıFú+l~«._ECÏ_zæW¶|¤{yÁ{ dGj^¬PØ €j!r–€\Qğ‰éUB£w´³½ˆ¶®†u}Çåò–õ…_Xeñ³ì!<‡{R¾ªkÈWÖç˜1èm^n=!Ìv÷S¥ÊszùíÆâ\<×¥Qš5DÁ\å¬)eùò>Ê5>iO‹Ó>rYGY.;õQê€J† ZOŠT¬u#Dhm"ÕCèrBˆ43"7!³˜øÚíLÊ1±h5ª™Œ¦¡€Äˆà6¸ÅeæÈÕ¸=sì‰•^{Ô*D–XÄÈ÷Ymy\›mV—fD–g‹Âık/QcÉ)î/©óv¸ºOÅ™¤?©Á¬Oæ¥)jV†	€IÂ#ÑâzLk}q—C«)Ùuãªb“dJR-eGæAªˆ“EÓÎö¿Y°|ÂóŞØq†z;yóÆ¸s¥`t”¥,YÕÔÑÒ¬Î=l³—OP'›òßDñ]3ŠS)Ó"7¢õ8d´Ñ%:Ô-4±Ö×CGÎåÆÀ³ç2í¥dÇíjˆYÀ ¦Šâ£Ñ•Jƒ2AjzŒ“,Hïfv¦ıÆ\nÃ¥ƒ‘2-¶³syë29‰‰1Š«a`ä8šêG/Ô*Ÿ.jù}ù°õPeZ+ÅŠ&%:šİ./›É×‡}/œõºh{c\Ækfêä’±™±¾S:®eyõ(š®ã¹·Çµ7ÕŠê§¡²¨Ü°Ê—WF³PW³Í+Íù§!à¬Qç$R²° nR$5N€¶&‚r:-— /ïğ·Ÿ87×
+Œƒˆîà¯gkJó,Ï>™x~Ö–x¯A¶ü˜İ¢<éyØ]s¬Í¡KtCU9ĞÁá ¡Ô¤‰{4h—ˆëEEBš=—ÃEUŠƒGJÛ	NkfROF†uà†Dêa±hqÒj¬1‚ÂB¯ÈÙÏÉĞªxR}©KÖ+yzøûúÖ…£Ç¥[@Vl êK-*ÅE¤’Š2…Í/
+WSD½cD¢‰ÇGZÓ‹
+
+.ÀîCÓÔ[rÉyWjÇTìôÀ™1óRã8d“MˆÊŠŠ®ÿ ¼2‹İÎ¦‡FQt+HöO!êü_nlı©^­¢¾ÎzÌëÔ“˜åµì(‚x˜AW<âpÓ‚-hÍÕ­cÄ(j:¡Ï¨°¹Àb¶'ª+Çë/Ô’óÖ–ÜFaXjT`°‘ZÇ5Ğ¡\`Å6‹q„M;÷İ¡Š?ISÍÛÖ¬y“z	<º>ºµàôŒMO!¸–y­Í“âãZ%Á¯©XÅ¦¡!n\Á¾ù-Ûô1{^+o\óõÚR³Ã¡6eÆ¢öeÃ¢Ô´gÃ½Hóuâr3£İ4”÷ÊK÷Ù¯¯Ü³¥İª÷fœ}ÈºİÄjw‹ºY·p¨{Óºqfû fîp`÷·pd»‹iw qwSİÆî±Uû·:Öënë·rÙ~ä¯wWÿÄ -      !"1 #2A3B0C$4@ÿÚ  P!û¬K$ÕÓH[Y[¦;„ğ¹MC…¤	*Ğœ08;O eò»`WçQ[ùÏ©ßccø[q>QkòÀ¯Íˆ1ÔÛi
+Ï ¤áLŞn#Oõ
+f|ØpŞ3¾ °Îìœ«K+G=Ln _2|ˆ	‰›/§ŒŸ0ÆlÏ¹aqÔƒ¤kqÓV%Ò¡eb—ÆMÁ£|ÜW¶BÎ±FØÊuí5Ï©%H'")Ù€€ÇSTÁıŸè×©%*uCY3¤ãÓç’V#V˜±FÀÂ Îƒ2É˜ôüŠÀŸ_7 ëØi™‰ˆ U™¨;Í"	ÂÅùWB¬ë
+’-K 8Xp"Ã\³…ö›œ›"¸ŒÃÕ‹:çÃUñÖ§+†c?‘¦„·ÄM«ƒ¬Â@¢gh†ôÌ¡~EÓjYxBÀ}À-`°YØğÜÎÒ»!òu&Ä€mF0TÑ”€|ÌxŸærs˜ ÀQ•! ™F¦÷Ì¦çU÷$öÇ¸²-ìgsg¶Üï`Ÿ3id³ò”Ölü»´ÿ Éß=õóŞ[=ÕĞÜæŒì3±§cNÆ•~Fú…_’­àmÔ£:òÚ€1ç¯3­§+”¼yg&ËeUµE)¹ÚË5[.Ì³æÕá£.ÑvAkêÕ£ã]mñyÎ#q®ªA­Õ5UACJüÁÆsjEb7“Q‚¦×•jÄrƒXq60äK¿)Ônå]yıs	Ï®}L3Ê²†âóS‘6™Ìû:yäYWryía'Ñfã×UUœaµ+dVùT±³SÖvPæX¡›*•Ôğ0!mä‚I…v„Oô F'YÖrµ²ôba aY@ªÌ“0ÓÎÀ3ú//l?ÿ 
+9CÂçöÂÚË9µ«[ù‡Å–µ­ŸDBíG­5†lZ*f{p«×,>jğl?ˆ3¶º'f"„o3JÚÌoã.`ò5òDùb'‰™ş„<­!Ë"Œf¬90,êÒ³òwè3ÿ «úFA7XŞ¸ôUØñúªŞyÛìŒ'ØT7*Æ\0w¹*—ŠŠªäÓ¼ÑÏƒ´U&5sÆ2‘Üd91òÕıE³`¬Vy%62ĞÍ¿‚/‚¾fØ›äË®ë®ë;,!#ÿ ^"W˜õë<Ì	âgĞC33$Öv+æX_9³ï«-]Èï>EN^»5R¢%€F}È0ù9|·È†"m;g“õ_œbøÖ§P†-xƒ\.fy˜p‹ÏçAıñ˜˜ôLè0H_&ÌTàƒÃú×\*«©kViü„®ÚìšË“ ¬M„ñ—`ÅÁWhTAZG®xˆ0p&LÛ~üÅÎM¦LÏËr:èı„Æ 0Ï9Æ"ê	¿·8·1OÀ;£L~‰aYØHı~ÕÚÕ?æ¶¦]§WU`a†&'•Œ&hLë"|„Æu´ÑÕ™›'&{i×¬3×#"¹‰¬	4f2õ¯.óÈ»õ8™™€À	6©’1«¶eUoÁo0ßpB=1è§}sè=?i‚&<é5†€gPI¦ÅªHË
+)šjÇa(“à ·˜fy™íå‰ßÌİs'ºæÁÎåOwËó•Ÿ}Èÿ ‘=ÿ &s¹·5ÿ è
+Æ±6J™Ø˜«ŒUØ›0¨™šk3ñÄ+5‡ë‡õ#Ç ôã–c–K@¼œõßòòO,‚9xjù3¯”`§•:¹s£™=¿.trgO"¯Ù'{îŠ‚ÌT>Ÿ,éçÎ4l€ªa®~gâß¦&&Ä"1¿³?ÄšëÉ  Ã˜…AçP Ì|ˆó¤×ã`ÃLFYĞzN=é°A`r€yÂæI™ğ­¤[6†ï'ù{-Pm|gâ\jÌ1^"²ÇÑGch-9GÉ‚‘æ.Ó:ÏÊØ,å~¢L"Tv¹}DOùÆn6ğÎÇf®}ÌM<c£À¾˜Œ³˜ôû‡×‚?ü¡`­9S>æ6ŸÖ/–ûëş-f pc|¦‡~¯b¿Š›ÆñŠÏÁŠ†aóX$ºêÈÁc8ÒÓ›?aâŸJ¼Zfs:ÿ ’ßøòb2XÎP"y³3ƒ´Ì&ò0şŸpúp© `Æa:¢ÒÂ=>V¼­<eÌÎ!ÉUY£c;f1ÁO3êyÎò¡™×–	‰™†3¨áò*³ûş£Yş	Šø66B¶Ğ¼5¿¤>Y~òs˜y$NÍıÑ|Ë˜=<zˆg®ÆQ…ØÎÆ‡—v=Å³ÜZÅZÃ |µvE¥à¤mdÓU±f[gmA(gSc¥Ôš«Q*)t•+µ ~fZlÒÖaSÿ o\z‰ş1ñxV€d¶‘kìÒ¹¢¬|a†FÌ°x?uË>çŒ‡j¦6§Àu­gJÁRÃKbºKÆ¬N´LÃ`fZfìÄçX°À/Ÿ.Nê3b¶c¡¦cÀúmD EŒÂ^ºÛúıÌâbÌÆaDûF…°çÓŒ³¦İÔjVêâı–øŸ2±âßN0÷)cñ+¿¹ûõ_íEû/‚¿îú7e—WÙ7,OÌÎ»Œùo®!Û¡fk‚ÅƒC•Q­]ºÕÕhò ¯¡ë3¬OëYŸ“@9_§Ôg‰,Qq5¬55¶U§ß¢¿Åêøş7…]}´Õ"¯’søÆ#ùâk3®Á-Õ ô§í+˜Ì‘`ÇÔß#c’@™lòîå6V®˜u5`KJ‰ÖD¨ßXó<¹E9eñãV¬üÅZşãïÉ1?ÕòT`_ò”.0}j»iGÑ,áÙÛc€Xß¨Ÿq …=Peº
+JLŠoã±Hke[UÌùíØD÷Fw‚²½Š£Ü‚M¬§¿bÀ9JêËT¢Ïª«ªj[pÄ aÿ c“~ |ˆüŠ‡á~Ù›øûô|ş¶ñg$'§ø£&œÖ•i]eÌµÍ ñşßå µ‚««ˆ6‹¾î‚u«o†U¨KJÍ—Eq“ÖĞÕd?L2FqJ…j¡rU +]o1<Ÿ’ŒFÛáB”Ö	hSU«¥‡ôÇõ>ÔÁèÇ51ù·™šàúŸF†Ùl˜ÄÌ±â·ÀŸL~µ®W§¹Xc×k;„[=ù€s¯^ä0]”2ëˆY%Ï˜š-;B»Bİ%]å—6ä°?eı!IpØàç?”ãùıöğÃÓ>U³Q? rÍ’/­, .&«@09ıVUZµÅ•*+\.…6S> ÍJ°/2ÓÉˆöÛnZË@îf‘š6Ó°»ˆÑ„*A³³
+¶û|WvIb ûÛ­Áßxè¯MõuZlÌxÿ egbáÄñ§Ü?@Å9 ùŒ‡;x)¸+ƒ¬Ç¯a
+W£Ã¦OPÏ·Ìöòºs¤ØMN’ÃÛ6_Š@T„	Ö±¨ğµ‡=H°K<ğJ#a«$„"tÛªñ_nKŠ±|‚ät†-VgQ‹Z	¢´ü—áúãÑ!ôú‡‡ÁÏè>Œ)òä_ˆuqôZN/ØËÆVƒW3J‰`	Ì_ŒÂæ2‰×æÊÄÇÅeùÀe +Ì^:	Ö'Æ
+æ|ÄÔÀeÌ,­YyU®Ï© à´Š|:gõS¥#-ÈrªÁôDÈ1¡úœR2–R5o?UMfkSAÖ&•dÄøO‰™¨jŸÇ6P¤şÍV2¢v®Ÿ
+Cò–vs nq‚¾|öüó:?!’?‘_‘‘‹_äŒşG&¯ÈÏkù=§>s8w¢õ¯¯Úúç0¯‰ˆ`õ£ûr‰ÏØxdšcĞÏşpdÎ·‚«Löü‰í¹Btr¡§–'_*uòg_&tògO&tr§G&tr5\'U¦uÛv	£Í^hóÚÙ‘S‰Ec?*øgˆIÂ|<móhĞ3c--¯µ9|cÇ´úìDÈ˜€?Ùşf7ˆ@×™‰Oß)3*ãP½­rÔ­¯-`ÇÜ?RŸî 2´R :„rWvñœƒ+ænìL·!r×åC¸a%Üˆš1fÖ2\„­Ì¶MKåP«î|vÆf1öØe˜h2Ğ–Ş9=V¯'‚õâffx3Ä¬!¹ŸcèÏúgÀ2¯•Œ˜>,¨åe©}5;+NÇ³©=VW–Š¶¤ç ´PËqĞLÖe.²µÅh(ğb’^¸æ¼dLlÇà¥òØO•±™«•÷–(›ä­É—¹r· ;©Šé‰çfŠ=ÑH·‡Çpÿ ‹³‰uSëÑ_~O¨¿é™ğG§¿å[Y÷œÔ%·vz‘…ôã×ØÃŠÂ j±Yß¬W¯ó€lÌ…J…ƒQ
+ŒøAQh39k,.±õf†_Ç±\R'ñ0¤zVÖJª«®·-\dØŠU‚|åeçÎlà˜µlRÓÌÕ˜1&{T´Ä+Gãúk©¼GHF}Ä>€ˆ§lÏˆç3ÄÇu}Ÿ#¹•ñß/Ö€rh—ŞŠÆÜƒ7ÄÜ†­[”Í¤Áe„Ù[¼Íìbúá”‘1Äû±Ï[+8ší+P^;<zL™Ôâjg[g®uÁ\zâ#(ê85ÁLê˜;:†^]zÛ<ö4šh<2¼Ïª¹8 àÂÊ!iæ>µÔÖx%n‡slzF IfíDKë†š+1¥f M¾“mwšüŠX"q•¥\ÍÜ@¿É<?-V³¦LôÆJ…§¥}¤^qkÏ²¨â0+MÚ­wN¦ÊYåk ëñÑ¹bt¬~4³täq-dd›=³²væ|c‰Q115õÉ›æ™UaÄğ”Ú§‚Ï}Ê%Ô§*¢§“Æ‡‘Äë=õó¨Õ9\sq˜õÑ5ã’ŸàÇğjÆ¢7«bõ™ÚM©ÖoÔŸÉ>ò~IŞ¿{äò¢^Jl1[âuØÓV‡ruÂ©:àÁg’ÙL ¬!ˆ[;ŸG[Á[M{F¬\˜XÅ LúúŸÙnë‰É-b3=ˆ
+‘coœÀWgµ3ÙZd(TLUœ¡™E‚ÚõŞ§,ô™ºñ%ŠˆÍ^©‡†£‹©ê>ÆÓ= Un+¨êi¬úƒ´ÆÈ­CÁ÷^Ùdwˆ¡!> Î²³pbPa×'Œ6Î&Ô‡*Ù†gÑOªˆSÁ\C¡€JêÉãqëX£_
+ £H0¢‹¼Î©¹ŸÊ\®BåWÜä›YKÚÆeâ-Í*»ª[jZÿ İŠÍŒİ°ÿ Ê¹U«pYíc?ª¯!€ïËwÒõÕHxÕ2Í16A°Ê:øM ~3³Ãœ…Ø]ˆ¬L`ê†X™^u»DÁ˜˜ıTDÙcSØ>˜É­DQZyù´˜ßÔÔÅ°U^VºÑŠõ/¶¯ıÁSU¶}I-º¼ÿ !‡âu-5ñ¯‘f` O=
+ _ã´¹[*Êï Zy–ØIíò­çA«5q-ÀÙ\è¦t‡e«Â×pºå—Uƒ<®?j½%SU•*¶4X%ôvG©ëˆ…å<2ª•4².ëXõ»(Ê1Ø[bü2Ù¨|_­I¿h_æD.¢o˜º |¢•‡Á?&ÁÕPeëA5@ gÎø"ÒNŞC’oepQ²pñCã.G¤Ws|œ¹¯a®Âà§¹îP{Ôï"İ Õcü¦ñœÚzÓü"7è%£`Û
+¼öÎòºE°`ò€‹æaß®/$ÃräÜ­Œ •‰ü›ZÜÍXÇ­ŠùÀ­±©VÄeœÂ<‘}µ;æxØi+	µXõ* 3ÕC.FubÂúdƒiœ°³©f˜b¤zx¥’{¸²óòÜT|BĞú™şñ|š‘§SˆÈIëòjò<’:1r_Äg¨ÍèjŠµµÁxY²˜–S—º™”ÂŠ¦
+f¹˜ è°®K¦¾º“+BIP§`ƒ
+»B5Š^o`™¸œÔÆA€ =`±˜9°+Á J¶tšN•%‘e´õ¸­Œj‹Vèk³Ô,Î=8¤,¢£â¿”Ä(LÂÒ!GÉ!BÇWšÙ¹¯
+£Ãí2&,xÊèJ–Œ¤W«¶&ğ<b`v›¶;sÍüdÍ¾GM|&HŸØ‘V#¶[ã0»éY°Õ^•rhğiÔ!dì‘­f`5:ºÍ™bîĞ’,sù*z¹æ#}‰‰şÕÇÄâ±²—Œm	„xÑsdd&m íl&j° f¬4ë±ç«fø1p zÒl¬ÌëÊ`M}:¦ÊÔ'@h8«	<lAÇPR¬ÃÇV‹F³¥0*óÒgQ¯'VĞñßÜ‘íÎ\+•˜h¨f„ÏËqÙË&ñPY¸üKµã®µ²f
+ÂÂ«5©f˜c8fa0p¡©Œê8ê†“4`\C‘2Æ49-Œ†¨Óˆi3¯ÀøÏôyÜˆoä@ü†›ò`·™3Ì˜æfBóaõ˜çÁ_ä{ÈäÑùÈX[…ÎÛs âsqí¹³Úóqíy³ÙóNi‡ƒÌÏ±åOüw&ãù0~3šc~7“,üm¨«*;ZxÖÛ+àsHö\ñŸ…Î0py“ØóD.yÅçƒíyĞqyÆ{>töÜÉíù³Ûó¡£œ°×ÍÏW:tşBusñÓÎ_0@œ£yJ	ºfÓ?š,Ùæï6i³MÚ}‘6i»Esi¶Ë’±^Ìö;² ¹´É3ù·Ë*¾À¿(¹°½NM|¨Ä¸Ï–/†[3¡Ù«À[şWør²;"á£n vÌ äµ›.4² Ñ7$v~Ø;£ZùZ*ü˜(¸›ØcBNæyÉcÍ6ó¸™Y˜LÏêÍòç'QôÇÂú«ş#ı“ìãP4>şßı?ì¿İIÊ}7×ıWÒÏ´ÿ )û®0ù$Éıµ 3şÏûŸª¿¯ÿ 9_üƒûJOÆÀ0 —ıxIÜ“ŒœFoê>áôÿÄ           0 @P!1ÿÚ ?ù ØØØÛ¢ãb&jB•1—È$ÍÑ‘°şeSúOŒcûÏåóğ§Õ4OŠ#£yU÷_T¾_¡\¯5MMMDj*fn^e\EH\>‹¾QL*Øøüğ®b©ğLt&Æ×âŠØû¡W<ãåB„!B5ƒSSQB„!_#ÿÄ "           0!@1APQÿÚ ?áÎÆ?²[%…‡ã,K
+¢#Cø™ÑM:$ª•ÄPD"ef¶Ó­e’)Ò½SF¤"ÑE1ãª;áB„,©ùã¯î™ôÏboø<éùªtLò„Z!pó£ÄøB‘`…œJğÌñĞË‡ËĞ„QşoŒcÆ1ø.......’á—LTˆ¬{^h[¢©×TåÖb‘UúÓ,xuŠÎõü/š³\}#5¦™ÂFEHšŞ•‚ÅiŒ*Ò„!dÆ>^Šy«ÊÆ1Œc.’é.’é"²è&¢âá—K‹†=QÄùc?ÿÄ 9     !1 "2A03Qaq‘¡4B¢#@’±‚ÁábrÑğÿÚ  ?Îí™æNQ¤‹Ó¬Éï¤Æ·$”cvLiv[$é“%õ¹g¬•ºÑ‚Lé:c[=ËXƒ©"¢Ôœƒx%VGhÚ"™«Hoz:k} š‹`¹e­]l[LFi‚Ú\².‰G©mæ;nNî	d`ˆ,‹Òri´÷/İÜ‰FQ´D¯’G	g¥ğdÎõØøÆ›„Z¢ÌÉÌdU6d¶¡ºë®	ÒäNşndÉÍs%‘5+Fbû™,MN\E©2s³˜çeêfY“&YÌÈÚ”2ÌÚ¦«eôêe™2l§5zE&K–È…Ğu>„F“Ğ•ruÂÑ—zçK’¤\^˜3§1ÅZ2d‹˜fdË#•š.Mu¾şÎŞDb¯-Ş&E¤¾/2S8³£±üÈªÄ"’­rd|Zã\—íOçdKÓä,]#…'K³htÑeı¦lvœÅêE«#³ù6«ª^°‰mN·C¥—VfÃM/2b*PgIyÑÊr“M$ÕI‚èµ;ö×Lî__Ã¥ÿ IcŠ³®ë›±y½Ë#h”qdL¹ƒ‹:_Ki›ir¤#Ä\ÂƒjÄÈ¯b"Â¶æ4uVàuw÷ß¾ä%‰™÷.!ÅEÉ8r_ì’C0`²1»‚È—¤iĞˆZd‚Æ7v¤Ù\«¾Æ–î¥à©zoJdvŠÂj¥¦tƒ‹$#;ŞG1ÌdÎ˜zXºz`Æ–[Ÿ†³Wy}8Q-k/Ì·£Gê=åU.äÕÛ\ÜÉ’Qs&IÖeÈ¹búãuÔê²O;¸WŞ–á""ÓĞìt¨¶æLéĞÊ9Œ–Óœæ9‹&ÎJVr9†Ï<xLØ©:g»“k«.õ6)ù1¦1¹ÄîÓ³’a’]“´B äfÊÌ3aé†a˜e™ÌLÜ¢Y‘¹2Ih§ºõƒetİ‚`”YåôõÒİçg>{Ü+_2Z,RéEë3'MmodÉgç%#¨¸Çë¬îØÿ ötö—äAÆÑ.ôvÒcv ‚Yë Îİ
+Ÿ¯t¯¹m¶‰i=w25¯¡l-¿µç¢á0bÅ‹–ƒ&wzL¦Ne­%‹˜dhı‡½v[L×º\2ú\¹‹N˜'¼ô˜Áö/Q}Ë˜=4á“˜ [9=FæÄ[LÓ%L{ó¤é7=Šg~ºËw1¸£wm¸Jí‘Mú¶[wf§³.ÎbÌâ2pÔgLÉzAÖ¯ˆæËTàó’fäË“/LéK×º².´¾’}5ÚfFªÚ~Èuv.c§]ßRtì¿„ÚÙ§Ÿ´~ƒ§³ìê¯³†¸¿Éo-Ô#C™Ó'Ji“f£+GsÌÆ­Ad£NbÌk}X{×fu²¹‘{d¦”²ïS#´ê¤Ÿáè©*\9|Æİ<µ]i­mlÏê0½äÙ¥Ë|ÏwÓ©tâH†s¦Nf*›g¡j™–MU3¬™Eï¤@ ò3­Ş—E5Óæû²45¸¨í/IüŠ×iGÃDöÔºhÿ Åím&¸—‘4.GMË¹L/IÊy¬É’óªŒœl³"N…Ô˜.•É¦•A,‰"ïKÁ
+“Vºî#uh‰İÚ¦¦^«~Èéİ¤Œ™'m£eÖÌ²:˜“,ËIzNE
+ƒÍ0qI.¦[´8®p²tŠ`RXVÒ˜*¦&PéˆïÑ2š·ncOC÷ö%¸"%G©2]¢<ˆ›éb6YŠ¤‰eÑƒ$í<;
+;4“2RKÆˆÉ-‰n~-+ß¸…¸éZì÷={œ—%6Y\å¹‚:éé¦4³9b÷d˜’`å2m'b2muèFE¥‘Êy'¡)T5İÜôîcI‚1¿u$læzğ¦NÄ³È¹ÓKc2Jd6s=0K.¬E)"ÕS$mäç-‚[6–¢}Q‚ Æ›k§x»©{“§®­–.ÄJ¨É“ftÄ˜ÓÄcL‘QB%ém.ÅÂr¢Ò-¥™vdÉv4úŸéb]éÑí8%v‡9f†Q”Z£™ÈæG29ÑÎtËÕIj‘Ìˆ”s£ç9ÌN×ÜñâRx´%'‹Iâ#ÄD>Õ"<Dx´›}¬?mÛjµ¸»©6«²d)Ó–0Z–r³–£¨ÅF*1QËQËQÉQËQÉQzj9YÊÎVr³åg¹°^«"ÎI“¡&	ÒÚú/k§ÿ §p™é¸‡WDO’ænô…½Uà”Î"t»FtÄ—ÒÈó/AÊXKd†µâOdáª¨á£nQìZ›,»9bÅµæÑSU-Ï_"iâ§~o=fqäªp!m>‘?ÑWêEÆDÁ³Ù«¬Õ¹ÂR*%TB©™8•ÌÀÇÄxƒ‚*û¤´˜¸¢†Œ4u‚“ˆ˜:¹;.­ìû+ø6jªæl+“&NdÉ%È2\š+ú£ZLoÆ²ÏB²~T*û1ÇgJöb:ëœdÃ,ÎBjJE0pÆÊ/¾Hm
+ô˜8úé¹hOÔ½tŠpBÁÃ#~Eö$Í­¯AYª±´ûO¡Îmsì‰¦ÄÆ«È‘Æ›K¡y	yCÙ—[I1¬é:I+—ª-ğ_Ãr¤„‘5¤MPBL[IÉqK%İ„Ë¥&H’ä¨ö$õ-OÔÉ“#µ)úİÄä˜p‰fB,tÓ—Kšz“—#§B5¶ìi,´Î¶FÔ‘&ÊL˜’Ô—b§¡yg†^’ø6”œ²réµÑPlõ9l“[”:é‡B8ªªØ)³‹j	ª§n…ªú
+¤á«(Ù§¶­}GüşÓû‰Uö“ÿ ¹zûOî-_h¿ÜpvõÇ«?1QâÁãÔGúŠàÙüj™?‰WÉ?‹_É‰WÉÏWÈ¶;JşNÒ*ÕQ»t´¿qy['ğÑÂ©-M/êCşÉ~Æµô8»>Óàâ£´şÓõÿ hşOÀ¦¡­¯”sÁâ.ÒL²¥%»Q3KUsœµB¥¶©ËŠERí6­'’ã„˜/™*‰2‹NÎ*šG6ãÃ&KÁÓLätÕû³Ê‹ŠÇA³ŠÅÙ³µa%ı'*0ŒOĞÂ9Sú£ì[²_*!ûøkà½+à¿eÿ S—ìJ_aJF ›•S"iJ=Èª¥µäRÚBÚjå«Ó-—ÅÕDÜÉ–^¦^©Díc“©|2Z¯¡ÔÉ?©aéë»}Ë'¸¶SZ]Á;IıN_¹’*¹…¤D¢SDXš—Á´İm.¥­§	ÇVÕdÔ”!Å–˜#¡µMN¢ò(#¡ç'—ĞRÍ¸’r‹SorXï÷,Ë­=‹ÑEŒœV9?©“fFã¹É—HzÛE¹â#ÄD¦¾L_ÜµC’6çĞÃcoü›SÂ¨kj¨DRÛò<Éı(‹RÎµW±ğZ¯±gö-rãÙeîÌœé–ù/\3©{*œ/S–V%ÓH½RqTl¦GüC3÷Ë¶]³˜æ2‡çÜàµºËD#‰9-ÙÉÊrT>$F4Á6'fŸ&Ó»ôdCT“‚v´âÆ’ŸÜÚéîM?o‚ÆlC¨|B8Y’z{é0y}Dí>†.®:V}È­_Ìâ»ÂRZXzsº“$¾çC’H¹ø¹|$Ë3,¾*~;$í²Ìõô"4>+—»$´HÊf	,œ	ìıÈ™3¤í"Åê¶³¥Ñt`ˆ/Pÿ úcîS1òJ©m¿œ“,áf\dıL\,åâ'dÀ¢òFÉ*‚ô šª2Z‹•[¸±(É’5Ú±³bÒK’r\XÒÕ[Ngô&ª«KÈ8Ì©2K®‘ÿ 2’vÇ5XÙûé×s©;ûPq;²&Ì·ås©–b¡L~NûdÚê.2î}‰Ru&Ièsí	‘
+6ªæœ—•¾ª_RV&Y\ÁrHd¤d»zA(Ó½',3†¯¹ü—6ºÓ©sĞÆå›2ÎËÕÄ^¯¹*¨·™z›ú‹ü™’j©¯©ÃS)<G;/Sƒ‡iù–M‘M0Î2bÇ*hÌ}y"~Åä·ø%í|3ğÑ>{ê¾&Q”s}‹9Ó˜‰!F’ö‹mi\èAçõ9~äìœJ¼Eà‚ ¿Ø™d$Ëîu8•DË2ÏÖÏ×ìpíÈ­YlÅOê^K"Ô˜9oîcî^™ú©…îEFûœ¨èf“ôZı;¨…“ù‹…zŠšp\Îå™Ìdç9Œ£¦ŸöÙoò_ü–ftÎ—ÿ &É’[,N˜2Ì–fYgQúgòs?“üœïäæ«äñ?qâşâ÷øÑïQù…ıÇû‰ÿ Sî/üWî?2£ÎOÌ¯“ókäüßÜüÏîeÿ ‰_,üÊùe¿‰û³óvCíéù9¨~ÌŠéks<¸üÇÜüÑÅÛ}Ï/©ùŠ~OqâşãÄıÇ?î<OÜx¿¸ñ~ä~'î<_Üs¿“›÷«äÍ_'_’óò[hâU¨ıGS©ÔË2gL™Òóò[i?qmWW´–GBgêx„LúœÄ~*_A9?¡;j=‰?Aí;{Ñô9—Á³&a{Oì4ŸØ»‘Ä|ÿ ‡ıaı‹×ö!¿°“T¿¡ˆö-[8®E¨:I”EWG){°t:—!ÓcÇØŸø.éø.‘Ğ|-%§û‹ÉÄså«9ÑÓäå/IÊ÷ÓVgWí¸Æ+t‘«¸÷–öD+#R=*‹G¦70´Zgqh·ÿÄ '      !1AQaq‘¡± ÁÑáñğÿÚ  ?!f ™)SıÄËş¥LÀ•2Íú‚UŸ›ÃÄÄ‡bø”˜`dÄA«Ì¼ƒƒLP*³Ší«…yAmeeÌÀ–Ä-è‹—0wÜSx¸Û7rø£1ßêeâ[/®,¬³6–æ5i?‰qIü„5z”]ÄK™ÃÃ£Ø\RÌµ«˜‹P@ÆãXó8|@èe®‘«;™0vñ 'Ìhl"æLÇ¤0¡ej¸¦Óˆ‚Õ!”1c0©%iIR@X¬FÖ,Sâ[U5Q\ æsq+«B\ŞÅÃæ*º*!WğO¹vÔÔ˜ñ.ô„<Hì…GÃrÓnS	»|¢78ŒršF"f×à6ŸÂt¨yˆ2Ù ¸À\Fà™0*e,ºÁ±káqh`@ŸNrµÄ„Ô‚SîÜ
+`A¬GÇ*æ\²(™tThÌ<Áª lè™Ã™VF. NÀÖ Ñ¨Q0 f¢Å‹6£Ñ‹UŒ¬*g!¹Æ3d@.;ó¼ßpÌÜÌD¯÷,°—´1h±T<Ë<Ò %bUÖ¦<ÔÇ²¦-ü:ÈÙLºÉq¶]*Ò…¼ÈŠp3&'öÄ¼sö›‘ÀİÇ9´	–*TPUQ¦Ğ‰QÒÄµé¯¸áx'¸GhÁ/Õ*nÙƒƒc™˜·P!hoæp#˜ÜB£§Ü(Ò„®Y±£uh:›j·3<e¼ Ø‡û4?š[ËöQ›şÁ¿í)o'¹BxL§ÊdJ{{ûÙBÕÎ@=Âl0y‹ÌÂ4kS¿ª^©ğK;`°}ÊêÎG‰”Ì­PÇlÃBâ¯1©XK˜ĞÄ`<ÁjâRÎ"ÖÌvLZµ™†ŒEÊ†L&Ys——õ…¼LY´¹Y;	Ë,Hò%Î`‡&ğˆPL¥|O9õ+r¦#ùà¥A´ìî+@x•şÂ¯À¹ ¦îÈ}«¹Ì¡âÓ\KIm;êâudÊª×áH@º0ÜŠã¨´6	Ü_0›™ü0œ©¸X¹0œ qr‡.#k/¯‰ÁB*RqXÔºx¸–ÁK°T× ¤½š\,6.&a\wÕ’Uàw*…dYAæ·¸¦N`jFë0Õâ)‰‚y¡g9ÜÇÅÅÿ ÿ —8Ü~ÖHupà÷ X	zºº—„±~ ,¢iqR´_&*V¯¶tp=†%p¬î
+’ÄqNå›uÃÆßq–‰!Ë@ÙÄä•*‡lOôaUäTn¿ì¶ 
+ıÃ-°nØ=Â­d<ÁQº–Âî¥ÒiP€Á#C¦5 e:FĞ&ÓG{y>iù*şCü	àÀíÉyŠé–ëá(%Áazº†%â5˜Ì¨¥»îÆ †w,ÃbT¾#ÕKÚCÔ4šŒ]¶ràJ¢ÙO[F]ì´Nc™š˜F!\`h²˜Ò”»°ÄĞêbaÏC0B€t€Ş«Ô*fJeíÀä S ŒÛ¶]ÁD¿“ü=Ë˜`İ,ğ'Ù¹]%s=cÓ¦0G0í™GˆªÚ…EG²k²ª K_É¨>æD¢C‡Q)tˆJHÅ­kEÑ0fILc.9ÙHí[kÚÊi*—YkÃü›™¯u]@±º—ÓÔ©Y¸ìµP?Õ³—(‹®¡C? #JÀ-œ¿bÛ/ü‡q`Å}JÆˆíËY†Z¹dCùêdEª•3|{œÁh,lÄfúùã¬KŠ5€óÊÁì‰‚æŒ
+-Pœî7AÎ )ÉÌĞıÀ\`÷&h¿“CmÇ/ö†Â%ÎĞ‡À>¡”Q8¹¸!V˜„¨sÜ¯$¢í"]ñ7|Ì¸¹”kê?ä-šó¹Á²mÈCA˜ÁH´û…Q‘‰ÜiÅK\êñKäéõGU1QK7pOÅŞş¶J~š™KlJµ5(u*b¢Só1biI“çqµš›[ÂcHõ•‚¦—½¢İ§(Í%ÒVY«|‚4‹m8TAJ™C$21ÍñLËÄ¢µ/¼Kú€,±~Ú‡‰Uş#8‡PÅ¬´KÜş¡!Ïêfxˆ%ù%Œ_ì;(Ñ2;Aÿ gG†%ğ¹uÜÓğMùù3ĞJ)Š—œŸ³àËÅüÄv‡6á“z‰ÕÄ~vZ©gAˆYÃ¦.	U„oYœ=%>“¼¬€B…Šr™×G¨n¿²Ìÿ <0ñLõ!p_-Å1ˆÎüÃüD<J¸•9ˆ‘LLÙ~Ïr±†"ì=°“c˜ø–ó§ş$¥Š1»`Ï™pÆg#q¤®à§àkàÃ9Hê\Qnw—‰Ï^®$!3«ec²!;¹Ìïsş‡0¶\ÿ l³Vıcû_Ò+”c¸rÑÑÎÖÍé)ÏádÆ1tNsâ +åÖâ,Ñ³WšÏÀ²ë§tLµ”c~ã½fcÊşâœUL*Wr‘ÅÇJI*)ºÜB§®åïÊ¡¹,ñIC„¹ıl8ZWn†ÎãÒká9‰”­ê%3O”jºÄº\3(àŒµô ‘¶N`•[ø•1*)“‚–Ì˜šÕ.âÜÊ³hVái0Xrî	¡JÉÄÌÇ=JvjWylfMèG(¬Â`~Â½¦yÜ:%ó1`¶æÑ©¿.‰vÂËµ[şc¬=aÜÂéÓÔ¸kÔrg<ÆÜƒ±…ûsş’–6gÄ*œ¼ß2„ŸXİ1g9î\	®#I–/š=³PÃÉ2kâîÒæ.9¨B F¡ë
+0D„ÙELcFt—.»WõP¯ÔéêaEş¥ÈârVb±l’…'µ™ÅAy—îBÚxóœà´Ë/è\ü^%Ëzœ—˜œ–xZ•Ø1VÀ ã®ŞãSO²b¾±ó3÷NWA1§SGÜÈGÅ+	GS¿luÃ6zsy™ÏÜ+¯ã/Èı= 7uîã®‡›¨mòğä@[¼óP+Ì¥Ä”—xğÈm3ë”0Ù”íÖ[”ñÒ¦ËcF¹÷1h‚‹IáÑ”
+î*Ä5êj,çQN1q-˜ïe‡'%34ÜØB†-ÅE?—ñÅuWáÄKÌ 0‰Z¶¢½†}¥±VÔ¶ ÄÜß+M]Dİ²!ƒèâ+÷bqaæ|¨æîËüCO„º®ú™·¯‹V%Vá	ŸæÑMuÜ:‰#î…‚g GcUÁ2vÄW{‡Êê]²ó-TŠ»ø€Z[Å"Œ ªngÍÅ¯‹ (7ÄíXg1Ã)ÿ T–I”iŒ!°HÙ\'HÌÊ/çç®ŒÂó×™p«ÄŒ$J¶aÌpÅ) ‘Gí?Qká’Tü¤¾¶NîkÛ8ƒ,SæZ‡f}Â·ßs|wRÊuPJ#À¸[gwXy‡i[%O¯PN½ª†^ìÇ,­ÎÂ\Ì-~¦,ad”EEË(>å‡XºMp=ÂÑ­L#‡d#k”¾0óJt…€8dó®¿pœÜ®×	SWÃN~	â®zŸo¨—‘kg–]¸’gê;B¢‹¿œÎr¢mğr‚=ÄÙ¥@cÇ¯lå¹Ø¡õ*£¨ [²¦GÜ©W\ËÚõ†ÁÄ±*èNì«>'Wø_p.U„ás	,Tl*ˆÚ,aQé%e¨ÚJ–´nfaù(0¶NÍÍ@~0‘Á#³\ÂŠi9”‘˜ÅıhxŠcIŞ­1hºÑ¸ëhS]TÃa³D$qñ‚aâ
+%r¢t…K˜şcv<£–)mÜ.eõ·súy·©Ûâ¾”ƒ"©ZÛ–œ4ş¡¨|ÿ ¬ñÏ\~˜³Ì§•s!N&5è[^üC“´Eÿ ì³G [cfe
+€wS¡1JsCD8‹ç¨%Ó¨MÁÚf2w¹m0›ºá{DÔk©OÂ3í.P0ÏúU)Å¨š4HËrº\E
+ ®IÒ$7[¨^™S-ôG‘Ÿƒ•K}F×¹MŸAìƒLLÄ ad¬Õå‹Û[K~ÙJLä_ kÜdœB ú/Å[şÃ;pÁpİk7Äöœæ) 2Gã†ScAi<J@Èbîç~F—UFãkŠ×ùÆ2±öA1\×S¢6,+Æ%idÀ)6U!ŒğÜ­Ù‡¦Ñ¸jd¦·¬¤+5C£‚"ˆ5W¸é[nP³NHZÎ¥ˆ¶“™Y®bfASGÜ¢§GÍ\QUÆ•s‹˜CÄ·å]	ğèkÌ,¬Â%ÒƒÌ¡%UtJ¯i—<byF"l±/ƒâÙw¾ÔŞÔ¦"¡Ë‘ÔqºÕLv_1ÈP“àáÌÅ4å´©’Y‰¢
+q‘ÍÒŸ8 @•Ì™‡ÚXBˆ¼Ò¼0øÜ¥e÷)P ê<|aÃ.`ÙL»d¸tÍ2“$¯ªªŞbc!ˆï`~Ã Ú–f=Â¶A™ƒâiÔNš5½Ë€â_ë¯ã?HÕAÈA,wö·¨póQd|§üw¶Ö«îbß1ü° Yä„-rb}¥(­‘p¨¸±•›ìúfa°Í¢æ£š¥å5­2eÁ}J?¨J@ÍLpG˜­ ıEBå-Qxà@\}Ñ£PE‹şáŒ~€wSp‘È©Lf¸œyêj+ÆYƒL°p~fÏŠ&	e„¥†È½Í;€À‰Ø#Yó‚ø%E*¾5ÜqLÇ3!uÔÉƒÑpW‡™sIé3tff0ø~Eâvf¥½À©µ)øs?Ùwè@WÉ¦dÈ1^Êá,‹w*«î-«(â0öÔ³¬-!LÄJäÓ1p(º1ˆ™1™„¡
+Á§r”ZDXÑ
+bµûš…–­¥‰c™Bş	‰Š„õ‡NÒåcãœNwjg„¾”JôpºRñ9K†j#ÍM¾`±e7zÜŒù™²š#(O‹˜iG$<m£HïàÊ€ÍJö—e'¨ ¸<ÅìîbÛQ:O™Š/4ÈuÕ÷=êj·#çşT¥†;›-T&ïÎNæÁ \¯¹n6š|Oàá®fŠÓ2Õ]FB¾¥@Ÿ&.e#Ï¤nUaN^€‚ïr£GìVW!d¬Çø+k˜i•Şú›	W3-Ãƒàü3(1£b\Ìtd%‹9K´8˜%ã”XÈG^¡ÜÙ
+„–
+Ôlµ„Å}¡ò$r\,œ˜œË©Ÿq×xê*…¢®¹™TC,sÖã$?RÚ¬°¼ËÃaKÆ{$Ğs-k ÊDkÖ)[J—ĞªVÙ2¸{Çò‰î*E
+NaŠªêrããâu;Ü©”û‰e›š#…ø¯(js+oW(Ì/¦ÄRï˜İÊ
+ÄYu2ÍÒ¡ëFàzî)Z{•mÿ s¶÷¼a*«î=Ç˜Ä^”{€Ü^áE¿Ìgıf]¾X-s_µ•Hó…#Mú®R¶üÊÃ/¸¶’h÷çû*hçÌIbQÃ÷)Sù¥cùGı¥ú	ÿ Ş˜JŸp0bhı§7÷•BÑyc6 £L¸§>Ò™ÌEĞx—mBó¥ËÒÄò@<@ŒÁS¨±ÆåIÁLÎ&7õµêZ*q2cÄÌÁ˜¢Oƒ€ßÔ>ÒC÷Ÿû)CÍîm?x6’]ŸæÕüŸş ciAz4#Å—ã?ù²¯ùËÿ ã-"í3!ÜyLD_dKÀ¡ÔRªÆ¦‰”ƒB#l	Z6t¹lpÙn$™µ	úi³`gâ!±.ˆŠT1¯	qoîW[êeÌÒs61ÌMa€yº˜ù‚S†xŒ‘ª˜‹±™õP\Í‚Ç"ªù­ûoU˜´æs=?q¼šê<6]•\‚•˜fÃx8o‚I ¯s_G2ñI¦n-õ3Ú%Lnhè®jW|Ä}Ür$HÛañ)õÔ]BéŸ“šøff«d¾ÓHÇ˜™Ñ[”‹=J¢¹
+Y¾	Çwz—P'–e/pæËëÃsapj óONŠ–M”Â	ì•MÇhäGXb+Wx”B^Â%ê–Eş¹®Zƒ˜r 
+%
+½Îeá2á[©^¢Ø\Ç'¾¢Å—Üñ¢(Uäñ)~Øå¿ğù”*Œùew,¡-Šà5•€JÚˆ‰¹‡‹ƒ¢å˜R×V£ ÉêQ¡¼¢E‰]}È(­°¼\%µ3¯<Æ?ôæ{İW¨Q~Iy¦ÄB_DwÈ—+.k[b¡Ê
+Ö2‹x]©Ô¸VLâıE(/²-ªû}WdÎÒÙj·¦¦Õ3æ9‘¿¥aUÔkï,4L¡SSYH¼¸Òí¿‘§ÜS1‡–DÀ=BJÿ ‘™·. SÚd›e}ühó$µ‰‚®q¥,—vWU•—’!èŒ‘”*Ùq îT(1¸×ÍL2‰qmtÍ¡ˆ ,ñFåÛŒ8¥µ²µQá&>í¨¬†°F(âfP„ÀÛßh´ÙÜÍõ3F¡ˆ¼Ê¸4Ô£»ÄB–„·ºN¥I§ÚQ•^Yœ‹mıN!Öd_¨Ôú’øƒ´¼dHi¹e¯â?û%&dEbl¼ÜF³»œ¼ÀYfp° ŠÓï‰kÄã‡Ô]|ÃG™ƒä­—fu•n=şüxÈè~X'i~àôÔZì\f+¸	ÔÇà4JhqG'd5ƒÒ7g~%$\³`ƒpÑÛÔh[HS‹ÊÂ`Å!¿!-¦ÔaĞÜ òÌC!Ì¦cÔãpVÙxs˜P& 4‚ş 0PÂò †¬8Q»4°X)‹†è*.¯e0ëxn=ØœÔâ^é¢9-KV”DëîZ«äÜ°Ê­˜ˆŒ+¨ïÔlošÔ¥TÏRÙ™_oslêX+ãÌB\rÜ0KÂg§ˆ¹^ø%[º\ÓâÔîØ_³¸Š¤Xébàö€¾™­ÊHc4ƒº±bˆ qW§“˜ÆeÕ1§á/3»,L ßˆªıŠ‚¡®Î¥)á2ÎŒ×30†L8IH%Î£ïÌvãzç¼Å¯K#ó¼ğJßÖDÿ p]Kåö‰Ø!u@½ŸpèÔ>‹9½¢­&^ÓæqLõaô–gË(¹ÇD+¦0&M2Ø™çK\¿ºäïsƒÄÈ¸qé‚˜3QÀ&eT†1šı!„qó—9“Ìçš½‹ÂÆj6šlÉOŠ—Õ ©Té½DCB`“˜Zõ.¯ÃQt·Äfš„`ñ2¬ÙšŒ#q„^:‹¬“‰Kï¦àÈË˜ÇÉ,6|Â²ÀÎ'´w)ia¹±qª–AVñ™É É2.¶ÎÄÄJlÇl¤x–Eo¬@¯ÔA¾ıË*ËÄ0×˜WgÊ`µ ÅJ•.	±C:Šgæ¥^"ÄºfÈ0‰è¡(-/\Ë²§‰\?;¯~İD¼b4)üˆè#©q¼%-%rÍdİ%™«©%Õæ›ÏÕ!wÀ9Â}doÍó-°oP¹aøŠºê
+&ÏJÃ.^²-(º´0+ó4CÁ‚;U2ß0äÇÚbZ—ÈŒ6L¤å#Û7´ ÷i-¨:©zà<‰~i„YRÓÛˆ¼æ4„ì•ø™@\óçÒWğWÀ
+_ÆK¬BKš`H„BäfB Ÿ²h3¦.@g¨oA¹u%cB3@óröœÃV3Šœˆ'RĞU0°+¨×ìBpÎ$½#
+ë
+€à'™h[nîZËFD•<Q¸İà„hqÔ/{pEæµÄ£je]À*ıáGt2…:¸ÂUdVuav†÷şı©À!¸WP¤û”U(÷(,Ç+Ğkw®5ÆïÜ%;VHÚ©—ùôÌÛ6óBÒd<ëW»šhe¸˜7/QÂ'È\³Hƒ#õ"#¿+,©¨32¨ä¶{á*	‹‰–‘PP¦9µ‚Ò¿û)™³£7*á¿¼0up=½ªKCØbQ^`™àíD!€ûjWffÚ"¨!iu·Ób‚)ByŠ‹„å‹9|±-ÔMciPOeÍu 5c~%`ĞÜËº’)±â5Nœ_ƒ2C~‘•‰w7dËDì†âaªRòËÖ,ó
+­±H…®Ø¿!ZÌÈ[Bû–*!m/¹±ŒÎ`cøTpÔ(Ô£Q{ÊÎb<‡PŠ†*FÆsÌZ…XI´ê,ÙÑ¹Ït\”xÊp„[0ÕFá¸aİLgnÈâìÑR›l—˜©õ²´¹™/r¥õÃXÑàEB­ç1ã;Ô!h8L\ZÔp&eh†mÌÂ/ˆb—÷^ãJiw²\Âaå5d:¸Ñ®åB&4#9@Gˆˆhx•­ïh³ÊÊw¯x×Ğó(\k#Ìl=fi!X\ıÇ-ı£şÁL†C¬Á¹eæÛ÷CBà¹‹Ur·1Sn-Ä©£u¨ç´C©oá´k€¸ÜÖª÷ŒÑ)…“Ü]€ô•%œ±}¬Q¸;•ÀvùûÌÂ^PÜ`ogÌü'˜SD÷2%xÌ±ˆò#’*´#ŠºğÊÌ(€6Â*îˆ+é†V÷Ë0qLª^æèÌä¬Êq‹—iˆ¶çPySÅTJôJİ‡¹ÄÏÃ¤uy£‘Ö’™P&¥)S¦˜9"5;æ›LvçŒ{a^õËïûÍ
+ó27_¹J”¿w…c—8€m×ºf­Â=îQ‡lÉ}—E¾ÛdøÌº°N³1ŒÓ!¾q5@¬EşQª3.Ù¼dœ…ñÁş{£†„†tÅqs‰÷7Ô´¼x†°&s-äñXrE^®j…  ZòËÊY)×™Œ°cé]7mG¹Í.Ú‹«¡×sı Ô¥b¬JôW‰F LûLUÇvC@¡ìœ©mî^e•§-œ^®!§ª ß˜‹lîaVª·Âd£r ÍİfMşg {”ŒÆ.£
+9SK ¸‹~™E1òÁ›÷Ò•ùÜ@Éì›c3yË……ÌW<¬.ÔTzÇZÕâ¥ñ!âeÆrX”U6Â’ªq²§tlÄw-7TŒÊ‹9¹‘Mñ(¢$&
+ñl±M¿™bÕ2´8cpîK¡ûqª€û÷!7 ø|IKHEm¸cz‚_Í‹ãtÅ²013ía”¯´j¼ïÌ¦ï†Tr|1x†B¯¤úÍ¬q[¯»%~@Äó)]”òÂôœÛ—éLÀéƒFc¨"ô¨
+?’ ùÏ0™ñ¨£XWk—Ÿ‘aLºï7628\´lº˜¾Iq­ZÕÛ1_u5a~dZcPjmä@|–úQa>Ê2ò$]’Óz‚'¸×Ãgs01„îÁ·<½À&Ï(è™vL ªgÃ.@ûÌ«İÂ²ÂãêÃ/qLD|Ü:Â7ú`ì+ÜÒ©4¢ÌÛÀÂÕ–r"æåFG¶Zøf£	(Zşa·—Qœ…°÷}¨÷»Ü¾±û–ZbŞ •ø€°'©Cz”‹[Á*—Hf&_z
+Mæ€û–ÒEæßÎÌœá¦Kó•=îPä0Õ¢ƒ:o(£Ë-Zo»š@ıÂ®3‡h•Gâ·Ä6Û+mç"“‘,ÂZ_GÜ46£YhY[Lø‚6¿¦!Ùû)ª–ó¯2‹ E4x½oÜ°ÿ ¨Oìu¿i¾ÛÓĞâ0ª^nyş§(‡Òú¹n”²Ø¼y®P Ãí‰ºN•±ÛÜOûFFe±Ÿ13jdÌ“òŠÚü‰d”µ–1¤L—fŞ,™¡›À™ +ş³)¯¤gÏ±àó7ãú“IÁ’~Èƒıï4ïÙ2İ'jœëİ“=bîğÈIöšCû„x/pÍk„;ƒmêØ$SÚ–ë=Bğ.<‹­M$z´Ã/AÃ—Á[Vs‰åÍŞÑ?lRú„"¦%Ë+ÚkíL´/w•½¿ƒK'^yŠñ½DÖîW1c‡ê@3e?[úD%yKÛ/$.å<È÷L 9jã¥€6¨N¡bshm8;¹[c¦PQ>RÏlOù³‡|K§!îJ®ÂçD·lğà.éû—b#¼0F28›K[ÕOñÅ–¥ÁQTqâ+æ¼E²Xzí„ÒÇÒX~³5Ùf¼O8FÅ¥ñmıbŠ×pæöÕHt_Ká7³úLvÚF—¯¬µµ_P4Ï÷ÛK¢éê‚‡iÕ½có˜yR8‡7N/NUåîVZW‡ø”»7ä7ò®Xİ÷v¨°®Ï¹ÙşÇˆ&¸1,ãã„IÍÜkå¹–Lm³%µ a¦b$TÖ#X²õ™ƒñ‘ÌwáÔ‰¹ı‘÷-÷?•ğLÌV<ÀRmíñåö„²ğDX–¿a
+#şš—˜~D8E\#ğæìu$MVÕÍŞ¥¼£;2Ñ¥ßPÕT¸74ûoRá‚dÄ[9×ìÁË¹m9aÌÇ)üo…	ŒgÿÚ      ìNŠVÃ;m·Sè‡n¨®ı,÷OÒ*'·á;°&á÷²{j<_Æ¦¨²—Ñî‰š3¥2©rh%ÕˆK¥4uX†Û^¢wéæ‰Áqó´¼@ˆ “~”†ƒÙïl¨Ñë^)ü³A+ï ÅQ®ËG ŒÁ	1Fë¾ '©`Ë|û*™$j  Øm*xí­µ}„Ny„9$üÓ ò“=’ àFñé’PzCŒÎ •¦H$³MŒLWÀ	Š3‡L,:F¶gU¢y³XaRš]–$ªåÿ ’ïŞl¹`|¬mµ-J¸ÀäÃ;	3ğ„Múh£1ädÒ¹3dcA ¼@¬)ºL&Ó1+ôğˆ â¡‹Æ{rñBZ¡²Å‘¨‡!w9m}IÌ„_õ€ew/’uäÂ)•÷=Ş`„é¤Ül§GÆ0<áäU†İâ:÷¹‹üŠª ³O=U
+êÕ%ÁÍåÖ÷?í”¨sö÷
+ÚÛñg­Ad³hÊ,¦&`nYˆND —u–
+¢4•Ó4€Ö8Å,x_Î”üyî*iëªùÁh‰ Šè‡vùb|2ëFdˆ¬9çÑw
+P -Ü>Ù>İ¤'ì8x\ZhŒJ²¦½—ûŞ™(¾C¿Ç*Âx®ëMíekÕ 	¾JpÃîºmÒn…ÔúNûœškWM1ĞÚ9¨âËãå}ƒ2…ø<~>ÿ bà¢ú/¢	çŸõØ|÷ø`„ÿÄ             !10AQqa@ÿÚ ?ÄL„Í.‹Áv„! û	¬!Öbq‘ š}b`âì#ï–‚B»§:)ÃÂCgØ×˜!²”ºÍ)FÇ%à™¹€‘‰»x™y}×|<=Óƒ=‰İ ô(TämúÙù[‚1ğR¾ğ¯…|/áE‰—çÂ¼ÓÍe¿Ä•Šº,Ršvñµ4|u”ù8dÖa¶ï²ÑCù¥%1F L¥~RÜz%È…EEX§eœ"¿›µPÔsU­ ò•bSä¢™àãƒpEÚğ¼7§b¡5¥D áÀÈÄ?Y!CQåjˆ45”!¯gìıAú?gë•ˆB	cCP^²•bbNQ¹·)QDèã1ñÆ·.·áá§„BŠ*#d!D{4„ÊB23’-¼(ãá§jG¢¬!4äCà§gG"‰•¢l»BWT*C²hœ%+ø{Ú X¥(Ÿª‡å.ì§(Øğ“#BmQQEç=³J´„†ù"D9Ä¾È¾‘ô‚0HA$’NòP‘HÔ‘)$âÿ ²>Ÿ¢˜]a+/ÍèXcÏxxÿÄ           ! 1QA0qağÿÚ ?ØÙxœ ÿ V(Ñ°¢DñpÆØöÆŸ›éf¯Òı?¡¿Á²ï	•‰6ˆ^ƒ	±*Æ°›Bn…TxŞ]ŸV%:Í)p‰­„$ØÏ¢4BĞ~–Ş‡Ğ†„ĞDŒ_è-C"Îş7‹PÁ¨LE¬„#bõ†ö7Å*à’J/ŞCèj0E>ãû?³ú ‚­ş“4Yî
+ìŸIôŸIôHËÊOÀÉû	ˆIa6<¡uùıËàÜ±E1¨"ìµ‘‰aXß×âŠ\±eª‡S)]ÇXr†¹m‚äøfP7IJ6(I¡z/²òŞM•35é<fÑ²­“î
+(Wñ\›Š”5ôLwÖ	JŠˆ-)FÙ	†úü©ß†ü6\ÆR±3bcAÆ4"Ø±:tNïœfÍàoğ¿ğ¿ğöBoğşZƒO¾lè!‰'ˆo-Ä5}ølĞĞ›$ßfÖi³x„#Bmt!ôN«ÂååRPIt$¨’»‚"$&5<QÑYJR”M²ûpoƒÑô6*ğMxU†Š&ğ¾±‚¦ÿ Ÿ„mP«*;ÃS+²Á±a¤ü	1¡¤4Øêœ¦ãÃÆƒ#ä)J!ìIQB"0ˆÊÃ_i¼b4\R—:'¬C ûæ•ŠHF"¢Œ´6¾axL¾±Gÿ XŠ(&Æ‡üğ¯Â¼+Ä_ü‹,²ò zâkè¢‹(¢±_‚gà›Á7…7áK‡Ş>ñÛƒÊüşGA?ÿÄ &       !1AQaq¡Ñ‘±áğÁñÿÚ  ?JÒï6o¼|CY‹åm·À•¯šC:e„4›;–®„¸mº0işË´Jò×¼^úq_Ì|ÃT?ì@¡{r«KÍ_ûÔƒrğ²ñ_¸i©vÃ2¨ó(E‚aä–‡ëœã·Qµå¼MÑ6Ó(hÜ•õÔ!v=j(I3S¾†6×œÊá˜E…‚Ñ¢ÌD½ÁlÓ˜öĞúË?Ë „/9¸zÂ<#õJ"}Á	õ%à[s,@qŒ0v7Õ3*Kì¦PµÉ‰¨ãú¢ÕıÔ?œKj¿% /?hğ9jU¼ÍÀº,g;öŒQ ÁP¡
+ºŠ²"Àé_¨¤4gøJĞÕhÿ ’İGóÄ¯B’«ø˜uÊ<ÎÏZ—ÔG_ÌíİÅ€·Nşcâƒwx÷„”çæ³Óó+ìNØØO ğf	Ùä2Èúf¯òsV-\ İ\èRË»v£ñ[Ô ºÄ…ĞİÄ„Où/àú?Ph+èı@©u½Wê:Âø?ä2PË­pıJÚßxÿ 'lœÈ4À±ÄC‹HÂ…r€°šèuí-î¿âW4?½"¢èqıR¼›nˆˆv3)ƒ7ƒN-¬WÒV€¤à†È;2œÔ%lS>‰~ºNŒjÊ
+„7“U¨ÑÈE°öJ*SœÔh5ÄÕJJ%È&#ÔxÁz©H,”p*1f´5+@*-¸l±R+r±6È4n¥\m\ÀuÃlüGm¾§Äé<oâ))ğ[ñ·œ×´2cşGdgÄi §Ÿh@š‰zK†a1³Äv!ÔX±ïÄ’¹¶GõlÂg«Q4.‰R‡rl9…«(slº¡„(3å äa©_ƒ‹ª\H¹¹¦&õ¥!C&$=À˜f™ô[(QÕû‰Fóì<ÊUiÔMFyî¥ö+æ
+şõşå]£ ªûÍÆ«/>ñ…æß™iÖß™ØJËˆÇPKÊÌ‚¦²ÃviêBŸ¹ŠŞ²
+v/æ$9üÇíÃEıÌàRzË\)ù€°8ÅÄ!JäwôMÇ‚‘y™Jÿ \?—Ö€XÅk^±ÓQ@µ9Å|LŒR8XÉG8€E:–
+  FÙ1ï,:f9÷˜ õœşgƒÕüË…U˜:?ì¼â0£éèıÌğ©ß^ó)2ï1=ËÀ%{Ç£Û	›RÌ$.ÓH¾”}†q*O'(¸5ybmaé”‚½TÁÃÌˆº¾”K÷xQC´LÀZRÒ0Ëvµ ú³§@	
+á+n7CRŒ!ÇVšc0fÍ6(‘Ğ"‹F,Å´ÓéÚSñ+ áŠ¸^
+y‡µ·-:–kRÀNlş©„C@§P5D´¿º‚I¬?ˆ„4ö–‰ÿ ª//Ô­HĞ¿ù2ˆ¾ˆ€+èqö±§ıEf{ûˆÕsœûG=¬ïø‰+"®}¢RıeÃcŠw÷7F^}ålSf &¡ëó1È1y"-çKfà.b~¸™®\‘âRSñ>äCâ^rÛwø—‰;l~ NË­_÷Sm­BEZS©ÄÀ-0Ë+gşZ5«ªËÁUDÙ˜.‰CËVã¡·9
+;²!iÄ«mIW^’å³âT£¤[4ø…9cŞ\ÿ áYvÅ ±xnÆ±˜vÑÀ!( ì©hÁa%ÈP§Ä¥bˆüÆV£ÈfÀN\B¨•á¿¼ M[Ö¸æe0Š8'Ÿ¸*ÕÜÊètÿ Øe8O˜US¥#ˆüÂF…Qg÷JGË%åª?QÀç€> JJø…o‰wã'ÄÊl²SâÌ¨R.SwLJ
+²Ñ¦eì#7fº
+¬ƒ¼Â:>„=j¦…]£Láv¤³öÆTÁ´Ù[¸¢	a² uJe_¬JˆDï2ªkÿ *c+\³³ÜQo±‹é‚şY•/ÎÃx|ŒçƒÇÕ­O<®"èÁ-bbR¥1°»–˜ª}á*‘íÏ¼¶=pRÓd?äqÇâïyİXu×b:½,K€lù¼É\t9ƒsiHÑqTR f^«—–(*x3ñ¶]î6ÒâˆzöÊÅLÒ®ŞŞX@¥YËóA®×Ì© ú²¾*ÑhïæıÄÆÙ)ù®WN=âÕ ıkï
+‚àÜÂ~çşÊKk÷-K++Ï¼39ğ`Ç¼*€cDí÷0´Ğ|şà mİÀŒ§ÌµÆ"Äİß0]ÔzICæ ×‰G‡SdÇ$Š3Öå¢
+ÍÄÜ¡»‰—ÿ ´-‰Ä.U
+«‡åØİŞtî#´}?ğ ız„œWWR½Ãi¶°¤ëéÊ-0µ€AFPÑö™\}ı¦—ƒ. …& Ì­¸È(¿´uÜjm¾°ieI¶Ë?Qİ¡¦¯ü–E£ÑP°ÑêQ£~¥*—tKXô
+ø”¼+—ş@€/ùŠtÏõ@‰aÈ?-m_‰i·aÌdmŠÒÌgMRáY;˜ßTWÈæò¡Îá–Eëp
+ÜpÜªhè~ ­ƒöıFùâÃñ(¬®å5Ôw2ôvğEìÜ—ÕÅäœC—¨­†cjsˆåÿ Ì=foR¯¼@{©¬dÃ¹,*&Œªè”¶Ñõ½KFV‚«ÄÅœ;‰ó´ÈE	OêÆ0â^ÍÀÓLMNÈ6*%ä”‰±GXÕ•¹/q…†Éa«[<Õ»
+Û>ĞqôÄ£½€â¥´íX†š(h"-)¯$@i8Åsš”¤ÃBaaí´äÆ}æ2C¯æ*\ÿ \°s3l\àĞFYÔ¤‰qB²Y9¯¬¼Î9bÔS]ºıJ!MŸOê/@KúF,Áy?P˜Š1Bÿ :œÊ³í@,1JXg	„5o4a^"wÙâ¥vNzÔ´)Ğ@PcC2gypQÕX„²)((›i€^q,¯ü¥ĞÆ
+ÖÆy‰šR_ºTÛr…¥°Âìj0ŠÜ½‡˜a¹;Ìhğ’öÓ_KüÅ4P=ø‰6S¦°»Ë
+Ö¸¢¬£¤C¢$6¤ç¼LĞ-XjÂ¯ë)­])‚ä8ÓâZâñ(&Ş	lÒ@šH›úu+8kªÍÙ@Ëí¢ÕÊLl…Â.©pê<6<§ké8:˜¨©‰vvÜÒµp°³®`ø0âÖb†Î?îPz>ğıDjß¸î¿ìF‡ûæ¦«?×)3	ÔjŞ3Ë±ù… ÆGæó™Ìæ
+™cîÓæ'WgE°ÔY`ÍÂ`rªÌ¥ËŞe›µk0%áÕÀ’Í¹”ü:CÍĞE£R‡Qj¼ÇŒÃ†Ø$-SĞÜt\8"¬RøXT?&daİƒælÖå1‚””rsÀ‘M¼QuÉvu¨byq~3ù„]±k/¼LÔBø?hØš|Çj¨î™¶Û²‡B¬Õüf7TÉ)"•ûv–Úly€ĞHCİ}Šº‡˜«4@*Èo¹„½j·ˆŠ9Ç÷ğ1ıRß?"ş%°£zsíÑ§LšÜ7q…­œŞ¢Tİ0*ål”ªõÿ fL¥fƒ÷ ñIDÅØ:ÄZ¶·eD‰ì©ğÇé˜šóP^"Ô;ê¢dÊa¦l6OHä–Bˆ¢ËÄÛ3‰LG‘ˆ­gI!YÔMD‹ÚR
+UÙH2ç£?xšuòee)˜ÕZÓb9vBÊ& /ª‘·uà;š‚*Øé¹ïø¶ï¾a¥‹§EmŠµêõ•e{Ã'Æ >°-s‘Õ­İö¨œ8€Ï¬¾$ÁüæT%bbÚTucc¥â"àb>‘Î%¿3 Kş¸Ö„/÷ >¿¹^Ñnı°C³’ £Ll†Aò˜„‰¬‘
+H)´–¥ó4RÅâÏˆú¥|¢*ıÈ6\ñq¸WÕ}€€û«Ü¥^Sˆcue°iYò!¹ Ê¾ ÔƒÌÃÙàÓÑÔVÔS™é¸Û:–0ğÊú;êX€h<[)$xÜÚˆ*½MDw›•w«Pr±ûŒæ4½0ˆfp†Nh]EGÃ‹Gú@qÀv2Éã¿X6àönÿ x©Dè ï¹V,‹Sy†P»kmÔÃÕÌĞÅ~g•<1*&h¸­ÜtÚ„F°×U	FóÎ!IE¬/DE¾¢mz™%ÎIÔ-D%lOT*ƒã8D(şÄSo5¬+˜Õ=w4×WÓ[˜ê-zÎvkó).GËº±|useÑ÷”ÏÑ¦`Õª©LØË–%å…J0åæeÆ!y.6-PæM<„1gñ;áË0W¦]zX¡Bâñ0½K”jSœıc8÷‰Y}EA dæ°od4š Ü©/ü¦pÒ	ÌeeµeóÆƒ~˜55İuı¸Äì¯´aÍ*¬„Á¹¨Zë°
+·¼{êºVœ‚Y ëÆe|²5Š¯®D&PÙÍûL Ø]ÚáûË=#B¼ÓÌÈô†õŠpn¿'”?Œ«"ˆåFÈš%‚
+}K•2”ºu„ƒlGi3:ƒõFv>†YîŒ¶iÖ7²ŸF/4i†V‹JŒ+ ]f%!…eÒilR7r¦¼ôÅ—8ŠÀ=X™P^P~cH{h3ù€Š/ÏÌÄ—»ŒEÇ¶„ çEJÑK¦}åâ¶R È dj(‚ÌkŞ*0¥ªÔ¬éË¸—õ|{Ë¨::ÿ ±H-íëŞ*ß®:QÌ¼æ¬Ë.¶Kè©eD{ •)°À°9mTD­Tf3Ş!¥h¾Y[Ã y¡õ•«2r0Î(¶‡Á¹JPÅ^ß‚$[á»ñ¨ê¢Ú° [ÕC(‡y~ú‹Gª1_Tñ*%(l´ù£ĞÑøSz±ñ–]j«Áõ#¶
+%”²øñ³Ö!@°y/5ıÄ{VlÚ†Ï¼ÈÈ3aGºıå¦
+(±EoíQ«Âp6ùıÆYé¸kÄu“íÛIlw°/pç5ø€p‹mËx³¾* Ç_0E¹Zù›®7÷•IB¹RX2¶ƒ6'Ì¡O¥.øFÌDSZq˜W†×PPSÂwO Æ=Ğb˜G1oî9Å°¥=3í2•¸e‰4óOÄ~ãëñi½üK[0ôüL]œd~"™¸ùQ çşJğ	hÿ “Ó³ü#WøŒm"=#ï
+üÄV1Äw-Ü£ï2rA¥ªûu™Sãé¾•êU†Ëöè–añØ×—ãâYp²eË ¸KuÖÄ¸Ö€ ~KËø>óbÊÌÂ[¨LnÚõŒr ÓÒ!Ô/Z0aa……<‰kB‹2ÿ zD;$)<yø™ ÆÕùøómZá¯ÔƒsM>ã{Tu×{üJ`“ù÷Š-VÁl}öúÀ!$ãj•aÁ #:0÷Û>‘‚B:ˆ%Å—õÁp ’S·tK›³¿h~4ÿ •3ÛeüEÚ'œÀ1VX7Po_‰uQ[¯h*xXª1Ì¥ÌhR}k(q–+ÆPPh›Òòˆì^| İ±iZmaê¼P*,èb"~(|Í”%2Øt×î	©8_¸··E~â'qÁŠ÷Š¥ãuZßó.Í¿¼È¸Á½zÊZrÿ ?ùæà^&¬FàŞõ%³	jÜ°W\ÃaÈ9€ÈÓ¢tóW!@wB
+€qœŸ2Ì)°?ì½¥C; ˆËrôŠÒTzŠ©ß (ö|B¨SNWü¹‚[·•Î“"ápŸ_ò îël_³ï¶ÂFõÛ?T ¨Å˜ª¬Ê‘¡7ç%Å¶‚½À‹Mõ,»±îR³÷•qæÚÃïÿ “YSÏˆÊX8÷†[Ûæ:õ£÷ˆHç3lp¸B¨²šûÄ€×û™s¬ù‚xÿ Îã•èÁó–Æ(oïXù‹lİcŞ\5ª=áİÕ!#1ú;¦£„AÏõA	Õßù4.¿È•]Û~Ğ­J¿Ô^ÖNâ;¸æãÚ &ïõ`{+şD—¶ÿ PA
+¯ùÔŠyé*LÛüÅ2ÆèÄ
+U?y¦ù‡®êR})\’ç[{©w pÔ¬)kš*5+^‹{Œ¬1S
+©U|Ìî([î™wÒİíùŠVL v}e6œ"]Á^†ôúR›Òıá¡c•w9 ?¨W‚yu¸0ã\g$ÍòulV˜½AHê7f	€¿Ö PÎ¼¨Ô¬Cµg#ÿ …¯X–Ûjœ0w,õ*Ô”ÿ ‘¨0Fš-öŒÀFmÛí2¦?ª\ØÙñ|¿©f&Ú_ù¥MWü‹Áëgé6áOÔh79ÿ ’Ù*ş&6­Ygâ*j¹ÏÄÔCæş!ˆTJÓñı—\¼0vé÷”n5£˜ª’·Só.[x‹Beù–¢fAcó'y|ËÔ·áUØh0¯
+t×1–¶Üm8¨…ÙQ¾D[ºÁÔoŞ"4®î\¦ŞšŒ¼ˆZŠ)¬aµr-ÀTŞğŠã6Ïjt˜Š|7§ˆŒÕ¯°¢¢9nÀöÍ’ØvÑôFDbÛCïçû™ĞòOjÌ.5Û7wfÌp±K%Lå»>Ñj
+ñ×Ô!põ§ƒE2”ÃL6Ñ³àY~ÖÅØ òµù¢"rËÚôêûÊZÒ¡şÇl6… `	¨ ÿ °YæfaÜy÷Aƒ?×*àá÷”Úµ“ş °E0±ĞÇî&ÜÚû÷‚ìTĞ~à–…êÆ=àSNU?qó›ŠÙï(RÖÜ"Inëæ!k¶uóSácæºØ)v}¥m6ûJœ
+ó_QÅ~!Š8i_ÔáäKüD³ËXö—KCŸ:‰~’õ¹³˜‹=b( /„¡TÁLn
+”Ç Y•²Ù„;ÌJº¢.#;­Ç„Ò²j‰Ó4óš-§k­šï1Ù-àñ7r}d^T4“R‚ñ_¸Ú[¾ñÛ—2‘Ü®µ–¯»Æe‹úªÜ_GR‡h`@ó—íKba(¿´[¿…Sm®“â
+;É%šÓ€ğøüÅ,Ab7ÛœzL ú7™êG”Ï»í<Ú¡ó*×ì‚ù*™°ÓÖe‹ŒNG¨Æì»p¦½Åó.ÙÜÑ…äˆ®qÿ  Å¤±o~ÑÙrÿ ´”¯ü‚w÷ö=¥hbávı¥–gşEˆ6×´¾’”üBã†Uëí,¦…ÉWäøgpÄ=‘^qíú6ş Â/v¿ˆœ¤Î¾Ğ»¾™cŞqU,{Æ†…¼{ÌÛÚ¨*ŒÀáéù€àŠ°bûãMçŞZJ8/1t¡VbÎ‡M¸÷‚vº»ß¼ËÔxÿ ³/&sJï¨LÖ¦TÜ»·\´
+$b¥rŸ	TD1O1`;¡vgÕ "İ Û¯ P(f¬§˜®lÿ ÄQC(N±¢ì„ ğôÇâäXÓÔ%Œ¡8 õ±F÷ã‚ 2D8s=^_ìÂ¨TacÃıé7¶Ğİ%ÿ spS•¯Ç2Ä¦Â¨»ó÷¸û»¤ûÊÒÕ1`Áß™g+rÿ ğMÉÑr°ò•¨šÇgŞ0@h§î  W{{ÆZ
+°+?™AEj‡î(±Šÿ ` 4¯òá,#b?¸œ^ø”Ö¥»÷–èqƒ¼& œŸ¸«*´§û+4_¹*ë%_¼|$Âdù™UX÷—šÃgı„”ª¤Ï´t æ«>Ğ øƒAÇ*> ¥Sƒ~ÒÈíUÕW´¢ÙÍ ûDAÃ¾fqöOˆ¢•AR$W+}8_Ô¤=<•2øJcd¸ƒjÜ-ƒ¬inâè@ß)DQĞ[õe>€u
+éfñˆ¤JêZ4?äuc£Ì»À2É›Ms0£¿üÆZ‚‹aÅq ˆgdÍ¥…cÕ˜ fsÁ‹â]4 pæû–o+ÔE,äàøŒ»f«ñHå#Š«â¾„A (+™Í]uÄÈ\ñ)é†â¬4[÷Šm;O¡q£õ+ÊÚC¯hjiçí.¸ì"¬ûOZ‚»ö›MÙi?ÉBw×âBìõ29Çê¶ÁÏÚ
+0Cû@'*+^Ñ[Bpçí)ù7f¾Ñ`
+À¯ÔäYE’Œşóí8ıB­â¶İÎE{Ákuwı†°c%¹Wf”¿3
+ÜÍâjá^ñ‹¬İ{ÊÒ›$Ã_xB‚&¼3©]™–7@f¥D^8”“Å‡ŒÌA¨ÄmÌ@JêXôx%À·Ô¦Û%â[æ×oRÜ Ì­<r²Á‹ğwKò^¼NRÓwÁfCn¢¦ï¸&Nks™ƒeÚ,º+Œ}ã¥EàµÀ{aÆÉ[Ä6,ª¼úN–!»®>b‹ŞJ’ û>n
+¸ÃYNŸxò„Z³ö‰âzE,	 h%ÒâŸˆ	ùÌ·F2şb#Bœıàä<æh.á¯ı‰`¡¯öQä¾Ş7.zûÇŠfû†i¬qÇŞ*<fjíûÅ*UöŠâáS¼Ò¥{ÊÁ6­ßŞVÁ™ş²ÆìUUf(œeÆz¯ÜR+eD"‹Bb1MÀ«ôÔÂ'3âÖ¹…4#ˆŠC¡švTD"s?PA6#õ/cWšıC}f:9•bls×qà3Ìr–ÕqiZaˆy½ä‰P$2¦%2Šèóé”Mn˜€éÉ8Š°~Yc9†€Ñ”îÀpäyå¢ÿ ¨]X&oQ 6rüDx;s›€€óŒ€Æ½bš<(^‡¨€¶µÂü½A[”BHl·©aŞåaãq˜Å¹lË,dq´ÀQYÅ]MW p~&M*‰¨-ç–ıM®qıRıÌÑâC’åÔŸ™“ïŒKäAl™^´}¢ë.ªI˜R‰Zs*˜‰	°gùÑ,˜Ä3$v»–Á-ˆ¡Crö,ºÄ‚ƒl¸J‚Ó´p£„lÔYY;EPGv·¸Áxá)³Nì3CÉ.LÃpçEhàÊóN,æ®İ}¢a»uhWzˆlZLÕÔS·/S(<Q/Œ®Û,@PEëÅqä©îP,¯cEßlÛ‘ _Ä\È|óTPÀ DâÆh_æ%LQšğÍQ7e¯XJÑ¾=66£“¯ˆ”.üÁr³ÌæÃ_ø#+ƒ˜2×L8”khÙ•¹à¯Ì²ŠÌeìå‰jNòÄõm[C6÷UË 7³-Võ€2Ğ(9.5@fÕ/NF B%–È
+-4«%4n ÑHìâ$p˜±e¤-³
+ˆ¼¨q=&ˆ¾ñ"š¢†b¯	³S}a¼ÁGt©W2XÕ§()[]Íh•rËo	„(ñN5Ü ¥]F§«baüÖ‰m BETÑÄ²ËÛJƒĞ’Kª9ŒŞsÌ\5€•‚ğ«Ô%Ö"¨_ â¦ñƒD Š(ˆªŠ¨+Á7¿ü{¾ñâÎºù€8¹B­Æåòs\À²ZLéG˜”"•ë|J[oFe¢áŸôJ1±WxPù…‡œæø˜êM¨æuëp öGÛÒ@ôÂĞcŒG†±)ÍİGƒäÀC«Ëã$Ã
+7jƒX/ _æ`…Â/ˆ]ˆªÇ %Îƒ¥Ÿ2¡a­oÖ+†J×¼±1¶÷•ıWı˜b…jîjy_ŞW<Ö½æâåy>óÈº÷‚	Rb( ÛA™fv©¨˜ÓsèáZj]]â>îµx‹e-š"±î¨%İÍ*½e2ÓkÂ`y¤1A]Ã¢—*U•’ÎpÊ1"Û(e%;˜WNcÜlÔ5qK$€Šê†C…ó¹ˆ„—¨G¦mä‡cDAh3Rßù\L6°ËrË(éA˜GúBSZ—^%‰²Í®¡ Æ¡;‚­âP—lpôan/˜8k¶éúâ-â*½æJJg9Âë¥)AìÒm)¹5vD@7¡gXY´ŒûQÚÃ":£&X˜™Ş€Q…‰’xĞ[ÊĞ=¤ïh+gFå"±4àÕ¤¬¸ÖÃ˜-a¬Ò¢ë2R |¦ü	Ù¨¹µ…—èŒhjîˆß#ˆ© Í­ÂÉ¢±HK¸õcêdõ”+ä”Ç&¥TS^Ê„òt&Mkˆ‰¾a× Ó)
+İq/…zP×¤$väyô"O@L¸#su.š¨Ù +ÚR“1¤‘Ym9‹T„Ów¨ (5ƒ® ø¡Æ²¡;ÖÏÔ¶ªÔZ% E¨~·*
+»D@àWg{Œ“¹wˆÃæ-¨<G®Şğ[EéûL}Ïrïr‚¡ÿ efÕoøÄŒ® ´]f*Eö<ä”ÅqÕL«u¼G:¨Ú"¼JW,ñ®­f<¸{Q6@õ@V9İ¥¥E¸¸­Rd§^fB¥†Tl9ˆÄj¶o0‡[›!æX pÀ¶‡]GêïŠfEgPFéÉ˜Lx5››ˆ8¼Gõ#9[w†jDã¨v#h÷#nÜ½Ë±†á/)P/ÍÜ4uÅÌ]ö¿·P®•fê#²å
+}c` Š½.=89¹“8ùd…x¬(IVZÚ(ß‚Á°¡óâ`mõ—Äº4’k5âı5şK\n¨1wê­A¸EV  wmÁ›ŠÁ¾Ë³í‘]	"ZOÄ0¿,M@ºG,BAÖÉR?»BÉ5%6®_¬d2fâ´së¨YÖerÏ9.CkP%Xé¯ihyBKŠPX&š±züAÀ;¿ø—.!ƒŸh!JwÌ^šòÎ"êôÚ‹üµMŒvÜ}eM“4náK­*}Ò×!e2ÕpØå¾˜íõ@2½¸)`¯$Q¨B4Z2¿Eå 1éÇÔÍL•cgP-Vly‚s<+¨[’ŒJRY¤B
+!ƒD%Cš®a18]–UlJt%1EÌ
+X9 5(Á¬$B¼¾“˜	E¸V3
+²xh– É)e•‹¼ÄÎŒkŞJLS×_xæR„oü'?fWšY¸Víe?Gı…kG‡~#}³RáóY,R®¯ÃQ–×EhUš|MğµiÄµĞåñÖåM]^¨­/oâ&ÆZy”·Ê¥~»dÆå€¦Ìã˜7]oøÅfÃÎbpÀ¬^­3ù–´­Z9‚“vçŞ$"/nâfU)ÜR QÊV6n6%XÙÿ #aqåÌ«Õò[^±bş¡Ë6Ë*Âìê+Ì»§0õRÄìÈªâ-\JGzo%F =edekÚèstD±Ó¦’…-f;a\ÄÏhTÃÍAh·B˜aÕ^`Å+pÌcxb÷æ!©q5ÙyŸÔã Ïâ:µlÕ«òFäò$	&=î
+i
+Õ£Åà	ŠÍ,#e•^#ƒÊrÂX=TJÛ¿Sˆ¶[o†Y—d–×pÅ0 máğA3`%İüñõ–` ò<•-‘[İBÄÉtœ¯S!DXÃêãÄ.•²Vå&NÀrÙzñ³_ø°ÉÖbéLÚ•AÛÕ·
+ÌXb™l,'Q{F9(¯íÏfŒzÌ0Å?XÑ³†eõZ3-,‹ qnë>ñ¨6„Ì²Ø€p#^"€bz§ï¡‘ˆ´Á›şˆb+İ¸€ƒí3™)Ù„$Ö£ü†x+PÍÂHfiE	œ0@„›) h5m‰”½(q¡0etGMÍ88™¬ÓâgB¤2ìM°f¸IjS´6‚£Ò¯¸.¥l‚–ˆPÇK‘©²àÆ°,mnÚ\x:ï˜­¥¤5º¦a‘W±¿0¯\¥n•dŠpÎ&0”=aÔîÀûJÙì>7ŒVC†”ÂÁcnX”jU•ì!vTÊ"
+,ä¸Š!`°ï– -Fèâ$*ÍX ¯/>&†.îïÚ6¾±èY(0»¶4wí;AÁÊ^C™´°y;¬êXªÏH
+<ı0‡`_´®ùu4G](ÿ ‘‘…´Ÿ|Zü§´Í[oÚ3pè„Æİ™:„iæJ-c
+ö¼ŒMu"¯Ä
+ .¼F(Ó‡0Šé0\ÂpšØ`	‹®&;ê2*Ë
+T2§)¶¾±êR_ºÔÍÌp£˜`ÈÁØœ–Ş ÉiŞ¥²¥UÜá)ÄVTJjgBzEÙbœnbwN’Q„Z©¬·n` \7i¸›-àh…xğ(¨u1êpA+ËÊ,€$µ#,¢ÑšÁ/”AÎbÃÀÃw.[mcº5ÉœK€–­Ñcvø[¯1nGÂ›‡1šÎÓìM¶ÑÔ¡[{µÜkøyFèˆáÁ‹s­KPKG4ÀC”ªÍû S"Á”Ñnç0€N(­{ÅõÁ¼e‘Šò¾‹²(Ø--¡Ü=(•t;ƒ*ÓÈ•d³|b×1	K…İf\JS–‘‘Ä&ıJ=°›|OJ…-›O¤èŒğá%Ş}‰spn»ê@ B¢åæ(V5E‘Æueª%Øn]ƒ…EBG]/(,:³…‡ã²pXù•î!­ï-Hº[{>í…NÚü1 Hu—Ú]½‡ÂÂ(^^Óá…Ñ
+*ç:G,â•-À-´1IÄ%K2U™–ü0‡ k3
+8Ñµãhá…³jÅÃ‚­5
+ŒÂXÑ•–%KÏ±qGwùŒ¥O¼UbÆ[‚‚,¬ª‹jÌwf×šŠ±œ‚âÙZïRI^O¤˜*Ò°À ¬ pJ½Â€^Ş}âDàÉ-ocˆùè‚ó´ƒAjzÄÇ)áu
+¥— ñ ç.I-^Jˆ_ªËÒÁ‡Ãl+Ë˜yB¶‰­aäÅ"!µ•é	{Ymr‹ RZfTœ$¬)u@HÒ3ƒD†
+)³H¾\ÁÌK©ôË†	´sµ©‹,`â™‹­‚·uÙósS¤RŠ"3`4TU—.‹·F¢*MÊ Z%U^™XñÉE7POQPLÏ@a»¥q’ìàvJ ÁÏ˜¦Ï¤(çˆº³RŠŠôÔÀ"o¤¹CÉİÇv³şSRˆÎan1Ef`¨•wˆ ¬d¡¸›âagÖgXUrDVÓÔıb<êùD65r‚‘J~R£ƒdÜû³‘;¸¨Vƒ2¨†/rb=d@ÌtJA‘&fE*. Î¯CbV¹>„íöŠ·Ÿ"r,±ğ¾ÊÚ¥ÉÚñiP‘v
+Gq¬3n¸Äid~°yŠ¬/”†(£ëPŒPÔ×İø™œøèV˜Ã¡O¤¯7TÊ,x0fY|‚™|¡«d,¢èf(é¤FŒ6l¨Öì¿´n(3„¢8"öE‰«&33B)
+˜FiúÈ…fë~Òä÷Â^†Y]1€ĞurşŒ9C81]ÁL^n˜ªå‡Qµ,­BlO„;åˆ¤×¦XâîPLÓ,^ç“¶¡ëœ"H	l 6P]CBX¤k)ˆ(¿œÖÇ¤3®(Ë¼TeİV°HFˆ†46ŒÅ@¢,¤S°ä*·r¯Ø8”Øş"*ğa£Ùi…°>±4c[ÌmÚ.%‡³ˆŠ êâÌÂé…TƒL×%q1¡"ø§ë+š CRW Š!8a1ˆÈ/ëp
+#,·©ÑJ§ÄTÑ„$.¶ò}£µ¦ÕS$XaKÔËK-­ÄÖV*²¥§EæCXx
+H‡F›"2G“nØŒÁşôG˜]™ö–WÈ¦`.1\&x…ÊŠ¤~DÀÊÈ½ÅbÒÊ6õœFêUgr‡ÿ p³d„#m¢ğPº+Ú(`“ÖF°X£d‹ˆ›xŠŒ–ª1V.	Â.Ú¤Zn[2=C4¶°òÃC::ŒAók$XÁ˜õ¸z*aRO»VîÀ<+J£UzEÂ6h>ñ]EwA8…ï"â4ƒUˆ±Ÿ¤ k ÑoO1!HĞ1ÖÆ‚ÀWÈ•ª'ÀAªS2Á ¶‹SU8]G¾aÊ—‘ÕDïzÓ˜”%†
+ÆF\ú–9)ŒÊ•Ç¤:´í¼«–l_´¢=J1÷† yµCÚ2Sh‘şB-K¡9–KØ}¶Š+½
+«šP'Q$‰ I6»Ø¥EÛ³¬ÃÀFIÌ]XÄfûâdàã%Ëk] £â4Ì-.%b£±-
+˜Z[,ñ_ùÌ*€OX[OÌc¯¬pC4€Æ„0·ëqL2ÖÊŠ.‹ŸD¦ikSmKQuÁE[yúKÄöy,&ÇbÆ•é…ÃÁ*%ÙL8¢ä¶¥.kŒdvO›ıNs WÌ úÀKaxZ¥¯"•{„ƒĞÊáx†.nBP+E"W~1B½[ZEql³bû‚Ø[@ì<ËZá)È­D¸,ÅfZ	ífÑ”§û/4²%2BÓÌXeî•&t˜Wk#ŒGÔ© ÷éî¦š³ô…¿8–çS&Eÿ &¬]AyLH\¦m–UB xRF´”\İ€ihôRÓ–+ê4Â>¨oAdˆ‘M¥ÄTÔÂV (U)úÆİ³E…Ì9Kk¸Ş°BeW¨ˆŸ"	|Ì
+@é„(¿Y—0¯şº7¼¯­Âæ|CaÉu#äb*f\Â… ğ†ì¯.! À.j¢ÌàJÖêû{KH†Ô&½*2«%QîA"‚Û;ûK‹îÏò¸˜·á
+7ŞØ{Exå[ãï)LË¹U!£Úo`Ùgã|òqˆ°ÔP¢¸"0 mƒ3•&²#8Ÿp•Ÿ2€)šÅªÉ†XiÉDª!ÃÊµN"2Q1Ü DPYb…GG¤ _¤¶:u«…ÂŒc,1fV/Ù#Ø®bSìv$–[ÚÚ‹É*Ä«6WæôE´f«ğ€oÛ›½Ikx%`Y¢Ş¢g5Và(nP-€ã
+ÌÂài-Wnb-ìÁì\j*ÖYA
+­‹Šg8V+
+¥ßtkd§17}±İ•ÿ åçÒ?aœ×õÂ ”KËµ£˜Ğ¢eÅææ5is	 Ü5PÃrÅª Òé¤æ ®ÒÍAo¼8\·€HdÆaqûKğª†í¯50Şşbü6ûJò­BŒê¨É›xU»õ1jÊ<*–Ìö‰‚Y®oöÄ9´Åiá¨ª†èkÚ8|p1pˆ&`mñvE1W1sPº¯D|ïµi™™k;“ ™lİŞ3¢ÎÒ‡Ì¨,d¾H¢ãh¦0\“F)}¢¼\ËŸ‰kF¿ä¬]ê—Ÿh™‹Áÿ mYr1ª¦ÅøelyÍ8•Ğ6ÓâRü²…˜Ğ5‡ï.9UB"E£r,l,J°84’Ù:0–0µ,‘:Ks(b©jgoh]©Zëh54²2‚dÆ"Ê\@QwoRxxŠÓæ,E¡l3‚†W>…›ITéBUmŸxûg”Ï´ynÙ·Ò »0	H¡[që?,@&–Ğ5w’ axlÔb`m@{İÙa] UG´¹Ñæ×éˆ,¿«PZ«k&à;ËÂ*«Op°ÎßÒĞ¥PŠa‡YÌáƒ‚pÃpƒ-®_Ä€¶Áñµ:2òiZ•xTÀ\ïÂcÒduxˆ,ƒ².Àáâ	*\áĞ¸‡/pIÀT,¯b>±¤Ó|?h¦·'¾–uŞHUƒ.Õ^"‚+]é4Ö”z`,ÏH7E#ÔŸS‚jCD½Ñ,¸ÁÊdñ¬¡—Â7A‘yÔµxä³çFTšŠI`j^iC•^ıÉ˜–«sŞã|w-™úÃà §™k{T%J‡‹£î˜2·`ºV8kÑ‹ml0Ù›û› A|Î`‚Yû…˜&‰gÁhËŠ£5ÄVÀc1/h"›5«»R¦ÅÂA–FÚr©Ër}¹»Ü¬Ëº\^QXl£›LËA²Ï—í	ŠÊ1ÑtÕö—ÄAÊf[å3dÄ¨ëÃæg=±XHDÅ©ŸiD’aS;
+B”ÓYÒU¯˜¥€!!¹_)Ä¼VKå­Ë|PÂDŠ‰V*æpw°)"Sbâ©qPCŒ
+ëPéjÑ[úÎ¾òê €§
+Ëën./‚¹½##t…š—fö:?2²­IÕõ…½’²|ÃÄ*ªtJÅÎî¾ñyGˆÚĞx¦¦Ì­l)~òÜ¥ÆÈUfTKå™¡Ô¿Éˆ÷•;¨¹¤Yˆ #Ä²xJ 	a¤z€/¼È5
+äHÙø)şÊ]ã/æ89¿h0X*–ÿ Ø­YØ€VŞ±>®3œZ…Î>Tµ„é"‹Aï	¶Ó&¥ûCß<Ğ* J)B”mP“˜j“š8ŠêÍ¥ãw|1´Şˆ´p(ªJoprîÂƒP­kpsµh¦HZóJ %ÇÕoˆ-½%1>A==˜ ·ÑDW@8}À]§.Ú"!°iRí Í(lX—‡²¦S`˜ö#ÿ ‘ÃÁ›"¥–„9«³â‹Åz(•ÙÂë?â. £üBø­V½êtØı	è€ş"‰w’¿ò`Q]íIäƒÉ ó'-&_Ü9†[÷!’èß¤±IU)gp´¢.˜s^±mUÓIj£ ’Cjˆcİt!Š¥ø%ÑE_ğFOÖ³ü½šÓí,ÄÓ÷D ë*ñ éÃ"^Ô~%MgkÆIÂ:“Ş·™Æ]
+ßæ6hç¯ÌE”È‰9»¬Ú,9Òk@Ä´ŒqnMNÉ±÷e*qqR`÷qVU„•‰à‚È·+j!DHàLÿ ¯JtÒûM>H@ İÚıcP!ÊoŞêËOˆ{FÙ5Ôiab•UkUæb7‡Ÿ0#r¬o[b†0JYÜ¢w˜¨<8ÕŞãy™.õîˆ€[İxä¡˜ûÏbíûÊ &ÓŞUK­=²®@l'û.ı
+¿† 3N}æ	†D~b0-R±–Í{ÃVæü0+\V‡ëp±'…Ó1‰ÄiËÒàËA‘÷•ÚP>òÔµpó¸Á±.€¯yRì¬•†
+fĞda_1fY»¬ÃÁpH‚\KWÎiô¸&B¹Uù•.U>ñÚºàY~ğ^p²¬ğé!Ë{}åFHá¹0îi´btÍ4H«kcó*ç§†àÁ ¤SºTLšÆ‚]ª(Å]…âÉÕ)ˆ(½¡¸±A1¢!˜fßœlçIìÎÀ…OG"Ç7L’§‚S{ô˜+1@q= M}dh,[‹I<Çë@nDœÄ“PÂâ!€LÔmfå\!P³šÄ6aF†¢«|±ª²i¨
+,]^f¨\f
+ûAĞØ©ËÈé‚/µ3»Œ|@PlX–j:F
+0M×‰©êkBGMf-™òˆ¸õ,ù‡Eˆá•ßj €:¶Qò`ëûik†ú”„NÌÀx©8…¤ÓühÍË=ÄNö,,óÛeÛÇ[Rà*‚Öè‹»Sˆfa”rˆ¤ÍgÑqÆ«1p{LŞjs±1Ü%XBT8°Æ8RóÊœNö€µ&]OÿÙ
+[32m]
+[0m
+[36mSENDING CHUNK,  remaining response length: 35672[0m
+[36m             Sent chunk: 35672,  sentSoFar 35672
+[0m[36m  remaining contentSize: 35672
+[0mStart SEND RESPONSE
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» This event FD belongs to CLIENT, send to CLIENT  â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+[32mFull Response size: [0m0[0m
+[32mFull Response Content:
+[
+[0m[32m]
+[0m
+[36mSENDING CHUNK,  remaining response length: 0[0m
+[36mALL SENT, CLOSE CLIENT[0m
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» Connection closed â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+[35mServerData Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[35mServerData Default constructor[0m
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» New client connection â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+Start READ REQUEST
+    recv: 99
+[35mDONE appendToRequest()
+[0m[36m    returned from ATR(), _parsingDone: 0, isCGI: 0
+[0mStart READ REQUEST
+    recv: 5
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» Start parsing â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+[31mSTORED HEADER: 
+GET /index_just_text_bible.html HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+[32mStart parse path: [/index_just_text_bible.html]
+[32m  No '?', no cgi path needed
+[0m[32mPath with pre-pended root folder [./resources/index_just_text_bible.html]
+[0m[33mSimple GET (there is no FORM or POST method, also the '?' not found)
+[0m[32mStart CheckIfFIleExists(), path [./resources/index_just_text_bible.html] 
+[0m[32mFile/folder ./resources/index_just_text_bible.html exists
+[0m[32mStart checkTypeofFile(), path [./resources/index_just_text_bible.html] [0m[36mis a file
+[0mFound path:      [[34m/index_just_text_bible.html[0m]
+Path:            [[35m./resources/index_just_text_bible.html[0m]
+Path first part: [[35m./resources[0m]
+File/Folder:     [[35m/index_just_text_bible.html[0m]
+File extention:  [[35m.html[0m]
+Body:            [[35m[0m]
+Form Data:    [33m(not present)
+[0m
+[35mFound header ending /r/n, maybe there is body
+[0m[32mstart appendlastchunktobody()
+[0m    Body [[32m]
+[0m[32m    _doneparsing == true
+[0m[32mOK (there is no body)
+[0m[31mcontent type: [text/html]
+[0m[36m    returned from ATR(), _parsingDone: 1, isCGI: 0
+[0mâ»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» Done parsing â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â» Sending response â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»â»
+[33mStart setResponse()
+[0m[32m_responsePath: [[./resources/index_just_text_bible.html]]
+[0m[31mThe path is a file: [./resources/index_just_text_bible.html]
+File to be streamed: ./resources/index_just_text_bible.html
