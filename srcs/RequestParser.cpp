@@ -221,7 +221,7 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, struct kevent event, s
 	tmpHeader.append(_data.getTemp().substr(0, it));
 	_data.setHeader(tmpHeader);
 	_headerDone = true;
-	std::cout << RED "STORED HEADER: \n" << tmpHeader << "\n" RES;
+	std::cout << BLU << "STORED HEADER: \n" << tmpHeader << "\n" << RES;
 	parseHeader(_data.getHeader());
 	//std::cout << RED "server root path: " << getServerData().getRootDirectory() << "\n" RES;
 	parsePath(_data.getHttpPath(), event);	// IF FILE NOT FOUND 404, IT COULD JUST CLOSE THE CONNECTION AND STOP
@@ -291,7 +291,7 @@ int Request::appendLastChunkToBody2(const char *str, size_t len) {
 		if (_data.getClientBytesSoFar() == 0 && _data.getRequestContentLength() == 0) {    // Compare body lenght
 			std::cout << GRE << "OK (there is no body)\n" << RES;
 			_hasBody = false;
-			std::cout << RED "content type: [" << _data.getResponseContentType() << "]\n" RES;
+			std::cout << BLU "content type: [" << _data.getResponseContentType() << "]\n" RES;
 			return (0);
 		}
 		std::cout << GRE << "OK: Body-Length is as expected Content-Length\n" << RES;

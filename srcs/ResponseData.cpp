@@ -140,7 +140,7 @@ void ResponseData::setResponse(struct kevent& event) {
 	}
 	// IF NOT A FOLDER
 	else if (storage->getRequestData().getIsFolder() == false && _isCgi == false) {	// IF TEXTFILE
-        std::cout << RED "The path is a file: [" << _responsePath << "]\n";
+        std::cout << BLU "The path is a file: [" << _responsePath << "]\n" << RES;
 		if (storage->getRequestData().getResponseContentType().compare("text/html") == 0)
 			//_responseBody = streamFile(storage->getServerData().getRootDirectory() + "/" + _responsePath);
 			_responseBody = streamFile(_responsePath);
@@ -255,7 +255,7 @@ std::string ResponseData::setImage(std::string imagePath) {
 	headerBlock.append("accept-ranges: bytes\r\n");
 	std::string contentLen = "Content-Length: ";
 	std::string temp = std::to_string(content.size());
-	std::cout << "from setImage: content-length: " << temp << "\n";
+	std::cout << BLU << "from setImage: content-length: " << temp << RES << "\n";
 	contentLen.append(temp);
 	headerBlock.append(contentLen);
 	headerBlock.append("\r\n\r\n");
@@ -297,7 +297,7 @@ std::string ResponseData::streamFile(std::string file)
 	std::string responseNoFav;
 	std::fstream    infile;
 
-	std::cout << "File to be streamed: " << file << std::endl;
+	std::cout << BLU << "File to be streamed: " << file << RES << std::endl;
 	infile.open(file, std::fstream::in);
 	if (not infile)
         throw ParserException(CONFIG_FILE_ERROR("File to be streamed", MISSING));
@@ -312,7 +312,7 @@ std::string ResponseData::streamFile(std::string file)
 	infile.close();
 
 	//std::cout << "Streamed: " << responseNoFav << std::endl;
-	std::cout << "Streamed: temp turned off by jaka" << std::endl;
+	std::cout << BLU << "Streamed: temp turned off by jaka" <<  RES << std::endl;
 	return (responseNoFav);
 }
 

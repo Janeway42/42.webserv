@@ -1,0 +1,376 @@
+➜  webserv git:(main) ✗ ./webserv
+webserv(43066,0x10a4e5600) malloc: nano zone abandoned due to inability to preallocate reserved vm space.
+standard_complete.conf will be used!
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Config File ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+ConfigFileParser Overloaded constructor
+ServerData Default constructor
+    server_name                 localhost;
+    listens_to                  8080;
+    ip_address                  ;
+    root_directory              resources;
+    index_file                  ;
+        client_max_body_size        2048;
+        error_page                  400.html 401.html 403.html 500.html;
+        port_redirection            80088;
+ServerLocation Overloaded constructor
+    location server_root {
+        root_directory          ./resources/location_random_dir;
+        allow_methods           POST DELETE;
+        index_file              index_test.html;
+        auto_index              on;
+ServerLocation Destructor
+ServerLocation Overloaded constructor
+    location .py {
+        root_directory          cgi;
+        interpreter_path        /usr/bin/python3;
+        script_extension        .py;
+        index_file              cgi_index.html;
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Overloaded constructor
+    location cgi {
+        root_directory          cgi;
+        index_file              cgi_index.html;
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerData Copy constructor
+ServerData Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerData Copy constructor
+Server blocks quantity: 1
+Location block quantity: 3
+IP ADDRESS: localhost
+PORT: 8080
+LEAVING WEBSERV CONSTRUCTOR
+ConfigFileParser Destructor
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+ServerData Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerData Default constructor
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ New client connection ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+STORED HEADER:
+GET /images/index_images.html HTTP/1.1
+Host: localhost:8080
+Upgrade-Insecure-Requests: 1
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Safari/605.1.15
+Accept-Language: en-US,en;q=0.9
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+REQUEST METHOD: GET
+Start parse path: [/images/index_images.html]
+  No '?', no cgi path needed
+Path with pre-pended root folder [./resources/images/index_images.html]
+Simple GET (there is no FORM or POST method, also the '?' not found)
+Start CheckIfFIleExists(), path [./resources/images/index_images.html]
+File/folder ./resources/images/index_images.html exists
+Start checkTypeofFile(), path [./resources/images/index_images.html] is a file
+Found path:      [/images/index_images.html]
+Path:            [./resources/images/index_images.html]
+Path first part: [./resources/images]
+File/Folder:     [/index_images.html]
+File extention:  [.html]
+Body:
+Form Data:    (not present)
+
+Found header ending /r/n, maybe there is body
+print start of body []
+    _doneparsing == true
+OK (there is no body)
+content type: [text/html]
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Sending response ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+Start setResponse()
+_responsePath: [[./resources/images/index_images.html]]
+The path is a file: [./resources/images/index_images.html]
+File to be streamed: ./resources/images/index_images.html
+Streamed: temp turned off by jaka
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT, send to CLIENT  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+SENDING CHUNK,  remaining response length: 1309
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT, send to CLIENT  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+SENDING CHUNK,  remaining response length: 0
+ALL SENT, CLOSE CLIENT
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+ServerData Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerData Default constructor
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ New client connection ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+ServerData Default constructor
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ New client connection ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+STORED HEADER:
+GET /images/thb_109kb.jpg HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+Accept: image/webp,video/*;q=0.8,image/png,image/svg+xml,image/*;q=0.8,*/*;q=0.5
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Safari/605.1.15
+Accept-Language: en-US,en;q=0.9
+Referer: http://localhost:8080/images/index_images.html
+Accept-Encoding: gzip, deflate
+REQUEST METHOD: GET
+Start parse path: [/images/thb_109kb.jpg]
+  No '?', no cgi path needed
+Path with pre-pended root folder [./resources/images/thb_109kb.jpg]
+Simple GET (there is no FORM or POST method, also the '?' not found)
+Start CheckIfFIleExists(), path [./resources/images/thb_109kb.jpg]
+File/folder ./resources/images/thb_109kb.jpg exists
+Start checkTypeofFile(), path [./resources/images/thb_109kb.jpg] is a file
+Found path:      [/images/thb_109kb.jpg]
+Path:            [./resources/images/thb_109kb.jpg]
+Path first part: [./resources/images]
+File/Folder:     [/thb_109kb.jpg]
+File extention:  [.jpg]
+Body:
+Form Data:    (not present)
+
+Found header ending /r/n, maybe there is body
+print start of body []
+    _doneparsing == true
+OK (there is no body)
+content type: [image/jpg]
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Sending response ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+Start setResponse()
+_responsePath: [[./resources/images/thb_109kb.jpg]]
+The path is a file: [./resources/images/thb_109kb.jpg]
+from setImage: content-length: 5410
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+STORED HEADER:
+GET /images/thb_36kb.jpg HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+Accept: image/webp,video/*;q=0.8,image/png,image/svg+xml,image/*;q=0.8,*/*;q=0.5
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Safari/605.1.15
+Accept-Language: en-US,en;q=0.9
+Referer: http://localhost:8080/images/index_images.html
+Accept-Encoding: gzip, deflate
+REQUEST METHOD: GET
+Start parse path: [/images/thb_36kb.jpg]
+  No '?', no cgi path needed
+Path with pre-pended root folder [./resources/images/thb_36kb.jpg]
+Simple GET (there is no FORM or POST method, also the '?' not found)
+Start CheckIfFIleExists(), path [./resources/images/thb_36kb.jpg]
+File/folder ./resources/images/thb_36kb.jpg exists
+Start checkTypeofFile(), path [./resources/images/thb_36kb.jpg] is a file
+Found path:      [/images/thb_36kb.jpg]
+Path:            [./resources/images/thb_36kb.jpg]
+Path first part: [./resources/images]
+File/Folder:     [/thb_36kb.jpg]
+File extention:  [.jpg]
+Body:
+Form Data:    (not present)
+
+Found header ending /r/n, maybe there is body
+print start of body []
+    _doneparsing == true
+OK (there is no body)
+content type: [image/jpg]
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Sending response ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+Start setResponse()
+_responsePath: [[./resources/images/thb_36kb.jpg]]
+The path is a file: [./resources/images/thb_36kb.jpg]
+from setImage: content-length: 3244
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT, send to CLIENT  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+SENDING CHUNK,  remaining response length: 5498
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT, send to CLIENT  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+SENDING CHUNK,  remaining response length: 0
+ALL SENT, CLOSE CLIENT
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+ServerData Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT, send to CLIENT  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+SENDING CHUNK,  remaining response length: 3332
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT, send to CLIENT  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+SENDING CHUNK,  remaining response length: 0
+ALL SENT, CLOSE CLIENT
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+ServerData Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerData Default constructor
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ New client connection ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+STORED HEADER:
+GET /images/thb_5000kb.jpg HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+Accept: image/webp,video/*;q=0.8,image/png,image/svg+xml,image/*;q=0.8,*/*;q=0.5
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Safari/605.1.15
+Accept-Language: en-US,en;q=0.9
+Referer: http://localhost:8080/images/index_images.html
+Accept-Encoding: gzip, deflate
+REQUEST METHOD: GET
+Start parse path: [/images/thb_5000kb.jpg]
+  No '?', no cgi path needed
+Path with pre-pended root folder [./resources/images/thb_5000kb.jpg]
+Simple GET (there is no FORM or POST method, also the '?' not found)
+Start CheckIfFIleExists(), path [./resources/images/thb_5000kb.jpg]
+File/folder ./resources/images/thb_5000kb.jpg exists
+Start checkTypeofFile(), path [./resources/images/thb_5000kb.jpg] is a file
+Found path:      [/images/thb_5000kb.jpg]
+Path:            [./resources/images/thb_5000kb.jpg]
+Path first part: [./resources/images]
+File/Folder:     [/thb_5000kb.jpg]
+File extention:  [.jpg]
+Body:
+Form Data:    (not present)
+
+Found header ending /r/n, maybe there is body
+print start of body []
+    _doneparsing == true
+OK (there is no body)
+content type: [image/jpg]
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Sending response ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+Start setResponse()
+_responsePath: [[./resources/images/thb_5000kb.jpg]]
+The path is a file: [./resources/images/thb_5000kb.jpg]
+from setImage: content-length: 7270
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT, send to CLIENT  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+SENDING CHUNK,  remaining response length: 7358
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT, send to CLIENT  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+SENDING CHUNK,  remaining response length: 0
+ALL SENT, CLOSE CLIENT
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+ServerData Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerData Default constructor
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ New client connection ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+STORED HEADER:
+GET /images/thb_13000kb.jpg HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+Accept: image/webp,video/*;q=0.8,image/png,image/svg+xml,image/*;q=0.8,*/*;q=0.5
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Safari/605.1.15
+Accept-Language: en-US,en;q=0.9
+Referer: http://localhost:8080/images/index_images.html
+Accept-Encoding: gzip, deflate
+REQUEST METHOD: GET
+Start parse path: [/images/thb_13000kb.jpg]
+  No '?', no cgi path needed
+Path with pre-pended root folder [./resources/images/thb_13000kb.jpg]
+Simple GET (there is no FORM or POST method, also the '?' not found)
+Start CheckIfFIleExists(), path [./resources/images/thb_13000kb.jpg]
+File/folder ./resources/images/thb_13000kb.jpg exists
+Start checkTypeofFile(), path [./resources/images/thb_13000kb.jpg] is a file
+Found path:      [/images/thb_13000kb.jpg]
+Path:            [./resources/images/thb_13000kb.jpg]
+Path first part: [./resources/images]
+File/Folder:     [/thb_13000kb.jpg]
+File extention:  [.jpg]
+Body:
+Form Data:    (not present)
+
+Found header ending /r/n, maybe there is body
+print start of body []
+    _doneparsing == true
+OK (there is no body)
+content type: [image/jpg]
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Sending response ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+Start setResponse()
+_responsePath: [[./resources/images/thb_13000kb.jpg]]
+The path is a file: [./resources/images/thb_13000kb.jpg]
+from setImage: content-length: 13688
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT, send to CLIENT  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+SENDING CHUNK,  remaining response length: 13777
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT, send to CLIENT  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+SENDING CHUNK,  remaining response length: 0
+ALL SENT, CLOSE CLIENT
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+ServerData Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerData Default constructor
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ New client connection ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+OEF from ReadRequest, close the reading FD: 8
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+ServerData Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerData Default constructor
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ New client connection ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+OEF from ReadRequest, close the reading FD: 8
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+ServerData Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+=================================================================
+==43066==ERROR: AddressSanitizer: heap-use-after-free on address 0x61900000216c at pc 0x000101d658bf bp 0x7ff7be1f23a0 sp 0x7ff7be1f2398
+READ of size 4 at 0x61900000216c thread T0
+    #0 0x101d658be in Request::getHttpStatus() RequestParser.cpp:370
+    #1 0x101dc5c22 in WebServer::handleTimeout(kevent&) WebServer.cpp:118
+    #2 0x101dc3e1a in WebServer::runServer() WebServer.cpp:70
+    #3 0x101dd857e in main Kqueue_main.cpp:19
+    #4 0x10a46a52d in start (dyld:x86_64+0x552d)
+
+0x61900000216c is located 748 bytes inside of 968-byte region [0x619000001e80,0x619000002248)
+freed by thread T0 here:
+    #0 0x1021fdb02 in wrap__ZdlPv (libclang_rt.asan_osx_dynamic.dylib:x86_64h+0x6eb02)
+    #1 0x101d5ceb9 in Request::~Request() RequestParser.cpp:55
+    #2 0x101dc73c1 in WebServer::closeClient(kevent&) WebServer.cpp:346
+    #3 0x101dc4259 in WebServer::runServer() WebServer.cpp:88
+    #4 0x101dd857e in main Kqueue_main.cpp:19
+    #5 0x10a46a52d in start (dyld:x86_64+0x552d)
+
+previously allocated by thread T0 here:
+    #0 0x1021fd502 in wrap__Znwm (libclang_rt.asan_osx_dynamic.dylib:x86_64h+0x6e502)
+    #1 0x101dc4cfd in WebServer::newClient(kevent, ServerData*) WebServer.cpp:324
+    #2 0x101dc3d65 in WebServer::runServer() WebServer.cpp:68
+    #3 0x101dd857e in main Kqueue_main.cpp:19
+    #4 0x10a46a52d in start (dyld:x86_64+0x552d)
+
+SUMMARY: AddressSanitizer: heap-use-after-free RequestParser.cpp:370 in Request::getHttpStatus()
+Shadow bytes around the buggy address:
+  0x1c32000003d0: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x1c32000003e0: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x1c32000003f0: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x1c3200000400: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x1c3200000410: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+=>0x1c3200000420: fd fd fd fd fd fd fd fd fd fd fd fd fd[fd]fd fd
+  0x1c3200000430: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x1c3200000440: fd fd fd fd fd fd fd fd fd fa fa fa fa fa fa fa
+  0x1c3200000450: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x1c3200000460: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x1c3200000470: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==43066==ABORTING
+[1]    43066 abort      ./webserv
+➜  webserv git:(main) ✗

@@ -1,0 +1,184 @@
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ New client connection ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+STORED HEADER: 
+GET /images/thb_13000kb.jpg HTTP/1.1
+Host: localhost:8080
+Connection: keep-alive
+sec-ch-ua: "Google Chrome";v="111", "Not(A:Brand";v="8", "Chromium";v="111"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36
+sec-ch-ua-platform: "macOS"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: http://localhost:8080/images/index_images.html
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9,pt;q=0.8
+REQUEST METHOD: GET
+Start parse path: [/images/thb_13000kb.jpg]
+  No '?', no cgi path needed
+Path with pre-pended root folder [./resources/images/thb_13000kb.jpg]
+Simple GET (there is no FORM or POST method, also the '?' not found)
+Start CheckIfFIleExists(), path [./resources/images/thb_13000kb.jpg] 
+File/folder ./resources/images/thb_13000kb.jpg exists
+Start checkTypeofFile(), path [./resources/images/thb_13000kb.jpg] is a file
+Found path:      [/images/thb_13000kb.jpg]
+Path:            [./resources/images/thb_13000kb.jpg]
+Path first part: [./resources/images]
+File/Folder:     [/thb_13000kb.jpg]
+File extention:  [.jpg]
+Body:
+Form Data:    (not present)
+
+Found header ending /r/n, maybe there is body
+print start of body []
+    _doneparsing == true
+OK (there is no body)
+content type: [image/jpg]
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Sending response ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+Start setResponse()
+_responsePath: [[./resources/images/thb_13000kb.jpg]]
+The path is a file: [./resources/images/thb_13000kb.jpg]
+from setImage: content-length: 13688
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT, send to CLIENT  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+SENDING CHUNK,  remaining response length: 13777
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT, send to CLIENT  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+SENDING CHUNK,  remaining response length: 0
+ALL SENT, CLOSE CLIENT
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+ServerData Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+
+
+
+
+=========================ServerData Default constructor
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ New client connection ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+OEF from ReadRequest, close the reading FD: 8
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+ServerData Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerData Default constructor
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ New client connection ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+OEF from ReadRequest, close the reading FD: 8
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+ServerData Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerData Default constructor
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ New client connection ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+OEF from ReadRequest, close the reading FD: 8
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+ServerData Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerData Default constructor
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ New client connection ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+OEF from ReadRequest, close the reading FD: 8
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+ServerData Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerData Default constructor
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ New client connection ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+OEF from ReadRequest, close the reading FD: 8
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+ServerData Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerData Default constructor
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ New client connection ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+OEF from ReadRequest, close the reading FD: 8
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+ServerData Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerData Default constructor
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ New client connection ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+OEF from ReadRequest, close the reading FD: 8
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+ServerData Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+=================================================================
+==42477==ERROR: AddressSanitizer: heap-use-after-free on address 0x61900000a36c at pc 0x00010499f8bf bp 0x7ff7bb5b83a0 sp 0x7ff7bb5b8398
+READ of size 4 at 0x61900000a36c thread T0
+    #0 0x10499f8be in Request::getHttpStatus() RequestParser.cpp:370
+    #1 0x1049ffc22 in WebServer::handleTimeout(kevent&) WebServer.cpp:118
+    #2 0x1049fde1a in WebServer::runServer() WebServer.cpp:70
+    #3 0x104a1257e in main Kqueue_main.cpp:19
+    #4 0x10fa8052d in start (dyld:x86_64+0x552d)
+
+0x61900000a36c is located 748 bytes inside of 968-byte region [0x61900000a080,0x61900000a448)
+freed by thread T0 here:
+    #0 0x104e37b02 in wrap__ZdlPv (libclang_rt.asan_osx_dynamic.dylib:x86_64h+0x6eb02)
+    #1 0x104996eb9 in Request::~Request() RequestParser.cpp:55
+    #2 0x104a013c1 in WebServer::closeClient(kevent&) WebServer.cpp:346
+    #3 0x1049fe259 in WebServer::runServer() WebServer.cpp:88
+    #4 0x104a1257e in main Kqueue_main.cpp:19
+    #5 0x10fa8052d in start (dyld:x86_64+0x552d)
+
+previously allocated by thread T0 here:
+    #0 0x104e37502 in wrap__Znwm (libclang_rt.asan_osx_dynamic.dylib:x86_64h+0x6e502)
+    #1 0x1049fecfd in WebServer::newClient(kevent, ServerData*) WebServer.cpp:324
+    #2 0x1049fdd65 in WebServer::runServer() WebServer.cpp:68
+    #3 0x104a1257e in main Kqueue_main.cpp:19
+    #4 0x10fa8052d in start (dyld:x86_64+0x552d)
+
+SUMMARY: AddressSanitizer: heap-use-after-free RequestParser.cpp:370 in Request::getHttpStatus()
+Shadow bytes around the buggy address:
+  0x1c3200001410: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x1c3200001420: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x1c3200001430: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x1c3200001440: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x1c3200001450: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+=>0x1c3200001460: fd fd fd fd fd fd fd fd fd fd fd fd fd[fd]fd fd
+  0x1c3200001470: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x1c3200001480: fd fd fd fd fd fd fd fd fd fa fa fa fa fa fa fa
+  0x1c3200001490: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x1c32000014a0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x1c32000014b0: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==42477==ABORTING
+[1]    42477 abort      ./webserv
+➜  webserv git:(main) ✗ 
+➜  webserv git:(main) ✗ 
+➜  webserv git:(main) ✗ 
+➜  webserv git:(main) ✗ 
+➜  webserv git:(main) ✗ 
+➜  webserv git:(main) ✗ 
+➜  webserv git:(main) ✗ 
+➜  webserv git:(main) ✗ 
+➜  webserv git:(main) ✗ 
+➜  webserv git:(main) ✗ =========================
