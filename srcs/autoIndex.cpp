@@ -25,7 +25,7 @@ std::string removeLastFolderFromPath(std::string path) {
 
 	parentPath = path.substr(0, len);
 
-	std::cout << GRE << "parentPath: [" << parentPath << "]\n" << RES;
+	std::cout << GRN << "parentPath: [" << parentPath << "]\n" << RES;
 	return (parentPath);
 }
 

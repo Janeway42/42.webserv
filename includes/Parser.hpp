@@ -7,13 +7,18 @@
 
 # define RED_BG  "\033[41m"
 # define GRN_BG  "\033[42m"
+# define YEL_BG  "\033[43m"
+# define BLU_BG  "\033[44m"
+# define PUR_BG  "\033[45m"
+# define CYN_BG  "\033[46m"
+
 # define RED     "\033[31m"
-# define GRE     "\033[32m"
-# define GRN     "\x1B[32m"
+# define GRN     "\033[32m"
 # define YEL     "\033[33m"
 # define BLU     "\033[34m"
 # define PUR     "\033[35m"
 # define CYN     "\033[36m"
+
 # define RES     "\033[0m"
 
 // We can find more status here: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status

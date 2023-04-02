@@ -7,7 +7,7 @@
 std::string Parser::keyParser(std::string & lineContent, std::string const & keyToFind) {
     if (not lineContent.empty() || not keyToFind.empty()) {
         if (lineContent.find(keyToFind) != std::string::npos) {
-            std::cout << YEL << lineContent << RES << std::endl;
+            std::cout << GRN << lineContent << RES << std::endl;
             return getOneCleanValueFromKey(lineContent, keyToFind);
         }
     }
@@ -59,6 +59,9 @@ std::string Parser::addCurrentDirPath(std::string const & fileOrDir) const {
 
 std::string Parser::addRootDirectoryPath(std::string const & rootDirectory, std::string const & possiblePath) {
     std::string is_root_dir_or_has_path = possiblePath;
+    if (rootDirectory == "./" + possiblePath) {
+        return is_root_dir_or_has_path;
+    }
     // If there is no / in the possiblePath, then it is not a path. It's either a file or directory name
     if (possiblePath.find('/') == std::string::npos) {
         // Adding the rootDirectory path to the file or directory name

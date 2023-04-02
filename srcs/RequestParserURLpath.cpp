@@ -38,7 +38,7 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 	retFork = fork();
 
 	if (retFork == 0) { // CHILD
-		std::cout << RED "Start CHILD execve()\n" RES;
+		std::cout << YEL "Start CHILD execve()\n" << RES;
 		if (retFork < 0)
 			std::cout << "Error: Fork failed\n";
 	
@@ -264,15 +264,14 @@ void Request::storePathParts_and_FormData(std::string path) {
 // !!! Not storing correctly the path part and file name!
 // If last '/' is found in path, then this is a folder, not file
 void Request::storePath_and_FolderName(std::string path) {
-
 	size_t 	pos1	= 0;
 	size_t	pos2	= 0;
 	size_t 	count	= 0;
 
-	std::cout << CYN "Start storePath_and_FolderName(}" << path << "\n" << RES;
+	std::cout << CYN "Start storePath_and_FolderName(). Path: [" << GRN_BG << path << RES << "]\n" << RES;
 
 	// Check if there is query '?' and store path before it
-	// Probably not needed searching for query here, because the method is POST,  so query not possible
+	// Probably not needed searching for query here, because the method is POST, so query not possible
 	_data.setURLPath(path);// TODO change to accept not full path??
     _data.setFullPath(path);// todo keep?
 	pos1 = path.find_first_of("?");
@@ -288,7 +287,7 @@ void Request::storePath_and_FolderName(std::string path) {
 			pos1 = pos2;
 			pos2 = count;
 		}
-		if ( count == std::string::npos )
+		if (count == std::string::npos)
 			break ;
 		count++;
 	}
@@ -306,9 +305,8 @@ char* ENV[25] = {
 };
 */
 
-
 int Request::checkTypeOfFile() {
-	std::cout << GRN << "Start checkTypeofFile(), path [" << _data.getURLPath() << "] " RES;
+	std::cout << "Start checkTypeofFile(). Path: [" << GRN_BG << _data.getURLPath() << RES << "] " RES;
 
 	std::string path = _data.getURLPath();
 	std::string temp = _data.getURLPath();
@@ -378,7 +376,7 @@ static void printPathParts(std::string str, RequestData reqData) {
 static int checkIfPathExists(const std::string& path, struct kevent event) {
 	
 	(void)event;
-	std::cout << GRN << "Start CheckIfFIleExists(), path [" << path << "] \n" << RES;
+	std::cout << "Start CheckIfFIleExists(), path [" << path << "] \n" << RES;
 
 	
 	std::ifstream file(path.c_str());
@@ -387,7 +385,7 @@ static int checkIfPathExists(const std::string& path, struct kevent event) {
 		std::cout << RED << "Error: File " << path << " not found\n" << RES;
 		return (404);
 	}
-	std::cout << GRN << "File/folder " << path << " exists\n" << RES;
+    std::cout << GRN << "File/folder " << RES << path << GRN << " exists\n" << RES;
 
 
 	// CHECK IF PATH MATCHES THE SERVER ROOT FOLDER
@@ -401,9 +399,9 @@ static int checkIfPathExists(const std::string& path, struct kevent event) {
 	// std::vector<ServerLocation> location_data_vector = storage->getServerData().getLocationBlocks();
 	// size_t i;
 	// for (i = 0; i < location_data_vector.size(); i++) {
-	// 	std::cout << GRE "   ........ location uri: [" << location_data_vector[i].getLocationUriName()) << "]\n";
-	// 	std::cout << GRE "   ... location root dir: [" << location_data_vector[i].getRootDirectory() << "]\n";
-	// 	std::cout << GRE "   ....... _responsePath: [" << location_data_vector[i].getRootDirectory() << "]\n";
+	// 	std::cout << GRN "   ........ location uri: [" << location_data_vector[i].getLocationUriName()) << "]\n";
+	// 	std::cout << GRN "   ... location root dir: [" << location_data_vector[i].getRootDirectory() << "]\n";
+	// 	std::cout << GRN "   ....... _responsePath: [" << location_data_vector[i].getRootDirectory() << "]\n";
 	// 	if (location_data_vector[i].getRootDirectory() == path) {// TODO here it should be getLocationUriName() ?? talk to joyce
 	// 		path = location_data_vector[i].getIndexFile();
 	// 		std::cout << BLU "   ....... FinalPath: [" << path << "]\n";
@@ -417,7 +415,6 @@ static int checkIfPathExists(const std::string& path, struct kevent event) {
 	return 0;
 }
 
-
 /*
 	For Joyce: I think there is no separate getter, just to get the path to the cgi location,
 	without having to loop through all locations.
@@ -425,66 +422,124 @@ static int checkIfPathExists(const std::string& path, struct kevent event) {
 	in line ***** a)
 */
 
-// int Request::parsePath(std::string str) {
-int Request::parsePath(std::string str, struct kevent event) {
-
-	std::cout << GRN "Start parse path: [" << str << "]\n";	// sleep(1);
-//	std::string path			= removeDuplicateSlash(str);	// here error: read buffer overflow
-	std::string path			= str;
+// int Request::parsePath(std::string originalUrlPath) {
+int Request::parsePath(std::string originalUrlPath, struct kevent event) {
+//	std::string path			= removeDuplicateSlash(originalUrlPath);	// here error: read buffer overflow
+	std::string urlPath			= originalUrlPath;
 	size_t		ret				= 0;
 //	std::string pathLastWord	= "";
 
-// TODO CHECK IF path == the location block paths (getLocationUriName())
-	if (path == "")
+	if (originalUrlPath.empty())
 		return (-1);
-	if (path[0] == '/' && path != "/" && path.find("?") == std::string::npos && _data.getRequestMethod() != "POST") {		// no CGI path needed
-		std::cout << GRN << "  No '?', no cgi path needed\n" RES;
-		path = getServerData().getRootDirectory() + path;// TODO 	SHOULD BE PRE PENDED WITH THE ROOT DIRECTORY OF THE LOCATION, NOT THE PATH FROM THE REQUEST
-	}
-	if ((path[0] == '/' && path != "/" && path.find("?") != std::string::npos)	 	// yes, CGI path needed
-		|| _data.getRequestMethod() == "POST"   ) {
-		std::cout << GRN << "  YES '?', The cgi path is needed\n" RES;
-		// path = getServerData().getRootDirectory() + "/cgi/" + path;		//   ***** a) // TODO 	SHOULD BE PRE PENDED WITH THE ROOT DIRECTORY OF THE LOCATION, NOT THE PATH FROM THE REQUEST
-		path = getServerData().getRootDirectory()    + path;		//   ***** a) // TODO 	SHOULD BE PRE PENDED WITH THE ROOT DIRECTORY OF THE LOCATION, NOT THE PATH FROM THE REQUEST
+//    if (originalUrlPath[0] == '/' && originalUrlPath == "/")
+//        urlPath = getServerData().getRootDirectory();
+//    if (originalUrlPath[0] != '/') {
+//        if (originalUrlPath == "./") {
+//            urlPath = getServerData().getRootDirectory();// TODO 	SHOULD BE PRE PENDED WITH THE ROOT DIRECTORY OF THE LOCATION, NOT THE PATH FROM THE REQUEST
+//            std::cout << "Path is the root '/'    [" << GRN_BG << urlPath << RES << "]\n";
+//        }
+//    }
+
+    std::cout << "originalUrlPath:               [" << GRN_BG << urlPath << RES << "]" << std::endl;
+    std::cout << "server block root directory:   [" << GRN_BG << getServerData().getRootDirectory() << RES << "]" << std::endl;
+
+    std::cout << std::endl << GRN << "Starting parsePath() and searching for the correct location block on the config file:" << RES << std::endl;
+
+    std::string serverBlockDir = getServerData().getRootDirectory();
+    std::vector<ServerLocation>::const_iterator location = getServerData().getLocationBlocks().cbegin();
+    for (; location != getServerData().getLocationBlocks().cend(); ++location) {
+        std::string locationBlockUriName = location->getLocationUriName();
+        std::string locationBlockRootDir = location->getRootDirectory();
+
+        std::cout << "locationBlockUriName:            [" << GRN_BG << locationBlockUriName << RES << "]" << std::endl;
+        std::cout << "locationBlockRootDir:            [" << GRN_BG << locationBlockRootDir << RES << "]" << std::endl;
+
+        // When a request comes in, nginx will first try to match the URI to a specific location block.
+        if (originalUrlPath[0] != '/') {
+            // Todo Ex.: ????
+            if (originalUrlPath == "./") {// TODO WHEN IT CAN BE LIKE THIS ./ ???????????????
+                urlPath = serverBlockDir;//
+                std::cout << "Path is the root '/'    [" << GRN_BG << urlPath << RES << "]\n";
+            }
+        } else if (originalUrlPath[0] == '/') {
+            // Ex.: localhost:8080
+            if (originalUrlPath == "/") {
+                if (originalUrlPath == locationBlockUriName) {
+                    urlPath = locationBlockRootDir;
+                } else {
+                    urlPath = serverBlockDir;
+                }
+                break;
+            } else if (originalUrlPath != "/" && originalUrlPath.find("?") == std::string::npos && _data.getRequestMethod() != "POST") {
+                std::cout << BLU << "No '?' found, so no cgi path needed" << RES << std::endl;
+                /* If the url is a file, the match will be done between the directory where the file is against the location uri
+                 * ex: url localhost/cgi/test/cgi_index.html -> the /cgi/test part will be checked against a location uri */
+                if (pathType(serverBlockDir + originalUrlPath) == REG_FILE) {
+                    std::cout << "Path is a file. ";
+
+                    // The if block down below is just for logging
+                    if (not originalUrlPath.substr(0, originalUrlPath.find('/') + 1).empty()) {
+                        std::cout << "Deleting file from it so it can be matched again the location block uri name. Path: ";
+                        std::cout << GRN_BG << originalUrlPath.substr(0, originalUrlPath.find('/') + 1) << RES << std::endl;
+                    }
+
+                    if (originalUrlPath.substr(0, originalUrlPath.find('/') + 1) == locationBlockUriName) {
+                        urlPath = locationBlockRootDir + originalUrlPath;
+                        break;
+                    }
+                } else if (pathType(serverBlockDir + originalUrlPath) == DIRECTORY){
+                    std::cout << YEL << "Path is a directory" << RES << std::endl;
+                    if (originalUrlPath == locationBlockUriName) {
+                        urlPath = locationBlockRootDir;
+                        break;
+                    }
+                }
+            }
+        }
+        std::cout << YEL << "UrlPath did not match the current locationBlockUriName. Checking the next locationBlockUriName" << RES << std::endl << std::endl;
+    }
+
+    /* the URI is "/", nginx will look for a file named "index.html" in the root directory of the server block.
+     * If it finds the file, it will be served to the client as the response to the request.
+     * If it doesn't find the file, nginx will return a "404 Not Found" error to the client.
+     * So, if you have a file named "index.html" in the root directory of your server block and there is no explicit
+     * "location /" block defined in your nginx configuration file, then nginx will serve that file by default when
+     * someone requests the root URL of your site. */
+
+//	if (urlPath[0] == '/' && urlPath != "/" && urlPath.find("?") == std::string::npos && _data.getRequestMethod() != "POST") {
+//		std::cout << YEL << "Path is a file or directory. No '?' found, so no cgi path needed" << RES << std::endl;
+//        urlPath = getServerData().getRootDirectory() + urlPath;
+//	}
+	if ((originalUrlPath[0] == '/' && originalUrlPath != "/" && originalUrlPath.find("?") != std::string::npos) || _data.getRequestMethod() == "POST") {
+		std::cout << GRN << "Path is a script file or directory. '?' was found, so cgi path is needed" << RES << std::endl;
+		// urlPath = getServerData().getRootDirectory() + "/cgi/" + urlPath;		//   ***** a) // TODO 	SHOULD BE PRE PENDED WITH THE ROOT DIRECTORY OF THE LOCATION, NOT THE PATH FROM THE REQUEST
+        urlPath = getServerData().getRootDirectory() + originalUrlPath;		//   ***** a) // TODO 	SHOULD BE PRE PENDED WITH THE ROOT DIRECTORY OF THE LOCATION, NOT THE PATH FROM THE REQUEST
 		getResponseData().setIsCgi(true);
 	}
-	if (path[0] == '/' && path == "/")// todo && ?
-		path = getServerData().getRootDirectory();// TODO 	SHOULD BE PRE PENDED WITH THE ROOT DIRECTORY OF THE LOCATION, NOT THE PATH FROM THE REQUEST
-	
-	if (path[0] != '/')
-		if (path == "./") {
-			path = getServerData().getRootDirectory();// TODO 	SHOULD BE PRE PENDED WITH THE ROOT DIRECTORY OF THE LOCATION, NOT THE PATH FROM THE REQUEST
-			std::cout << GRN << "Path is the root '/'    [" << path << "]\n" RES;
-		}
-	std::cout << GRN << "Path with pre-pended root folder [" << path << "]\n" RES;// TODO 	SHOULD BE PRE PENDED WITH THE ROOT DIRECTORY OF THE LOCATION, NOT THE PATH FROM THE REQUEST
 
-	if (path.back() == '/'  && (path.find("?") == std::string::npos)) {
-		std::cout << GRN << "The path has no GET-Form data. Last char is '/', it must be a folder.\n" << RES;
-		storePath_and_FolderName(path);
+    std::cout << GRN << "Path with pre-pended root folder [" << GRN_BG << urlPath << RES << "]\n\n";
+
+	if (urlPath.back() == '/'  && urlPath.find("?") == std::string::npos) {
+		std::cout << GRN << "The urlPath has no GET-Form data. Last char is '/', it must be a folder.\n" << RES;
+		storePath_and_FolderName(urlPath);
 	}
-
 		// if the last char is not slash /   then look for question mark
-		// else if ((ret = path.find("?")) == std::string::npos ) {
-	else if ((ret = path.find("?")) == std::string::npos && _data.getRequestMethod() != "POST") {
+	else if (urlPath.find("?") == std::string::npos && _data.getRequestMethod() != "POST") {
 		std::cout << YEL << "Simple GET (there is no FORM or POST method, also the '?' not found)\n" << RES;
-		_data.setURLPath(path);// TODO change to accept not full path
-        _data.setFullPath(path);
+		_data.setURLPath(urlPath);// TODO change to accept not full urlPath
+        _data.setFullPath(urlPath);
 		int pos			= 0;
-		pos				= path.find_last_of("/");
-		_data.setPathFirstPart(path.substr(0, pos));
-		_data.setPathLastWord(path.substr(pos, std::string::npos));
-	}
-
-	else if ((ret = path.find("?")) != std::string::npos) {			// Found '?' in the path, maybe also check != "POST"
+		pos				= urlPath.find_last_of("/");
+		_data.setPathFirstPart(urlPath.substr(0, pos));
+		_data.setPathLastWord(urlPath.substr(pos, std::string::npos));
+	} else if (urlPath.find("?") != std::string::npos) {			// Found '?' in the urlPath, maybe also check != "POST"
 		std::cout << GRN << "There is GET Form data, the '?' is found\n" << RES;
-		storePathParts_and_FormData(path);
-	}
-
-	else if (_data.getRequestMethod() == "POST" || _data.getRequestMethod() == "DELETE") {
+		storePathParts_and_FormData(urlPath);
+	} else if (_data.getRequestMethod() == "POST" || _data.getRequestMethod() == "DELETE") {
 		std::cout << GRN << "There is POST Form data\n" << RES;
-		storePath_and_FolderName(path);	// Not sur if this good here ???
+		storePath_and_FolderName(urlPath);	// Not sur if this good here ???
 		
-		// path is not extracted correctly
+		// urlPath is not extracted correctly
 		// _data.setQueryString(getRequestBody());
 		//_data.setQueryString(_data.getBody());
 	}
@@ -496,14 +551,13 @@ int Request::parsePath(std::string str, struct kevent event) {
 		return (NOT_FOUND);
 	}
 
-	
 	//std::cout << GRN "FD _kq: " << _data.getKqFd() << "\n" RES;
 
 	// What in case of GET??
 	checkTypeOfFile();
 	_data.setResponseContentType(_data.getFileExtention());
 
-	printPathParts(str, getRequestData());
+	printPathParts(originalUrlPath, getRequestData());
 	return (0);
 }
 

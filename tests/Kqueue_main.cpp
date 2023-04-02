@@ -11,7 +11,7 @@ int main(int ac, char **av)
     if (ac == 2) {
         configFle = av[1];
     } else {
-        std::cout << GRE << "standard_complete.conf will be used!" << RES << std::endl;
+        std::cout << GRN << "standard_complete.conf will be used!" << RES << std::endl;
         configFle = "standard_complete.conf";
     }
     try {

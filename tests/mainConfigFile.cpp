@@ -25,33 +25,33 @@ int main(int ac, char **av) {
                 std::cout << std::endl << "Starting server block " << std::endl;
 
                 std::string serverName = it_server->getServerName();
-                std::cout << GRE << std::left << std::setw(30) << "\"server_name\": " << serverName << RES << std::endl;
+                std::cout << GRN << std::left << std::setw(30) << "\"server_name\": " << serverName << RES << std::endl;
 
                 std::string listensTo = it_server->getListensTo();
-                std::cout << GRE << std::left << std::setw(30) << "\"listens_to\": " << listensTo << RES << std::endl;
+                std::cout << GRN << std::left << std::setw(30) << "\"listens_to\": " << listensTo << RES << std::endl;
 
                 std::string ipAddress = it_server->getIpAddress();
-                std::cout << GRE << std::left << std::setw(30) << "\"ip_address\": " << ipAddress << RES << std::endl;
+                std::cout << GRN << std::left << std::setw(30) << "\"ip_address\": " << ipAddress << RES << std::endl;
 
                 std::string rootDirectory = it_server->getRootDirectory();
-                std::cout << GRE << std::left << std::setw(30) << "\"root_directory\": " << rootDirectory << RES << std::endl;
+                std::cout << GRN << std::left << std::setw(30) << "\"root_directory\": " << rootDirectory << RES << std::endl;
 
                 std::string indexFile = it_server->getIndexFile();
-                std::cout << GRE << std::left << std::setw(30) << "\"index_file\": " << indexFile << RES << std::endl;
+                std::cout << GRN << std::left << std::setw(30) << "\"index_file\": " << indexFile << RES << std::endl;
 
                 unsigned int clientMaxBodySize = it_server->getClientMaxBodySize();
-                std::cout << GRE << std::left << std::setw(30) << "\"client_max_body_size\": " << clientMaxBodySize << RES << std::endl;
+                std::cout << GRN << std::left << std::setw(30) << "\"client_max_body_size\": " << clientMaxBodySize << RES << std::endl;
 
                 std::vector<std::string> errorPages = it_server->getErrorPages();
-                std::cout << GRE << std::left << std::setw(30) << "\"error_page\": "<< RES;
+                std::cout << GRN << std::left << std::setw(30) << "\"error_page\": "<< RES;
                 std::vector<std::string>::const_iterator it_location_error_pages;
                 for (it_location_error_pages = errorPages.cbegin(); it_location_error_pages != errorPages.cend(); ++it_location_error_pages) {
-                    std::cout << GRE << "" << *it_location_error_pages << " " << RES;
+                    std::cout << GRN << "" << *it_location_error_pages << " " << RES;
                 }
                 std::cout << std::endl;
 
                 unsigned int portRedirection = it_server->getPortRedirection();
-                std::cout << GRE << std::left << std::setw(30) << "\"port_redirection\": " << portRedirection << RES << std::endl;
+                std::cout << GRN << std::left << std::setw(30) << "\"port_redirection\": " << portRedirection << RES << std::endl;
 
 
                 std::vector<ServerLocation>::const_iterator it_location;
@@ -64,19 +64,19 @@ int main(int ac, char **av) {
                         std::cout << "Server block and location block index files can be used for requests that match this location: " << it_location->useServerBlockIndexFile << std::endl;
 
                         std::string locationCgiExtension = it_location->getLocationCgiExtension();
-                        std::cout << GRE << std::left << std::setw(30) << "\"location\": " << locationCgiExtension << RES << std::endl;
+                        std::cout << GRN << std::left << std::setw(30) << "\"location\": " << locationCgiExtension << RES << std::endl;
 
                         std::string cgiLocationRootDirectory = it_location->getRootDirectory();
-                        std::cout << GRE << std::left << std::setw(30) << "\"root_directory\": " << cgiLocationRootDirectory << RES << std::endl;
+                        std::cout << GRN << std::left << std::setw(30) << "\"root_directory\": " << cgiLocationRootDirectory << RES << std::endl;
 
                         std::string interpreterPath = it_location->getInterpreterPath();
-                        std::cout << GRE << std::left << std::setw(30) << "\"interpreter_path\": " << interpreterPath << RES << std::endl;
+                        std::cout << GRN << std::left << std::setw(30) << "\"interpreter_path\": " << interpreterPath << RES << std::endl;
 
                         std::string scriptExtension = it_location->getScriptExtension();
-                        std::cout << GRE << std::left << std::setw(30) << "\"script_extension\": " << scriptExtension << RES << std::endl;
+                        std::cout << GRN << std::left << std::setw(30) << "\"script_extension\": " << scriptExtension << RES << std::endl;
 
                         std::string cgiLocationIndexFile = it_location->getIndexFile();
-                        std::cout << GRE << std::left << std::setw(30) << "\"index_file\": " << cgiLocationIndexFile << RES << std::endl;
+                        std::cout << GRN << std::left << std::setw(30) << "\"index_file\": " << cgiLocationIndexFile << RES << std::endl;
                     } else {
                         /*************************************** location block data **************************************/
                         std::cout << std::endl << "Starting location block " << std::endl;
@@ -84,13 +84,13 @@ int main(int ac, char **av) {
                         std::cout << "Server block and location block index files can be used for requests that match this location: " << it_location->useServerBlockIndexFile << std::endl;
 
                         std::string locationDirectory = it_location->getLocationUriName();
-                        std::cout << GRE << std::left << std::setw(30) << "\"location\": " << locationDirectory << RES << std::endl;
+                        std::cout << GRN << std::left << std::setw(30) << "\"location\": " << locationDirectory << RES << std::endl;
 
                         std::string locationRootDirectory = it_location->getRootDirectory();
-                        std::cout << GRE << std::left << std::setw(30) << "\"root_directory\": " << locationRootDirectory << RES << std::endl;
+                        std::cout << GRN << std::left << std::setw(30) << "\"root_directory\": " << locationRootDirectory << RES << std::endl;
 
                         std::vector<AllowMethods> locationAllowMethods = it_location->getAllowMethods();
-                        std::cout << GRE << std::left << std::setw(30) << "\"allow_methods\": ";
+                        std::cout << GRN << std::left << std::setw(30) << "\"allow_methods\": ";
                         std::vector<AllowMethods>::const_iterator i;
                         for (i = locationAllowMethods.cbegin(); i != locationAllowMethods.cend(); i++) {
                             switch (i.operator*()) {
@@ -111,10 +111,10 @@ int main(int ac, char **av) {
                         std::cout << RES << std::endl;
 
                         std::string locationIndexFile = it_location->getIndexFile();
-                        std::cout << GRE << std::left << std::setw(30) << "\"index_file\": " << locationIndexFile << RES << std::endl;
+                        std::cout << GRN << std::left << std::setw(30) << "\"index_file\": " << locationIndexFile << RES << std::endl;
 
                         bool locationAutoIndex = it_location->getAutoIndex();
-                        std::cout << GRE << std::left << std::setw(30) << "\"auto_index\": " << locationAutoIndex << RES << std::endl;
+                        std::cout << GRN << std::left << std::setw(30) << "\"auto_index\": " << locationAutoIndex << RES << std::endl;
                     }
                 }
             }

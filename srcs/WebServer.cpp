@@ -221,7 +221,7 @@ void WebServer::sendResponse(struct kevent& event)
 	// 																	  Jaka changed the name to:  getPipeCgiIn_1()
 	if ((int)event.ident == (storage->getCgiData()).getPipeCgiIn_1())  // write to CGI - we send the info // the event belong to the pipe fd: _fd_in[1]
 	{
-		std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CGI, write to CGI  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
+		std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CGI ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
 		//buffer = storage->getResponseData().getResponseBody();
 		// Jaka: Set buffer string to the point, from where previous chunk of body was sent
 		//std::cout << "       getBody().length() " << storage->getRequestData().getBody().size() << "\n";
@@ -269,7 +269,7 @@ void WebServer::sendResponse(struct kevent& event)
 	// Keeps deleting the sent chunk from the content string, until it has zero length.
 	else if ((int)event.ident == storage->getFdClient()) // the event belongs to the client fd 
 	{
-		std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT, send to CLIENT  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
+		std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
 
 		std::string content = storage->getResponseData().getFullResponse();
 		//std::cout << GRN << "Full Response size: " RES << content.size() << RES << std::endl;
@@ -332,7 +332,7 @@ void WebServer::newClient(struct kevent event, ServerData * specificServer)
 	EV_SET(&evSet, fd, EVFILT_TIMER, EV_ADD, 0, time, storage); 
 	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 		throw ServerException("failed kevent EV_ADD, EVFILT_TIMER, new client");
-	std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << GRE << "New client connection" << RES << " ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
+	std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << GRN << " New client connection" << RES << " ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
 }
 
 void WebServer::closeClient(struct kevent& event)

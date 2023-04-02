@@ -100,7 +100,8 @@ void ServerLocation::setLocation(std::string const & location) {
     if (not location.empty()) {
         if (isLocationCgi()) {
             if (location[0] == '.') {
-                _location_cgi_extension = location;
+                _location_cgi_extension = location;// todo maybe not needed
+                _location_uri_name = location;
                 return ;
             } else {
                 throw ParserException(CONFIG_FILE_ERROR("location block cgi extension", NOT_SUPPORTED));
@@ -108,7 +109,7 @@ void ServerLocation::setLocation(std::string const & location) {
         } else {
             std::string ::const_iterator it;
             for (it = location.cbegin(); it != location.cend(); it++) {
-                if (*it < 48 || *it > 126) {
+                if (*it < 47 || *it > 126) {
                     throw ParserException(CONFIG_FILE_ERROR("location block value", NOT_SUPPORTED));
                 }
             }
@@ -125,13 +126,14 @@ void ServerLocation::setRootDirectory(std::string const & rootDirectory) {
         std::string root_directory = addRootDirectoryPath(_root_directory, rootDirectory);
         PathType type = pathType(root_directory);
         if (type == DIRECTORY) {
-            _root_directory = addCurrentDirPath(root_directory) + root_directory + '/' + _location_uri_name;
+            _root_directory = addCurrentDirPath(root_directory) + root_directory + (_location_uri_name != "/" ? _location_uri_name : "");
         } else if (type == PATH_TYPE_ERROR) {
             throw ParserException(CONFIG_FILE_ERROR("root_directory", MISSING));
         } else {
             throw ParserException(CONFIG_FILE_ERROR("root_directory", NOT_SUPPORTED));
         }
     } else {
+        _root_directory = _root_directory + (_location_uri_name != "/" ? _location_uri_name : "");
         /* cgi -> mandatory */
         if (isLocationCgi()) {
             throw ParserException(CONFIG_FILE_ERROR("root_directory", MANDATORY));

@@ -163,8 +163,6 @@ int Request::storeWordsFromFirstLine(std::string firstLine) {
 	return (0);
 }
 
-
-
 int Request::storeWordsFromOtherLine(std::string otherLine) {
 	//std::cout << GRN " .... .... header line: [" << otherLine << "]\n" RES;
 	std::vector<std::string> arr;
@@ -236,14 +234,14 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, struct kevent event, s
 
 
 void    Request::appendToRequest(const char str[], size_t len, struct kevent event) {
-	//std::cout << PUR << "Start appendToRequest(): _hasBody "<< _hasBody << " _doneParsing " << _doneParsing << " \n" << RES;
+	std::cout << PUR << "Start appendToRequest(): _hasBody: " << _hasBody << " | _doneParsing: " << _doneParsing << " \n" << RES;
 
 	std::string 			chunk = std::string(str);
 	std::string				strToFind = "\r\n\r\n";
 	std::string::size_type	it, it2;
 	std::string				tmpHeader;
 
-	//std::cout << GRE << "Request Chunk: " << RES << str << std::endl;
+	//std::cout << GRN << "Request Chunk: " << RES << str << std::endl;
 	if (_headerDone == false) {
 		//std::cout << PUR << "     _headerDone == FALSE\n" << RES;
 		_data.setTemp(_data.getTemp() + chunk);
@@ -271,9 +269,9 @@ void    Request::appendToRequest(const char str[], size_t len, struct kevent eve
 // Last chunk means, last chunk of header section, so first chunk of body
 int Request::appendLastChunkToBody2(const char *str, size_t len) {
 	//std::cout << GRN << "start appendlastchunktobody()\n" << RES;
-	//std::cout << RED "FIRST BODY CHUNK, CLIENT BYTES SO FAR: " << _data.getClientBytesSoFar() << "\n" RES;
+	//std::cout << YEL "FIRST BODY CHUNK, CLIENT BYTES SO FAR: " << _data.getClientBytesSoFar() << "\n" << RES;
 	_data.setClientBytesSoFar(len);
-	//std::cout << RED "FIRST BODY CHUNK, CLIENT BYTES SO FAR: " << _data.getClientBytesSoFar() << "\n" RES;
+	//std::cout << YEL "FIRST BODY CHUNK, CLIENT BYTES SO FAR: " << _data.getClientBytesSoFar() << "\n" << RES;
 
 	std::vector<uint8_t> tempVec(str, str + len); // convert adn assign str to vector
 	_data.setBody(tempVec);
@@ -289,12 +287,12 @@ int Request::appendLastChunkToBody2(const char *str, size_t len) {
 		std::cout << GRN << "    _doneparsing == true\n" << RES;
 		_doneParsing = true;
 		if (_data.getClientBytesSoFar() == 0 && _data.getRequestContentLength() == 0) {    // Compare body lenght
-			std::cout << GRE << "OK (there is no body)\n" << RES;
+			std::cout << GRN << "OK (there is no body)\n" << RES;
 			_hasBody = false;
 			std::cout << BLU "content type: [" << _data.getResponseContentType() << "]\n" RES;
 			return (0);
 		}
-		std::cout << GRE << "OK: Body-Length is as expected Content-Length\n" << RES;
+		std::cout << GRN << "OK: Body-Length is as expected Content-Length\n" << RES;
 		_doneParsing = true; // otherwise it went to appendToBody, and appended more stuff, so the body lenght became larger then expected
 		//std::cout << YEL "Body:\n" RES;
 		//std::copy(_data.getBody().begin(), _data.getBody().end(), std::ostream_iterator<uint8_t>(std::cout));  // just to print
@@ -310,7 +308,7 @@ int Request::appendToBody(const char* str, size_t len) {
 	//std::cout << RED << "    body before append: [" << _data.getBody() << "\n" << RES;
 	std::vector<uint8_t> newChunk(str, str + len); // convert adn assign str to vector
 	_data.setClientBytesSoFar(len);
-	std::cout << RED "CLIENT BYTES SO FAR: " << _data.getClientBytesSoFar() << "\n" RES;
+	std::cout << YEL "CLIENT BYTES SO FAR: " << _data.getClientBytesSoFar() << "\n" << RES;
 
 	std::vector<uint8_t> & tmp = _data.getBody();
 	tmp.reserve(_data.getRequestContentLength() + len);
@@ -328,7 +326,7 @@ int Request::appendToBody(const char* str, size_t len) {
 	}
 //	else if (_data.getBody().size() == _data.getRequestContentLength()) {
 	else if (_data.getClientBytesSoFar() == _data.getRequestContentLength()) {
-		std::cout << GRE "OK: Done parsing.\n" RES;
+		std::cout << GRN << "OK: Done parsing.\n" RES;
 		_doneParsing = true;
 		//std::cout << "HEADER: [" BLU << _header << RES "]\n";	// sleep(1);
 		//std::cout << "BODY:   [" BLU << _data.getBody()   << RES "]\n\n";	// sleep(1);

@@ -32,7 +32,7 @@ ResponseData::~ResponseData(void) {}
 static int checkIfPathExists(const std::string& path, struct kevent event) {
 	
 	(void)event;
-	std::cout << GRN << "Start CheckIfFIleExists(), path [" << path << "] \n" << RES;
+	std::cout << "Start CheckIfFIleExists(), path [" << path << "] \n" << RES;
 
 	
 	std::ifstream file(path.c_str());
@@ -41,7 +41,7 @@ static int checkIfPathExists(const std::string& path, struct kevent event) {
 		std::cout << RED << "Error: File " << path << " not found\n" << RES;
 		return(NOT_FOUND);
 	}
-	std::cout << GRN << "File/folder " << path << " exists\n" << RES;
+	std::cout << GRN << "File/folder " << RES << path << GRN << " exists\n" << RES;
 
 	return 0;
 }
@@ -54,7 +54,7 @@ static int checkIfPathExists(const std::string& path, struct kevent event) {
 // If it is an image, then setImage() is called, where both header and body are created, and
 // then setResponse() returns this full content, ready to be sent.
 void ResponseData::setResponse(struct kevent& event) {
-	std::cout << YEL "Start setResponse()\n" << RES;
+	std::cout << BLU <<  "Start setResponse()\n" << RES;
 	
 	Request *storage = (Request *)event.udata;	
 	_responseHeader += setResponseStatus(event);
@@ -100,10 +100,10 @@ void ResponseData::setResponse(struct kevent& event) {
 				std::vector<ServerLocation> location_data_vector = storage->getServerData().getLocationBlocks();
 				size_t i;
 				for (i = 0; i < location_data_vector.size(); i++) {
-                    std::cout << GRE "   .... incoming URLpath: [" << storage->getRequestData().getURLPath() << "]\n";
-                    std::cout << GRE "   ... location URI name: [" << location_data_vector[i].getLocationUriName() << "]\n";
-                    std::cout << GRE "   ... location root dir: [" << location_data_vector[i].getRootDirectory() << "]\n";
-                    std::cout << GRE "   ....... _responsePath: [" << _responsePath << "]\n";
+                    std::cout << GRN "   .... incoming URLpath: [" << storage->getRequestData().getURLPath() << "]\n";
+                    std::cout << GRN "   ... location URI name: [" << location_data_vector[i].getLocationUriName() << "]\n";
+                    std::cout << GRN "   ... location root dir: [" << location_data_vector[i].getRootDirectory() << "]\n";
+                    std::cout << GRN "   ....... _responsePath: [" << _responsePath << "]\n";
 					// if (location_data_vector[i].getRootDirectory() == _responsePath) {// TODO here it should be getLocationUriName()
 					if (location_data_vector[i].getLocationUriName() == storage->getRequestData().getURLPath()) {// TODO here it should be getLocationUriName()
 						_responsePath = location_data_vector[i].getRootDirectory() + "/" + location_data_vector[i].getIndexFile();
@@ -140,7 +140,7 @@ void ResponseData::setResponse(struct kevent& event) {
 	}
 	// IF NOT A FOLDER
 	else if (storage->getRequestData().getIsFolder() == false && _isCgi == false) {	// IF TEXTFILE
-        std::cout << BLU "The path is a file: [" << _responsePath << "]\n" << RES;
+        std::cout << GRN << "The path is a file: [" << GRN_BG << _responsePath << RES << "]\n";
 		if (storage->getRequestData().getResponseContentType().compare("text/html") == 0)
 			//_responseBody = streamFile(storage->getServerData().getRootDirectory() + "/" + _responsePath);
 			_responseBody = streamFile(_responsePath);
@@ -215,7 +215,7 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
 					// "Content-Type: " + storage->getRequestData().getResponseContentType() + "\n";	// jaka
 			//  _responsePath = storage->getRequestData().getHttpPath();							// jaka: this is old, should be getURLPath()
 			_responsePath = storage->getRequestData().getURLPath();
-			std::cout << GRN "_responsePath: [[" << _responsePath << "]]\n" RES;
+			std::cout << "_responsePath: [[" << GRN_BG << _responsePath << RES << "]]\n";
 			break;
 	}
 	return (status);
