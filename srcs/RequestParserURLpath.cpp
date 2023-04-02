@@ -422,23 +422,13 @@ static int checkIfPathExists(const std::string& path, struct kevent event) {
 	in line ***** a)
 */
 
-// int Request::parsePath(std::string originalUrlPath) {
 int Request::parsePath(std::string originalUrlPath, struct kevent event) {
 //	std::string path			= removeDuplicateSlash(originalUrlPath);	// here error: read buffer overflow
 	std::string urlPath			= originalUrlPath;
 	size_t		ret				= 0;
-//	std::string pathLastWord	= "";
 
 	if (originalUrlPath.empty())
 		return (-1);
-//    if (originalUrlPath[0] == '/' && originalUrlPath == "/")
-//        urlPath = getServerData().getRootDirectory();
-//    if (originalUrlPath[0] != '/') {
-//        if (originalUrlPath == "./") {
-//            urlPath = getServerData().getRootDirectory();// TODO 	SHOULD BE PRE PENDED WITH THE ROOT DIRECTORY OF THE LOCATION, NOT THE PATH FROM THE REQUEST
-//            std::cout << "Path is the root '/'    [" << GRN_BG << urlPath << RES << "]\n";
-//        }
-//    }
 
     std::cout << "originalUrlPath:               [" << GRN_BG << urlPath << RES << "]" << std::endl;
     std::cout << "server block root directory:   [" << GRN_BG << getServerData().getRootDirectory() << RES << "]" << std::endl;
