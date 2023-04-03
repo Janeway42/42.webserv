@@ -134,9 +134,6 @@ void ConfigFileParser::parseFileServerBlock(std::ifstream & configFile) {
 
 void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile, ServerData & _server_data, ServerLocation & _server_location) {
     std::string lineContent;
-    bool rootDirectoryAlreadyChecked = false;
-    bool scriptExtensionAlreadyChecked = false;
-    bool interpreterPathAlreadyChecked = false;
 
     _location_block_counter++;
     while (configFile) {
@@ -152,7 +149,6 @@ void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile, Server
         /** Handling the location or cgi block key values */
         if (lineContent.find("root_directory") != std::string::npos) {
             _server_location.setRootDirectory(keyParser(lineContent, "root_directory"));
-            rootDirectoryAlreadyChecked = true;
             continue;
         }
         if (lineContent.find("allow_methods") != std::string::npos) {
@@ -180,12 +176,10 @@ void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile, Server
         }
         if (lineContent.find("interpreter_path") != std::string::npos) {
             _server_location.setInterpreterPath(keyParser(lineContent, "interpreter_path"));
-            interpreterPathAlreadyChecked = true;
             continue;
         }
         if (lineContent.find("script_extension") != std::string::npos) {
             _server_location.setScriptExtension(keyParser(lineContent, "script_extension"));
-            scriptExtensionAlreadyChecked = true;
             continue;
         }
     }

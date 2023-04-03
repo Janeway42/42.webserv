@@ -1,4 +1,4 @@
-#include "../includes/RequestData.hpp"
+#include "RequestData.hpp"
 
 /** Default constructor */
 RequestData::RequestData() {

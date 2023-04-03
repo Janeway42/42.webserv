@@ -2,6 +2,7 @@
 #include <sstream>
 #include <unistd.h>
 #include <string.h>
+
 #include "Parser.hpp"
 
 std::string appendHTMLhead(std::string path, std::string & htmlStr) {

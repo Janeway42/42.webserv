@@ -126,7 +126,11 @@ void ServerLocation::setRootDirectory(std::string const & rootDirectory) {
         std::string root_directory = addRootDirectoryPath(_root_directory, rootDirectory);
         PathType type = pathType(root_directory);
         if (type == DIRECTORY) {
-            _root_directory = addCurrentDirPath(root_directory) + root_directory + (_location_uri_name != "/" ? _location_uri_name : "");
+            if (isLocationCgi()) {
+                _root_directory = addCurrentDirPath(root_directory) + root_directory;
+            } else {
+                _root_directory = addCurrentDirPath(root_directory) + root_directory + (_location_uri_name != "/" ? _location_uri_name : "");
+            }
         } else if (type == PATH_TYPE_ERROR) {
             throw ParserException(CONFIG_FILE_ERROR("root_directory", MISSING));
         } else {

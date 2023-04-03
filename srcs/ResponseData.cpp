@@ -1,6 +1,6 @@
-#include "../includes/RequestParser.hpp"
-#include "../includes/ResponseData.hpp"
-#include "../includes/RequestData.hpp"
+#include "RequestParser.hpp"
+#include "ResponseData.hpp"
+#include "RequestData.hpp"
 
 
 #include <string.h> // jaka, temp, can be removed
@@ -88,7 +88,7 @@ void ResponseData::setResponse(struct kevent& event) {
 				std::cout << YEL "                The Path is the root: [" << storage->getRequestData().getURLPath() << "]\n" RES;
 				_responsePath = storage->getServerData().getRootDirectory() + "/" + storage->getServerData().getIndexFile();
 				_responsePath = storage->getServerData().getRootDirectory() + "/" + storage->getServerData().getIndexFile();
-				std::cout << YEL "                       _responsePath: [" << _responsePath << "]\n" RES;
+				std::cout << YEL "                       _responsePath: [" << _responsePath << "]\n" RES;// TODO NEED TO CHECK IF THE FILE EXISTS? OR IS IT BEING DONE?
 			}
 			// IF PATH IS A FOLDER INSIDE THE ROOT FOLDER
 			else {

@@ -1,11 +1,9 @@
-// c++ kqueue.cpp Server.cpp srcs/Parser.cpp srcs/RequestData.cpp srcs/RequestParser.cpp && ./a.out
-
 /* Example of simple URL for methods:
 GET http://api.example.com/employee/<any_id>
 POST http://api.example.com/employee/
 PUT http://api.example.com/employee/
 DELETE http://api.example.com/employee/1
- */
+*/
 
 // CALLING CURL 
 // curl -X POST localhost:8080  -H "Content-Type: text/html" -d '{"Id": 79, "status": 3}'
@@ -14,13 +12,11 @@ DELETE http://api.example.com/employee/1
 // curl -X DELETE localhost:8080/resources/test_index.html -H "Content-Type: text/html"
 
 #include <unistd.h> // sleep
-#include "../includes/RequestParser.hpp"
-
+#include "RequestParser.hpp"
 
 /*
 	In case error 404, file not found, it's probably good to not continue after parsePath(), 
 	and just close the connection
-
 */
 
 /** Default constructor */

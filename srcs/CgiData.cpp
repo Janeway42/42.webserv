@@ -1,5 +1,5 @@
-#include "../includes/CgiData.hpp"
-#include "../includes/RequestParser.hpp"
+#include "CgiData.hpp"
+#include "RequestParser.hpp"
 
 CgiData::CgiData()
 {

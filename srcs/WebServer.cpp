@@ -1,6 +1,6 @@
-#include "../includes/WebServer.hpp"
+#include <stdio.h>		// jaka temP, for printf
 
-#include <stdio.h>		// jaka temo, for printf
+#include "WebServer.hpp"
 
 WebServer::WebServer(std::string const & configFileName)
 {

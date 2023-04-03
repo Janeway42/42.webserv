@@ -1,5 +1,3 @@
-#include "ServerData.hpp"
-
 // ---- kqueue ----
 #include <sys/socket.h>
 #include <netdb.h>
@@ -8,6 +6,8 @@
 
 #include <arpa/inet.h>
 #include <sstream>
+
+#include "ServerData.hpp"
 
 /** Default constructor */
 ServerData::ServerData()
