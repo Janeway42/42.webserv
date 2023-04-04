@@ -13,7 +13,7 @@ WebServer::WebServer(std::string const & configFileName)
 	struct kevent evSet;
 	_kq = kqueue();
 	if (_kq == -1)
-		throw ServerException(("failed kq"));// todo: exceptions call the destructor to delete memory?
+		throw ServerException(("failed kq"));// TODO: exceptions call the destructor to delete memory !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! - TO DO 
 
 	// ----------- loop to create all listening sockets ---------
 	std::vector<ServerData>::iterator it_server;
@@ -21,7 +21,7 @@ WebServer::WebServer(std::string const & configFileName)
 		it_server->setListeningSocket();
 		EV_SET(&evSet, it_server->getListeningSocket(), EVFILT_READ, EV_ADD | EV_CLEAR, NOTE_WRITE, 0, NULL);
 		if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
-			throw ServerException(("failed kevent start listening socket")); // for error:: getaddrinfo uses malloc - freeaddrinfo is needed to free
+			throw ServerException(("failed kevent start listening socket")); // getaddrinfo uses malloc - freeaddrinfo is needed !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! - TO DO 
 	}
 	std::cout  << "LEAVING WEBSERV CONSTRUCTOR" << std::endl;
 }
@@ -38,7 +38,6 @@ WebServer::~WebServer()
 }
 
 
-
 // --------------------------------------------------------- server main loop
 // --------------------------------------------------------------------------
 
@@ -47,10 +46,10 @@ void WebServer::runServer()
 	struct kevent evList[MAX_EVENTS];
 	int i;
 
-//	int loop1 = 0;
+	int loop1 = 0;
 	while (1)
 	{
-		//std::cout << "WHILE LOOP ------------------------------\n";
+		std::cout << "----------------------------------------------------------------------------------------------------------------- WHILE LOOP " << loop1 << std::endl; // Corina: I need these for testing purposes
 		int nr_events = kevent(_kq, NULL, 0, evList, MAX_EVENTS, NULL);
 
 		if (nr_events < 1)
@@ -67,25 +66,28 @@ void WebServer::runServer()
 				else if (specificServer != NULL)
 					newClient(evList[i], specificServer);
 				else if (evList[i].filter == EVFILT_TIMER)
+				{
+					std::cout << "--------------------------------------------------------------------------------------------------------------------- TIMER\n"; // Corina: I need these for testing purposes
 					handleTimeout(evList[i]);
+				}
 				else if (evList[i].filter == EVFILT_READ)
 				{
+					std::cout << "--------------------------------------------------------------------------------------------------------------------- READ\n";
 					if (evList[i].flags & EV_EOF)  
 					{
-						std::cout << RED "OEF from ReadRequest, close the reading FD: " << evList[i].ident << "\n" RES;
-						Request *storage = (Request *)evList[i].udata;			// added Jaka
-						if (storage->getResponseData().getIsCgi() == true)
+						std::cout << RED "EOF from ReadRequest, close the reading FD: " << evList[i].ident << "\n" RES;
+						Request *storage = (Request *)evList[i].udata;
+						removeFilter(evList[i], EVFILT_READ, "failed kevent EV_EOF - EVFILT_READ");
+						if (storage->getCgiData().getIsCgi() == true) // pipe 
 						{
-							removeFilter(evList[i], EVFILT_READ, "failed kevent EV_EOF - EVFILT_READ - test");
+							std::cout << "EOF READ pipe\n";
 							close(evList[i].ident);
-							storage->getCgiData().resetPipeOut();
-							storage->getResponseData().setResponse(evList[i]);	// added Jaka
-							addFilter(storage->getFdClient(), evList[i], EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, success on _fd_out[0]");   //  this allows client write
+							addFilter(storage->getFdClient(), evList[i], EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, EOF READ _fd_out[0]");   //  this allows client write
 						}
-						else 
+						else // client
 						{
-							removeFilter(evList[i], EVFILT_READ, "failed kevent EV_EOF - EVFILT_READ - test");
-							closeClient(evList[i]);	// needed if parent fd 
+							std::cout << "EOF READ main client\n";
+							closeClient(evList[i]);
 						}
 					}
 					else
@@ -93,6 +95,7 @@ void WebServer::runServer()
 				}
 				else if (evList[i].filter == EVFILT_WRITE)
 				{
+					std::cout << "--------------------------------------------------------------------------------------------------------------------- WRITE\n";
 					if (evList[i].flags & EV_EOF)
 					{
 						removeFilter(evList[i], EVFILT_WRITE, "failed kevent EV_EOF - EVFILT_WRITE");
@@ -103,8 +106,8 @@ void WebServer::runServer()
 				}
 			}
 		}	
-		// std::cout << std::endl;
-//		loop1++;
+		std::cout << std::endl;
+		loop1++;
 	}
 }
 
@@ -115,15 +118,15 @@ void WebServer::handleTimeout(struct kevent &event)
 {
 	Request *storage = (Request *)event.udata;
 
-	if (storage->getHttpStatus() == NO_STATUS && storage->getDone() != true)  // this is just for extra precaution
+	std::cout << "existing HTTP status: " << storage->getHttpStatus() << std::endl;
+	storage->setHttpStatus(REQUEST_TIMEOUT);
+	std::cout << "Unable to process, it takes too long - TIMER\n";
+	storage->getCgiData().closePipes();
+	std::cout << "done: " << storage->getDone() << std::endl;
+	if (storage->getDone() == false)
 	{
-		storage->setHttpStatus(REQUEST_TIMEOUT);
-		std::cout << "Unable to process, it takes too long\n";
-		if (storage->getCgiData().getPipeCgiIn_1() != -1)
-			close(storage->getCgiData().getPipeCgiIn_1());
-		if (storage->getCgiData().getPipeCgiOut_0() != -1)
-			close(storage->getCgiData().getPipeCgiOut_0());
 		addFilter(event.ident, event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE - handle timeout");
+		removeFilter(event, EVFILT_READ, "failed kevent EV_DELETE, EVFILT_READ - handle timeout");
 	}
 }
 
@@ -132,26 +135,25 @@ void WebServer::readRequest(struct kevent& event)
 	//std::cout << "Start READ REQUEST\n";
 
 	char buffer[BUFFER_SIZE];
-	memset(&buffer, '\0', BUFFER_SIZE); // cpp equivalent ? 
+	memset(&buffer, '\0', BUFFER_SIZE); // cpp equivalent ? - awaiting response from Nicholas if we can use it 
 	Request* storage = (Request*)event.udata;
 
-	if ((int)event.ident == (storage->getCgiData()).getPipeCgiOut_0())  // read from CGI - we get the info // the event belong to the pipe fd: _fd_out[0]
+	if ((int)event.ident == (storage->getCgiData()).getPipeCgiOut_0()) // ---------- EVENT belongs to pipe _fd_out[0] - we read from CGI
 	{
 		size_t ret = read(event.ident, &buffer,  BUFFER_SIZE - 1);
 		//std::cout << "  ---> read from CGI, ret: " << ret << "\n";		// jaka
 		if (ret < 0)
 		{
-			std::cout << "failed recv in pipe from cgi\n";
+			std::cout << "failed read in pipe _fd_out[0] from cgi\n";
 			storage->setHttpStatus(INTERNAL_SERVER_ERROR);
-			storage->getResponseData().setResponse(event);
 			addFilter(storage->getFdClient(), event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, ret < 0 on _fd_out[0]");  //  this allows client write 
 			removeFilter(event, EVFILT_READ, "failed kevent EV_DELETE, EVFILT_READ, ret < 0 on _fd_out[0]"); // this removes the pipe fd 
-			std::cout << "sent error message back to client\n";
+			std::cout << "sening error message back to client\n";
 		}
 		else
 		{
-			if (ret != 0) {
-				// Jaka: Keep appending to the string _responseBody
+			if (ret != 0) 
+			{
 				std::string tempStr = storage->getRequestData().getCgiBody();
 				tempStr.append(buffer, ret);
 				//std::cout << "BODY FROM CGI [\n" << CYN << tempStr << RES "]\n";		// jaka
@@ -160,14 +162,14 @@ void WebServer::readRequest(struct kevent& event)
 		}
 	}
 
-	else if ((int)event.ident == storage->getFdClient()) // the event belongs to the client fd 
+	else if ((int)event.ident == storage->getFdClient()) // ---------- EVENT belongs to CLIENT FD
 	{
 		int ret = recv(event.ident, &buffer, BUFFER_SIZE - 1, 0);
 		//std::cout << "    recv: " << ret << "\n";
 
 		if (ret <= 0) // kq will NEVER send a READ event if there is nothing to receive thus ret == 0 will never happen  
 		{
-			std::cout << "failed recv\n";
+			std::cout << "failed recv in client fd\n";
 			removeFilter(event, EVFILT_READ, "failed kevent EV_DELETE, EVFILT_READ, ret < 0, _fdClient");
 			removeFilter(event, EVFILT_TIMER, "failed kevent EV_DELETE, EVFILT_TIMER, read < 0, _fdClient");
 			closeClient(event);
@@ -179,22 +181,20 @@ void WebServer::readRequest(struct kevent& event)
 
 
 			// if (storage->getHttpStatus() != NO_STATUS || storage->getDone() == true)				// new Jaka: getIsCGI()
-			if (storage->getHttpStatus() != NO_STATUS || (storage->getDone() == true && storage->getResponseData().getIsCgi() == false))
+			if (storage->getHttpStatus() != NO_STATUS || (storage->getDone() == true && storage->getCgiData().getIsCgi() == false))
 			{
 				//std::cout << CYN "           ReadRequest: B)\n" RES;
 				if (storage->getHttpStatus() != NO_STATUS)
 					std::cout << "error parsing - sending response - failure, error " << storage->getHttpStatus() << "\n";// TODO JOYCE MAP ENUM TO STRING
-				else if (storage->getDone() == true) {
-					std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
-					std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Sending response ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
-				}
-				storage->getResponseData().setResponse(event);
+				else if (storage->getDone() == true)
+					std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
+
 				addFilter(event.ident, event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, success READ");
-				removeFilter(event, EVFILT_READ, "failed kevent eof - read failure");
+				removeFilter(event, EVFILT_READ, "failed kevent EV_DELETE EVFILT_READ - success READ");
 			}
-			else if (storage->getDone() == true && storage->getResponseData().getIsCgi() == true) {
+			else if (storage->getDone() == true && storage->getCgiData().getIsCgi() == true) {
 				std::cout << CYN "          ReadRequest: C) Done receiving the request, start CGI\n" RES;
-				removeFilter(event, EVFILT_READ, "failed kevent eof - read failure"); // ??? jaka
+				removeFilter(event, EVFILT_READ, "failed kevent EV_DELETE EVFILT_READ - read success - start cgi"); // ??? jaka
 				chooseMethod_StartCGI(event, storage);
 			}
 		}
@@ -221,7 +221,7 @@ void WebServer::sendResponse(struct kevent& event)
 	// 																	  Jaka changed the name to:  getPipeCgiIn_1()
 	if ((int)event.ident == (storage->getCgiData()).getPipeCgiIn_1())  // write to CGI - we send the info // the event belong to the pipe fd: _fd_in[1]
 	{
-		std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CGI, write to CGI  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
+		std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CGI, write to CGI  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
 		//buffer = storage->getResponseData().getResponseBody();
 		// Jaka: Set buffer string to the point, from where previous chunk of body was sent
 		//std::cout << "       getBody().length() " << storage->getRequestData().getBody().size() << "\n";
@@ -253,10 +253,9 @@ void WebServer::sendResponse(struct kevent& event)
 
 			if (storage->getCgiData().getBytesToCgi() == (storage->getRequestData()).getRequestContentLength())
 			{
-				std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ CGI Response sent ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
+				std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ CGI Response sent ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
 				removeFilter(event, EVFILT_WRITE, "failed kevent EV_DELETE, EVFILT_WRITE - success on _fd_in[1]");
 				close(event.ident);
-				storage->getCgiData().resetPipeIn();
 			}
 		}
 	}
@@ -269,7 +268,14 @@ void WebServer::sendResponse(struct kevent& event)
 	// Keeps deleting the sent chunk from the content string, until it has zero length.
 	else if ((int)event.ident == storage->getFdClient()) // the event belongs to the client fd 
 	{
-		std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT, send to CLIENT  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
+		std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT, send to CLIENT  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
+
+		if (storage->getResponseData().getResponseDone() == false)
+		{
+			storage->getResponseData().setResponse(event);
+			storage->getResponseData().setResponseDone(true);
+			// std::cout << "----------- FULL RESPONSE: -----------------------\n" << storage->getResponseData().getFullResponse() << std::endl;
+		}
 
 		std::string content = storage->getResponseData().getFullResponse();
 		//std::cout << GRN << "Full Response size: " RES << content.size() << RES << std::endl;
@@ -278,12 +284,11 @@ void WebServer::sendResponse(struct kevent& event)
 
 		std::cout << CYN << "SENDING CHUNK,  remaining response length: " << content.size() << RES << "\n";
 		myRet = send(event.ident, content.c_str(), content.size(), 0);
+		// sleep(10);
 
-		// Corina :: this would be version without override - as I see people just closing connection if send fails  
 		if (myRet < 0)
 		{
 			removeFilter(event, EVFILT_WRITE, "failed kevent, EV_DELETE, EVFILT_WRITE, ret < 0 on _fdClient");
-			removeFilter(event, EVFILT_TIMER, "failed kevent, EV_DELETE, EVFILT_TIMER, ret < 0 on _fdClient");
 			closeClient(event);
 		}
 		else
@@ -299,7 +304,6 @@ void WebServer::sendResponse(struct kevent& event)
 			{
 				std::cout << CYN << "ALL SENT, CLOSE CLIENT" RES "\n";
 				removeFilter(event, EVFILT_WRITE, "failed kevent, EV_DELETE, EVFILT_WRITE, success on _fdClient");
-				removeFilter(event, EVFILT_TIMER, "failed kevent, EV_DELETE, EVFILT_TIMER, success on _fdClient");
 				closeClient(event);
 			}	
 		}
@@ -328,11 +332,12 @@ void WebServer::newClient(struct kevent event, ServerData * specificServer)
 	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 		throw ServerException("failed kevent EV_ADD, EVFILT_READ, new client");
 
-	int time = 180 * 1000;     // needs to be 30 for final version -----------------------------------------
+	int time = 30 * 1000;     // needs to be 30 for final version -----------------------------------------
 	EV_SET(&evSet, fd, EVFILT_TIMER, EV_ADD, 0, time, storage); 
 	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 		throw ServerException("failed kevent EV_ADD, EVFILT_TIMER, new client");
-	std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << GRE << "New client connection" << RES << " ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
+	std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ " << GRE << "New client connection" << RES << " ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
+	std::cout << "fd new client: " << fd << std::endl;
 }
 
 void WebServer::closeClient(struct kevent& event)
@@ -340,9 +345,12 @@ void WebServer::closeClient(struct kevent& event)
 	Request *storage;
 	storage = (Request *)event.udata;
 
-	// storage->getCgiData().closePipes();  // if any pipes are still open, function cleans them out 
+	storage->getCgiData().closePipes();  // if any pipes are still open, function cleans them out 
+	removeFilter(event, EVFILT_TIMER, "failed kevent EV_DELETE EVFILT_TIMER - closeClient");
+	std::cout << "fd that will be closed: " << event.ident << std::endl;
+	std::cout << "original request: " << storage->getRequestData().getHttpPath() << std::endl;
 	close(event.ident);
-	std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
+	std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
 	delete(storage);
 }
 
@@ -377,6 +385,34 @@ void WebServer::removeFilter(struct kevent& event, int filter, std::string error
 	EV_SET(&evSet, event.ident, filter, EV_DELETE, 0, 0, storage); 
 	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 		throw ServerException(errorMessage);
+}
+
+void	WebServer::chooseMethod_StartCGI(struct kevent event, Request * storage) {
+	std::cout << RED "Start ChooseMethodStartCGI()\n" RES ;
+	// if (_data.getRequestMethod() == "GET" && _data.getQueryString() != "") {
+	if (storage->getRequestData().getRequestMethod() == "GET" && storage->getRequestData().getQueryString() != "") {
+		std::cout << RED "     start GET, callCGI\n" RES ;
+		// callCGI(getRequestData(), fdClient);
+		storage->callCGI(event);
+	}
+	if (storage->getRequestData().getRequestMethod() == "POST")
+			storage->callCGI(event);
+	if (storage->getRequestData().getRequestMethod() == "DELETE") {
+		std::cout << GRN_BG << "DELETE METHOD" << RES << std::endl;
+		/* DELETE deletes a resource (specified in URI) */
+		if (storage->pathType(storage->getRequestData().getURLPath()) != REG_FILE) {
+			std::cout << RED_BG << "ERROR 404 Not Found" << RES << std::endl;
+			// status error 404 Not Found -> Server cannot find the requested resource.
+		}
+		// cgi or just delete the file literally? It's not with CGI: Your program should call the CGI with the file requested as first argument.
+		// How to delete a file froma  direcory: https://codescracker.com/cpp/program/cpp-program-delete-file.htm#:~:text=To%20delete%20any%20file%20from,used%20to%20delete%20a%20file.
+		if (remove(storage->getRequestData().getURLPath().c_str()) != 0) {
+			std::cout << RED_BG << "ERROR 204 No Content" << RES << std::endl;
+			// 500 Internal Server Error -> Server encountered an unexpected condition that prevented it from fulfilling the request.
+		}
+			/* On successful deletion, it returns HTTP response status code 204 (No Content) */
+		// _doneParsing = true;    // 
+	}
 }
 
 // --------------------------------------------------------- other functions
@@ -418,36 +454,4 @@ bool WebServer::isListeningSocket(int fd)
 int WebServer::getKq(void)
 {
 	return (_kq);
-}
-
-
-
-
-
-void	WebServer::chooseMethod_StartCGI(struct kevent event, Request * storage) {
-	std::cout << RED "Start ChooseMethodStartCGI()\n" RES ;
-	// if (_data.getRequestMethod() == "GET" && _data.getQueryString() != "") {
-	if (storage->getRequestData().getRequestMethod() == "GET" && storage->getRequestData().getQueryString() != "") {
-		std::cout << RED "     start GET, callCGI\n" RES ;
-		// callCGI(getRequestData(), fdClient);
-		storage->callCGI(event);
-	}
-	if (storage->getRequestData().getRequestMethod() == "POST")
-			storage->callCGI(event);
-	if (storage->getRequestData().getRequestMethod() == "DELETE") {
-		std::cout << GRN_BG << "DELETE METHOD" << RES << std::endl;
-		/* DELETE deletes a resource (specified in URI) */
-		if (storage->pathType(storage->getRequestData().getURLPath()) != REG_FILE) {
-			std::cout << RED_BG << "ERROR 404 Not Found" << RES << std::endl;
-			// status error 404 Not Found -> Server cannot find the requested resource.
-		}
-		// cgi or just delete the file literally? It's not with CGI: Your program should call the CGI with the file requested as first argument.
-		// How to delete a file froma  direcory: https://codescracker.com/cpp/program/cpp-program-delete-file.htm#:~:text=To%20delete%20any%20file%20from,used%20to%20delete%20a%20file.
-		if (remove(storage->getRequestData().getURLPath().c_str()) != 0) {
-			std::cout << RED_BG << "ERROR 204 No Content" << RES << std::endl;
-			// 500 Internal Server Error -> Server encountered an unexpected condition that prevented it from fulfilling the request.
-		}
-			/* On successful deletion, it returns HTTP response status code 204 (No Content) */
-		// _doneParsing = true;    // 
-	}
 }

@@ -446,7 +446,7 @@ int Request::parsePath(std::string str, struct kevent event) {
 		std::cout << GRN << "  YES '?', The cgi path is needed\n" RES;
 		// path = getServerData().getRootDirectory() + "/cgi/" + path;		//   ***** a) // TODO 	SHOULD BE PRE PENDED WITH THE ROOT DIRECTORY OF THE LOCATION, NOT THE PATH FROM THE REQUEST
 		path = getServerData().getRootDirectory()    + path;		//   ***** a) // TODO 	SHOULD BE PRE PENDED WITH THE ROOT DIRECTORY OF THE LOCATION, NOT THE PATH FROM THE REQUEST
-		getResponseData().setIsCgi(true);
+		getCgiData().setIsCgi(true);
 	}
 	if (path[0] == '/' && path == "/")// todo && ?
 		path = getServerData().getRootDirectory();// TODO 	SHOULD BE PRE PENDED WITH THE ROOT DIRECTORY OF THE LOCATION, NOT THE PATH FROM THE REQUEST

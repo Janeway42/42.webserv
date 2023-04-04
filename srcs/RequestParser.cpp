@@ -238,6 +238,7 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, struct kevent event, s
 void    Request::appendToRequest(const char str[], size_t len, struct kevent event) {
 	//std::cout << PUR << "Start appendToRequest(): _hasBody "<< _hasBody << " _doneParsing " << _doneParsing << " \n" << RES;
 
+	// sleep(3); // testing TIMER
 	std::string 			chunk = std::string(str);
 	std::string				strToFind = "\r\n\r\n";
 	std::string::size_type	it, it2;

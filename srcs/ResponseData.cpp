@@ -15,8 +15,8 @@ ResponseData::ResponseData(void) {
 	_responsePath = "";
 	_lengthFullResponse = 0;
 	_bytesToClient = 0;
-	_errorOverride = false;
-	_isCgi = false;
+	_responseDone = false;
+	// _errorOverride = false;
 }
 
 ResponseData::~ResponseData(void) {}
@@ -33,7 +33,6 @@ static int checkIfPathExists(const std::string& path, struct kevent event) {
 	
 	(void)event;
 	std::cout << GRN << "Start CheckIfFIleExists(), path [" << path << "] \n" << RES;
-
 	
 	std::ifstream file(path.c_str());
 
@@ -48,8 +47,6 @@ static int checkIfPathExists(const std::string& path, struct kevent event) {
 
 
 
-
-
 // This function creates the header only for text/html requests, but not for images.
 // If it is an image, then setImage() is called, where both header and body are created, and
 // then setResponse() returns this full content, ready to be sent.
@@ -60,7 +57,6 @@ void ResponseData::setResponse(struct kevent& event) {
 	_responseHeader += setResponseStatus(event);
 
 	// NEED TO REMOVE THE SLASH AT THE END OF THE URL, IN CASE IT IS THERE, ie: .../location_random_dir/
-
 
 	// DO WE HAVE AN INDICATOR, IF THE REQUEST IS A CGI?
 	//	A)  NO CGI, RESPONSE IS JUST FILE OR IMAGE
@@ -75,7 +71,7 @@ void ResponseData::setResponse(struct kevent& event) {
 	// 			IF YES, SEND HTML WITH FOLDER CONTENT
 	//			IF NOT, SEND ERROR PAGE, NOT ALLOWED ?
 	// if (storage->getRequestData().getIsFolder() == true) {
-	if (storage->getRequestData().getIsFolder() == true && _isCgi == false) {
+	if (storage->getRequestData().getIsFolder() == true && storage->getCgiData().getIsCgi() == false) {
 		std::cout << YEL "The Path is a folder: check for a default index file and/or autoindex on/off\n" << RES;
 		std::cout << YEL "           Stored server root folder: [" << storage->getServerData().getRootDirectory() << "]\n" RES;
 	//	std::cout << YEL "          local var. for root folder: [" << serverRootDir << "]\n" RES;
@@ -130,32 +126,30 @@ void ResponseData::setResponse(struct kevent& event) {
 					}
 				}
 			}
-
-
 			_responseBody = streamFile(_responsePath);
 			std::cout << YEL "   getHttpStatus(): [" << storage->getHttpStatus() << "]\n" RES;// todo JOYCE map enums to strings
 			std::cout << YEL "   response path:   [" << _responsePath << "]\n" RES;
 			std::cout << YEL "   content type:    [" << storage->getRequestData().getResponseContentType() << RES "]\n";
 		//}
 	}
-	// IF NOT A FOLDER
-	else if (storage->getRequestData().getIsFolder() == false && _isCgi == false) {	// IF TEXTFILE
-        std::cout << BLU "The path is a file: [" << _responsePath << "]\n" << RES;
-		if (storage->getRequestData().getResponseContentType().compare("text/html") == 0)
-			//_responseBody = streamFile(storage->getServerData().getRootDirectory() + "/" + _responsePath);
-			_responseBody = streamFile(_responsePath);
-		else {	// IF IMAGE, FULL RESPONSE IS CREATED IN setImage()
-			_fullResponse = setImage(storage->getResponseData().getResponsePath());
-			// std::cout << BLU "_fullResponse.length(): [\n" << _fullResponse.size() << "\n" RES;
-			return ;
-		}
-	}
 
-	// B) IF IT IS A CGI:
-	if (_isCgi == true) {
-		_responseBody = storage->getRequestData().getCgiBody();
-		// std::cout << YEL "Content from CGI:\n[\n" RES << _responseBody << YEL "]\n" RES;
-	}
+	else // if it is not a folder (it checks first if cgi -> if not then it checks text (includes error), else image
+		{
+			if (storage->getCgiData().getIsCgi() == true && storage->getHttpStatus() == OK)
+				_responseBody = storage->getRequestData().getCgiBody();
+			else
+			{
+				std::cout << BLU "The path is a file: [" << _responsePath << "]\n" << RES;
+				if (storage->getRequestData().getResponseContentType().compare("text/html") == 0)
+					_responseBody = streamFile(_responsePath);
+					//_responseBody = streamFile(storage->getServerData().getRootDirectory() + "/" + _responsePath);
+				else {	// IF IMAGE, FULL RESPONSE IS CREATED IN setImage()
+					_fullResponse = setImage(storage->getResponseData().getResponsePath());
+					// std::cout << BLU "_fullResponse.length(): [\n" << _fullResponse.size() << "\n" RES;
+					return ;
+				}
+			}
+		}
 
 	// set up header 
 	int temp = _responseBody.length();
@@ -169,7 +163,6 @@ void ResponseData::setResponse(struct kevent& event) {
 	// std::cout << YEL "complete response header: [" << _responseHeader << "]\n";
 	_fullResponse += _responseHeader + _responseBody;
 	//std::cout << YEL "\n_fullResponse:\n[\n" RES << _fullResponse << YEL "]\n" RES;
-
 }
 
 
@@ -185,33 +178,42 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
 	{
 		case 400:
 			status = "HTTP/1.1 400 Bad Request\n"
-						"Content-Type: text/html\n";
+						"Content-Type: text/html\n"
+						"Content-Encoding: identity\n";  // Corina - added it because firefox complained that itwas missing - not sure if we keep because firefox still complains even with it. We leave it for now. 
 			(storage->getResponseData()).setResponsePath("resources/error_pages/400BadRequest.html");
 			break;
 		case 404:
 			status = "HTTP/1.1 404 Not Found\n"
-						"Content-Type: text/html\n";
+						"Content-Type: text/html\n"
+						"Content-Encoding: identity\n";
 			(storage->getResponseData()).setResponsePath("resources/error_pages/404NotFound.html");
 			break;
 		case 405:
 			status = "HTTP/1.1 405 Method Not Allowed\n"
-						"Content-Type: text/html\n";
+						"Content-Type: text/html\n"
+						"Content-Encoding: identity\n";
 			(storage->getResponseData()).setResponsePath("resources/error_pages/405MethodnotAllowed.html");
 			break;
 		case 408:
 			status = "HTTP/1.1 408 Request Timeout\n"
-						"Content-Type: text/html\n";
+						"Content-Type: text/html\n"
+						"Content-Encoding: identity\n";
 			(storage->getResponseData()).setResponsePath("resources/error_pages/408RequestTimeout.html");
 			break;
 		case 500:
-			status = "HTTP/1.1 500 Internal Server Error";
+			status = "HTTP/1.1 500 Internal Server Error"
+						"Content-Type: text/html\n"
+						"Content-Encoding: identity\n";
 			(storage->getResponseData()).setResponsePath("resources/error_pages/500InternarServerError.html");
 		case 403:
-			status = "HTTP/1.1 403 Forbidden";
+			status = "HTTP/1.1 403 Forbidden"
+						"Content-Type: text/html\n"
+						"Content-Encoding: identity\n";
 			(storage->getResponseData()).setResponsePath("resources/error_pages/403Forbidden.html");
 		default:
 			status = "HTTP/1.1 200 OK\n"  
-						"Content-Type: text/html\n";
+						"Content-Type: text/html\n"
+						"Content-Encoding: identity\n";
 					// "Content-Type: " + storage->getRequestData().getResponseContentType() + "\n";	// jaka
 			//  _responsePath = storage->getRequestData().getHttpPath();							// jaka: this is old, should be getURLPath()
 			_responsePath = storage->getRequestData().getURLPath();
@@ -232,8 +234,6 @@ void ResponseData::setBytesToClient(int val)
 }
 
 
-
-
 // NEW SETIMAGE
 // void ResponseData::setImage(struct kevent& event, std::string imagePath) {
 std::string ResponseData::setImage(std::string imagePath) {
@@ -251,7 +251,8 @@ std::string ResponseData::setImage(std::string imagePath) {
 
 	// Create the header block
 	std::string headerBlock = 	"HTTP/1.1 200 OK\r\n"
-								"Content-Type: image/jpg\r\n";	// Here it needs to grab the correct Type, jpg, png, gif, ico ...
+								"Content-Type: image/jpg\r\n"
+								"Content-Encoding: identity\n";	// Here it needs to grab the correct Type, jpg, png, gif, ico ...
 	headerBlock.append("accept-ranges: bytes\r\n");
 	std::string contentLen = "Content-Length: ";
 	std::string temp = std::to_string(content.size());
@@ -264,33 +265,30 @@ std::string ResponseData::setImage(std::string imagePath) {
 	return (headerBlock);	// Both header and image content
 }
 
-
-
-void ResponseData::setOverride(bool val)
-{
-	_errorOverride = val;
-}
-
 void ResponseData::setResponsePath(std::string path)
 {
 	_responsePath = path;
 }
 
-
-void ResponseData::setIsCgi(bool b)	// added jaka
+void ResponseData::setResponseDone(bool val)
 {
-	_isCgi = b;
+	_responseDone = val;
 }
+
+// void ResponseData::setOverride(bool val)   // NOT USED anymore - to be cleanned out 
+// {
+// 	_errorOverride = val;
+// }
 
 // --------------------------------------------------------------------------- util functions
 // ------------------------------------------------------------------------------------------
 
-void ResponseData::overrideFullResponse()
-{
-	std::string errorMessage = " insert html code";
-	_fullResponse = errorMessage;
-	_errorOverride = true;
-}
+// void ResponseData::overrideFullResponse()  // NOT USED anymore - to be cleaned out 
+// {
+// 	std::string errorMessage = " insert html code";
+// 	_fullResponse = errorMessage;
+// 	_errorOverride = true;
+// }
 
 std::string ResponseData::streamFile(std::string file)
 {
@@ -323,21 +321,21 @@ std::string&	ResponseData::eraseSentChunkFromFullResponse(unsigned long retBytes
 	return (_fullResponse.erase(0, retBytes));
 }
 
-// size_t	ResponseData::getCurrentLength() { // jaka
-// 	return (_lengthFullResponse);
-// }
-
 size_t	ResponseData::getSentSoFar() { // jaka
 	return (_bytesToClient);
 }
 
-// void 	ResponseData::setCurrentLength(size_t len) {
-// 	_lengthFullResponse = len;
-// }
-
 void	ResponseData::increaseSentSoFar(size_t bytesSent) {
 	_bytesToClient += bytesSent;
 }
+
+// size_t	ResponseData::getCurrentLength() { // jaka
+// 	return (_lengthFullResponse);
+// }
+
+// void 	ResponseData::setCurrentLength(size_t len) {
+// 	_lengthFullResponse = len;
+// }
 
 // ***************************************************************************
 
@@ -375,17 +373,16 @@ unsigned long ResponseData::getBytesToClient()
 {
 	return (_bytesToClient);
 }
-bool ResponseData::getOverride()
+
+bool ResponseData::getResponseDone()
 {
-	return (_errorOverride);
+	return (_responseDone);
 }
 
-
-bool ResponseData::getIsCgi()	// added jaka
-{
-	return (_isCgi);
-}
-
+// bool ResponseData::getOverride()  // NOT USED - To be cleaned out!
+// {
+// 	return (_errorOverride);
+// }
 
 // ------------------------------------------------------------------------------ HTTP STATUS
 // ------------------------------------------------------------------------------------------

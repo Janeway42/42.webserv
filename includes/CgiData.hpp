@@ -12,31 +12,32 @@
 class CgiData: public Parser
 {
 	private:
-		int _fd_in[2];  // we write to cgi  - we write on _fd_in[1]
-		int _fd_out[2]; // we read from cgi - we read from _fd_out[0]
-		unsigned long _bytesToCgi;
-		bool _pipesDone;
+		int				_fd_in[2];  // we write to cgi  - we write on _fd_in[1]
+		int				_fd_out[2]; // we read from cgi - we read from _fd_out[0]
+		bool			_pipesDone;
+		bool			_isCgi;
+		unsigned long	_bytesToCgi;
 
 	public:
 		CgiData();
 		virtual ~CgiData();
 
-		void createPipes(int kq, struct kevent & event);
-		void closePipes();
+		void 			createPipes(int kq, struct kevent & event);
+		void 			closePipes();
 
 		// getters
 		unsigned long	getBytesToCgi();
-		int		getPipeCgiIn_0();	// changed jaka
-		int		getPipeCgiIn_1();	// added jaka
-		int		getPipeCgiOut_0();	// changed jaka
-		int		getPipeCgiOut_1();	// added jaka
-		bool	getPipesDone();
+		bool			getIsCgi();
+		bool			getPipesDone();
+		int				getPipeCgiIn_0();
+		int				getPipeCgiIn_1();
+		int				getPipeCgiOut_0();
+		int				getPipeCgiOut_1();
 
 		// setters
-		void	setBytesToCgi(int val);
-		void	setPipesDone(bool val);
-		void	resetPipeIn(); 
-		void	resetPipeOut();
+		void			setIsCgi(bool val);
+		void			setPipesDone(bool val);
+		void			setBytesToCgi(int val);
 	
 		class CgiException: public std::exception
         {

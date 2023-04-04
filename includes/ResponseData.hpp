@@ -12,20 +12,17 @@
 class ResponseData: public Parser
 {
 	private:
-		std::string _status;
-		std::string _type;
+		std::string		_status;
+		std::string		_type;
 		
-		std::string _responseHeader;
-		std::string _responseBody;
-		std::string _fullResponse;
-		std::string _responsePath;
-
-		bool		_isCgi;		// added jaka
-
+		std::string 	_responseHeader;
+		std::string 	_responseBody;
+		std::string		_fullResponse;
+		std::string		_responsePath;
 
 		ssize_t 		_lengthFullResponse;	// needs to be set at the end of making the response (just once)
 		unsigned long 	_bytesToClient;
-		bool 			_errorOverride;
+		bool			_responseDone;
 
 	public:
 		ResponseData();
@@ -34,39 +31,39 @@ class ResponseData: public Parser
 		// getters
 		std::string		getHeader();
 		std::string		getBody();
+		std::string		getResponsePath();
+		std::string		getResponseBody();
 		std::string&	getFullResponse();
+		unsigned long	getBytesToClient();
+		size_t			getSentSoFar();
+		bool			getResponseDone();
 
+		//setters
+		void			setResponse(struct kevent& event);
+		std::string		setResponseStatus(struct kevent& event);
+		void			setResponsePath(std::string path);
+		void			setResponseBody(std::string file);
+		void			setResponseDone(bool val);
+		void			setBytesToClient(int val);
+
+		std::string		streamFile(std::string file);
+		std::string 	setImage(std::string imagePath);
+		void			increaseSentSoFar(size_t bytesSent);
+		std::string&	eraseSentChunkFromFullResponse(unsigned long retBytes); // to erase the sent chunk from the remaining response content
+
+
+		// NOT USED - to be cleaned out
 		// ***************************************************************************
 		// added jaka
 		//size_t		getCurrentLength(); // jaka
-		size_t			getSentSoFar(); // jaka
-		std::string&	eraseSentChunkFromFullResponse(unsigned long retBytes); // to erase the sent chunk from the remaining response content
 		//void 			setCurrentLength(size_t len);
-		void			increaseSentSoFar(size_t bytesSent);
 		// ***************************************************************************
-
-
-
-		std::string		getResponsePath();
-		std::string		getResponseBody();
-		unsigned long	getBytesToClient();
-		bool			getOverride();
-		bool			getIsCgi();		// added jaka
-
-		//setters
-		void		overrideFullResponse();			// jaka: maybe will not be used
-		void		setResponse(struct kevent& event);
-		std::string	setResponseStatus(struct kevent& event);
-		void		setResponsePath(std::string path);
-		void		setOverride(bool val);
-		void		setResponseBody(std::string file);
-		void		adjustFullResponse(ssize_t ret);
-		std::string	streamFile(std::string file);
-		std::string setImage(std::string imagePath);
-
-		void		setIsCgi(bool b);
-
-		void setBytesToClient(int val);
+		// -------------------------------------------------------------
+		// bool 			_errorOverride;
+		// bool			getOverride();
+		// void		setOverride(bool val);
+		// void		overrideFullResponse();			// jaka: maybe will not be used
+		// void		adjustFullResponse(ssize_t ret);
 };
 
 #endif
