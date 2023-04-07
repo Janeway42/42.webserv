@@ -5,7 +5,9 @@
 WebServer::WebServer(std::string const & configFileName)
 {
 	ConfigFileParser configFileData = ConfigFileParser(configFileName);
+
 	_servers = configFileData.servers;
+	std::cout << "size server: " << _servers.size() << std::endl;
 	std::cout  << "Server blocks quantity: " << configFileData.numberOfServerBlocks() << std::endl;
 	std::cout  << "Location block quantity: " << configFileData.numberOfLocationBlocks() << std::endl;
 
@@ -13,12 +15,23 @@ WebServer::WebServer(std::string const & configFileName)
 	struct kevent evSet;
 	_kq = kqueue();
 	if (_kq == -1)
-		throw ServerException(("failed kq"));// TODO: exceptions call the destructor to delete memory !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! - TO DO 
+		throw ServerException(("failed kq - exit server"));
 
 	// ----------- loop to create all listening sockets ---------
 	std::vector<ServerData>::iterator it_server;
-	for (it_server = _servers.begin(); it_server != _servers.end(); ++it_server) {
-		it_server->setListeningSocket();
+	std::cout << "before vector loop ---------------\n";
+	for (it_server = _servers.begin(); it_server != _servers.end(); ++it_server) 
+	{
+		try 
+		{
+			it_server->setListeningSocket();
+		}
+		catch (std::exception & e) {
+        	std::cout << RED << e.what() << RES << std::endl;
+		// catch (...)
+		// {
+		// 	throw ServerException("failed addr - exit webserv\n");
+		}
 		EV_SET(&evSet, it_server->getListeningSocket(), EVFILT_READ, EV_ADD | EV_CLEAR, NOTE_WRITE, 0, NULL);
 		if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 			throw ServerException(("failed kevent start listening socket")); // getaddrinfo uses malloc - freeaddrinfo is needed !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! - TO DO 
@@ -28,15 +41,16 @@ WebServer::WebServer(std::string const & configFileName)
 
 WebServer::~WebServer()
 {
-	std::cout << "WebServer Destructor" << std::endl;
+	std::cout << " ------------- WebServer Destructor" << std::endl;
 	close(_kq);
-
 	std::vector<ServerData>::iterator it_server = _servers.begin();
 	for (; it_server != _servers.end(); ++it_server) {
-		freeaddrinfo(it_server->getAddr());
+		if (it_server->getAddr() != NULL){
+			std::cout << "_addr: " << it_server->getAddr() << std::endl;
+			freeaddrinfo(it_server->getAddr());
+			}
 	}
 }
-
 
 // --------------------------------------------------------- server main loop
 // --------------------------------------------------------------------------
@@ -47,22 +61,26 @@ void WebServer::runServer()
 	int i;
 
 	int loop1 = 0;
-	while (1)
+	while (signalCall == false)
 	{
 		std::cout << "----------------------------------------------------------------------------------------------------------------- WHILE LOOP " << loop1 << std::endl; // Corina: I need these for testing purposes
 		int nr_events = kevent(_kq, NULL, 0, evList, MAX_EVENTS, NULL);
 
+		// std::cout << "nr of events: " << nr_events << std::endl;
+
 		if (nr_events < 1)
-			throw ServerException("failed number events"); // for error:: it needs to return to kevent and try to get the events again. Thus nothing :D
+			throw ServerException("failed number events");
 		else
 		{
 			for (i = 0; i < nr_events; i++)
 			{
-				//std::cout << BLU "Kqueue, events " << nr_events << ",   i: " << i << "\n" RES;
 				ServerData* specificServer = getSpecificServer(evList[i].ident);
 
 				if (evList[i].flags & EV_ERROR)
+				{
 					std::cout << "Socket was deleted\n";
+					std::cout << "Erno: " << errno << std::endl;  // for testing purposes - to be erased 
+				}
 				else if (specificServer != NULL)
 					newClient(evList[i], specificServer);
 				else if (evList[i].filter == EVFILT_TIMER)
@@ -78,7 +96,7 @@ void WebServer::runServer()
 						std::cout << RED "EOF from ReadRequest, close the reading FD: " << evList[i].ident << "\n" RES;
 						Request *storage = (Request *)evList[i].udata;
 						removeFilter(evList[i], EVFILT_READ, "failed kevent EV_EOF - EVFILT_READ");
-						if (storage->getCgiData().getIsCgi() == true) // pipe 
+						if (storage->getCgiData().getIsCgi() == true) // pipe // this is specifically for ret = 0 && EV_EOF
 						{
 							std::cout << "EOF READ pipe\n";
 							close(evList[i].ident);
@@ -118,11 +136,11 @@ void WebServer::handleTimeout(struct kevent &event)
 {
 	Request *storage = (Request *)event.udata;
 
-	std::cout << "existing HTTP status: " << storage->getHttpStatus() << std::endl;
+	// std::cout << "existing HTTP status: " << storage->getHttpStatus() << std::endl;
 	storage->setHttpStatus(REQUEST_TIMEOUT);
 	std::cout << "Unable to process, it takes too long - TIMER\n";
 	storage->getCgiData().closePipes();
-	std::cout << "done: " << storage->getDone() << std::endl;
+	// std::cout << "done: " << storage->getDone() << std::endl;
 	if (storage->getDone() == false)
 	{
 		addFilter(event.ident, event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE - handle timeout");
@@ -135,10 +153,12 @@ void WebServer::readRequest(struct kevent& event)
 	//std::cout << "Start READ REQUEST\n";
 
 	char buffer[BUFFER_SIZE];
-	memset(&buffer, '\0', BUFFER_SIZE); // cpp equivalent ? - awaiting response from Nicholas if we can use it 
+	std::memset(&buffer, '\0', BUFFER_SIZE);
 	Request* storage = (Request*)event.udata;
 
-	if ((int)event.ident == (storage->getCgiData()).getPipeCgiOut_0()) // ---------- EVENT belongs to pipe _fd_out[0] - we read from CGI
+	// PIPE EVENT - _fd_out[0] - we READ from CGI
+	// --------------------------------------------------------------
+	if ((int)event.ident == (storage->getCgiData()).getPipeCgiOut_0())
 	{
 		size_t ret = read(event.ident, &buffer,  BUFFER_SIZE - 1);
 		//std::cout << "  ---> read from CGI, ret: " << ret << "\n";		// jaka
@@ -161,8 +181,9 @@ void WebServer::readRequest(struct kevent& event)
 			}
 		}
 	}
-
-	else if ((int)event.ident == storage->getFdClient()) // ---------- EVENT belongs to CLIENT FD
+	// CLIENT EVENT - _fdClient
+	// --------------------------------------------------------------
+	else if ((int)event.ident == storage->getFdClient())
 	{
 		int ret = recv(event.ident, &buffer, BUFFER_SIZE - 1, 0);
 		//std::cout << "    recv: " << ret << "\n";
@@ -218,8 +239,9 @@ void WebServer::sendResponse(struct kevent& event)
 	std::vector<uint8_t> & tmpBody = storage->getRequestData().getBody();
 	const char* buffer;	// the reqBody is now stored as vector, must go to write() as char*
 
-	// 																	  Jaka changed the name to:  getPipeCgiIn_1()
-	if ((int)event.ident == (storage->getCgiData()).getPipeCgiIn_1())  // write to CGI - we send the info // the event belong to the pipe fd: _fd_in[1]
+	// 	PIPE EVENT - _fd_in[1] - we WRITE to CGI
+	// --------------------------------------------------------------
+	if ((int)event.ident == (storage->getCgiData()).getPipeCgiIn_1())
 	{
 		std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CGI, write to CGI  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
 		//buffer = storage->getResponseData().getResponseBody();
@@ -266,7 +288,10 @@ void WebServer::sendResponse(struct kevent& event)
 	// Then sends a chunk. If successfully sent, checks the return value (bytes sent).
 	// Increases the value of 'bytes sentSoFar'
 	// Keeps deleting the sent chunk from the content string, until it has zero length.
-	else if ((int)event.ident == storage->getFdClient()) // the event belongs to the client fd 
+
+	// CLIENT EVENT - _fdClient
+	// --------------------------------------------------------------
+	else if ((int)event.ident == storage->getFdClient())
 	{
 		std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT, send to CLIENT  ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
 
@@ -282,10 +307,10 @@ void WebServer::sendResponse(struct kevent& event)
 		//std::cout << GRN << "Full Response Content:\n[\n" RES << content<< GRN "]\n" RES << std::endl;
 		unsigned long myRet = 0;
 
-		std::cout << CYN << "SENDING CHUNK,  remaining response length: " << content.size() << RES << "\n";
+		std::cout << CYN << "SENDING CHUNK, response length before send: " << content.size() << RES << "\n";
 		myRet = send(event.ident, content.c_str(), content.size(), 0);
-		// sleep(10);
-
+		std::cout << CYN << "SEND return - sucessfully sent: " << myRet << RES << "\n";
+		
 		if (myRet < 0)
 		{
 			removeFilter(event, EVFILT_WRITE, "failed kevent, EV_DELETE, EVFILT_WRITE, ret < 0 on _fdClient");
@@ -293,19 +318,19 @@ void WebServer::sendResponse(struct kevent& event)
 		}
 		else
 		{
-			if (myRet > 0)
+			if (content.size() == myRet)
+			{
+				std::cout << CYN << "ALL SENT, CLOSE CLIENT" RES "\n";
+				removeFilter(event, EVFILT_WRITE, "failed kevent, EV_DELETE, EVFILT_WRITE, success on _fdClient");
+				closeClient(event);
+			}
+			else 
 			{
 				storage->getResponseData().increaseSentSoFar(myRet);
 				storage->getResponseData().eraseSentChunkFromFullResponse(myRet);
 				//std::cout << CYN << "             Sent chunk: " << myRet << ",  sentSoFar " << storage->getResponseData().getSentSoFar() << "\n" << RES;
 				//std::cout << CYN << "  remaining contentSize: " << content.size() << "\n" << RES;
 			}
-			if (content.size() == 0)
-			{
-				std::cout << CYN << "ALL SENT, CLOSE CLIENT" RES "\n";
-				removeFilter(event, EVFILT_WRITE, "failed kevent, EV_DELETE, EVFILT_WRITE, success on _fdClient");
-				closeClient(event);
-			}	
 		}
 	}
 }
@@ -325,8 +350,8 @@ void WebServer::newClient(struct kevent event, ServerData * specificServer)
 	if (fd == -1)
 		throw ServerException("failed accept");
 
-	Request *storage = new Request(fd, specificServer);
-	storage->getRequestData().setKqFd(getKq());	// Jaka: I need to store the value of kqueue-FD for later, to create pipes for CGI
+	Request *storage = new Request(_kq, fd, specificServer);
+	// storage->getRequestData().setKqFd(getKq());	 // moved to Request itself 
 
 	EV_SET(&evSet, fd, EVFILT_READ, EV_ADD, 0, 0, storage); 
 	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
@@ -359,6 +384,8 @@ void WebServer::closeClient(struct kevent& event)
 
 ServerData * WebServer::getSpecificServer(int fd)
 {
+	std::cout << "size server inside run loop: " << _servers.size() << std::endl;
+
 	std::vector<ServerData>::iterator it_server = _servers.begin();
 	for (; it_server != _servers.end(); ++it_server) {
 		if (it_server->getListeningSocket() == fd)
@@ -451,7 +478,7 @@ bool WebServer::isListeningSocket(int fd)
 // --------------------------------------------------------- get functions
 // -----------------------------------------------------------------------
 
-int WebServer::getKq(void)
-{
-	return (_kq);
-}
+// int WebServer::getKq(void)
+// {
+// 	return (_kq);
+// }

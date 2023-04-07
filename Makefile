@@ -49,7 +49,8 @@ SRC =   srcs/ConfigFileParser.cpp\
 		srcs/ResponseData.cpp\
 		srcs/CgiData.cpp\
 		srcs/WebServer.cpp\
-		tests/Kqueue_main.cpp
+		tests/Kqueue_main.cpp\
+		srcs/SigHandler.cpp
 
 OBJ = $(SRC:%.cpp=%.o)
 

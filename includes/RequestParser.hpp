@@ -32,6 +32,7 @@
 class Request : public Parser {
 	
 	private:
+		int _kq;
 		int				_clientFd;
 		RequestData		_data;
 		ResponseData	_answer;
@@ -41,7 +42,7 @@ class Request : public Parser {
 		bool			_doneParsing;
 		bool 			_hasBody;
 		HttpStatus		_httpStatus;
-		ServerData  	_server;
+		ServerData  	*_server;
 
 		void        parseHeaderAndPath(std::string & tmpHeader, struct kevent event, std::string::size_type it);
 		int 		appendLastChunkToBody2(const char *str, size_t len);
@@ -54,7 +55,7 @@ class Request : public Parser {
 
 	public:
 		Request();
-		Request(int fd, ServerData * specificServer);
+		Request(int kq, int fd, ServerData * specificServer);
 		virtual ~Request();
 
 		// getters
@@ -65,6 +66,7 @@ class Request : public Parser {
 		HttpStatus		getHttpStatus();
 		bool			getDone();
 		int				getFdClient();
+		int				getKq();
 
 		// setters
 		void			setDone(bool val);

@@ -30,7 +30,10 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 	(void)event;
 
 	// Create pipes
-	_cgi.createPipes(_data.getKqFd(), event);
+	Request *storage = (Request *)event.udata;
+
+	_cgi.createPipes(storage->getKq(), event);
+	// _cgi.createPipes(_data.getKqFd(), event); // moved to Request itself 
 
 	int ret = 0;
 	pid_t		retFork;

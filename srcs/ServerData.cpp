@@ -1,4 +1,5 @@
 #include "ServerData.hpp"
+#include "WebServer.hpp"
 
 // ---- kqueue ----
 #include <sys/socket.h>
@@ -19,7 +20,9 @@ ServerData::ServerData()
     _index_file("index.html"),
     _client_max_body_size(1024),
     _error_page(std::vector<std::string>()),
-    _port_redirection(0) {
+    _port_redirection(0),
+	_listening_socket(-1),
+	_addr(NULL){
     std::cout << PUR << "ServerData Default constructor" << RES << std::endl;
 }
 
@@ -33,7 +36,9 @@ ServerData::ServerData(ServerData const & rhs)
     _client_max_body_size(rhs._client_max_body_size),
     _error_page(rhs._error_page),
     _port_redirection(rhs._port_redirection),
-    _location_data_vector(rhs._location_data_vector) {
+    _location_data_vector(rhs._location_data_vector),
+	_listening_socket(rhs._listening_socket),
+	_addr(rhs._addr) {
     std::cout << PUR << "ServerData Copy constructor" << RES << std::endl;
 }
 
@@ -49,6 +54,16 @@ ServerData::~ServerData() {
     _error_page.clear();
     _port_redirection = 0;
     std::cout << PUR << "ServerData Destructor" << RES << std::endl;
+	std::cout << "addr address: " << _addr << std::endl;
+	if (_addr != NULL)
+	{
+		if (signalCall == true)
+			freeaddrinfo(_addr);
+		_addr = NULL;
+	}
+	// std::cout << "free addr has been run!\n";  // TO BE CLEANED
+	// if (_addr != NULL)
+	// 	std::cout << "_addr not null after free\n";
 }
 
 /** #################################### Getters #################################### */
@@ -301,9 +316,17 @@ void ServerData::setListeningSocket() {
     // hostname: is either a valid host name or a numeric host address string consisting of a dotted decimal IPv4 address or an IPv6 address.
     // servname: is either a decimal port number or a service name listed in services(5).
     if (getaddrinfo(_server_name.c_str(), _listens_to.c_str(), &hints, &_addr) != 0) {
-        freeaddrinfo(_addr);
-        throw ServerDataException("failed addr");
+        throw ServerDataException("failed getaddrinfo");
     }
+
+	// for testing memory leaks 
+	// int out = getaddrinfo(_server_name.c_str(), _listens_to.c_str(), &hints, &_addr);
+	// out = 5;
+	// if (out != 0)
+	// {
+	// 	std::cout << "------------------- failed addr!!!!\n";
+	// 	throw ServerDataException("failed getaddrinfo");
+	// }
 
     _listening_socket = socket(_addr->ai_family, _addr->ai_socktype, _addr->ai_protocol);
     if (_listening_socket < 0)

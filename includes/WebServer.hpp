@@ -15,8 +15,9 @@
 #include "ConfigFileParser.hpp"
 
 #define MAX_EVENTS 100
-#define BUFFER_SIZE 8000
-// #define BUFFER_SIZE 100
+#define BUFFER_SIZE 4000
+
+static bool signalCall;
 
 class WebServer
 {
@@ -53,7 +54,7 @@ class WebServer
 		// int closeClient(struct kevent event, int filter);
 
 		// getters
-		int getKq();  // not actually used anywhere 
+		// int getKq();  // not actually used anywhere 
 
         class ServerException: public std::exception
         {
@@ -72,5 +73,7 @@ class WebServer
                 virtual ~ServerException() throw(){}
         };
 };
+
+void endSignal(int sig);
 
 #endif //WEBSERVER_CPP
