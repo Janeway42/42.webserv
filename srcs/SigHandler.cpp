@@ -2,7 +2,7 @@
 
 void endSignal(int sig)
 {
-	std::cout << "\nmanual turn off\n"; 
+	std::cout << "\n============= manual shut down =============\n"; 
 	if (sig == SIGINT)
 		signalCall = true;
 }

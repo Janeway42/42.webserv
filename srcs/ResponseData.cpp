@@ -177,43 +177,43 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
 	switch (storage->getHttpStatus())
 	{
 		case 400:
-			status = "HTTP/1.1 400 Bad Request\n"
-						"Content-Type: text/html\n"
-						"Content-Encoding: identity\n";  // Corina - added it because firefox complained that itwas missing - not sure if we keep because firefox still complains even with it. We leave it for now. 
+			status = "HTTP/1.1 400 Bad Request\r\n"
+						"Content-Type: text/html\r\n"
+						"Content-Encoding: identity\r\n";  // Corina - added it because firefox complained that itwas missing - not sure if we keep because firefox still complains even with it. We leave it for now. 
 			(storage->getResponseData()).setResponsePath("resources/error_pages/400BadRequest.html");
 			break;
 		case 404:
-			status = "HTTP/1.1 404 Not Found\n"
-						"Content-Type: text/html\n"
-						"Content-Encoding: identity\n";
+			status = "HTTP/1.1 404 Not Found\r\n"
+						"Content-Type: text/html\r\n"
+						"Content-Encoding: identity\r\n";
 			(storage->getResponseData()).setResponsePath("resources/error_pages/404NotFound.html");
 			break;
 		case 405:
-			status = "HTTP/1.1 405 Method Not Allowed\n"
-						"Content-Type: text/html\n"
-						"Content-Encoding: identity\n";
+			status = "HTTP/1.1 405 Method Not Allowed\r\n"
+						"Content-Type: text/html\r\n"
+						"Content-Encoding: identity\r\n";
 			(storage->getResponseData()).setResponsePath("resources/error_pages/405MethodnotAllowed.html");
 			break;
 		case 408:
-			status = "HTTP/1.1 408 Request Timeout\n"
-						"Content-Type: text/html\n"
-						"Content-Encoding: identity\n";
+			status = "HTTP/1.1 408 Request Timeout\r\n"
+						"Content-Type: text/html\r\n"
+						"Content-Encoding: identity\r\n";
 			(storage->getResponseData()).setResponsePath("resources/error_pages/408RequestTimeout.html");
 			break;
 		case 500:
-			status = "HTTP/1.1 500 Internal Server Error"
-						"Content-Type: text/html\n"
-						"Content-Encoding: identity\n";
+			status = "HTTP/1.1 500 Internal Server Error\r\n"
+						"Content-Type: text/html\r\n"
+						"Content-Encoding: identity\r\n";
 			(storage->getResponseData()).setResponsePath("resources/error_pages/500InternarServerError.html");
 		case 403:
-			status = "HTTP/1.1 403 Forbidden"
-						"Content-Type: text/html\n"
-						"Content-Encoding: identity\n";
+			status = "HTTP/1.1 403 Forbidden\r\n"
+						"Content-Type: text/html\r\n"
+						"Content-Encoding: identity\r\n";
 			(storage->getResponseData()).setResponsePath("resources/error_pages/403Forbidden.html");
 		default:
-			status = "HTTP/1.1 200 OK\n"  
-						"Content-Type: text/html\n"
-						"Content-Encoding: identity\n";
+			status = "HTTP/1.1 200 OK\r\n"  
+						"Content-Type: text/html\r\n"
+						"Content-Encoding: identity\r\n";
 					// "Content-Type: " + storage->getRequestData().getResponseContentType() + "\n";	// jaka
 			//  _responsePath = storage->getRequestData().getHttpPath();							// jaka: this is old, should be getURLPath()
 			_responsePath = storage->getRequestData().getURLPath();
@@ -252,7 +252,7 @@ std::string ResponseData::setImage(std::string imagePath) {
 	// Create the header block
 	std::string headerBlock = 	"HTTP/1.1 200 OK\r\n"
 								"Content-Type: image/jpg\r\n"
-								"Content-Encoding: identity\n";	// Here it needs to grab the correct Type, jpg, png, gif, ico ...
+								"Content-Encoding: identity\r\n";	// Here it needs to grab the correct Type, jpg, png, gif, ico ...
 	headerBlock.append("accept-ranges: bytes\r\n");
 	std::string contentLen = "Content-Length: ";
 	std::string temp = std::to_string(content.size());
