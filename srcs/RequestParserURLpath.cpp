@@ -23,7 +23,10 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 	(void)event;
 
 	// Create pipes
-	_cgi.createPipes(_data.getKqFd(), event);
+	Request *storage = (Request *)event.udata;
+
+	_cgi.createPipes(storage->getKq(), event);
+	// _cgi.createPipes(_data.getKqFd(), event); // moved to Request itself
 
 	int ret = 0;
 	pid_t		retFork;
@@ -452,7 +455,7 @@ int Request::parsePath(std::string originalUrlPath, struct kevent event) {
                     std::string DirFromUrl;
 
                     if (originalUrlPath.find("?") != std::string::npos || _data.getRequestMethod() == "POST") {
-                        getResponseData().setIsCgi(true);
+                        getCgiData().setIsCgi(true);
                         std::cout << GRN << "'?' was found, so cgi root_directory is needed" << RES << std::endl;
                         std::cout << "Path is a script file. ";
 

@@ -8,6 +8,7 @@ CgiData::CgiData()
 	_fd_out[0] = -1;
 	_fd_out[1] = -1;
 	_bytesToCgi = 0;
+	_isCgi = false;
 	_pipesDone = false;
 }
 
@@ -23,12 +24,8 @@ void CgiData::createPipes(int kq, struct kevent & event)
 	fcntl(_fd_in[1], F_SETFL, O_NONBLOCK);
 	fcntl(_fd_out[0], F_SETFL, O_NONBLOCK);
 
-	//fcntl(_fd_in[0], F_SETFL, O_NONBLOCK);	// added jaka
-	//fcntl(_fd_out[1], F_SETFL, O_NONBLOCK);	// added jaka
-
 	std::cout << YEL "Created pipes:  in[0]" << _fd_in[0] << ",  in[1]" << _fd_in[1] 
 							   << ", out[0]" << _fd_out[0] << ", out[1]" << _fd_out[1] << " \n" RES; 
-
 
 	Request *storage = (Request *)event.udata;
 	struct kevent evSet;
@@ -45,22 +42,23 @@ void CgiData::createPipes(int kq, struct kevent & event)
 
 void CgiData::closePipes()
 {
-	// -------- alternative method (if a fd is closed after change the val to -1 )
-	if (_pipesDone == true)
-	{
-		if (_fd_in[0] != -1)
-			close(_fd_in[0]);	
-		if (_fd_in[1] != -1)
-			close(_fd_in[1]);
-		if (_fd_out[0] != -1)
-			close(_fd_out[0]);
-		if (_fd_out[1] != -1)
-			close(_fd_out[1]);
-	}	
+	if (fcntl(_fd_in[0], F_GETFD) != -1)
+		close(_fd_in[0]);
+	if (fcntl(_fd_in[1], F_GETFD) != -1)
+		close(_fd_in[1]);
+	if (fcntl(_fd_out[0], F_GETFD) != -1)
+		close(_fd_out[0]);
+	if (fcntl(_fd_out[1], F_GETFD) != -1)
+		close(_fd_out[1]);
 }
 
 // ------------------------------------------------------------------ getters
 // --------------------------------------------------------------------------
+
+bool CgiData::getIsCgi()	// added jaka
+{
+	return (_isCgi);
+}
 
 unsigned long CgiData::getBytesToCgi()
 {
@@ -94,6 +92,11 @@ bool CgiData::getPipesDone()
 // ------------------------------------------------------------------ setters
 // --------------------------------------------------------------------------
 
+void CgiData::setIsCgi(bool val)
+{
+	_isCgi = val;
+}
+
 void CgiData::setBytesToCgi(int val)
 {
 	_bytesToCgi += val;
@@ -102,14 +105,4 @@ void CgiData::setBytesToCgi(int val)
 void CgiData::setPipesDone(bool val)
 {
 	_pipesDone = val;
-}
-
-void CgiData::resetPipeIn()
-{
-	_fd_in[1] = -1;
-}
-
-void CgiData::resetPipeOut()
-{
-	_fd_out[0] = -1;
 }

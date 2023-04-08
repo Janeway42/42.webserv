@@ -21,8 +21,9 @@ DELETE http://api.example.com/employee/1
 
 /** Default constructor */
 Request::Request() {
+	_kq = -1;
     _clientFd = -1;
-    _server = ServerData();
+    _server = new ServerData();
     _data = RequestData();
     _answer = ResponseData();
     _cgi = CgiData();
@@ -34,9 +35,10 @@ Request::Request() {
 }
 
 /** Overloaded constructor */
-Request::Request(int fd, ServerData *specificServer) {
+Request::Request(int kq, int fd, ServerData *specificServer) {
+	_kq = kq;
 	_clientFd = fd;
-	_server = *specificServer;
+	_server = new ServerData(*specificServer);
 	_data = RequestData();
 	_answer = ResponseData();
 	_cgi = CgiData();
@@ -49,7 +51,9 @@ Request::Request(int fd, ServerData *specificServer) {
 
 /** Destructor */
 Request::~Request() {
+	std::cout << "------------------- Request destructor -------------------\n";
 //   delete _data;
+	delete _server; 
 }
 
 
@@ -59,7 +63,7 @@ RequestData & Request::getRequestData(){
 }
 
 ServerData & Request::getServerData(){
-	return _server;
+	return *_server;
 }
 
 ResponseData & Request::getResponseData(){
@@ -70,6 +74,10 @@ CgiData & Request::getCgiData(){
 	return (_cgi);
 }
 
+int Request::getKq()
+{
+	return (_kq);
+}
 
 
 /** METHODS ################################################################# */
@@ -232,6 +240,7 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, struct kevent event, s
 void    Request::appendToRequest(const char str[], size_t len, struct kevent event) {
 	std::cout << PUR << "Start appendToRequest(): _hasBody: " << _hasBody << " | _doneParsing: " << _doneParsing << " \n" << RES;
 
+	// sleep(3); // testing TIMER
 	std::string 			chunk = std::string(str);
 	std::string				strToFind = "\r\n\r\n";
 	std::string::size_type	it, it2;

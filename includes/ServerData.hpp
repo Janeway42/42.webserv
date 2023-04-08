@@ -62,13 +62,24 @@ class ServerData : public Parser {
         private:
             std::string _errorMessage;
         public:
-            explicit ServerDataException(std::string const & errorMessage) throw() {
-                _errorMessage = "ServerData error: " + errorMessage;// todo: maybe add a number to it? and make it an array, std::pair map?
+		    ServerDataException(std::string message) throw()
+            {
+                _errorMessage = message;
             }
-            virtual const char* what() const throw() {
+            virtual const char* what() const throw()
+            {
                 return (_errorMessage.c_str());
             }
-            virtual ~ServerDataException() throw() {}
+            virtual ~ServerDataException() throw(){}
+
+
+            // explicit ServerDataException(std::string const & errorMessage) throw() {
+            //     _errorMessage = "ServerData error: " + errorMessage;// todo: maybe add a number to it? and make it an array, std::pair map?
+            // }
+            // virtual const char* what() const throw() {
+            //     return (_errorMessage.c_str());
+            // }
+            // virtual ~ServerDataException() throw() {}
         };
 };
 #endif //SERVERDATA_HPP
