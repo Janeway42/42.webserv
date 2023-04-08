@@ -10,12 +10,11 @@ int main(int ac, char **av) {
     if (ac == 2) {
         std::cout << std::boolalpha;
         std::cout << "Configuration file name: " << av[1] << std::endl;
-        std::cout << "-----------------------------------------------------------------------------------" << std::endl;
         try {
             ConfigFileParser configFileData(av[1]);
             std::cout << "-----------------------------------------------------------------------------------" << std::endl;
-            std::cout << RED << "Number of server block(s): " << configFileData.numberOfServerBlocks() << RES << std::endl;
-            std::cout << RED << "Number of location + cgi block(s): " << configFileData.numberOfLocationBlocks() << RES << std::endl;
+            std::cout << BLU << "Number of server block(s): " << configFileData.numberOfServerBlocks() << RES << std::endl;
+            std::cout << BLU << "Number of location + cgi block(s): " << configFileData.numberOfLocationBlocks() << RES << std::endl;
 
             /* begin() returns an iterator to beginning while cbegin() returns a const_iterator to beginning. */
             std::vector<ServerData>::iterator it_server;
@@ -119,10 +118,12 @@ int main(int ac, char **av) {
                 }
             }
             std::cout << std::endl;
-        } catch(std::exception const & ex) {
+        } catch (std::exception const & ex) {
             std::cout << RED << ex.what() << RES << std::endl;
         }
+        std::cout << std::endl << GRN << "⎪ Config file " << av[1] << " test is successful ⎪" << RES << std::endl;
     }
+
     return EXIT_SUCCESS;
 }
 /* TESTS

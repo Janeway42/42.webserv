@@ -44,7 +44,7 @@ class Request : public Parser {
 		HttpStatus		_httpStatus;
 		ServerData  	*_server;
 
-		void        parseHeaderAndPath(std::string & tmpHeader, struct kevent event, std::string::size_type it);
+		void        parseHeaderAndPath(std::string & tmpHeader, std::string::size_type it);
 		int 		appendLastChunkToBody2(const char *str, size_t len);
 		int 		appendToBody(const char *str, size_t len);
 
@@ -75,11 +75,11 @@ class Request : public Parser {
 		// methods
 		std::map<std::string, std::string>	storeFormData(std::string pq);
 		void			parseHeader(std::string header);
-		int				parsePath(std::string str, struct kevent event);
-		void			appendToRequest(const char str[], size_t len, struct kevent event);
+		HttpStatus		parsePath(std::string str);
+		void			appendToRequest(const char str[], size_t len);
 		void			storePathParts_and_FormData(std::string path);
-		void			storePath_and_FolderName(std::string path);
-		int				checkTypeOfFile();
+		void			storePath_and_FolderName(std::string const & originalUrlPath, std::string const & newUrlPath);
+		HttpStatus      checkIfPathExists(std::string const path);
 		void 			callCGI(struct kevent event);
 		void			runExecve(char *ENV[], char *args[], struct kevent event);
 		int				storeWordsFromFirstLine(std::string firstLine);

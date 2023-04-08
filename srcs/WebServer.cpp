@@ -197,7 +197,7 @@ void WebServer::readRequest(struct kevent& event)
 		}
 		else if (storage->getDone() == false)
 		{
-			storage->appendToRequest(buffer, ret, event);
+			storage->appendToRequest(buffer, ret);
 			//std::cout << CYN "    returned from ATR(), _parsingDone: " << storage->getDone() << ", isCGI: " << storage->getResponseData().getIsCgi() << "\n" RES;
 
 

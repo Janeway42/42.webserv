@@ -22,7 +22,7 @@ int main(int ac, char **av)
 		WebServer webServ(configFle);
         webServ.runServer();
     }
-    catch (std::exception & e) {
+    catch (std::exception const & e) {
         std::cout << RED << e.what() << RES << std::endl;
     }
 	return (EXIT_SUCCESS);

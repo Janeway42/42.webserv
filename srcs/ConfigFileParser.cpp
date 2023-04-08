@@ -17,7 +17,11 @@ ConfigFileParser::ConfigFileParser(std::string const & configFileName)
       _location_block_counter(0) {
     std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Config File ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
     std::cout << BLU << "ConfigFileParser Overloaded constructor" << RES << std::endl;
-    handleFile(configFileName);
+    try {
+        handleFile(configFileName);
+    } catch (std::exception const & e) {
+        std::cout << RED << e.what() << RES << std::endl;
+    }
 }
 
 /** Destructor */
@@ -53,17 +57,16 @@ void ConfigFileParser::handleFile(std::string const & configFileName) {
             if (lineContent.find('#') != std::string::npos || !lineContent[0]) {
                 continue;
             } else if (lineContent != "server {" && numberOfServerBlocks() == 0) {
-                std::cerr << RED << "A server block is needed in the configuration file" << RES << std::endl;// TODO: throw exception
-                break;
+                throw ParserException(CONFIG_FILE_ERROR("At least one server block", MANDATORY));
             } else if (lineContent == "server {") {
                 _server_block_counter++;
                 parseFileServerBlock(configFile);
                 continue;
             }
         }
-        if (servers.empty()) {
-            throw ParserException(CONFIG_FILE_ERROR("Configuration File", MISSING));
-        }
+//        if (servers.empty()) {
+//            throw ParserException(CONFIG_FILE_ERROR("Configuration File", MISSING));
+//        }
     } else {
         std::cerr << "Not able to open the configuration file" << std::endl;// TODO: throw exception
         return ;

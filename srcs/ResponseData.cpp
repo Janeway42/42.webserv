@@ -82,7 +82,6 @@ void ResponseData::setResponse(struct kevent& event) {
 			if (storage->getRequestData().getURLPath() == serverRootDir) {		// The path matches the server root
 				std::cout << YEL "                The Path is the root: [" << storage->getRequestData().getURLPath() << "]\n" RES;
 				_responsePath = storage->getServerData().getRootDirectory() + "/" + storage->getServerData().getIndexFile();
-				_responsePath = storage->getServerData().getRootDirectory() + "/" + storage->getServerData().getIndexFile();
 				std::cout << YEL "                       _responsePath: [" << _responsePath << "]\n" RES;// TODO NEED TO CHECK IF THE FILE EXISTS? OR IS IT BEING DONE?
 			}
 			// IF PATH IS A FOLDER INSIDE THE ROOT FOLDER
@@ -105,7 +104,9 @@ void ResponseData::setResponse(struct kevent& event) {
                     	std::cout << BLU "   ....... FinalPath: [" << location_data_vector[i].getRootDirectory() << "]\n";
 						break ;
 					}
-				}
+                    std::cout << "   ......................" << std::endl;
+
+                }
 
 				// ???
 				if (i == location_data_vector.size()) {

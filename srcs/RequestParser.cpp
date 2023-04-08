@@ -216,7 +216,7 @@ int Request::storeWordsFromOtherLine(std::string otherLine) {
 */
 
 
-void Request::parseHeaderAndPath(std::string & tmpHeader, struct kevent event, std::string::size_type it) {
+void Request::parseHeaderAndPath(std::string & tmpHeader, std::string::size_type it) {
     std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
 	_hasBody = true;
 	tmpHeader = _data.getHeader();
@@ -226,7 +226,7 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, struct kevent event, s
 	std::cout << BLU << "STORED HEADER: \n" << tmpHeader << "\n" << RES;
 	parseHeader(_data.getHeader());
 	//std::cout << RED "server root path: " << getServerData().getRootDirectory() << "\n" RES;
-	parsePath(_data.getHttpPath(), event);	// IF FILE NOT FOUND 404, IT COULD JUST CLOSE THE CONNECTION AND STOP
+	parsePath(_data.getHttpPath());	// IF FILE NOT FOUND 404, IT COULD JUST CLOSE THE CONNECTION (return now?)
 
 	if (_data.getRequestContentLength() == 0){
 		// if (_data.getRequestMethod() == "GET" && _data.getQueryString() != "")
@@ -237,7 +237,7 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, struct kevent event, s
 
 
 
-void    Request::appendToRequest(const char str[], size_t len, struct kevent event) {
+void    Request::appendToRequest(const char str[], size_t len) {
 	std::cout << PUR << "Start appendToRequest(): _hasBody: " << _hasBody << " | _doneParsing: " << _doneParsing << " \n" << RES;
 
 	// sleep(3); // testing TIMER
@@ -252,7 +252,7 @@ void    Request::appendToRequest(const char str[], size_t len, struct kevent eve
 		_data.setTemp(_data.getTemp() + chunk);
 
 		if ((it = _data.getTemp().find(strToFind)) != std::string::npos) {
-			parseHeaderAndPath(tmpHeader, event, it);
+			parseHeaderAndPath(tmpHeader, it);
 			std::cout << PUR << "Found header ending /r/n, maybe there is body\n" << RES;
 			//std::cout << PUR << "size_type 'it' value: " << it << "\n" << RES;
 			it2 = chunk.find(strToFind) + strToFind.length();	// needed to find the start of body, as char*, not std::string, because body will be vector
