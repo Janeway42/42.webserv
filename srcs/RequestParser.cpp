@@ -14,11 +14,6 @@ DELETE http://api.example.com/employee/1
 #include <unistd.h> // sleep
 #include "RequestParser.hpp"
 
-/*
-	In case error 404, file not found, it's probably good to not continue after parsePath(), 
-	and just close the connection
-*/
-
 /** Default constructor */
 Request::Request() {
 	_kq = -1;
@@ -32,6 +27,7 @@ Request::Request() {
     _doneParsing = false;
     _httpStatus = NO_STATUS;
     _hasBody = false;
+    std::cout << GRY << "Request Constructor" << RES << std::endl;
 }
 
 /** Overloaded constructor */
@@ -47,13 +43,14 @@ Request::Request(int kq, int fd, ServerData *specificServer) {
 	_doneParsing = false;
     _httpStatus = NO_STATUS;
 	_hasBody = false;
+    std::cout << GRY << "Request Copy Constructor" << RES << std::endl;
 }
 
 /** Destructor */
 Request::~Request() {
-	std::cout << "------------------- Request destructor -------------------\n";
 //   delete _data;
-	delete _server; 
+	delete _server;
+    std::cout << GRY << "Request Destructor" << RES << std::endl;
 }
 
 
@@ -146,7 +143,7 @@ int Request::storeWordsFromFirstLine(std::string firstLine) {
 	for (int i = 0; iter < arr.end(); iter++, i++) {
 		if (i == 0) {
 			if (*iter == "GET" || *iter == "POST" || *iter == "DELETE") {
-				std::cout << GRN_BG << YEL << "REQUEST METHOD: " << *iter << RES << std::endl;
+				std::cout << GRN_BG << YEL << "REQUEST METHOD: " << *iter << RES << std::endl << std::endl;
 				_data.setRequestMethod(*iter);
 			} else {
 				std::cout << RED << "Error: This method is not recognized\n" << RES;
@@ -253,11 +250,13 @@ void    Request::appendToRequest(const char str[], size_t len) {
 
 		if ((it = _data.getTemp().find(strToFind)) != std::string::npos) {
 			parseHeaderAndPath(tmpHeader, it);
-			std::cout << PUR << "Found header ending /r/n, maybe there is body\n" << RES;
+			std::cout << YEL << "Found header ending /r/n, maybe there is body\n" << RES;
 			//std::cout << PUR << "size_type 'it' value: " << it << "\n" << RES;
 			it2 = chunk.find(strToFind) + strToFind.length();	// needed to find the start of body, as char*, not std::string, because body will be vector
-			std::cout << "print start of body [" << PUR << str + it2 << "]\n" << RES;
-			
+            if (it2 != std::string::npos) {
+			    std::cout << "print start of body [" << PUR << str + it2 << "]\n" << RES;
+            }
+
 			//appendLastChunkToBody(it + strToFind.length());
 			appendLastChunkToBody2(str + it2, len - it2); // jaka, changed to vector
 			return ;
@@ -289,10 +288,10 @@ int Request::appendLastChunkToBody2(const char *str, size_t len) {
 		return (1);
 	}
 	if (_data.getClientBytesSoFar() == _data.getRequestContentLength()) {
-		std::cout << GRN << "    _doneparsing == true\n" << RES;
+		std::cout << GRN << "_doneparsing == true\n" << RES;
 		_doneParsing = true;
-		if (_data.getClientBytesSoFar() == 0 && _data.getRequestContentLength() == 0) {    // Compare body lenght
-			std::cout << GRN << "OK (there is no body)\n" << RES;
+		if (_data.getClientBytesSoFar() == 0 && _data.getRequestContentLength() == 0) {    // Compare body length
+			std::cout << YEL << "There is no body\n" << RES;
 			_hasBody = false;
 			std::cout << BLU "content type: [" << _data.getResponseContentType() << "]\n" RES;
 			return (0);

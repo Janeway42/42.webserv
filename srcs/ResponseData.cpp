@@ -2,7 +2,6 @@
 #include "ResponseData.hpp"
 #include "RequestData.hpp"
 
-
 #include <string.h> // jaka, temp, can be removed
 
 ResponseData::ResponseData(void) {
@@ -17,16 +16,15 @@ ResponseData::ResponseData(void) {
 	_bytesToClient = 0;
 	_responseDone = false;
 	// _errorOverride = false;
+    std::cout << GRY_BG << "ResponseData Constructor" << RES << std::endl;
 }
 
-ResponseData::~ResponseData(void) {}
-
-
-
+ResponseData::~ResponseData(void) {
+    std::cout << GRY_BG << "ResponseData Destructor" << RES << std::endl;
+}
 
 // ---------------------------------------------------------------------------- set functions
 // ------------------------------------------------------------------------------------------
-
 
 // THIS SAME FUNCTION IS ALREADY INSIDE RequestParserURLpath, it can be used as one
 static int checkIfPathExists(const std::string& path, struct kevent event) {
@@ -71,14 +69,34 @@ void ResponseData::setResponse(struct kevent& event) {
 	//			IF NOT, SEND ERROR PAGE, NOT ALLOWED ?
 	// if (storage->getRequestData().getIsFolder() == true) {
 	if (storage->getRequestData().getIsFolder() == true && storage->getCgiData().getIsCgi() == false) {
-		std::cout << YEL "The Path is a folder: check for a default index file and/or autoindex on/off\n" << RES;
-		std::cout << YEL "           Stored server root folder: [" << storage->getServerData().getRootDirectory() << "]\n" RES;
-	//	std::cout << YEL "          local var. for root folder: [" << serverRootDir << "]\n" RES;
-	//	std::cout << YEL "                             getURLPath: [" << storage->getRequestData().getURLPath() << "]\n" RES;
-
+		std::cout << BLU "The Path is a folder: check for a default index file and/or autoindex on/off\n" << RES;
+		std::cout << BLU "            Server block root_directory: [" << serverRootDir << "]\n" RES;
+		std::cout << BLU "                             getURLPath: [" << storage->getRequestData().getURLPath() << "]\n" RES;
+		std::cout << BLU "                            getFullPath: [" << storage->getRequestData().getURLPath_full() << "]\n" RES;
 		//if (storage->getRequestData().getResponseContentType().compare("text/html") == 0) {		// IF FOLDER, THE CONT. TYPE SHOULD BE text.html
-			
-			// IF PATH IS THE SERVER ROOT "./"  (  ./resources/  )
+
+        // No need to loop through the locations to find the matching,  the getURLPath_full() already contains
+        // the matching one. Here we need to append the corresponding check if its index file exists.
+        // Get the server block index file otherwise
+
+        // TODO: JOYCE WORK IN PROGRESS for the block down below
+//        std::vector<ServerLocation> location_vector = storage->getServerData().getLocationBlocks();
+//        std::vector<ServerLocation>::const_iterator location = location_vector.cbegin();
+//        for (; location != location_vector.cend(); ++location) {
+//            std::cout << "   ... location URI name: [" << location->getLocationUriName() << "]\n";
+//            std::cout << "   ... location root dir: [" << location->getRootDirectory() << "]\n";
+//
+//
+//            std::cout << GRN "   ....... _responsePath: [" << _responsePath << "]\n";
+//
+//        }
+//        _responsePath = storage->getRequestData().getURLPath_full() + "/" + storage->getServerData().getIndexFile();
+
+        // ------------------------------------------------------------------------------------------ todo delete?
+        // TODO JOYCE I will comment out this pat because it does not matter if the path is root or inside root (location).
+        // We just want to know if the current index exists, otherwise, get the server root index
+
+        // IF PATH IS THE SERVER ROOT "./"  (  ./resources/  )
 			if (storage->getRequestData().getURLPath() == serverRootDir) {		// The path matches the server root
 				std::cout << YEL "                The Path is the root: [" << storage->getRequestData().getURLPath() << "]\n" RES;
 				_responsePath = storage->getServerData().getRootDirectory() + "/" + storage->getServerData().getIndexFile();
@@ -98,13 +116,12 @@ void ResponseData::setResponse(struct kevent& event) {
                     std::cout << GRN "   ... location URI name: [" << location_data_vector[i].getLocationUriName() << "]\n";
                     std::cout << GRN "   ... location root dir: [" << location_data_vector[i].getRootDirectory() << "]\n";
                     std::cout << GRN "   ....... _responsePath: [" << _responsePath << "]\n";
-					// if (location_data_vector[i].getRootDirectory() == _responsePath) {// TODO here it should be getLocationUriName()
-					if (location_data_vector[i].getLocationUriName() == storage->getRequestData().getURLPath()) {// TODO here it should be getLocationUriName()
+					if (location_data_vector[i].getLocationUriName() == storage->getRequestData().getURLPath()) {
 						_responsePath = location_data_vector[i].getRootDirectory() + "/" + location_data_vector[i].getIndexFile();
                     	std::cout << BLU "   ....... FinalPath: [" << location_data_vector[i].getRootDirectory() << "]\n";
 						break ;
 					}
-                    std::cout << "   ......................" << std::endl;
+                    std::cout << RES << "   ......................" << std::endl;
 
                 }
 
@@ -132,7 +149,7 @@ void ResponseData::setResponse(struct kevent& event) {
 			std::cout << YEL "   content type:    [" << storage->getRequestData().getResponseContentType() << RES "]\n";
 		//}
 	}
-
+    // ------------------------------------------------------------------------------------------ todo delete?
 	else // if it is not a folder (it checks first if cgi -> if not then it checks text (includes error), else image
 		{
 			if (storage->getCgiData().getIsCgi() == true && storage->getHttpStatus() == OK)
@@ -151,7 +168,7 @@ void ResponseData::setResponse(struct kevent& event) {
 			}
 		}
 
-	// set up header 
+	// set up header // todo create a fucntion for that
 	int temp = _responseBody.length();
 	std::string fileLen = std::to_string(temp);
 	std::string contentLen = "Content-Length: ";
@@ -160,9 +177,9 @@ void ResponseData::setResponse(struct kevent& event) {
 	_responseHeader += contentLen;
 	_responseHeader += "\r\n\r\n";
 
-	// std::cout << YEL "complete response header: [" << _responseHeader << "]\n";
+	// std::cout << GRN << "complete response header: [" << _responseHeader << "]\n" << RES;
 	_fullResponse += _responseHeader + _responseBody;
-	//std::cout << YEL "\n_fullResponse:\n[\n" RES << _fullResponse << YEL "]\n" RES;
+	//std::cout << GRN << "\n_fullResponse:\n[\n" RES << _fullResponse << "]\n" <<RES;
 }
 
 
@@ -215,8 +232,7 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
 						"Content-Type: text/html\r\n"
 						"Content-Encoding: identity\r\n";
 					// "Content-Type: " + storage->getRequestData().getResponseContentType() + "\n";	// jaka
-			//  _responsePath = storage->getRequestData().getHttpPath();							// jaka: this is old, should be getURLPath()
-			_responsePath = storage->getRequestData().getURLPath();
+			_responsePath = storage->getRequestData().getURLPath_full();
 			std::cout << "_responsePath: [[" << GRN_BG << _responsePath << RES << "]]\n";
 			break;
 	}

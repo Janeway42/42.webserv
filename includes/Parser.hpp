@@ -11,6 +11,7 @@
 # define BLU_BG  "\033[44m"
 # define PUR_BG  "\033[45m"
 # define CYN_BG  "\033[46m"
+# define GRY_BG  "\033[47m"
 
 # define RED     "\033[31m"
 # define GRN     "\033[32m"
@@ -18,6 +19,7 @@
 # define BLU     "\033[34m"
 # define PUR     "\033[35m"
 # define CYN     "\033[36m"
+# define GRY     "\033[37m"
 
 # define RES     "\033[0m"
 

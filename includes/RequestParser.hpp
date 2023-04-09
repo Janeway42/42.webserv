@@ -74,16 +74,22 @@ class Request : public Parser {
 
 		// methods
 		std::map<std::string, std::string>	storeFormData(std::string pq);
-		void			parseHeader(std::string header);
-		HttpStatus		parsePath(std::string str);
-		void			appendToRequest(const char str[], size_t len);
-		void			storePathParts_and_FormData(std::string path);
-		void			storePath_and_FolderName(std::string const & originalUrlPath, std::string const & newUrlPath);
-		HttpStatus      checkIfPathExists(std::string const path);
-		void 			callCGI(struct kevent event);
-		void			runExecve(char *ENV[], char *args[], struct kevent event);
-		int				storeWordsFromFirstLine(std::string firstLine);
-		int				storeWordsFromOtherLine(std::string otherLine);
+		void			    parseHeader(std::string header);
+		HttpStatus		    parsePath(std::string const & originalUrlPath);
+		std::string	        parsePath_locationMatch(std::string const & originalUrlPath);
+		bool		    	parsePath_file(std::string const & originalUrlPath, std::string const & locationBlockUriName);
+		bool		    	parsePath_cgi(std::string const & originalUrlPath, std::string const & locationBlockUriName);
+		bool		    	parsePath_dir(std::string const & originalUrlPath);
+        std::string         parsePath_regularCase(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);
+        std::string         parsePath_edgeCase(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);//todo mayne not needed?
+		void		    	appendToRequest(const char str[], size_t len);
+		void		    	storePathParts_and_FormData(std::string const & originalUrlPath);
+		void			    storeURLPathParts(std::string const & originalUrlPath, std::string const & newUrlPath);
+		HttpStatus          checkIfPathExists(std::string const & path);
+		void 			    callCGI(struct kevent event);
+		void			    runExecve(char *ENV[], char *args[], struct kevent event);
+		int				    storeWordsFromFirstLine(std::string firstLine);
+		int				    storeWordsFromOtherLine(std::string otherLine);
 
 
 		// cleanup ------------------------

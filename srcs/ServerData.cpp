@@ -226,7 +226,7 @@ void ServerData::setIpAddress(std::string const & ip) {
 
 void ServerData::setRootDirectory(std::string const & rootDirectory) {
     /* not mandatory | default: ./$server_name */
-    if (not rootDirectory.empty()) {
+    if (not rootDirectory.empty() && rootDirectory != "/" && rootDirectory != "./") {
         PathType type = pathType(rootDirectory);
         if (type == DIRECTORY) {
             _root_directory = addCurrentDirPath(rootDirectory) + rootDirectory;

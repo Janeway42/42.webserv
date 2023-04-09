@@ -127,7 +127,7 @@ void ServerLocation::setLocation(std::string const & location) {
 
 void ServerLocation::setRootDirectory(std::string const & rootDirectory) {
     /* not mandatory | default: $server.root_directory */
-    if (not rootDirectory.empty()) {
+    if (not rootDirectory.empty() && rootDirectory != "/" && rootDirectory != "./") {
         std::string root_directory = addRootDirectoryPath(_root_directory, rootDirectory);
         PathType type = pathType(root_directory);
         if (type == DIRECTORY) {
@@ -146,13 +146,14 @@ void ServerLocation::setRootDirectory(std::string const & rootDirectory) {
         } else {
             throw ParserException(CONFIG_FILE_ERROR("root_directory", NOT_SUPPORTED));
         }
-    } else {
+    }
+//    else {
 //        _root_directory = _root_directory + (_location_uri_name != "/" ? _location_uri_name : "");
         /* cgi -> mandatory */
-        if (isLocationCgi()) {
-            throw ParserException(CONFIG_FILE_ERROR("root_directory", MANDATORY));
-        }
-    }
+//        if (isLocationCgi()) {
+//            throw ParserException(CONFIG_FILE_ERROR("root_directory", MANDATORY));
+//        }
+//    }
 }
 
 void ServerLocation::setAllowMethods(std::string const & allowMethods) {

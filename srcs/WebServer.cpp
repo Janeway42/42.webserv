@@ -36,12 +36,11 @@ WebServer::WebServer(std::string const & configFileName)
 		if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 			throw ServerException(("failed kevent start listening socket")); // getaddrinfo uses malloc - freeaddrinfo is needed !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! - TO DO
 	}
-	std::cout  << "LEAVING WEBSERV CONSTRUCTOR" << std::endl;
+    std::cout << CYN << GRY_BG << "WebServer Overloaded Constructor" << RES << std::endl;
 }
 
 WebServer::~WebServer()
 {
-	std::cout << " ------------- WebServer Destructor" << std::endl;
 	close(_kq);
 	std::vector<ServerData>::iterator it_server = _servers.begin();
 	for (; it_server != _servers.end(); ++it_server) {
@@ -50,6 +49,7 @@ WebServer::~WebServer()
 			freeaddrinfo(it_server->getAddr());
 			}
 	}
+    std::cout << CYN << GRY_BG << "WebServer Destructor" << RES << std::endl;
 }
 
 // --------------------------------------------------------- server main loop
@@ -85,12 +85,12 @@ void WebServer::runServer()
 					newClient(evList[i], specificServer);
 				else if (evList[i].filter == EVFILT_TIMER)
 				{
-					std::cout << "--------------------------------------------------------------------------------------------------------------------- TIMER\n"; // Corina: I need these for testing purposes
+					std::cout << "----------------------------------------------------------------------------------------------------------------- TIMER\n"; // Corina: I need these for testing purposes
 					handleTimeout(evList[i]);
 				}
 				else if (evList[i].filter == EVFILT_READ)
 				{
-					std::cout << "--------------------------------------------------------------------------------------------------------------------- READ\n";
+					std::cout << "----------------------------------------------------------------------------------------------------------------- READ\n";
 					if (evList[i].flags & EV_EOF)
 					{
 						std::cout << RED "EOF from ReadRequest, close the reading FD: " << evList[i].ident << "\n" RES;
@@ -113,7 +113,7 @@ void WebServer::runServer()
 				}
 				else if (evList[i].filter == EVFILT_WRITE)
 				{
-					std::cout << "--------------------------------------------------------------------------------------------------------------------- WRITE\n";
+					std::cout << "----------------------------------------------------------------------------------------------------------------- WRITE\n";
 					if (evList[i].flags & EV_EOF)
 					{
 						removeFilter(evList[i], EVFILT_WRITE, "failed kevent EV_EOF - EVFILT_WRITE");
@@ -205,9 +205,10 @@ void WebServer::readRequest(struct kevent& event)
 			if (storage->getHttpStatus() != NO_STATUS || (storage->getDone() == true && storage->getCgiData().getIsCgi() == false))
 			{
 				//std::cout << CYN "           ReadRequest: B)\n" RES;
-				if (storage->getHttpStatus() != NO_STATUS)
-					std::cout << "error parsing - sending response - failure, error " << storage->getHttpStatus() << "\n";// TODO JOYCE MAP ENUM TO STRING
-				else if (storage->getDone() == true)
+				if (storage->getHttpStatus() != NO_STATUS) {
+                    std::cout << YEL << "storage->getCgiData().getIsCgi(): " << storage->getCgiData().getIsCgi() << "\n" << RES;
+                    std::cout << RED << "error parsing - sending response - failure, error " << storage->getHttpStatus()  << "\n" << RES;
+                } else if (storage->getDone() == true)
 					std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
 
 				addFilter(event.ident, event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, success READ");
@@ -243,8 +244,8 @@ void WebServer::sendResponse(struct kevent& event)
 	// --------------------------------------------------------------
 	if ((int)event.ident == (storage->getCgiData()).getPipeCgiIn_1())
 	{
-		std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CGI ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
-		//buffer = storage->getResponseData().getResponseBody();
+		std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CGI ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
+        //buffer = storage->getResponseData().getResponseBody();
 		// Jaka: Set buffer string to the point, from where previous chunk of body was sent
 		//std::cout << "       getBody().length() " << storage->getRequestData().getBody().size() << "\n";
 		//std::cout << "                getBody() [ temp disabled by jaka ]\n";
@@ -275,8 +276,8 @@ void WebServer::sendResponse(struct kevent& event)
 
 			if (storage->getCgiData().getBytesToCgi() == (storage->getRequestData()).getRequestContentLength())
 			{
-				std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ CGI Response sent ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
-				removeFilter(event, EVFILT_WRITE, "failed kevent EV_DELETE, EVFILT_WRITE - success on _fd_in[1]");
+				std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ CGI Response sent ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
+                removeFilter(event, EVFILT_WRITE, "failed kevent EV_DELETE, EVFILT_WRITE - success on _fd_in[1]");
 				close(event.ident);
 			}
 		}
@@ -293,9 +294,9 @@ void WebServer::sendResponse(struct kevent& event)
 	// --------------------------------------------------------------
 	else if ((int)event.ident == storage->getFdClient())
 	{
-        std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
+        std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
 
-		if (storage->getResponseData().getResponseDone() == false)
+        if (storage->getResponseData().getResponseDone() == false)
 		{
 			storage->getResponseData().setResponse(event);
 			storage->getResponseData().setResponseDone(true);
@@ -361,8 +362,8 @@ void WebServer::newClient(struct kevent event, ServerData * specificServer)
 	EV_SET(&evSet, fd, EVFILT_TIMER, EV_ADD, 0, time, storage); 
 	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 		throw ServerException("failed kevent EV_ADD, EVFILT_TIMER, new client");
-    std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << GRN << " New client connection" << RES << " ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
-	std::cout << "fd new client: " << fd << std::endl;
+    std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << GRN << " New client connection" << RES << " ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
+    std::cout << "fd new client: " << fd << std::endl;
 }
 
 void WebServer::closeClient(struct kevent& event)
@@ -375,8 +376,8 @@ void WebServer::closeClient(struct kevent& event)
 	std::cout << "fd that will be closed: " << event.ident << std::endl;
 	std::cout << "original request: " << storage->getRequestData().getHttpPath() << std::endl;
 	close(event.ident);
-	std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
-	delete(storage);
+	std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
+    delete(storage);
 }
 
 // --------------------------------------------------------- utils functions
@@ -415,10 +416,10 @@ void WebServer::removeFilter(struct kevent& event, int filter, std::string error
 }
 
 void	WebServer::chooseMethod_StartCGI(struct kevent event, Request * storage) {
-	std::cout << RED "Start ChooseMethodStartCGI()\n" RES ;
+	std::cout << CYN << "Start ChooseMethodStartCGI()\n" << RES ;
 	// if (_data.getRequestMethod() == "GET" && _data.getQueryString() != "") {
 	if (storage->getRequestData().getRequestMethod() == "GET" && storage->getRequestData().getQueryString() != "") {
-		std::cout << RED "     start GET, callCGI\n" RES ;
+		std::cout << "start GET, callCGI\n";
 		// callCGI(getRequestData(), fdClient);
 		storage->callCGI(event);
 	}
