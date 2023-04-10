@@ -7,7 +7,6 @@ WebServer::WebServer(std::string const & configFileName)
 	ConfigFileParser configFileData = ConfigFileParser(configFileName);
 
 	_servers = configFileData.servers;
-	std::cout << "size server: " << _servers.size() << std::endl;
 	std::cout  << "Server blocks quantity: " << configFileData.numberOfServerBlocks() << std::endl;
 	std::cout  << "Location block quantity: " << configFileData.numberOfLocationBlocks() << std::endl;
 
@@ -19,7 +18,7 @@ WebServer::WebServer(std::string const & configFileName)
 
 	// ----------- loop to create all listening sockets ---------
 	std::vector<ServerData>::iterator it_server;
-	std::cout << "before vector loop ---------------\n";
+	//std::cout << "before vector loop ---------------\n";
 	for (it_server = _servers.begin(); it_server != _servers.end(); ++it_server)
 	{
 		try

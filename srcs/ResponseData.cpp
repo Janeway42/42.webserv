@@ -27,22 +27,22 @@ ResponseData::~ResponseData(void) {
 // ------------------------------------------------------------------------------------------
 
 // THIS SAME FUNCTION IS ALREADY INSIDE RequestParserURLpath, it can be used as one
-static int checkIfPathExists(const std::string& path, struct kevent event) {
-	
-	(void)event;
-	std::cout << "Start CheckIfFIleExists(), path [" << path << "] \n" << RES;
-
-	
-	std::ifstream file(path.c_str());
-
-	if (not file.is_open()) {		// ??? what is this syntax? -> joyce for cpp we can use not in the pace of ! for readability :)
-		std::cout << RED << "Error: File " << path << " not found\n" << RES;
-		return(NOT_FOUND);
-	}
-	std::cout << GRN << "File/folder " << RES << path << GRN << " exists\n" << RES;
-
-	return 0;
-}
+//static int checkIfPathExists(const std::string& path, struct kevent event) {
+//
+//	(void)event;
+//	std::cout << "Start CheckIfFIleExists(), path [" << path << "] \n" << RES;
+//
+//
+//	std::ifstream file(path.c_str());
+//
+//	if (not file.is_open()) {		// ??? what is this syntax? -> joyce for cpp we can use not in the pace of ! for readability :)
+//		std::cout << RED << "Error: File " << path << " not found\n" << RES;
+//		return(NOT_FOUND);
+//	}
+//	std::cout << GRN << "File/folder " << RES << path << GRN << " exists\n" << RES;
+//
+//	return 0;
+//}
 
 // This function creates the header only for text/html requests, but not for images.
 // If it is an image, then setImage() is called, where both header and body are created, and
@@ -87,62 +87,65 @@ void ResponseData::setResponse(struct kevent& event) {
 //            std::cout << "   ... location root dir: [" << location->getRootDirectory() << "]\n";
 //
 //
-//            std::cout << GRN "   ....... _responsePath: [" << _responsePath << "]\n";
+//            std::cout << GRN "   ....... _responsePath: [" << _responsePath << "]\n" << RES ;
 //
 //        }
-//        _responsePath = storage->getRequestData().getURLPath_full() + "/" + storage->getServerData().getIndexFile();
+        if (storage->getHttpStatus() == NO_STATUS) {
+            std::cout << GRN "Setting _responsePath\n" << RES ;
+            _responsePath = storage->getRequestData().getURLPath_full();// + "/" + storage->getServerData().getIndexFile();
+        }
 
         // ------------------------------------------------------------------------------------------ todo delete?
         // TODO JOYCE I will comment out this pat because it does not matter if the path is root or inside root (location).
         // We just want to know if the current index exists, otherwise, get the server root index
 
         // IF PATH IS THE SERVER ROOT "./"  (  ./resources/  )
-			if (storage->getRequestData().getURLPath() == serverRootDir) {		// The path matches the server root
-				std::cout << YEL "                The Path is the root: [" << storage->getRequestData().getURLPath() << "]\n" RES;
-				_responsePath = storage->getServerData().getRootDirectory() + "/" + storage->getServerData().getIndexFile();
-				std::cout << YEL "                       _responsePath: [" << _responsePath << "]\n" RES;// TODO NEED TO CHECK IF THE FILE EXISTS? OR IS IT BEING DONE?
-			}
+//			if (storage->getRequestData().getURLPath() == serverRootDir) {		// The path matches the server root
+//				std::cout << YEL "                The Path is the root: [" << storage->getRequestData().getURLPath() << "]\n" RES;
+//				_responsePath = storage->getServerData().getRootDirectory() + "/" + storage->getServerData().getIndexFile();
+//				std::cout << YEL "                       _responsePath: [" << _responsePath << "]\n" RES;// TODO NEED TO CHECK IF THE FILE EXISTS? OR IS IT BEING DONE?
+//			}
 			// IF PATH IS A FOLDER INSIDE THE ROOT FOLDER
-			else {
-				std::cout << YEL "          The URLpath is a folder inside the root: [" << storage->getRequestData().getURLPath() << "]\n" RES;
+//			else {
+//				std::cout << YEL "          The URLpath is a folder inside the root: [" << storage->getRequestData().getURLPath() << "]\n" RES;
 
 				// Here it should compare the path with available locations.
 				// If a location is valid in the config file, then take the default index file inside that location
 				// and append the filename after the path.
-				std::vector<ServerLocation> location_data_vector = storage->getServerData().getLocationBlocks();
-				size_t i;
-				for (i = 0; i < location_data_vector.size(); i++) {
-                    std::cout << GRN "   .... incoming URLpath: [" << storage->getRequestData().getURLPath() << "]\n";
-                    std::cout << GRN "   ... location URI name: [" << location_data_vector[i].getLocationUriName() << "]\n";
-                    std::cout << GRN "   ... location root dir: [" << location_data_vector[i].getRootDirectory() << "]\n";
-                    std::cout << GRN "   ....... _responsePath: [" << _responsePath << "]\n";
-					if (location_data_vector[i].getLocationUriName() == storage->getRequestData().getURLPath()) {
-						_responsePath = location_data_vector[i].getRootDirectory() + "/" + location_data_vector[i].getIndexFile();
-                    	std::cout << BLU "   ....... FinalPath: [" << location_data_vector[i].getRootDirectory() << "]\n";
-						break ;
-					}
-                    std::cout << RES << "   ......................" << std::endl;
-
-                }
+//				std::vector<ServerLocation> location_data_vector = storage->getServerData().getLocationBlocks();
+//				size_t i;
+//				for (i = 0; i < location_data_vector.size(); i++) {
+//                    std::cout << GRN "   .... incoming URLpath: [" << storage->getRequestData().getURLPath() << "]\n";
+//                    std::cout << GRN "   ... location URI name: [" << location_data_vector[i].getLocationUriName() << "]\n";
+//                    std::cout << GRN "   ... location root dir: [" << location_data_vector[i].getRootDirectory() << "]\n";
+//                    std::cout << GRN "   ....... _responsePath: [" << _responsePath << "]\n";
+//					if (location_data_vector[i].getLocationUriName() == storage->getRequestData().getURLPath()) {
+//						_responsePath = location_data_vector[i].getRootDirectory() + "/" + location_data_vector[i].getIndexFile();
+//                    	std::cout << BLU "   ....... FinalPath: [" << location_data_vector[i].getRootDirectory() << "]\n";
+//						break ;
+//					}
+//                    std::cout << RES << "   ......................" << std::endl;
+//
+//                }
 
 				// ???
-				if (i == location_data_vector.size()) {
-                    std::cout << RED "This path exists but does not match any location block: [" << _responsePath << "]\n";
-                    std::cout << RED "		Here the _responsepath / error page needs to be set to 404 NOT FOUND\n";
-					storage->setHttpStatus(NOT_FOUND);
-				}
+//				if (i == location_data_vector.size()) {
+//                    std::cout << RED "This path exists but does not match any location block: [" << _responsePath << "]\n";
+//                    std::cout << RED "		Here the _responsepath / error page needs to be set to 404 NOT FOUND\n";
+//					storage->setHttpStatus(NOT_FOUND);
+//				}
 
 				// If chosen path filename is not in this folder, try default server filename:
-				else {
-					if (checkIfPathExists(_responsePath, event) == NOT_FOUND)
-						_responsePath = location_data_vector[i].getRootDirectory() + "/" + storage->getServerData().getIndexFile();
-					if (checkIfPathExists(_responsePath, event) == NOT_FOUND) {
-						storage->setHttpStatus(FORBIDDEN);
-	                    std::cout << RED "There is no such index file in this location: [" << _responsePath << "]\n";
-						return ;
-					}
-				}
-			}
+//				else {
+//					if (checkIfPathExists(_responsePath, event) == NOT_FOUND)
+//						_responsePath = location_data_vector[i].getRootDirectory() + "/" + storage->getServerData().getIndexFile();
+//					if (checkIfPathExists(_responsePath, event) == NOT_FOUND) {
+//						storage->setHttpStatus(FORBIDDEN);
+//	                    std::cout << RED "There is no such index file in this location: [" << _responsePath << "]\n";
+//						return ;
+//					}
+//				}
+//			}
 			_responseBody = streamFile(_responsePath);
 			std::cout << YEL "   getHttpStatus(): [" << storage->getHttpStatus() << "]\n" RES;// todo JOYCE map enums to strings
 			std::cout << YEL "   response path:   [" << _responsePath << "]\n" RES;
@@ -204,6 +207,7 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
 						"Content-Type: text/html\r\n"
 						"Content-Encoding: identity\r\n";
 			(storage->getResponseData()).setResponsePath("resources/error_pages/404NotFound.html");
+            _responsePath = "resources/error_pages/404NotFound.html";
 			break;
 		case 405:
 			status = "HTTP/1.1 405 Method Not Allowed\r\n"

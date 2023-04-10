@@ -109,7 +109,7 @@ $(NAME): $(OBJ) $(INCLUDES_DEPENDENCY)
 clean:
 	rm -rf $(OBJ)
 	@rm -rf a.out *.dSYM
-	@rm -rf $(CONFIG_FILE)
+	@rm -rf confiFileTester
 	@echo "$(YELLOW)clean done$(RESET)"
 
 fclean: clean
