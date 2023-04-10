@@ -2,6 +2,7 @@
 #include <sstream>
 #include <unistd.h>
 #include <string.h>
+
 #include "Parser.hpp"
 
 std::string appendHTMLhead(std::string path, std::string & htmlStr) {
@@ -25,7 +26,7 @@ std::string removeLastFolderFromPath(std::string path) {
 
 	parentPath = path.substr(0, len);
 
-	std::cout << GRE << "parentPath: [" << parentPath << "]\n" << RES;
+	std::cout << GRN << "parentPath: [" << parentPath << "]\n" << RES;
 	return (parentPath);
 }
 

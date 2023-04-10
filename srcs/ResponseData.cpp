@@ -1,10 +1,10 @@
-#include "../includes/RequestParser.hpp"
-#include "../includes/ResponseData.hpp"
-#include "../includes/RequestData.hpp"
-
+#include "RequestParser.hpp"
+#include "ResponseData.hpp"
+#include "RequestData.hpp"
 
 #include <string.h> // jaka, temp, can be removed
 
+/** Default constructor */
 ResponseData::ResponseData(void) {
 	_status = "";
 	//_length = "";
@@ -17,141 +17,86 @@ ResponseData::ResponseData(void) {
 	_bytesToClient = 0;
 	_responseDone = false;
 	// _errorOverride = false;
+    std::cout << GRY_BG << "ResponseData Default Constructor" << RES << std::endl;
 }
 
-ResponseData::~ResponseData(void) {}
-
-
-
-
-// ---------------------------------------------------------------------------- set functions
-// ------------------------------------------------------------------------------------------
-
-
-// THIS SAME FUNCTION IS ALREADY INSIDE RequestParserURLpath, it can be used as one
-static int checkIfPathExists(const std::string& path, struct kevent event) {
-	
-	(void)event;
-	std::cout << GRN << "Start CheckIfFIleExists(), path [" << path << "] \n" << RES;
-	
-	std::ifstream file(path.c_str());
-
-	if (not file.is_open()) {		// ??? what is this syntax? -> joyce for cpp we can use not in the pace of ! for readability :)
-		std::cout << RED << "Error: File " << path << " not found\n" << RES;
-		return(NOT_FOUND);
-	}
-	std::cout << GRN << "File/folder " << path << " exists\n" << RES;
-
-	return 0;
+/** Destructor */
+ResponseData::~ResponseData(void) {
+    std::cout << GRY_BG << "ResponseData Destructor" << RES << std::endl;
 }
 
+/** #################################### Setters #################################### */
 
-
-// This function creates the header only for text/html requests, but not for images.
-// If it is an image, then setImage() is called, where both header and body are created, and
-// then setResponse() returns this full content, ready to be sent.
+/* If the path from the URL is:
+ * - Directory:
+ *      - the correct index file was already added to the storage->getRequestData().getURLPath_full()
+ *      - the storage->getRequestData().getIsFolder() will return true (even for requests that does not finish with /)
+ *      - auto index allowed:
+ *          - if auto index is off: Error status 404
+ *          - if auto index is on and directory does not exist: Error status 404
+ *          - if auto index is on: send the html for the directory content
+ * - File:
+ *      - the storage->getRequestData().getExtension() wll return the extension of the requested file
+ *      - auto index not allowed
+ * - Query:
+ *      - the storage->getRequestData().getIsCgi() will return true
+ *      - the storage->getRequestData().getExtension() wll return the extension of the requested file
+ *      - auto index not allowed
+ * --------------------------------------------------------------------------------------------------------------------
+ * This function creates the header only for text/html requests, but not for images.
+ * If it is an image, then setImage() is called, where both header and body are created, and
+ * then setResponse() returns this full content, ready to be sent
+ */
 void ResponseData::setResponse(struct kevent& event) {
-	std::cout << YEL "Start setResponse()\n" << RES;
-	
-	Request *storage = (Request *)event.udata;	
+	std::cout << CYN <<  "Start setResponse()\n" << RES;
+	Request *storage = (Request *)event.udata;
+    _responsePath = storage->getRequestData().getURLPath_full();
 	_responseHeader += setResponseStatus(event);
 
-	// NEED TO REMOVE THE SLASH AT THE END OF THE URL, IN CASE IT IS THERE, ie: .../location_random_dir/
 
-	// DO WE HAVE AN INDICATOR, IF THE REQUEST IS A CGI?
-	//	A)  NO CGI, RESPONSE IS JUST FILE OR IMAGE
-	// 	B)	YES CGI, THE RESPONSE BODY IS STORED CGI CONTENT
-
-
-	// A)
-	std::string serverRootDir = storage->getServerData().getRootDirectory();
-
-	// IF THE PATH IS A FOLDER, THIS FUNCTION NEEDS TO CHECK IF THERE IS A DEFAULT INDEX FILE PRESENT,
-	// IF NOT, THEN CHECK IF AUTOINDEX IS ON,
-	// 			IF YES, SEND HTML WITH FOLDER CONTENT
-	//			IF NOT, SEND ERROR PAGE, NOT ALLOWED ?
-	// if (storage->getRequestData().getIsFolder() == true) {
 	if (storage->getRequestData().getIsFolder() == true && storage->getCgiData().getIsCgi() == false) {
-		std::cout << YEL "The Path is a folder: check for a default index file and/or autoindex on/off\n" << RES;
-		std::cout << YEL "           Stored server root folder: [" << storage->getServerData().getRootDirectory() << "]\n" RES;
-	//	std::cout << YEL "          local var. for root folder: [" << serverRootDir << "]\n" RES;
-	//	std::cout << YEL "                             getURLPath: [" << storage->getRequestData().getURLPath() << "]\n" RES;
+        /* No need to loop through the locations to find the matching,  the getURLPath_full() already contains
+         * the matching one. Also, no need to append the corresponding index file */
+         std::cout << BLU "The Path is a folder: check for autoindex on/off\n" << RES;
+         std::cout << BLU "   getURLPath: [" << storage->getRequestData().getURLPath() << "]\n" RES;
+         std::cout << BLU "  getFullPath: [" << storage->getRequestData().getURLPath_full() << "]\n" RES;
 
-		//if (storage->getRequestData().getResponseContentType().compare("text/html") == 0) {		// IF FOLDER, THE CONT. TYPE SHOULD BE text.html
-			
-			// IF PATH IS THE SERVER ROOT "./"  (  ./resources/  )
-			if (storage->getRequestData().getURLPath() == serverRootDir) {		// The path matches the server root
-				std::cout << YEL "                The Path is the root: [" << storage->getRequestData().getURLPath() << "]\n" RES;
-				_responsePath = storage->getServerData().getRootDirectory() + "/" + storage->getServerData().getIndexFile();
-				_responsePath = storage->getServerData().getRootDirectory() + "/" + storage->getServerData().getIndexFile();
-				std::cout << YEL "                       _responsePath: [" << _responsePath << "]\n" RES;
-			}
-			// IF PATH IS A FOLDER INSIDE THE ROOT FOLDER
-			else {
-				std::cout << YEL "          The URLpath is a folder inside the root: [" << storage->getRequestData().getURLPath() << "]\n" RES;
-
-				// Here it should compare the path with available locations.
-				// If a location is valid in the config file, then take the default index file inside that location
-				// and append the filename after the path.
-				std::vector<ServerLocation> location_data_vector = storage->getServerData().getLocationBlocks();
-				size_t i;
-				for (i = 0; i < location_data_vector.size(); i++) {
-                    std::cout << GRE "   .... incoming URLpath: [" << storage->getRequestData().getURLPath() << "]\n";
-                    std::cout << GRE "   ... location URI name: [" << location_data_vector[i].getLocationUriName() << "]\n";
-                    std::cout << GRE "   ... location root dir: [" << location_data_vector[i].getRootDirectory() << "]\n";
-                    std::cout << GRE "   ....... _responsePath: [" << _responsePath << "]\n";
-					// if (location_data_vector[i].getRootDirectory() == _responsePath) {// TODO here it should be getLocationUriName()
-					if (location_data_vector[i].getLocationUriName() == storage->getRequestData().getURLPath()) {// TODO here it should be getLocationUriName()
-						_responsePath = location_data_vector[i].getRootDirectory() + "/" + location_data_vector[i].getIndexFile();
-                    	std::cout << BLU "   ....... FinalPath: [" << location_data_vector[i].getRootDirectory() << "]\n";
-						break ;
-					}
-				}
-
-				// ???
-				if (i == location_data_vector.size()) {
-                    std::cout << RED "This path exists but does not match any location block: [" << _responsePath << "]\n";
-                    std::cout << RED "		Here the _responsepath / error page needs to be set to 404 NOT FOUND\n";
-					storage->setHttpStatus(NOT_FOUND);
-				}
-
-				// If chosen path filename is not in this folder, try default server filename:
-				else {
-					if (checkIfPathExists(_responsePath, event) == NOT_FOUND)
-						_responsePath = location_data_vector[i].getRootDirectory() + "/" + storage->getServerData().getIndexFile();
-					if (checkIfPathExists(_responsePath, event) == NOT_FOUND) {
-						storage->setHttpStatus(FORBIDDEN);
-	                    std::cout << RED "There is no such index file in this location: [" << _responsePath << "]\n";
-						return ;
-					}
-				}
-			}
+		//if (storage->getRequestData().getResponseContentType().compare("text/html") == 0) { // IF FOLDER, THE CONT. TYPE SHOULD BE text.html todo use this check still?
+        if (storage->getHttpStatus() == OK) {
+            std::cout << "Setting _responsePath and _responseBody\n";
 			_responseBody = streamFile(_responsePath);
-			std::cout << YEL "   getHttpStatus(): [" << storage->getHttpStatus() << "]\n" RES;// todo JOYCE map enums to strings
-			std::cout << YEL "   response path:   [" << _responsePath << "]\n" RES;
-			std::cout << YEL "   content type:    [" << storage->getRequestData().getResponseContentType() << RES "]\n";
-		//}
-	}
 
-	else // if it is not a folder (it checks first if cgi -> if not then it checks text (includes error), else image
-		{
-			if (storage->getCgiData().getIsCgi() == true && storage->getHttpStatus() == OK)
-				_responseBody = storage->getRequestData().getCgiBody();
-			else
-			{
-				std::cout << BLU "The path is a file: [" << _responsePath << "]\n" << RES;
-				if (storage->getRequestData().getResponseContentType().compare("text/html") == 0)
-					_responseBody = streamFile(_responsePath);
-					//_responseBody = streamFile(storage->getServerData().getRootDirectory() + "/" + _responsePath);
-				else {	// IF IMAGE, FULL RESPONSE IS CREATED IN setImage()
-					_fullResponse = setImage(storage->getResponseData().getResponsePath());
+			std::cout << "   getHttpStatus(): [" << storage->getHttpStatus() << "]\n" << RES;
+			std::cout << "   response path:   [" << _responsePath << "]\n" << RES;
+			std::cout << "   content type:    [" << storage->getRequestData().getResponseContentType() << "]\n" << RES;
+        }
+        // Handling auto index
+        if (storage->getRequestData().getAutoIndex() == true) {
+            // TODO handle auto index better?
+            _responseBody = streamFile(_responsePath);
+        }
+	}
+    // if it is not a folder (it checks first if cgi -> if not then it checks text (includes error), else image
+    else {
+            std::cout << RED << "joyce: " << storage->getCgiData().getIsCgi() << " | " << storage->getHttpStatus() << std::endl;
+			if (storage->getCgiData().getIsCgi() == true && storage->getHttpStatus() == OK) {
+                _responseBody = storage->getRequestData().getCgiBody();
+            } else {
+                if (storage->getRequestData().getResponseContentType().compare("text/html") == 0) {
+                    std::cout << GRN << "The path is a file: [" << GRN_BG << _responsePath << RES << "]\n";
+                    _responseBody = streamFile(_responsePath);
+                    //_responseBody = streamFile(storage->getServerData().getRootDirectory() + "/" + _responsePath);
+                }
+                else {	// IF IMAGE, FULL RESPONSE IS CREATED IN setImage()
+                    std::cout << GRN << "The path is an image: [" << GRN_BG << _responsePath << RES << "]\n";
+                    _fullResponse = setImage(_responsePath);
 					// std::cout << BLU "_fullResponse.length(): [\n" << _fullResponse.size() << "\n" RES;
 					return ;
 				}
 			}
 		}
 
-	// set up header 
+	// set up header
 	int temp = _responseBody.length();
 	std::string fileLen = std::to_string(temp);
 	std::string contentLen = "Content-Length: ";
@@ -160,64 +105,63 @@ void ResponseData::setResponse(struct kevent& event) {
 	_responseHeader += contentLen;
 	_responseHeader += "\r\n\r\n";
 
-	// std::cout << YEL "complete response header: [" << _responseHeader << "]\n";
+	// std::cout << GRN << "complete response header: [" << _responseHeader << "]\n" << RES;
 	_fullResponse += _responseHeader + _responseBody;
-	//std::cout << YEL "\n_fullResponse:\n[\n" RES << _fullResponse << YEL "]\n" RES;
+	//std::cout << GRN << "\n_fullResponse:\n[\n" RES << _fullResponse << "]\n" <<RES;
 }
-
 
 std::string ResponseData::setResponseStatus(struct kevent& event)
 {	
-	//std::cout << RED "start setResponseStatus\n";
+	//std::cout << CYN << "start setResponseStatus()\n" << RES;
 	Request *storage = (Request *)event.udata;
 	std::string status;
 
-	std::string fileType = storage->getRequestData().getResponseContentType();	// fileType not used ?
+//	std::string fileType = storage->getRequestData().getResponseContentType();	// fileType not used ?
 
 	switch (storage->getHttpStatus())
 	{
 		case 400:
 			status = "HTTP/1.1 400 Bad Request\r\n"
 						"Content-Type: text/html\r\n"
-						"Content-Encoding: identity\r\n";  // Corina - added it because firefox complained that itwas missing - not sure if we keep because firefox still complains even with it. We leave it for now. 
-			(storage->getResponseData()).setResponsePath("resources/error_pages/400BadRequest.html");
+						"Content-Encoding: identity\r\n";  // Corina - added it because firefox complained that itwas missing - not sure if we keep because firefox still complains even with it. We leave it for now.
+            _responsePath = "resources/error_pages/400BadRequest.html";
 			break;
 		case 404:
 			status = "HTTP/1.1 404 Not Found\r\n"
 						"Content-Type: text/html\r\n"
 						"Content-Encoding: identity\r\n";
-			(storage->getResponseData()).setResponsePath("resources/error_pages/404NotFound.html");
+            _responsePath = "resources/error_pages/404NotFound.html";
 			break;
 		case 405:
 			status = "HTTP/1.1 405 Method Not Allowed\r\n"
 						"Content-Type: text/html\r\n"
 						"Content-Encoding: identity\r\n";
-			(storage->getResponseData()).setResponsePath("resources/error_pages/405MethodnotAllowed.html");
+            _responsePath = "resources/error_pages/405MethodnotAllowed.html";
 			break;
 		case 408:
 			status = "HTTP/1.1 408 Request Timeout\r\n"
 						"Content-Type: text/html\r\n"
 						"Content-Encoding: identity\r\n";
-			(storage->getResponseData()).setResponsePath("resources/error_pages/408RequestTimeout.html");
+            _responsePath = "resources/error_pages/408RequestTimeout.html";
 			break;
 		case 500:
 			status = "HTTP/1.1 500 Internal Server Error\r\n"
 						"Content-Type: text/html\r\n"
 						"Content-Encoding: identity\r\n";
-			(storage->getResponseData()).setResponsePath("resources/error_pages/500InternarServerError.html");
+            _responsePath = "resources/error_pages/500InternarServerError.html";
+            break;
 		case 403:
 			status = "HTTP/1.1 403 Forbidden\r\n"
 						"Content-Type: text/html\r\n"
 						"Content-Encoding: identity\r\n";
-			(storage->getResponseData()).setResponsePath("resources/error_pages/403Forbidden.html");
+            _responsePath = "resources/error_pages/403Forbidden.html";
+            break;
 		default:
-			status = "HTTP/1.1 200 OK\r\n"  
+			status = "HTTP/1.1 200 OK\r\n"
 						"Content-Type: text/html\r\n"
 						"Content-Encoding: identity\r\n";
 					// "Content-Type: " + storage->getRequestData().getResponseContentType() + "\n";	// jaka
-			//  _responsePath = storage->getRequestData().getHttpPath();							// jaka: this is old, should be getURLPath()
-			_responsePath = storage->getRequestData().getURLPath();
-			std::cout << GRN "_responsePath: [[" << _responsePath << "]]\n" RES;
+			std::cout << "_responsePath: [[" << GRN_BG << _responsePath << RES << "]]\n";
 			break;
 	}
 	return (status);
@@ -232,7 +176,6 @@ void ResponseData::setBytesToClient(int val)
 {
 	_bytesToClient += val;
 }
-
 
 // NEW SETIMAGE
 // void ResponseData::setImage(struct kevent& event, std::string imagePath) {
@@ -275,7 +218,7 @@ void ResponseData::setResponseDone(bool val)
 	_responseDone = val;
 }
 
-// void ResponseData::setOverride(bool val)   // NOT USED anymore - to be cleanned out 
+// void ResponseData::setOverride(bool val)   // NOT USED anymore - to be cleanned out
 // {
 // 	_errorOverride = val;
 // }
@@ -283,7 +226,7 @@ void ResponseData::setResponseDone(bool val)
 // --------------------------------------------------------------------------- util functions
 // ------------------------------------------------------------------------------------------
 
-// void ResponseData::overrideFullResponse()  // NOT USED anymore - to be cleaned out 
+// void ResponseData::overrideFullResponse()  // NOT USED anymore - to be cleaned out
 // {
 // 	std::string errorMessage = " insert html code";
 // 	_fullResponse = errorMessage;
@@ -295,7 +238,7 @@ std::string ResponseData::streamFile(std::string file)
 	std::string responseNoFav;
 	std::fstream    infile;
 
-	std::cout << BLU << "File to be streamed: " << file << RES << std::endl;
+	std::cout << GRN << "File to be streamed: " << file << RES << std::endl;
 	infile.open(file, std::fstream::in);
 	if (not infile)
         throw ParserException(CONFIG_FILE_ERROR("File to be streamed", MISSING));
@@ -313,7 +256,6 @@ std::string ResponseData::streamFile(std::string file)
 	std::cout << BLU << "Streamed: temp turned off by jaka" <<  RES << std::endl;
 	return (responseNoFav);
 }
-
 
 // ***************************************************************************
 // added JAKA, to erase the sent chunk from the remaining response content
@@ -337,12 +279,7 @@ void	ResponseData::increaseSentSoFar(size_t bytesSent) {
 // 	_lengthFullResponse = len;
 // }
 
-// ***************************************************************************
-
-
-
-// ---------------------------------------------------------------------------- get functions
-// ------------------------------------------------------------------------------------------
+/** #################################### Getters #################################### */
 
 std::string ResponseData::getHeader()
 {
@@ -387,7 +324,6 @@ bool ResponseData::getResponseDone()
 // ------------------------------------------------------------------------------ HTTP STATUS
 // ------------------------------------------------------------------------------------------
 
-
 // 200 OK  - default
 //     Standard response for successful HTTP requests. The actual response will depend on the request method used. 
 // 	In a GET request, the response will contain an entity corresponding to the requested resource. 
@@ -406,9 +342,6 @@ bool ResponseData::getResponseDone()
 // 	the server was prepared to wait. The client MAY repeat the request without modifications at any later time."
 
 // ---------------
-
-
-
 
 // 404 Not Found
 //     The requested resource could not be found but may be available in the future. Subsequent requests by the client are permissible.

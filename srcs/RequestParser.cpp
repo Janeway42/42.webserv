@@ -1,11 +1,9 @@
-// c++ kqueue.cpp Server.cpp srcs/Parser.cpp srcs/RequestData.cpp srcs/RequestParser.cpp && ./a.out
-
 /* Example of simple URL for methods:
 GET http://api.example.com/employee/<any_id>
 POST http://api.example.com/employee/
 PUT http://api.example.com/employee/
 DELETE http://api.example.com/employee/1
- */
+*/
 
 // CALLING CURL 
 // curl -X POST localhost:8080  -H "Content-Type: text/html" -d '{"Id": 79, "status": 3}'
@@ -14,14 +12,7 @@ DELETE http://api.example.com/employee/1
 // curl -X DELETE localhost:8080/resources/test_index.html -H "Content-Type: text/html"
 
 #include <unistd.h> // sleep
-#include "../includes/RequestParser.hpp"
-
-
-/*
-	In case error 404, file not found, it's probably good to not continue after parsePath(), 
-	and just close the connection
-
-*/
+#include "RequestParser.hpp"
 
 /** Default constructor */
 Request::Request() {
@@ -36,6 +27,7 @@ Request::Request() {
     _doneParsing = false;
     _httpStatus = NO_STATUS;
     _hasBody = false;
+    std::cout << GRY << "Request Constructor" << RES << std::endl;
 }
 
 /** Overloaded constructor */
@@ -51,40 +43,16 @@ Request::Request(int kq, int fd, ServerData *specificServer) {
 	_doneParsing = false;
     _httpStatus = NO_STATUS;
 	_hasBody = false;
+    std::cout << GRY << "Request Copy Constructor" << RES << std::endl;
 }
 
 /** Destructor */
 Request::~Request() {
-	std::cout << "------------------- Request destructor -------------------\n";
-//   delete _data;
-	delete _server; 
+	delete _server;
+    std::cout << GRY << "Request Destructor" << RES << std::endl;
 }
 
-
-/** Getters */
-RequestData & Request::getRequestData(){
-	return _data;
-}
-
-ServerData & Request::getServerData(){
-	return *_server;
-}
-
-ResponseData & Request::getResponseData(){
-	return (_answer);
-}
-
-CgiData & Request::getCgiData(){
-	return (_cgi);
-}
-
-int Request::getKq()
-{
-	return (_kq);
-}
-
-
-/** METHODS ################################################################# */
+/** #################################### Methods #################################### */
 
 void Request::parseHeader(std::string header) {
 
@@ -105,7 +73,7 @@ void Request::parseHeader(std::string header) {
 	}
 }
 
-// void Request::storeBody(std::istringstream &iss)
+// void Request::storeBody(std::istringstream &iss)// TODO NOT NEEDED ??
 // {
 // 	std::string lineContent;
 // 	std::string tmp;
@@ -119,8 +87,7 @@ void Request::parseHeader(std::string header) {
 // 	std::cout << YEL "body [" << _data.getBody() << "]\n" << RES;
 // }
 
-
-// MAYBE WON'T BE NEEDED
+// TODO MAYBE WON'T BE NEEDED
 void	storeBodyAsFile(std::string body) {
 	std::ofstream bodyFile("./resources/cgi/bodyFile.txt");
 	if (bodyFile.is_open()) {
@@ -150,7 +117,7 @@ int Request::storeWordsFromFirstLine(std::string firstLine) {
 	for (int i = 0; iter < arr.end(); iter++, i++) {
 		if (i == 0) {
 			if (*iter == "GET" || *iter == "POST" || *iter == "DELETE") {
-				std::cout << GRN_BG << YEL << "REQUEST METHOD: " << *iter << RES << std::endl;
+				std::cout << GRN_BG << YEL << "REQUEST METHOD: " << *iter << RES << std::endl << std::endl;
 				_data.setRequestMethod(*iter);
 			} else {
 				std::cout << RED << "Error: This method is not recognized\n" << RES;
@@ -170,8 +137,6 @@ int Request::storeWordsFromFirstLine(std::string firstLine) {
 	}
 	return (0);
 }
-
-
 
 int Request::storeWordsFromOtherLine(std::string otherLine) {
 	//std::cout << GRN " .... .... header line: [" << otherLine << "]\n" RES;
@@ -217,12 +182,12 @@ int Request::storeWordsFromOtherLine(std::string otherLine) {
 	return (0);
 }
 
-/*	- What if method is GET (normaly without body) AND content-length is not zero ???
-	- What if method POST and content-length is zero ???
-*/
+/* TODO
+ * - What if method is GET (normaly without body) AND content-length is not zero ???
+ * - What if method POST and content-length is zero ???
+ */
 
-
-void Request::parseHeaderAndPath(std::string & tmpHeader, struct kevent event, std::string::size_type it) {
+void Request::parseHeaderAndPath(std::string & tmpHeader, std::string::size_type it) {
     std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
 	_hasBody = true;
 	tmpHeader = _data.getHeader();
@@ -232,7 +197,7 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, struct kevent event, s
 	std::cout << BLU << "STORED HEADER: \n" << tmpHeader << "\n" << RES;
 	parseHeader(_data.getHeader());
 	//std::cout << RED "server root path: " << getServerData().getRootDirectory() << "\n" RES;
-	parsePath(_data.getHttpPath(), event);	// IF FILE NOT FOUND 404, IT COULD JUST CLOSE THE CONNECTION AND STOP
+	parsePath(_data.getHttpPath());	// IF FILE NOT FOUND 404, IT COULD JUST CLOSE THE CONNECTION (return now?)
 
 	if (_data.getRequestContentLength() == 0){
 		// if (_data.getRequestMethod() == "GET" && _data.getQueryString() != "")
@@ -241,10 +206,8 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, struct kevent event, s
     }
 }
 
-
-
-void    Request::appendToRequest(const char str[], size_t len, struct kevent event) {
-	//std::cout << PUR << "Start appendToRequest(): _hasBody "<< _hasBody << " _doneParsing " << _doneParsing << " \n" << RES;
+void Request::appendToRequest(const char str[], size_t len) {
+	std::cout << PUR << "Start appendToRequest(): _hasBody: " << _hasBody << " | _doneParsing: " << _doneParsing << " \n" << RES;
 
 	// sleep(3); // testing TIMER
 	std::string 			chunk = std::string(str);
@@ -252,18 +215,20 @@ void    Request::appendToRequest(const char str[], size_t len, struct kevent eve
 	std::string::size_type	it, it2;
 	std::string				tmpHeader;
 
-	//std::cout << GRE << "Request Chunk: " << RES << str << std::endl;
+	//std::cout << GRN << "Request Chunk: " << RES << str << std::endl;
 	if (_headerDone == false) {
 		//std::cout << PUR << "     _headerDone == FALSE\n" << RES;
 		_data.setTemp(_data.getTemp() + chunk);
 
 		if ((it = _data.getTemp().find(strToFind)) != std::string::npos) {
-			parseHeaderAndPath(tmpHeader, event, it);
-			std::cout << PUR << "Found header ending /r/n, maybe there is body\n" << RES;
+			parseHeaderAndPath(tmpHeader, it);
+			std::cout << YEL << "Found header ending /r/n, maybe there is body\n" << RES;
 			//std::cout << PUR << "size_type 'it' value: " << it << "\n" << RES;
 			it2 = chunk.find(strToFind) + strToFind.length();	// needed to find the start of body, as char*, not std::string, because body will be vector
-			std::cout << "print start of body [" << PUR << str + it2 << "]\n" << RES;
-			
+            if (it2 != std::string::npos) {
+			    std::cout << "print start of body [" << PUR << str + it2 << "]\n" << RES;
+            }
+
 			//appendLastChunkToBody(it + strToFind.length());
 			appendLastChunkToBody2(str + it2, len - it2); // jaka, changed to vector
 			return ;
@@ -275,14 +240,12 @@ void    Request::appendToRequest(const char str[], size_t len, struct kevent eve
 	}
 }
 
-
-
 // Last chunk means, last chunk of header section, so first chunk of body
 int Request::appendLastChunkToBody2(const char *str, size_t len) {
 	//std::cout << GRN << "start appendlastchunktobody()\n" << RES;
-	//std::cout << RED "FIRST BODY CHUNK, CLIENT BYTES SO FAR: " << _data.getClientBytesSoFar() << "\n" RES;
+	//std::cout << YEL "FIRST BODY CHUNK, CLIENT BYTES SO FAR: " << _data.getClientBytesSoFar() << "\n" << RES;
 	_data.setClientBytesSoFar(len);
-	//std::cout << RED "FIRST BODY CHUNK, CLIENT BYTES SO FAR: " << _data.getClientBytesSoFar() << "\n" RES;
+	//std::cout << YEL "FIRST BODY CHUNK, CLIENT BYTES SO FAR: " << _data.getClientBytesSoFar() << "\n" << RES;
 
 	std::vector<uint8_t> tempVec(str, str + len); // convert adn assign str to vector
 	_data.setBody(tempVec);
@@ -295,15 +258,15 @@ int Request::appendLastChunkToBody2(const char *str, size_t len) {
 		return (1);
 	}
 	if (_data.getClientBytesSoFar() == _data.getRequestContentLength()) {
-		std::cout << GRN << "    _doneparsing == true\n" << RES;
+		std::cout << GRN << "_doneparsing == true\n" << RES;
 		_doneParsing = true;
-		if (_data.getClientBytesSoFar() == 0 && _data.getRequestContentLength() == 0) {    // Compare body lenght
-			std::cout << GRE << "OK (there is no body)\n" << RES;
+		if (_data.getClientBytesSoFar() == 0 && _data.getRequestContentLength() == 0) {    // Compare body length
+			std::cout << YEL << "There is no body\n" << RES;
 			_hasBody = false;
 			std::cout << BLU "content type: [" << _data.getResponseContentType() << "]\n" RES;
 			return (0);
 		}
-		std::cout << GRE << "OK: Body-Length is as expected Content-Length\n" << RES;
+		std::cout << GRN << "OK: Body-Length is as expected Content-Length\n" << RES;
 		_doneParsing = true; // otherwise it went to appendToBody, and appended more stuff, so the body lenght became larger then expected
 		//std::cout << YEL "Body:\n" RES;
 		//std::copy(_data.getBody().begin(), _data.getBody().end(), std::ostream_iterator<uint8_t>(std::cout));  // just to print
@@ -313,13 +276,12 @@ int Request::appendLastChunkToBody2(const char *str, size_t len) {
 	return (0);
 }
 
-
 int Request::appendToBody(const char* str, size_t len) {
 	// std::cout << RED << "start appendToBOdy(), current len, " << _data.getBody().length() << " expected len: " << _data.getRequestContentLength() << "\n" RES;
 	//std::cout << RED << "    body before append: [" << _data.getBody() << "\n" << RES;
 	std::vector<uint8_t> newChunk(str, str + len); // convert adn assign str to vector
 	_data.setClientBytesSoFar(len);
-	std::cout << RED "CLIENT BYTES SO FAR: " << _data.getClientBytesSoFar() << "\n" RES;
+	std::cout << YEL "CLIENT BYTES SO FAR: " << _data.getClientBytesSoFar() << "\n" << RES;
 
 	std::vector<uint8_t> & tmp = _data.getBody();
 	tmp.reserve(_data.getRequestContentLength() + len);
@@ -337,7 +299,7 @@ int Request::appendToBody(const char* str, size_t len) {
 	}
 //	else if (_data.getBody().size() == _data.getRequestContentLength()) {
 	else if (_data.getClientBytesSoFar() == _data.getRequestContentLength()) {
-		std::cout << GRE "OK: Done parsing.\n" RES;
+		std::cout << GRN << "OK: Done parsing.\n" RES;
 		_doneParsing = true;
 		//std::cout << "HEADER: [" BLU << _header << RES "]\n";	// sleep(1);
 		//std::cout << "BODY:   [" BLU << _data.getBody()   << RES "]\n\n";	// sleep(1);
@@ -347,7 +309,6 @@ int Request::appendToBody(const char* str, size_t len) {
 	//std::cout << RED << "END appendToBOdy(), current len, " << _data.getClientBytesSoFar() << " expected len: " << _data.getRequestContentLength() << "\n" RES;
 	return (0);
 }
-
 
 // JUST FOR CHECKING
 void Request::printStoredRequestData(Request &request) {
@@ -366,8 +327,28 @@ void Request::printStoredRequestData(Request &request) {
 //	std::cout << "REQUEST BODY:\n[" PUR << request.getRequestBody() << RES "]\n";
 }
 
+/** #################################### Getters #################################### */
 
-// getters 
+RequestData & Request::getRequestData(){
+    return _data;
+}
+
+ServerData & Request::getServerData(){
+    return *_server;
+}
+
+ResponseData & Request::getResponseData(){
+    return (_answer);
+}
+
+CgiData & Request::getCgiData(){
+    return (_cgi);
+}
+
+int Request::getKq()
+{
+    return (_kq);
+}
 
 bool Request::getDone()
 {
@@ -384,7 +365,7 @@ int Request::getFdClient()
 	return (_clientFd);
 }
 
-// setters
+/** #################################### Setters #################################### */
 
 void Request::setDone(bool val)
 {

@@ -10,6 +10,8 @@
 #include <arpa/inet.h>
 #include <sstream>
 
+#include "ServerData.hpp"
+
 /** Default constructor */
 ServerData::ServerData()
     /** Initializing default values for the server block */
@@ -224,7 +226,7 @@ void ServerData::setIpAddress(std::string const & ip) {
 
 void ServerData::setRootDirectory(std::string const & rootDirectory) {
     /* not mandatory | default: ./$server_name */
-    if (not rootDirectory.empty()) {
+    if (not rootDirectory.empty() && rootDirectory != "/" && rootDirectory != "./") {
         PathType type = pathType(rootDirectory);
         if (type == DIRECTORY) {
             _root_directory = addCurrentDirPath(rootDirectory) + rootDirectory;
@@ -316,10 +318,11 @@ void ServerData::setListeningSocket() {
     // hostname: is either a valid host name or a numeric host address string consisting of a dotted decimal IPv4 address or an IPv6 address.
     // servname: is either a decimal port number or a service name listed in services(5).
     if (getaddrinfo(_server_name.c_str(), _listens_to.c_str(), &hints, &_addr) != 0) {
+        //freeaddrinfo(_addr); no need?
         throw ServerDataException("failed getaddrinfo");
     }
 
-	// for testing memory leaks 
+	// for testing memory leaks
 	// int out = getaddrinfo(_server_name.c_str(), _listens_to.c_str(), &hints, &_addr);
 	// out = 5;
 	// if (out != 0)

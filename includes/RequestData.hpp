@@ -27,12 +27,13 @@ class RequestData {
 		std::string				_requestContentType;
 		std::string				_responseContentType;
 
-		std::string				_path;                      	// ie: /kostja.se/folderA/folderB/index.html
-        std::string				_full_path;                     // ie: /kostja.se/folderA/folderB = $location.$root_directory/folderA/folderB
+		std::string				_URLPath;                      	// ie: /kostja.se/folderA/folderB/index.html
+        std::string				_URLPath_full;                  // ie: /kostja.se/folderA/folderB = $location.$root_directory/folderA/folderB
 		std::string				_pathFirstPart;                 // ie: /kostja.se/folderA/folderB/
-		std::string				_pathLastWord;                  // ie: /index.html  OR   /folderC/
+		std::string				_pathLastPart;                  // ie: /index.html  OR   /folderC/
 		std::string				_fileExtention;                 // ie: /index.html  OR   /folderC/
 		bool					_isFolder;
+		bool					_autoIndex;
 		std::string				_queryString;
 		std::string				_cgiBody;
 		std::map<std::string, std::string>	_formData;	 // maybe not needed, maybe Vector list will be enough
@@ -65,11 +66,12 @@ class RequestData {
 		size_t				getRequestContentLength() const;
 
 		const std::string 	getURLPath()const;
-		const std::string 	getFullPath()const;
+		const std::string 	getURLPath_full()const;
 		const std::string 	getURLPathFirstPart()const;	// maybe not needed
-		const std::string	getURLPathLastWord() const;	// maybe not needed
+		const std::string	getURLPathLastPart() const;	// maybe not needed
 		const std::string	getFileExtention() const;
 		bool				getIsFolder() const;
+		bool				getAutoIndex() const;
 		const std::string	getQueryString() const;
 		const std::string	getCgiBody() const;
 
@@ -95,11 +97,12 @@ class RequestData {
 		void	setResponseContentType(std::string reqAccept);
 
 		void	setURLPath(std::string path);
-		void	setFullPath(std::string path);
+		void	setURLPath_full(std::string path);
 		void	setPathFirstPart(std::string path);				// maybe not needed
-		void	setPathLastWord(std::string path);					// maybe not needed
+		void	setPathLastPart(std::string path);					// maybe not needed
 		void	setFileExtention(std::string path);
 		void	setIsFolder(bool b);
+		void	setAutoIndex(bool b);
 		void	setQueryString(std::string path);
 		void	setCgiBody(std::string cgiBody);
 		void	setFormList(std::vector<std::string>);				// maybe not needed

@@ -67,6 +67,7 @@ CLEAR_SCREEN = \033c
 ERASE_LINE = \033[2K
 JUMP_ONE_LINE = \033[1B
 
+CONFIG_FILE = standard_complete.conf
 #################################### RULES ####################################
 ## Makefile Syntax of a rule:
 # targets: prerequisites
@@ -91,7 +92,7 @@ all: $(NAME)
 $(NAME): $(OBJ) $(INCLUDES_DEPENDENCY)
 	$(CPP) $(FLAGS) -o $@ $(OBJ)
 	@echo "$(GREEN)server loaded$(RESET)"
-	@echo "$(GREEN)run ./webserv <file.conf>$(RESET)"
+	@echo "$(GREEN)run ./webserv [file.conf]$(RESET)"
 
 # - Pattern rules contain a '%' in the target: creates a stem by matching
 #   any nonempty string (the other character(s) have to match themselves).
@@ -108,6 +109,7 @@ $(NAME): $(OBJ) $(INCLUDES_DEPENDENCY)
 clean:
 	rm -rf $(OBJ)
 	@rm -rf a.out *.dSYM
+	@rm -rf confiFileTester
 	@echo "$(YELLOW)clean done$(RESET)"
 
 fclean: clean
@@ -116,7 +118,13 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+# ex: make config CONFIG_FILE=README.md
+config: $(CONFIG_FILE)
+	$(CPP) $(FLAGS) tests/mainConfigFile.cpp srcs/Parser.cpp srcs/ConfigFileParser.cpp srcs/ServerData.cpp srcs/ServerLocation.cpp -o confiFileTester
+	@echo "$(GREEN)Testing $(CONFIG_FILE)$(RESET)\n"
+	@./confiFileTester $(CONFIG_FILE)
+
+.PHONY: all clean fclean re config
 # PHONY = Prevents make from confusing the phony target with a file name.
 # i.e.: Use PHONY if a target is not intended to be a filename:
 # e.g.: If you happen to have a file named clean, this target won't run, which

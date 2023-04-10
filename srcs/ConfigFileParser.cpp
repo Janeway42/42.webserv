@@ -17,7 +17,12 @@ ConfigFileParser::ConfigFileParser(std::string const & configFileName)
       _location_block_counter(0) {
     std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Config File ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
     std::cout << BLU << "ConfigFileParser Overloaded constructor" << RES << std::endl;
-    handleFile(configFileName);
+    try {
+        handleFile(configFileName);
+    } catch (std::exception const & e) {
+        std::cout << RED << e.what() << RES << std::endl;
+        throw e;
+    }
 }
 
 /** Destructor */
@@ -53,17 +58,16 @@ void ConfigFileParser::handleFile(std::string const & configFileName) {
             if (lineContent.find('#') != std::string::npos || !lineContent[0]) {
                 continue;
             } else if (lineContent != "server {" && numberOfServerBlocks() == 0) {
-                std::cerr << RED << "A server block is needed in the configuration file" << RES << std::endl;// TODO: throw exception
-                break;
+                throw ParserException(CONFIG_FILE_ERROR("At least one server block", MANDATORY));
             } else if (lineContent == "server {") {
                 _server_block_counter++;
                 parseFileServerBlock(configFile);
                 continue;
             }
         }
-        if (servers.empty()) {
-            throw ParserException(CONFIG_FILE_ERROR("Configuration File", MISSING));
-        }
+//        if (servers.empty()) {
+//            throw ParserException(CONFIG_FILE_ERROR("Configuration File", MISSING));
+//        }
     } else {
         std::cerr << "Not able to open the configuration file" << std::endl;// TODO: throw exception
         return ;
@@ -134,9 +138,6 @@ void ConfigFileParser::parseFileServerBlock(std::ifstream & configFile) {
 
 void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile, ServerData & _server_data, ServerLocation & _server_location) {
     std::string lineContent;
-    bool rootDirectoryAlreadyChecked = false;
-    bool scriptExtensionAlreadyChecked = false;
-    bool interpreterPathAlreadyChecked = false;
 
     _location_block_counter++;
     while (configFile) {
@@ -152,7 +153,6 @@ void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile, Server
         /** Handling the location or cgi block key values */
         if (lineContent.find("root_directory") != std::string::npos) {
             _server_location.setRootDirectory(keyParser(lineContent, "root_directory"));
-            rootDirectoryAlreadyChecked = true;
             continue;
         }
         if (lineContent.find("allow_methods") != std::string::npos) {
@@ -170,7 +170,7 @@ void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile, Server
             /* If the index file specified in the server block has a different name than the index file specified
              * in the location block, both files will be used for requests that match that location */
             else if (_server_location.getIndexFile() != _server_data.getIndexFile()) {
-                _server_location.useServerBlockIndexFile = true;
+                _server_location.useServerBlockIndexFile = true;// todo delete? not needed since the response class will search on server block anyway if it does not find the index file on the location block
             }
             continue;
         }
@@ -180,12 +180,10 @@ void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile, Server
         }
         if (lineContent.find("interpreter_path") != std::string::npos) {
             _server_location.setInterpreterPath(keyParser(lineContent, "interpreter_path"));
-            interpreterPathAlreadyChecked = true;
             continue;
         }
         if (lineContent.find("script_extension") != std::string::npos) {
             _server_location.setScriptExtension(keyParser(lineContent, "script_extension"));
-            scriptExtensionAlreadyChecked = true;
             continue;
         }
     }
