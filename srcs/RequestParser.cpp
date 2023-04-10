@@ -48,36 +48,11 @@ Request::Request(int kq, int fd, ServerData *specificServer) {
 
 /** Destructor */
 Request::~Request() {
-//   delete _data;
 	delete _server;
     std::cout << GRY << "Request Destructor" << RES << std::endl;
 }
 
-
-/** Getters */
-RequestData & Request::getRequestData(){
-	return _data;
-}
-
-ServerData & Request::getServerData(){
-	return *_server;
-}
-
-ResponseData & Request::getResponseData(){
-	return (_answer);
-}
-
-CgiData & Request::getCgiData(){
-	return (_cgi);
-}
-
-int Request::getKq()
-{
-	return (_kq);
-}
-
-
-/** METHODS ################################################################# */
+/** #################################### Methods #################################### */
 
 void Request::parseHeader(std::string header) {
 
@@ -98,7 +73,7 @@ void Request::parseHeader(std::string header) {
 	}
 }
 
-// void Request::storeBody(std::istringstream &iss)
+// void Request::storeBody(std::istringstream &iss)// TODO NOT NEEDED ??
 // {
 // 	std::string lineContent;
 // 	std::string tmp;
@@ -112,8 +87,7 @@ void Request::parseHeader(std::string header) {
 // 	std::cout << YEL "body [" << _data.getBody() << "]\n" << RES;
 // }
 
-
-// MAYBE WON'T BE NEEDED
+// TODO MAYBE WON'T BE NEEDED
 void	storeBodyAsFile(std::string body) {
 	std::ofstream bodyFile("./resources/cgi/bodyFile.txt");
 	if (bodyFile.is_open()) {
@@ -208,10 +182,10 @@ int Request::storeWordsFromOtherLine(std::string otherLine) {
 	return (0);
 }
 
-/*	- What if method is GET (normaly without body) AND content-length is not zero ???
-	- What if method POST and content-length is zero ???
-*/
-
+/* TODO
+ * - What if method is GET (normaly without body) AND content-length is not zero ???
+ * - What if method POST and content-length is zero ???
+ */
 
 void Request::parseHeaderAndPath(std::string & tmpHeader, std::string::size_type it) {
     std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
@@ -232,9 +206,7 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, std::string::size_type
     }
 }
 
-
-
-void    Request::appendToRequest(const char str[], size_t len) {
+void Request::appendToRequest(const char str[], size_t len) {
 	std::cout << PUR << "Start appendToRequest(): _hasBody: " << _hasBody << " | _doneParsing: " << _doneParsing << " \n" << RES;
 
 	// sleep(3); // testing TIMER
@@ -267,8 +239,6 @@ void    Request::appendToRequest(const char str[], size_t len) {
 		appendToBody(str, len);	// changed to char*, because it needs to become a vector
 	}
 }
-
-
 
 // Last chunk means, last chunk of header section, so first chunk of body
 int Request::appendLastChunkToBody2(const char *str, size_t len) {
@@ -306,7 +276,6 @@ int Request::appendLastChunkToBody2(const char *str, size_t len) {
 	return (0);
 }
 
-
 int Request::appendToBody(const char* str, size_t len) {
 	// std::cout << RED << "start appendToBOdy(), current len, " << _data.getBody().length() << " expected len: " << _data.getRequestContentLength() << "\n" RES;
 	//std::cout << RED << "    body before append: [" << _data.getBody() << "\n" << RES;
@@ -341,7 +310,6 @@ int Request::appendToBody(const char* str, size_t len) {
 	return (0);
 }
 
-
 // JUST FOR CHECKING
 void Request::printStoredRequestData(Request &request) {
 	RequestData reqData = request.getRequestData();
@@ -359,8 +327,28 @@ void Request::printStoredRequestData(Request &request) {
 //	std::cout << "REQUEST BODY:\n[" PUR << request.getRequestBody() << RES "]\n";
 }
 
+/** #################################### Getters #################################### */
 
-// getters 
+RequestData & Request::getRequestData(){
+    return _data;
+}
+
+ServerData & Request::getServerData(){
+    return *_server;
+}
+
+ResponseData & Request::getResponseData(){
+    return (_answer);
+}
+
+CgiData & Request::getCgiData(){
+    return (_cgi);
+}
+
+int Request::getKq()
+{
+    return (_kq);
+}
 
 bool Request::getDone()
 {
@@ -377,7 +365,7 @@ int Request::getFdClient()
 	return (_clientFd);
 }
 
-// setters
+/** #################################### Setters #################################### */
 
 void Request::setDone(bool val)
 {

@@ -11,13 +11,14 @@ RequestData::RequestData() {
     _reqContentLength	 = 0;
 	_clientBytesSoFar	 = 0;
 	//_reqBody			 = "";		// does not need setting to "", it is now a vector
-	
-	_path				 = "default";
+
+    _URLPath			 = "default";
     _URLPath_full = "default";
 	_pathFirstPart		 = "default";
 	_pathLastPart		 = "default";
 	_fileExtention		 = "";
 	_isFolder			 = false;
+	_autoIndex			 = false;
 	_queryString		 = "";
 	_cgiBody			 = "";
 
@@ -34,6 +35,7 @@ RequestData::~RequestData() {
     _reqHttpVersion = "";
     _reqHost 		= "";	
 	// _next = nullptr;
+    // todo finish unsetting?
 }
 
 /** ########################################################################## */
@@ -95,7 +97,7 @@ const std::string RequestData::getRequestContentType() const {
 
 // PATH PARTS AND QUERY_STRING (FORM DATA)
 const std::string RequestData::getURLPath() const {
-	return _path;
+	return _URLPath;
 }
 
 const std::string RequestData::getURLPath_full() const {
@@ -116,6 +118,10 @@ const std::string RequestData::getFileExtention() const {
 
 bool	RequestData::getIsFolder() const {
 	return _isFolder;
+}
+
+bool	RequestData::getAutoIndex() const {
+	return _autoIndex;
 }
 
 const std::string RequestData::getQueryString() const {
@@ -217,7 +223,7 @@ void RequestData::setRequestContentType(std::string str) {
 
 // PATH PARTS AND QUERY_STRING (FORM DATA)
 void RequestData::setURLPath(std::string path) {
-	_path = path;
+    _URLPath = path;
 }
 
 void RequestData::setURLPath_full(std::string path) {
@@ -238,6 +244,10 @@ void RequestData::setFileExtention(std::string fileExtention) {
 
 void RequestData::setIsFolder(bool b) {
 	_isFolder = b;
+}
+
+void RequestData::setAutoIndex(bool b) {
+	_autoIndex = b;
 }
 
 void RequestData::setQueryString(std::string queryString) {

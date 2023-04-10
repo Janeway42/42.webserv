@@ -68,8 +68,6 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 	}
 }
 
-
-
 void Request::callCGI(struct kevent event) {
 	std::cout << CYN << "Start callCGI, cgi path: " << _data.getURLPath_full() << "\n" << RES;
 	//(void)reqData;
@@ -147,39 +145,7 @@ void Request::callCGI(struct kevent event) {
 
 }
 
-// Not in use
-// There is a read buffer overflow
-//std::string removeDuplicateSlash(std::string pathOld) {
-//
-//	char *temp = (char *)malloc(pathOld.length() * sizeof(char) + 1);
-//	if (temp == NULL)
-//	{ std::cout << "Error: removeDuplicate failed mallocing\n";  exit(-1); }
-//
-//	int beginOfQuery = false;
-//	size_t j = 0, i = 0;
-//	while (i < pathOld.length()) {
-//		if (pathOld[i] == '/' && pathOld[i - 1] == '/' && i != 0 && beginOfQuery == false) {
-//			i++;
-//			continue ;
-//		}
-//		if (pathOld[i] == '?')
-//			beginOfQuery = true;
-//		temp[j++] = pathOld[i++];
-//	}
-//	temp[j] = '\0';
-//	std::string pathNew(temp);
-//	free(temp);
-//
-//	if (pathNew[0] == '/')	{
-//		std::string prefix = "."; // Not sure why this was necessary ???
-//		prefix.append(pathNew);
-//		return prefix;
-//	}
-//	return pathNew;
-//}
-
 ////////////////////////////////////////////////////////////////
-
 
 /* 	Split string at '&' and store each line into vector<>
 	Then split each line in vector into map<> key:value */
@@ -213,19 +179,6 @@ std::map<std::string, std::string> Request::storeFormData(std::string queryStrin
 	}
 	_data.setFormData(formDataMap);
 	return (formDataMap);
-}
-
-// Found GET Method with '?' Form Data
-void Request::storePathParts_and_FormData(std::string const & originalUrlPath) {
-	std::string::size_type temp = originalUrlPath.find_first_of("?");
-	std::string pathWithoutQuery = originalUrlPath.substr(0, temp);
-
-
-	int posLastSlash = pathWithoutQuery.find_last_of("/");
-	int	posFirstQuestMark = originalUrlPath.find_first_of("?");
-
-//	_data.setPathFirstPart(pathWithoutQuery.substr(0, posLastSlash));
-	_data.setPathLastPart(originalUrlPath.substr(posLastSlash, posFirstQuestMark - posLastSlash));
 }
 
 void Request::storeURLPathParts(std::string const & originalUrlPath, std::string const & URLPath_full) {
@@ -270,46 +223,19 @@ char* ENV[25] = {
 }; TODO THIS COMMENT CAN BE DELETED??
 */
 
-//int checkTypeOfFile() {
-//	std::cout << "Start checkTypeofFile(). Path: [" << GRN_BG << _data.getURLPath() << RES << "] " RES;
-//
-//	std::string path = _data.getURLPath();
-//	std::string temp = _data.getURLPath();
-//
-//	// CHECK IF THE PATH IS A FILE OR FOLDER, REGARDLlES IF IT HAS ANY EXTENSION
-//    // TODO: USE THE FUNCTION INSIDE PARSER.CPP
-//	struct stat s;
-//    if (stat(path.c_str(), &s) == 0) {
-//        if (S_ISDIR(s.st_mode)) {
-//            std::cout << CYN "is a directory\n";
-//			_data.setIsFolder(true);// is being set already inside parsePath_dir
-//			// return (0);
-//        } else if (S_ISREG(s.st_mode)) {
-//            std::cout << CYN "is a file\n" RES;
-//        } else {
-//            std::cout << CYN "is not a valid directory or file\n" RES;
-//        }
-//    } else {
-//        std::cerr << RED << "Error getting file/directory info: " << strerror(errno) << "\n" RES;
-//    }
-//	return (0);
-//}
-
-HttpStatus Request::checkIfPathExists(std::string const & URLPath_full) {
+void Request::checkIfPathExists(std::string const & URLPath_full) {
     std::cout << CYN << "Start CheckIfFIleExists(), URLPath_full [" << URLPath_full << "] \n" << RES;
 
     // Here at the end URLPath_full will always be a file, either because the request was a file, or because
-    // the correct index file was appended to it
+    // the correct index file was appended to it (from location or server block, the config file parser decided already)
     if (pathType(URLPath_full) != REG_FILE) {
-        std::cout << RED << "Error: File " << URLPath_full << " not found. Returning 404" << RES << std::endl << std::endl;
-        setHttpStatus(NOT_FOUND);
-        return (NOT_FOUND);
-    } else {
-
+        std::cout << RED << "Error: URI matched a location block, but file " << RES << URLPath_full << RED;
+        std::cout << " was not found. Returning 403 FORBIDDEN" << RES << std::endl << std::endl;
+        setHttpStatus(FORBIDDEN);
     }
-    std::cout << GRN << "File " << RES << URLPath_full << GRN << " exists" << RES << std::endl << std::endl;
+    std::cout << GRN << "Path " << RES << URLPath_full << GRN << " exists" << RES << std::endl << std::endl;
     // Can't return OK yet since the Response class will still check things in order to know if it's OK (200)
-    return NO_STATUS;
+    setHttpStatus(OK);
 }
 
 static void printPathParts(RequestData reqData) {
@@ -375,14 +301,13 @@ std::string Request::parsePath_cgi(std::string const & originalUrlPath, std::vec
             std::cout << GRN_BG << _data.getFileExtention() << RES << std::endl;
         }
         if (_data.getRequestMethod() == "GET") {
-            std::cout << GRN << "There is GET Form data" <<  RES;
+            std::cout << GRN << "There is GET Form data" << RES << std::endl;
         } else if (_data.getRequestMethod() == "POST") {
-            std::cout << GRN << "There is POST Form data" << RES;
+            std::cout << GRN << "There is POST Form data" << RES << std::endl;
         } else if (_data.getRequestMethod() == "DELETE") {
-            std::cout << GRN << "There is DELETE Form data" << RES;
+            std::cout << GRN << "There is DELETE Form data" << RES << std::endl;
         }
 
-            std::cout << RED << "joyce locationBlockUriName: " <<  locationBlockUriName << RES << std::endl;
         /* If the url is a script file, the match will be done between the extension of it, against the location uri
          * ex: url localhost/cgi/script.py -> the .py part will be checked against a location uri */
         if (_data.getFileExtention() == locationBlockUriName) {
@@ -414,12 +339,13 @@ std::string Request::parsePath_dir(std::string const & originalUrlPath, std::vec
         }
 
         if (originalUrlPath_NoSlash == locationBlockUriName) {
+            _data.setAutoIndex(location->getAutoIndex());
             std::cout << BLU << "location block for [" << RES BLU_BG << originalUrlPath << RES BLU;
             std::cout << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES BLU << "]" << std::endl;
             std::cout << BLU << "Its root_directory [" << locationBlockRootDir << "] and configuration will be used" << RES << std::endl;
 
             URLPath_full = locationBlockRootDir + subdirectory + '/' + location->getIndexFile();
-            // TODO _data.setFileExtention(URLPath_full) here too for .html??
+            // TODO _data.setFileExtention(getExtension(originalUrlPath)) here too for .html??
         }
     }
     // if the last char is not slash / then look for question mark TODO this comment was on the code before
@@ -491,6 +417,7 @@ std::string Request::parsePath_edgeCase(std::string const & originalUrlPath, std
         std::cout << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES BLU << "]" << std::endl;
         std::cout << BLU << "Its root_directory [" << locationBlockRootDir << "] and configuration will be used" << RES << std::endl;
         _data.setIsFolder(true);
+        _data.setAutoIndex(location->getAutoIndex());
         URLPath_full = locationBlockRootDir + '/' + location->getIndexFile();
     }
     return URLPath_full;
@@ -534,11 +461,21 @@ std::string Request::parsePath_regularCase(std::string const & originalUrlPath, 
                 subdirectoryFromUrl = originalUrlPath.substr(secondSlash);
             }
         }
-        std::cout << RED << "joyce directoryFromUrl: " << locationBlockRootDir + subdirectoryFromUrl << RES << std::endl;
         if (pathType(locationBlockRootDir + subdirectoryFromUrl) == DIRECTORY) {
             std::string URLPath_full_dir = parsePath_dir(originalUrlPath, location, subdirectoryFromUrl);
             if (not URLPath_full_dir.empty()) {
                 return URLPath_full_dir;
+            }
+        } else { // todo find a better way to set the auto index??
+            // Handling auto index in case the path is not a directory:
+            if (originalUrlPath.find('.') == std::string::npos) {
+                _data.setIsFolder(true);
+                _data.setAutoIndex(location->getAutoIndex());
+                if (location->getAutoIndex() == true) {
+                    setHttpStatus(FORBIDDEN);
+                } else {
+                    setHttpStatus(NOT_FOUND);
+                }
             }
         }
     }
@@ -566,7 +503,9 @@ std::string Request::parsePath_locationMatch(std::string const & originalUrlPath
                 std::cout << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES BLU << "]" << std::endl;
                 std::cout << BLU << "Its root_directory [" << locationBlockRootDir << "] and configuration will be used" << RES << std::endl;
                 _data.setIsFolder(true);
+                _data.setAutoIndex(location->getAutoIndex());
                 URLPath_full = locationBlockRootDir + '/' + location->getIndexFile();
+                break;
             }
         } else if (originalUrlPath[0] == '/') {
             URLPath_full = parsePath_regularCase(originalUrlPath, location);
@@ -579,6 +518,9 @@ std::string Request::parsePath_locationMatch(std::string const & originalUrlPath
                 break;
             }
         }
+        if (getHttpStatus() == FORBIDDEN) {
+            break;
+        }
 
         std::cout << YEL << "The url path [" << originalUrlPath << "] did not match the current location block [";
         std::cout << location->getLocationUriName() << "] from the config file. ";
@@ -588,7 +530,7 @@ std::string Request::parsePath_locationMatch(std::string const & originalUrlPath
 }
 
 // In case error 404, file not found, it's probably good to not continue after parsePath(), and just close the connection
-HttpStatus Request::parsePath(std::string  const & originalUrlPath) {
+void Request::parsePath(std::string  const & originalUrlPath) {
     std::string serverBlockDir = getServerData().getRootDirectory();
 
     std::cout << "originalUrlPath:               [" << GRN_BG << originalUrlPath << RES << "]" << std::endl;
@@ -596,22 +538,22 @@ HttpStatus Request::parsePath(std::string  const & originalUrlPath) {
     std::cout << std::endl << GRN << "Starting parsePath() and searching for the correct location block on the config file:" << RES;
     std::cout << std::endl << std::endl;
 
-	if (originalUrlPath.empty()) {
-		return NO_CONTENT;// Todo: return maybe another status?
-    }
+	if (not originalUrlPath.empty()) {
+        // When a request comes in, nginx will first try to match the URI to a specific location block.
+        std::string URLPath_full = parsePath_locationMatch(originalUrlPath);
+        std::cout << "⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻" << std::endl << std::endl;
+        if (URLPath_full.empty()) {
+            _data.setURLPath(originalUrlPath);
+            std::cout << RED << "As the UrlPath did not match any location block, ";
+            std::cout << "the server cannot serve any file" << RES << std::endl << std::endl;
+            if (getHttpStatus() == NO_STATUS) {
+                setHttpStatus(NOT_FOUND);
+            }
+        }
+        _data.setResponseContentType(_data.getFileExtention());
+        storeURLPathParts(originalUrlPath, URLPath_full);// TODO: do that only if _data.getRequestMethod() != "POST" ?????
 
-    // When a request comes in, nginx will first try to match the URI to a specific location block.
-	std::string URLPath_full = parsePath_locationMatch(originalUrlPath);
-    std::cout << "⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻" << std::endl << std::endl;
-    if (URLPath_full.empty()) {
-        std::cout << std::endl << RED << "As the UrlPath did not match any location block, ";
-        std::cout << "the server cannot serve any file" << RES << std::endl << std::endl;
-        setHttpStatus(NOT_FOUND);
-        return NOT_FOUND;
+        printPathParts(_data);
+        checkIfPathExists(_data.getURLPath_full());
     }
-	_data.setResponseContentType(_data.getFileExtention());
-    storeURLPathParts(originalUrlPath, URLPath_full);// TODO: do that only if _data.getRequestMethod() != "POST" ?????
-
-    printPathParts(_data);
-    return checkIfPathExists(_data.getURLPath_full());
 }

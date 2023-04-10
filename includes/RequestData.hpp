@@ -27,12 +27,13 @@ class RequestData {
 		std::string				_requestContentType;
 		std::string				_responseContentType;
 
-		std::string				_path;                      	// ie: /kostja.se/folderA/folderB/index.html
+		std::string				_URLPath;                      	// ie: /kostja.se/folderA/folderB/index.html
         std::string				_URLPath_full;                  // ie: /kostja.se/folderA/folderB = $location.$root_directory/folderA/folderB
 		std::string				_pathFirstPart;                 // ie: /kostja.se/folderA/folderB/
 		std::string				_pathLastPart;                  // ie: /index.html  OR   /folderC/
 		std::string				_fileExtention;                 // ie: /index.html  OR   /folderC/
 		bool					_isFolder;
+		bool					_autoIndex;
 		std::string				_queryString;
 		std::string				_cgiBody;
 		std::map<std::string, std::string>	_formData;	 // maybe not needed, maybe Vector list will be enough
@@ -70,6 +71,7 @@ class RequestData {
 		const std::string	getURLPathLastPart() const;	// maybe not needed
 		const std::string	getFileExtention() const;
 		bool				getIsFolder() const;
+		bool				getAutoIndex() const;
 		const std::string	getQueryString() const;
 		const std::string	getCgiBody() const;
 
@@ -100,6 +102,7 @@ class RequestData {
 		void	setPathLastPart(std::string path);					// maybe not needed
 		void	setFileExtention(std::string path);
 		void	setIsFolder(bool b);
+		void	setAutoIndex(bool b);
 		void	setQueryString(std::string path);
 		void	setCgiBody(std::string cgiBody);
 		void	setFormList(std::vector<std::string>);				// maybe not needed

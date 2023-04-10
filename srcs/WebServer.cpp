@@ -4,38 +4,32 @@
 
 WebServer::WebServer(std::string const & configFileName)
 {
-	ConfigFileParser configFileData = ConfigFileParser(configFileName);
+    try {
+        ConfigFileParser configFileData = ConfigFileParser(configFileName);
+        _servers = configFileData.servers;
+        std::cout  << "Server blocks quantity: " << configFileData.numberOfServerBlocks() << std::endl;
+        std::cout  << "Location block quantity: " << configFileData.numberOfLocationBlocks() << std::endl;
 
-	_servers = configFileData.servers;
-	std::cout  << "Server blocks quantity: " << configFileData.numberOfServerBlocks() << std::endl;
-	std::cout  << "Location block quantity: " << configFileData.numberOfLocationBlocks() << std::endl;
+        // ----------- create kq structure --------------------------
+        struct kevent evSet;
+        _kq = kqueue();
+        if (_kq == -1)
+            throw ServerException(("failed kq - exit server"));
 
-	// ----------- create kq structure --------------------------
-	struct kevent evSet;
-	_kq = kqueue();
-	if (_kq == -1)
-		throw ServerException(("failed kq - exit server"));
-
-	// ----------- loop to create all listening sockets ---------
-	std::vector<ServerData>::iterator it_server;
-	//std::cout << "before vector loop ---------------\n";
-	for (it_server = _servers.begin(); it_server != _servers.end(); ++it_server)
-	{
-		try
-		{
-			it_server->setListeningSocket();
-		}
-		catch (std::exception & e) {
-        	std::cout << RED << e.what() << RES << std::endl;
-		// catch (...)
-		// {
-		// 	throw ServerException("failed addr - exit webserv\n");
-		}
-		EV_SET(&evSet, it_server->getListeningSocket(), EVFILT_READ, EV_ADD | EV_CLEAR, NOTE_WRITE, 0, NULL);
-		if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
-			throw ServerException(("failed kevent start listening socket")); // getaddrinfo uses malloc - freeaddrinfo is needed !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! - TO DO
-	}
-    std::cout << CYN << GRY_BG << "WebServer Overloaded Constructor" << RES << std::endl;
+        // ----------- loop to create all listening sockets ---------
+        std::vector<ServerData>::iterator it_server;
+        //std::cout << "before vector loop ---------------\n";
+        for (it_server = _servers.begin(); it_server != _servers.end(); ++it_server)
+        {
+            it_server->setListeningSocket();// I think we don't need to try/catch here anymore since I have added it to the beginning to catch the config file throws too
+            EV_SET(&evSet, it_server->getListeningSocket(), EVFILT_READ, EV_ADD | EV_CLEAR, NOTE_WRITE, 0, NULL);
+            if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
+                throw ServerException(("failed kevent start listening socket")); // getaddrinfo uses malloc - freeaddrinfo is needed !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! - TO DO
+        }
+        std::cout << CYN << GRY_BG << "WebServer Overloaded Constructor" << RES << std::endl;
+    } catch (std::exception const & e) {
+        throw ServerException("Failed to initialise webserv");
+    }
 }
 
 WebServer::~WebServer()
@@ -204,7 +198,8 @@ void WebServer::readRequest(struct kevent& event)
 			if (storage->getHttpStatus() != NO_STATUS || (storage->getDone() == true && storage->getCgiData().getIsCgi() == false))
 			{
 				//std::cout << CYN "           ReadRequest: B)\n" RES;
-				if (storage->getHttpStatus() != NO_STATUS) {
+				if (storage->getHttpStatus() != NO_STATUS && storage->getHttpStatus() != OK) {
+                    std::cout << YEL << "storage->getHttpStatus(): " << storage->getHttpStatus() << "\n" << RES;
                     std::cout << YEL << "storage->getCgiData().getIsCgi(): " << storage->getCgiData().getIsCgi() << "\n" << RES;
                     std::cout << RED << "error parsing - sending response - failure, error " << storage->getHttpStatus()  << "\n" << RES;
                 } else if (storage->getDone() == true)

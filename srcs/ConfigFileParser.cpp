@@ -21,6 +21,7 @@ ConfigFileParser::ConfigFileParser(std::string const & configFileName)
         handleFile(configFileName);
     } catch (std::exception const & e) {
         std::cout << RED << e.what() << RES << std::endl;
+        throw e;
     }
 }
 
