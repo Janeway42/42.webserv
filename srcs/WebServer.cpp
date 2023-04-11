@@ -195,11 +195,11 @@ void WebServer::readRequest(struct kevent& event)
 
 
 			// if (storage->getHttpStatus() != NO_STATUS || storage->getDone() == true)				// new Jaka: getIsCGI()
-			if (storage->getHttpStatus() != NO_STATUS || (storage->getDone() == true && storage->getCgiData().getIsCgi() == false))
+			if ((storage->getHttpStatus() != NO_STATUS && storage->getHttpStatus() != OK) || (storage->getDone() == true && storage->getCgiData().getIsCgi() == false))
 			{
-				//std::cout << CYN "           ReadRequest: B)\n" RES;
-				if (storage->getHttpStatus() != NO_STATUS && storage->getHttpStatus() != OK) {
-                    std::cout << YEL << "storage->getHttpStatus(): " << storage->getHttpStatus() << "\n" << RES;
+//				std::cout << CYN "           ReadRequest: B)\n" RES;
+                std::cout << YEL << "storage->getHttpStatus(): " << storage->getHttpStatus() << "\n" << RES;
+                if (storage->getHttpStatus() != NO_STATUS && storage->getHttpStatus() != OK) {
                     std::cout << YEL << "storage->getCgiData().getIsCgi(): " << storage->getCgiData().getIsCgi() << "\n" << RES;
                     std::cout << RED << "error parsing - sending response - failure, error " << storage->getHttpStatus()  << "\n" << RES;
                 } else if (storage->getDone() == true)

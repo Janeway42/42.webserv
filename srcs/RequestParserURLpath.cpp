@@ -182,23 +182,25 @@ std::map<std::string, std::string> Request::storeFormData(std::string queryStrin
 }
 
 void Request::storeURLPathParts(std::string const & originalUrlPath, std::string const & URLPath_full) {
-	std::cout << CYN << "Start storeURLPathParts(). URLPath_full: [" << URLPath_full << "]\n" << RES;
-    std::string urlPath = originalUrlPath;
-    std::string urlPath_full = URLPath_full;
-    std::string::size_type lastPart = std::string::npos;
-    std::string::size_type posLastSlash = urlPath_full.find_last_of('/');// todo: can a / be inserted as a POST data? ex: city: ams/erdam. Then this would not work
+    std::cout << CYN << "Start storeURLPathParts(). URLPath_full: [" << URLPath_full << "]\n" << RES;
+    std::string::size_type posLastSlash = URLPath_full.find_last_of('/');// todo: can a / be inserted as a POST data? ex: city: ams/erdam. Then this would not work
 
-    // If there is query '?', store path before it and anything after the '?' (the query string)
-    std::string::size_type positionQuestionMark = URLPath_full.find_first_of('?');
+    // todo joyce -> I will keep those line commented ouy for now but I Think we wont need them
+//    std::string urlPath = originalUrlPath;
+//    std::string urlPath_full = URLPath_full;
+//    std::string::size_type lastPart = std::string::npos;
+
+    // If there is query '?' string, store it
+    std::string::size_type positionQuestionMark = originalUrlPath.find_first_of('?');
 	if (positionQuestionMark != std::string::npos) {
-        urlPath = originalUrlPath.substr(0, positionQuestionMark);
-        urlPath_full = URLPath_full.substr(0, positionQuestionMark);
-        lastPart = positionQuestionMark - posLastSlash;
+        // todo joyce -> I will keep those line commented ouy for now but I Think we wont need them
+//        urlPath = originalUrlPath.substr(0, positionQuestionMark);
+//        urlPath_full = URLPath_full.substr(0, positionQuestionMark);
+//        std::string::size_type lastSlash = originalUrlPath.find_last_of('/');
+//        lastPart = positionQuestionMark - lastSlash;
+
         // Skip the '?' in the path and store the Query string
-        std::string	queryString = URLPath_full.substr(positionQuestionMark);
-        if (queryString[0] == '?') {
-            queryString = &queryString[1];
-        }
+        std::string	queryString = originalUrlPath.substr(positionQuestionMark + 1);
         if (_data.getRequestMethod() == "GET") {
             _data.setQueryString(queryString);
             std::cout << "queryString:                   [" << GRN_BG << _data.getQueryString() << RES << "]" << std::endl;
@@ -207,10 +209,10 @@ void Request::storeURLPathParts(std::string const & originalUrlPath, std::string
         storeFormData(queryString);	// maybe not needed (the whole vector and map) if the cgi script can handle the whole queryString todo JAKA is it needed?
     }
 
-    _data.setURLPath(urlPath);
-    _data.setURLPath_full(urlPath_full);
-	_data.setPathFirstPart(urlPath_full.substr(0, posLastSlash + 1));
-	_data.setPathLastPart(urlPath_full.substr(posLastSlash + 1, lastPart));
+    _data.setURLPath(originalUrlPath);
+    _data.setURLPath_full(URLPath_full);
+	_data.setPathFirstPart(URLPath_full.substr(0, posLastSlash + 1));
+	_data.setPathLastPart(URLPath_full.substr(posLastSlash + 1));
 }
 
 /*
@@ -229,13 +231,13 @@ void Request::checkIfPathExists(std::string const & URLPath_full) {
     // Here at the end URLPath_full will always be a file, either because the request was a file, or because
     // the correct index file was appended to it (from location or server block, the config file parser decided already)
     if (pathType(URLPath_full) != REG_FILE) {
-        std::cout << RED << "Error: URI matched a location block, but file " << RES << URLPath_full << RED;
+        std::cout << RED << std::endl << "Error: URI matched a location block, but file " << RES << URLPath_full << RED;
         std::cout << " was not found. Returning 403 FORBIDDEN" << RES << std::endl << std::endl;
         setHttpStatus(FORBIDDEN);
+    } else {
+        std::cout << GRN << "Path " << RES << URLPath_full << GRN << " exists" << RES << std::endl << std::endl;
+        setHttpStatus(OK);
     }
-    std::cout << GRN << "Path " << RES << URLPath_full << GRN << " exists" << RES << std::endl << std::endl;
-    // Can't return OK yet since the Response class will still check things in order to know if it's OK (200)
-    setHttpStatus(OK);
 }
 
 static void printPathParts(RequestData reqData) {
@@ -329,8 +331,6 @@ std::string Request::parsePath_dir(std::string const & originalUrlPath, std::vec
         std::string locationBlockRootDir = location->getRootDirectory();
 
         std::cout << BLU << "No '?' found and URLPath_full has no GET-Form data" << RES << std::endl;
-        std::cout << "Path is a directory." << std::endl << RES;
-        _data.setIsFolder(true);
 
         // If it is a directory and has a / at the end, delete it, so it can be matched against the config file locations
         std::string originalUrlPath_NoSlash = originalUrlPath;
@@ -339,6 +339,8 @@ std::string Request::parsePath_dir(std::string const & originalUrlPath, std::vec
         }
 
         if (originalUrlPath_NoSlash == locationBlockUriName) {
+            std::cout << "Path is a directory." << std::endl << RES;
+            _data.setIsFolder(true);
             _data.setAutoIndex(location->getAutoIndex());
             std::cout << BLU << "location block for [" << RES BLU_BG << originalUrlPath << RES BLU;
             std::cout << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES BLU << "]" << std::endl;
@@ -469,6 +471,8 @@ std::string Request::parsePath_regularCase(std::string const & originalUrlPath, 
         } else { // todo find a better way to set the auto index??
             // Handling auto index in case the path is not a directory:
             if (originalUrlPath.find('.') == std::string::npos) {
+                std::cout << RED << "joyce: " << std::endl;
+
                 _data.setIsFolder(true);
                 _data.setAutoIndex(location->getAutoIndex());
                 if (location->getAutoIndex() == true) {
@@ -546,7 +550,7 @@ void Request::parsePath(std::string  const & originalUrlPath) {
             _data.setURLPath(originalUrlPath);
             std::cout << RED << "As the UrlPath did not match any location block, ";
             std::cout << "the server cannot serve any file" << RES << std::endl << std::endl;
-            if (getHttpStatus() == NO_STATUS) {
+            if (getHttpStatus() == NO_STATUS) {// todo -> here I think we dont need to check this anymore
                 setHttpStatus(NOT_FOUND);
             }
         }

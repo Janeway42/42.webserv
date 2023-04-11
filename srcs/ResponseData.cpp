@@ -78,23 +78,22 @@ void ResponseData::setResponse(struct kevent& event) {
 	}
     // if it is not a folder (it checks first if cgi -> if not then it checks text (includes error), else image
     else {
-            std::cout << RED << "joyce: " << storage->getCgiData().getIsCgi() << " | " << storage->getHttpStatus() << std::endl;
-			if (storage->getCgiData().getIsCgi() == true && storage->getHttpStatus() == OK) {
-                _responseBody = storage->getRequestData().getCgiBody();
-            } else {
-                if (storage->getRequestData().getResponseContentType().compare("text/html") == 0) {
-                    std::cout << GRN << "The path is a file: [" << GRN_BG << _responsePath << RES << "]\n";
-                    _responseBody = streamFile(_responsePath);
-                    //_responseBody = streamFile(storage->getServerData().getRootDirectory() + "/" + _responsePath);
-                }
-                else {	// IF IMAGE, FULL RESPONSE IS CREATED IN setImage()
-                    std::cout << GRN << "The path is an image: [" << GRN_BG << _responsePath << RES << "]\n";
-                    _fullResponse = setImage(_responsePath);
-					// std::cout << BLU "_fullResponse.length(): [\n" << _fullResponse.size() << "\n" RES;
-					return ;
-				}
-			}
-		}
+        if (storage->getCgiData().getIsCgi() == true && storage->getHttpStatus() == OK) {
+            _responseBody = storage->getRequestData().getCgiBody();
+        } else {
+            if (storage->getRequestData().getResponseContentType().compare("text/html") == 0) {
+                std::cout << GRN << "The path is a file: [" << GRN_BG << _responsePath << RES << "]\n";
+                _responseBody = streamFile(_responsePath);
+                //_responseBody = streamFile(storage->getServerData().getRootDirectory() + "/" + _responsePath);
+            }
+            else {	// IF IMAGE, FULL RESPONSE IS CREATED IN setImage()
+                std::cout << GRN << "The path is an image: [" << GRN_BG << _responsePath << RES << "]\n";
+                _fullResponse = setImage(_responsePath);
+                // std::cout << BLU "_fullResponse.length(): [\n" << _fullResponse.size() << "\n" RES;
+                return ;
+            }
+        }
+    }
 
 	// set up header
 	int temp = _responseBody.length();
