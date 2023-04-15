@@ -271,8 +271,6 @@ void ServerData::setClientMaxBodySize(std::string const & bodySize) {
     }
 }
 
-/* The Http Request class has to check if the file exists, using something like:
- * if (pathType(addRootDirectoryPath(servers.getRootDirectory(), servers.getLocationBlocks().getErrorPages())) == REG_FILE) */
 void ServerData::setErrorPages(std::string const & errorPage) {
     /* not mandatory | default: empty, no set error page, webserver will decide */
     if (not errorPage.empty()) {
@@ -281,7 +279,12 @@ void ServerData::setErrorPages(std::string const & errorPage) {
         std::stringstream ss(errorPage);
         while(getline(ss, error_page, ' ')){
             if (error_page.find(".html") != std::string::npos) {
-                error_page_vector.push_back(error_page);
+                std::string path_error_page = addRootDirectoryPath(_root_directory, "error_pages/" + error_page);
+                if (pathType(path_error_page) == REG_FILE) {
+                    error_page_vector.push_back(path_error_page);
+                } else {
+                    throw ParserException(CONFIG_FILE_ERROR("error_page", MISSING));
+                }
             } else {
                 throw ParserException(CONFIG_FILE_ERROR("error_page", NOT_SUPPORTED));
             }

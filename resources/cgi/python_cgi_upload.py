@@ -46,11 +46,11 @@ html_template = """
 <body>
     <h3>This is the file python_cgi_upload.py</h3>
     <p>(path  ./resources/cgi/python_cgi_upload.py)</p>
-    <br>
+    <hr>
     <h2>Uploaded Files:</h2>
     <br>
     <fieldset style="background: #fff3f3; border: 2px solid #fbd58f;">
-        <legend> DELETE FILE/IMAGE (method DELETE) </legend>
+        <legend> DELETE FILE/IMAGE (method POST) </legend>
         <ul>
             <a href=''> {} </a>
         </ul>

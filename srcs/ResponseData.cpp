@@ -109,9 +109,19 @@ void ResponseData::setResponse(struct kevent& event) {
 	//std::cout << GRN << "\n_fullResponse:\n[\n" RES << _fullResponse << "]\n" <<RES;
 }
 
+static std::string matching_error_page(std::vector<std::string> const & errorPages, std::string const & status) {
+    std::vector<std::string>::const_iterator it = errorPages.cbegin();
+    for (; it != errorPages.cend(); ++it) {
+        if (it->find(status) != std::string::npos) {
+            return *it;
+        }
+    }
+    return std::string();
+}
+
 std::string ResponseData::setResponseStatus(struct kevent& event)
 {	
-	//std::cout << CYN << "start setResponseStatus()\n" << RES;
+	std::cout << CYN << "start setResponseStatus()\n" << RES;
 	Request *storage = (Request *)event.udata;
 	std::string status;
 
@@ -119,49 +129,76 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
 
 	switch (storage->getHttpStatus())
 	{
-		case 400:
-			status = "HTTP/1.1 400 Bad Request\r\n"
-						"Content-Type: text/html\r\n"
-						"Content-Encoding: identity\r\n";  // Corina - added it because firefox complained that itwas missing - not sure if we keep because firefox still complains even with it. We leave it for now.
-            _responsePath = "resources/error_pages/400BadRequest.html";
-			break;
-		case 404:
-			status = "HTTP/1.1 404 Not Found\r\n"
-						"Content-Type: text/html\r\n"
-						"Content-Encoding: identity\r\n";
-            _responsePath = "resources/error_pages/404NotFound.html";
-			break;
-		case 405:
-			status = "HTTP/1.1 405 Method Not Allowed\r\n"
-						"Content-Type: text/html\r\n"
-						"Content-Encoding: identity\r\n";
-            _responsePath = "resources/error_pages/405MethodnotAllowed.html";
-			break;
-		case 408:
-			status = "HTTP/1.1 408 Request Timeout\r\n"
-						"Content-Type: text/html\r\n"
-						"Content-Encoding: identity\r\n";
+		case 400: {
+            status = "HTTP/1.1 400 Bad Request\r\n"
+                     "Content-Type: text/html\r\n"
+                     "Content-Encoding: identity\r\n";  // Corina - added it because firefox complained that itwas missing - not sure if we keep because firefox still complains even with it. We leave it for now.
+            std::string errorPage = matching_error_page(storage->getServerData().getErrorPages(), "400");
+            if (not errorPage.empty()) {
+                _responsePath = errorPage;
+            } else {
+                _responsePath = "./resources/error_pages/server_standard_status/404NotFound.html";
+            }
+            break;
+        } case 403: {
+            status = "HTTP/1.1 403 Forbidden\r\n"
+                     "Content-Type: text/html\r\n"
+                     "Content-Encoding: identity\r\n";
+            std::string errorPage = matching_error_page(storage->getServerData().getErrorPages(), "403");
+            if (not errorPage.empty()) {
+                _responsePath = errorPage;
+            } else {
+                _responsePath = "./resources/error_pages/server_standard_status/403Forbidden.html";
+            }
+            break;
+        } case 404: {
+            status = "HTTP/1.1 404 Not Found\r\n"
+                     "Content-Type: text/html\r\n"
+                     "Content-Encoding: identity\r\n";
+            std::string errorPage = matching_error_page(storage->getServerData().getErrorPages(), "404");
+            if (not errorPage.empty()) {
+                _responsePath = errorPage;
+            } else {
+                _responsePath = "./resources/error_pages/server_standard_status/404NotFound.html";
+            }
+            break;
+        } case 405: {
+            status = "HTTP/1.1 405 Method Not Allowed\r\n"
+                     "Content-Type: text/html\r\n"
+                     "Content-Encoding: identity\r\n";
+            std::string errorPage = matching_error_page(storage->getServerData().getErrorPages(), "405");
+            if (not errorPage.empty()) {
+                _responsePath = errorPage;
+            } else {
+                _responsePath = "./resources/error_pages/server_standard_status/405MethodnotAllowed.html";
+            }
+            break;
+        } case 408: {
+            status = "HTTP/1.1 408 Request Timeout\r\n"
+                     "Content-Type: text/html\r\n"
+                     "Content-Encoding: identity\r\n";
+
             _responsePath = "resources/error_pages/408RequestTimeout.html";
-			break;
-		case 500:
-			status = "HTTP/1.1 500 Internal Server Error\r\n"
-						"Content-Type: text/html\r\n"
-						"Content-Encoding: identity\r\n";
-            _responsePath = "resources/error_pages/500InternarServerError.html";
             break;
-		case 403:
-			status = "HTTP/1.1 403 Forbidden\r\n"
-						"Content-Type: text/html\r\n"
-						"Content-Encoding: identity\r\n";
-            _responsePath = "resources/error_pages/403Forbidden.html";
+        } case 500: {
+            status = "HTTP/1.1 500 Internal Server Error\r\n"
+                     "Content-Type: text/html\r\n"
+                     "Content-Encoding: identity\r\n";
+            std::string errorPage = matching_error_page(storage->getServerData().getErrorPages(), "500");
+            if (not errorPage.empty()) {
+                _responsePath = errorPage;
+            } else {
+                _responsePath = "./resources/error_pages/server_standard_status/500InternarServerError.html";
+            }
             break;
-		default:
-			status = "HTTP/1.1 200 OK\r\n"
-						"Content-Type: text/html\r\n"
-						"Content-Encoding: identity\r\n";
-					// "Content-Type: " + storage->getRequestData().getResponseContentType() + "\n";	// jaka
-			std::cout << "_responsePath: [[" << GRN_BG << _responsePath << RES << "]]\n";
-			break;
+        } default: {
+            status = "HTTP/1.1 200 OK\r\n"
+                     "Content-Type: text/html\r\n"
+                     "Content-Encoding: identity\r\n";
+            // "Content-Type: " + storage->getRequestData().getResponseContentType() + "\n";	// jaka
+            std::cout << "_responsePath: [[" << GRN_BG << _responsePath << RES << "]]\n";
+            break;
+        }
 	}
 	return (status);
 }

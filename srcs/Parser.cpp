@@ -62,8 +62,11 @@ std::string Parser::addRootDirectoryPath(std::string const & rootDirectory, std:
     if (rootDirectory == "./" + possiblePath) {
         return is_root_dir_or_has_path;
     }
-    // If there is no / in the possiblePath, then it is not a path. It's either a file or directory name
-    if (possiblePath.find('/') == std::string::npos) {
+    std::cout << RED << "rootDirectory: " << rootDirectory << RES << std::endl;
+    std::cout << RED << "possiblePath: " << possiblePath << RES << std::endl;
+
+    // If possiblePath does not start with '/' or '.', then it is not a path. It's either a file or directory name
+    if (possiblePath[0] != '/' && possiblePath[0] != '.') {
         // Adding the rootDirectory path to the file or directory name
         std::string::size_type lastIndex = rootDirectory.size() - 1;
         if (rootDirectory[lastIndex] == '/') {
@@ -72,6 +75,8 @@ std::string Parser::addRootDirectoryPath(std::string const & rootDirectory, std:
             is_root_dir_or_has_path = rootDirectory + "/" + possiblePath;
         }
     }
+    std::cout << RED << "is_root_dir_or_has_path: " << is_root_dir_or_has_path << RES << std::endl;
+
     return is_root_dir_or_has_path;
 }
 
