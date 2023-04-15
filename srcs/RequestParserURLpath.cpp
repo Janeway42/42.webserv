@@ -123,7 +123,8 @@ void Request::callCGI(struct kevent event) {
 	// args[2] = NULL;
 
 	char *args[3];
-	args[0] = (char *)"/usr/bin/python";// todo add from config file
+	args[0] = (char *)"/usr/local/bin/python3";// todo add from config file
+//	args[0] = (char *)"/usr/bin/python";// todo add from config file
 	std::string tempPath = _data.getURLPath_full();
 	char *path = (char *)tempPath.c_str();	//  ie: "./resources/cgi/python_cgi_GET.py"
 	args[1] = path;
