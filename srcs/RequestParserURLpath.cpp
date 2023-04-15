@@ -231,8 +231,8 @@ void Request::checkIfPathExists(std::string const & URLPath_full) {
     // Here at the end URLPath_full will always be a file, either because the request was a file, or because
     // the correct index file was appended to it (from location or server block, the config file parser decided already)
     if (pathType(URLPath_full) != REG_FILE) {
-        std::cout << RED << std::endl << "Error: URI matched a location block, but file " << RES << URLPath_full << RED;
-        std::cout << " was not found. Returning 403 FORBIDDEN" << RES << std::endl << std::endl;
+        std::cout << RED << std::endl << "Error: URI matched a location block, but file [" << RES << URLPath_full << RED;
+        std::cout << "] was not found. Returning 403 FORBIDDEN" << RES << std::endl << std::endl;
         setHttpStatus(FORBIDDEN);
     } else {
         std::cout << GRN << "Path " << RES << URLPath_full << GRN << " exists" << RES << std::endl << std::endl;
@@ -289,12 +289,12 @@ std::string Request::parsePath_cgi(std::string const & originalUrlPath, std::vec
     std::string URLPath_full = std::string();
 
     // localhost:8080/cgi/python_cgi_GET.py?street=test&city=test+city
-    if (originalUrlPath.find('?') != std::string::npos) {
+//    if (originalUrlPath.find('?') != std::string::npos) {
         std::string locationBlockUriName = location->getLocationUriName();
         std::string locationBlockRootDir = location->getRootDirectory();
         getCgiData().setIsCgi(true);
 
-        std::cout << BLU << "'?' was found, so cgi root_directory is needed" << RES << std::endl;
+        std::cout << BLU << "'?' was found, so cgi location block config is needed" << RES << std::endl;
         std::cout << "Path is a script file. ";
 
         // blocks down below are just for logging
@@ -318,7 +318,7 @@ std::string Request::parsePath_cgi(std::string const & originalUrlPath, std::vec
             std::cout << BLU << "Its root_directory [" << locationBlockRootDir << "] and configuration will be used" << RES << std::endl;
             URLPath_full = locationBlockRootDir + file_cgi;
         }
-    }
+//    }
     return URLPath_full;
 }
 
@@ -392,6 +392,11 @@ std::string Request::parsePath_file(std::string const & originalUrlPath, std::ve
             URLPath_full = locationBlockRootDir + originalUrlPath.substr(originalUrlPath.find_last_of('/'));
         }
     }
+    // Script file for POST, with no query ('?')
+    // Ex.: localhost:8080/python_POST.py or localhost:8080/cgi/python_cgi_upload.py or localhost:8080/py/cgi_delete.py
+    else if (originalUrlPath.find('?') == std::string::npos && _data.getRequestMethod() == "POST") {
+        URLPath_full = parsePath_cgi(originalUrlPath, location, originalUrlPath.substr(originalUrlPath.find_last_of('/')));
+    }
     return URLPath_full;
 }
 
@@ -446,6 +451,8 @@ std::string Request::parsePath_regularCase(std::string const & originalUrlPath, 
         std::string::size_type firstQuestionMark = originalUrlPath.find_first_of('?');
         if (firstQuestionMark != std::string::npos) {
             std::string fileCgi = originalUrlPath.substr(lastSlash,  firstQuestionMark - lastSlash);
+            std::cout << RED << "joyce fileCgi: " << fileCgi << std::endl;
+
             if (not fileCgi.empty() && pathType(locationBlockRootDir + fileCgi) == REG_FILE) {
                 _data.setFileExtention(getExtension(originalUrlPath));
                 std::string URLPath_full_cgi = parsePath_cgi(originalUrlPath, location, fileCgi);
@@ -471,7 +478,6 @@ std::string Request::parsePath_regularCase(std::string const & originalUrlPath, 
         } else { // todo find a better way to set the auto index??
             // Handling auto index in case the path is not a directory:
             if (originalUrlPath.find('.') == std::string::npos) {
-                std::cout << RED << "joyce: " << std::endl;
 
                 _data.setIsFolder(true);
                 _data.setAutoIndex(location->getAutoIndex());
