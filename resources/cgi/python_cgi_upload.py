@@ -13,18 +13,18 @@ form = cgi.FieldStorage()
 # sys.stderr.write('FORM IS [' + str(form) + ']\n')
 
 # Get filename here.
-fileitem = form['filename']
-# print('fileitem.file:', fileitem.file)
+fileItem = form['filename']
+# print('fileItem.file:', fileItem.file)
 
 # Test if the file was uploaded
-if fileitem.filename:
+if fileItem.filename:
     # strip leading path from file name to avoid
     # directory traversal attacks
-    fn = os.path.basename(fileitem.filename)
+    fn = os.path.basename(fileItem.filename)
     try:
         parent_dir = os.getcwd()
         with open(parent_dir + '/resources/uploads/' + fn, 'wb') as f:
-            f.write(fileitem.file.read())
+            f.write(fileItem.file.read())
         #   message = 'The file ' + fn + ' was uploaded successfully'
     except IOError as e:
         message = 'Error uploading file: ' + str(e)
@@ -62,7 +62,7 @@ html_template = """
 # <input type="hidden" name="delete" value="{}">
 # Define the item HTML template
 item_template = """
-<form action="python_cgi_DELETE.py" method="DELETE">
+<form action="python_cgi_DELETE.py" method="post">
     {}
     <br>
     <input type="hidden" name="delete" value="{}">
