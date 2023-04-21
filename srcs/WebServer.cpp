@@ -340,24 +340,28 @@ void WebServer::newClient(struct kevent event, ServerData * specificServer)
 	socklen_t socklen = sizeof(socket_addr);
 	int opt_value = 1;
 	int fd = accept(event.ident, (struct sockaddr *)&socket_addr, &socklen);
-	fcntl(fd, F_SETFL, O_NONBLOCK);
-	setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &opt_value, sizeof(opt_value));
-	if (fd == -1)
-		throw ServerException("failed accept");
+	while (fd != -1)
+	{
+		fcntl(fd, F_SETFL, O_NONBLOCK);
+		setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &opt_value, sizeof(opt_value));
+		if (fd == -1)
+			throw ServerException("failed accept");
 
-	Request *storage = new Request(_kq, fd, specificServer);
-	// storage->getRequestData().setKqFd(getKq());	 // moved to Request itself
+		Request *storage = new Request(_kq, fd, specificServer);
+		// storage->getRequestData().setKqFd(getKq());	 // moved to Request itself
 
-	EV_SET(&evSet, fd, EVFILT_READ, EV_ADD, 0, 0, storage); 
-	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
-		throw ServerException("failed kevent EV_ADD, EVFILT_READ, new client");
+		EV_SET(&evSet, fd, EVFILT_READ, EV_ADD, 0, 0, storage); 
+		if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
+			throw ServerException("failed kevent EV_ADD, EVFILT_READ, new client");
 
-	int time = 30 * 1000;     // needs to be 30 for final version -----------------------------------------
-	EV_SET(&evSet, fd, EVFILT_TIMER, EV_ADD, 0, time, storage); 
-	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
-		throw ServerException("failed kevent EV_ADD, EVFILT_TIMER, new client");
-    std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << GRN << " New client connection" << RES << " ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
-    std::cout << "fd new client: " << fd << std::endl;
+		int time = 30 * 1000;     // needs to be 30 for final version -----------------------------------------
+		EV_SET(&evSet, fd, EVFILT_TIMER, EV_ADD, 0, time, storage); 
+		if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
+			throw ServerException("failed kevent EV_ADD, EVFILT_TIMER, new client");
+		std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << GRN << " New client connection" << RES << " ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
+		std::cout << "fd new client: " << fd << std::endl;
+		fd = accept(event.ident, (struct sockaddr *)&socket_addr, &socklen);
+	}	
 }
 
 void WebServer::closeClient(struct kevent& event)

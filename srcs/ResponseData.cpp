@@ -122,43 +122,50 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
 		case 400:
 			status = "HTTP/1.1 400 Bad Request\r\n"
 						"Content-Type: text/html\r\n"
-						"Content-Encoding: identity\r\n";  // Corina - added it because firefox complained that itwas missing - not sure if we keep because firefox still complains even with it. We leave it for now.
-            _responsePath = "resources/error_pages/400BadRequest.html";
+						"Content-Encoding: identity\r\n"  // Corina - added it because firefox complained that itwas missing - not sure if we keep because firefox still complains even with it. We leave it for now.
+						"Connection: close\r\n";
+			_responsePath = "resources/error_pages/400BadRequest.html";
 			break;
 		case 404:
 			status = "HTTP/1.1 404 Not Found\r\n"
 						"Content-Type: text/html\r\n"
-						"Content-Encoding: identity\r\n";
+						"Content-Encoding: identity\r\n"
+						"Connection: close\r\n";
             _responsePath = "resources/error_pages/404NotFound.html";
 			break;
 		case 405:
 			status = "HTTP/1.1 405 Method Not Allowed\r\n"
 						"Content-Type: text/html\r\n"
-						"Content-Encoding: identity\r\n";
+						"Content-Encoding: identity\r\n"
+						"Connection: close\r\n";
             _responsePath = "resources/error_pages/405MethodnotAllowed.html";
 			break;
 		case 408:
 			status = "HTTP/1.1 408 Request Timeout\r\n"
 						"Content-Type: text/html\r\n"
-						"Content-Encoding: identity\r\n";
+						"Content-Encoding: identity\r\n"
+						"Connection: close\r\n";
             _responsePath = "resources/error_pages/408RequestTimeout.html";
 			break;
 		case 500:
 			status = "HTTP/1.1 500 Internal Server Error\r\n"
 						"Content-Type: text/html\r\n"
-						"Content-Encoding: identity\r\n";
+						"Content-Encoding: identity\r\n"
+						"Connection: close\r\n";
             _responsePath = "resources/error_pages/500InternarServerError.html";
             break;
 		case 403:
 			status = "HTTP/1.1 403 Forbidden\r\n"
 						"Content-Type: text/html\r\n"
-						"Content-Encoding: identity\r\n";
+						"Content-Encoding: identity\r\n"
+						"Connection: close\r\n";
             _responsePath = "resources/error_pages/403Forbidden.html";
             break;
 		default:
 			status = "HTTP/1.1 200 OK\r\n"
 						"Content-Type: text/html\r\n"
-						"Content-Encoding: identity\r\n";
+						"Content-Encoding: identity\r\n"
+						"Connection: close\r\n";
 					// "Content-Type: " + storage->getRequestData().getResponseContentType() + "\n";	// jaka
 			std::cout << "_responsePath: [[" << GRN_BG << _responsePath << RES << "]]\n";
 			break;
@@ -194,7 +201,8 @@ std::string ResponseData::setImage(std::string imagePath) {
 	// Create the header block
 	std::string headerBlock = 	"HTTP/1.1 200 OK\r\n"
 								"Content-Type: image/jpg\r\n"
-								"Content-Encoding: identity\r\n";	// Here it needs to grab the correct Type, jpg, png, gif, ico ...
+								"Content-Encoding: identity\r\n"	// Here it needs to grab the correct Type, jpg, png, gif, ico ...
+								"Connection: close\r\n";
 	headerBlock.append("accept-ranges: bytes\r\n");
 	std::string contentLen = "Content-Length: ";
 	std::string temp = std::to_string(content.size());
