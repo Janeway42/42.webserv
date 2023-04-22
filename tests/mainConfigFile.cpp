@@ -71,9 +71,6 @@ int main(int ac, char **av) {
                         std::string interpreterPath = it_location->getInterpreterPath();
                         std::cout << GRN << std::left << std::setw(30) << "\"interpreter_path\": " << interpreterPath << RES << std::endl;
 
-                        std::string scriptExtension = it_location->getScriptExtension();
-                        std::cout << GRN << std::left << std::setw(30) << "\"script_extension\": " << scriptExtension << RES << std::endl;
-
                         std::string cgiLocationIndexFile = it_location->getIndexFile();
                         std::cout << GRN << std::left << std::setw(30) << "\"index_file\": " << cgiLocationIndexFile << RES << std::endl;
                     } else {

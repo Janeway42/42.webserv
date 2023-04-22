@@ -21,7 +21,6 @@ class ServerLocation : public Parser {
         std::string _index_file;
         bool _auto_index;
         std::string _interpreter_path;
-        std::string _script_extension;
 
     public:
 //        ServerLocation() {    std::cout << BLU << "CREATING DEFAULT ServerLocation " << RES << std::endl;}

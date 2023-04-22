@@ -182,10 +182,6 @@ void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile, Server
             _server_location.setInterpreterPath(keyParser(lineContent, "interpreter_path"));
             continue;
         }
-        if (lineContent.find("script_extension") != std::string::npos) {
-            _server_location.setScriptExtension(keyParser(lineContent, "script_extension"));
-            continue;
-        }
     }
 }
 
