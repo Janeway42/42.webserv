@@ -41,7 +41,7 @@ html_template = """
 </head>
 <body>
 	<h3>This is the file python_cgi_DELETE.py</h3>
-    <p>(path ./resources/cgi/python_cgi_DELETE.py)</p>
+    <p>(path ./resources/_cgi/python_cgi_DELETE.py)</p>
     <hr>
     <h2>File deleted:</h2>
     <br>

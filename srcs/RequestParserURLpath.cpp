@@ -41,13 +41,13 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 		close(_cgi.getPipeCgiOut_0());
 		close(_cgi.getPipeCgiIn_1());
 
-		ret = dup2(_cgi.getPipeCgiIn_0()   ,  0);		// cgi reads from parent via pipe fd_out
+		ret = dup2(_cgi.getPipeCgiIn_0()   ,  0);		// _cgi reads from parent via pipe fd_out
 		if (ret == -1)
 		 	std::cout << RED "Error dup2() of PipeCgiIn_0, child\n" RES;
 		close(_cgi.getPipeCgiIn_0());
 		
 		//sleep(1);
-		ret = dup2(_cgi.getPipeCgiOut_1()   ,  1);	// cgi writes to parent via pipe fd_out NONBLOCK
+		ret = dup2(_cgi.getPipeCgiOut_1()   ,  1);	// _cgi writes to parent via pipe fd_out NONBLOCK
 		if (ret == -1)
 		 	std::cout << RED "Error dup2() of PipeCgiOut_1, child\n" RES;
 		close(_cgi.getPipeCgiOut_1());
@@ -69,7 +69,7 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 }
 
 void Request::callCGI(struct kevent event) {
-	std::cout << CYN << "Start callCGI, cgi path: " << _data.getURLPath_full() << "\n" << RES;
+	std::cout << CYN << "Start callCGI, _cgi path: " << _data.getURLPath_full() << "\n" << RES;
 	//(void)reqData;
 
 	// Declare all necessary variables
@@ -126,7 +126,7 @@ void Request::callCGI(struct kevent event) {
 //	args[0] = (char *)"/usr/local/bin/python3";// joyce test
 	args[0] = (char *)"/usr/bin/python";// todo add from config file
 	std::string tempPath = _data.getURLPath_full();
-	char *path = (char *)tempPath.c_str();	//  ie: "./resources/cgi/python_cgi_GET.py"
+	char *path = (char *)tempPath.c_str();	//  ie: "./resources/_cgi/python_cgi_GET.py"
 	args[1] = path;
 	args[2] = NULL;
 
@@ -207,7 +207,7 @@ void Request::storeURLPathParts(std::string const & originalUrlPath, std::string
             std::cout << "queryString:                   [" << GRN_BG << _data.getQueryString() << RES << "]" << std::endl;
             // _data.setBody(queryString);  // too early todo JAKA is it needed here?
         }
-        storeFormData(queryString);	// maybe not needed (the whole vector and map) if the cgi script can handle the whole queryString todo JAKA is it needed?
+        storeFormData(queryString);	// maybe not needed (the whole vector and map) if the _cgi script can handle the whole queryString todo JAKA is it needed?
     }
 
     _data.setURLPath(originalUrlPath);
@@ -267,7 +267,7 @@ static void printPathParts(RequestData reqData) {
 }
 
 static std::string getExtension(std::string const & originalUrlPath) {
-    // Ex.: localhost:8080/favicon.ico or localhost:8080/cgi/python_cgi_GET.py?street=test&city=test+city or localhost:8080/index.html
+    // Ex.: localhost:8080/favicon.ico or localhost:8080/_cgi/python_cgi_GET.py?street=test&city=test+city or localhost:8080/index.html
     std::string urlPath = originalUrlPath;
     std::string extension = std::string();
 
@@ -289,13 +289,13 @@ static std::string getExtension(std::string const & originalUrlPath) {
 std::string Request::parsePath_cgi(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location, std::string const & file_cgi) {
     std::string URLPath_full = std::string();
 
-    // localhost:8080/cgi/python_cgi_GET.py?street=test&city=test+city
+    // localhost:8080/_cgi/python_cgi_GET.py?street=test&city=test+city
 //    if (originalUrlPath.find('?') != std::string::npos) {
         std::string locationBlockUriName = location->getLocationUriName();
         std::string locationBlockRootDir = location->getRootDirectory();
         getCgiData().setIsCgi(true);
 
-        std::cout << BLU << "'?' was found, so cgi location block config is needed" << RES << std::endl;
+        std::cout << BLU << "'?' was found, so _cgi location block config is needed" << RES << std::endl;
         std::cout << "Path is a script file. ";
 
         // blocks down below are just for logging
@@ -312,9 +312,9 @@ std::string Request::parsePath_cgi(std::string const & originalUrlPath, std::vec
         }
 
         /* If the url is a script file, the match will be done between the extension of it, against the location uri
-         * ex: url localhost/cgi/script.py -> the .py part will be checked against a location uri */
+         * ex: url localhost/_cgi/script.py -> the .py part will be checked against a location uri */
         if (_data.getFileExtention() == locationBlockUriName) {
-            std::cout << BLU << "cgi location block for [" << RES BLU_BG << originalUrlPath << RES BLU;
+            std::cout << BLU << "_cgi location block for [" << RES BLU_BG << originalUrlPath << RES BLU;
             std::cout << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES BLU << "]" << std::endl;
             std::cout << BLU << "Its root_directory [" << locationBlockRootDir << "] and configuration will be used" << RES << std::endl;
             URLPath_full = locationBlockRootDir + file_cgi;
@@ -347,8 +347,9 @@ std::string Request::parsePath_dir(std::string const & originalUrlPath, std::vec
             std::cout << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES BLU << "]" << std::endl;
             std::cout << BLU << "Its root_directory [" << locationBlockRootDir << "] and configuration will be used" << RES << std::endl;
 
+            std::cout << RED << "JJOOYYCCEE subdirectory: " << subdirectory << RES << std::endl;
             //if (pathType(locationBlockRootDir + subdirectory) == DIRECTORY)// todo ????
-            URLPath_full = locationBlockRootDir + subdirectory + '/' + location->getIndexFile();
+            URLPath_full = locationBlockRootDir + (subdirectory == "/" ? "" : subdirectory) + '/' + location->getIndexFile();
             // TODO _data.setFileExtention(getExtension(originalUrlPath)) here too for .html??
         }
     }
@@ -362,14 +363,14 @@ std::string Request::parsePath_dir(std::string const & originalUrlPath, std::vec
 std::string Request::parsePath_file(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location) {
     std::string URLPath_full = std::string();
 
-    // Ex.: localhost:8080/favicon.ico or localhost:8080/cgi/cgi_index.html
+    // Ex.: localhost:8080/favicon.ico or localhost:8080/_cgi/cgi_index.html
     if (originalUrlPath.find('?') == std::string::npos && _data.getRequestMethod() != "POST") {
         std::string locationBlockUriName = location->getLocationUriName();
         std::string locationBlockRootDir = location->getRootDirectory();
         std::string DirFromUrl = std::string();
         std::string file = originalUrlPath.substr(originalUrlPath.find_last_of('/'));
 
-        std::cout << BLU << "No '?' found, so no cgi root_directory needed" << RES << std::endl;
+        std::cout << BLU << "No '?' found, so no _cgi root_directory needed" << RES << std::endl;
         std::cout << "Path is a file. ";
 
         // If there is only one / then it has to keep it, otherwise DirFromUrl can be without it
@@ -386,7 +387,7 @@ std::string Request::parsePath_file(std::string const & originalUrlPath, std::ve
         }
 
         /* If the url is a file, the match will be done between the directory where the file is, against the location uri
-         * ex: url localhost/cgi/cgi_index.html -> the /cgi part will be checked against a location uri */
+         * ex: url localhost/_cgi/cgi_index.html -> the /_cgi part will be checked against a location uri */
         if (DirFromUrl == locationBlockUriName) {
             std::cout << BLU << "location block for [" << RES BLU_BG << originalUrlPath << RES BLU;
             std::cout << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES BLU << "]" << std::endl;
@@ -399,7 +400,7 @@ std::string Request::parsePath_file(std::string const & originalUrlPath, std::ve
         }
     }
     // Script file for POST, with no query ('?')
-    // Ex.: localhost:8080/python_POST.py or localhost:8080/cgi/python_cgi_upload.py or localhost:8080/py/cgi_delete.py
+    // Ex.: localhost:8080/python_POST.py or localhost:8080/_cgi/python_cgi_upload.py or localhost:8080/py/cgi_delete.py
     else if (originalUrlPath.find('?') == std::string::npos && _data.getRequestMethod() == "POST") {
         URLPath_full = parsePath_cgi(originalUrlPath, location, originalUrlPath.substr(originalUrlPath.find_last_of('/')));
     }
@@ -484,12 +485,11 @@ std::string Request::parsePath_regularCase(std::string const & originalUrlPath, 
                 return URLPath_full_dir;
             }
         } else { // todo find a better way to set the auto index??
-            // Handling auto index in case the path is not a directory:
+            // Handling auto index in case the path is not a directory (which is an error):
             if (originalUrlPath.find('.') == std::string::npos) {
-
-                _data.setIsFolder(true);
-                _data.setAutoIndex(location->getAutoIndex());
-                if (location->getAutoIndex() == true) {
+//                _data.setIsFolder(true);
+//                _data.setAutoIndex(location->getAutoIndex());
+                if (_data.getAutoIndex() == true) {
                     setHttpStatus(FORBIDDEN);
                 } else {
                     setHttpStatus(NOT_FOUND);
@@ -567,11 +567,12 @@ void Request::parsePath(std::string  const & originalUrlPath) {
             if (getHttpStatus() == NO_STATUS) {// todo -> here I think we dont need to check this anymore
                 setHttpStatus(NOT_FOUND);
             }
-        }
-        _data.setResponseContentType(_data.getFileExtention());
-        storeURLPathParts(originalUrlPath, URLPath_full);// TODO: do that only if _data.getRequestMethod() != "POST" ?????
+        } else {
+            _data.setResponseContentType(_data.getFileExtention());
+            storeURLPathParts(originalUrlPath, URLPath_full);// TODO: do that only if _data.getRequestMethod() != "POST" ?????
 
-        printPathParts(_data);
-        checkIfPathExists(_data.getURLPath_full());
+            printPathParts(_data);
+            checkIfPathExists(URLPath_full);
+        }
     }
 }

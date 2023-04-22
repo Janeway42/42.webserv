@@ -122,7 +122,7 @@ void ConfigFileParser::parseFileServerBlock(std::ifstream & configFile) {
             _server_data.setPortRedirection(keyParser(lineContent, "port_redirection"));
             continue;
         }
-        /** Checking for cgi or location/cgi blocks */
+        /** Checking for _cgi or location/_cgi blocks */
         if (lineContent.find("location") != std::string::npos && lineContent.find('{') != std::string::npos) {
             ServerLocation _server_location(ServerLocation(_server_data.getRootDirectory(), _server_data.getIndexFile()));
             std::string locationValue = keyParser(lineContent, "location");
@@ -150,7 +150,7 @@ void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile, Server
             _server_data.getLocationBlocks().push_back(_server_location);
             break;
         }
-        /** Handling the location or cgi block key values */
+        /** Handling the location or _cgi block key values */
         if (lineContent.find("root_directory") != std::string::npos) {
             _server_location.setRootDirectory(keyParser(lineContent, "root_directory"));
             continue;

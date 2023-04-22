@@ -116,11 +116,11 @@ const std::string RequestData::getFileExtention() const {
 	return _fileExtention;
 }
 
-bool	RequestData::getIsFolder() const {
+bool RequestData::getIsFolder() const {
 	return _isFolder;
 }
 
-bool	RequestData::getAutoIndex() const {
+bool RequestData::getAutoIndex() const {
 	return _autoIndex;
 }
 

@@ -89,7 +89,7 @@ void Request::parseHeader(std::string header) {
 
 // TODO MAYBE WON'T BE NEEDED
 void	storeBodyAsFile(std::string body) {
-	std::ofstream bodyFile("./resources/cgi/bodyFile.txt");
+	std::ofstream bodyFile("./resources/_cgi/bodyFile.txt");
 	if (bodyFile.is_open()) {
 		bodyFile << body;
 		bodyFile.close();

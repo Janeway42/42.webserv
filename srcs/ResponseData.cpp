@@ -76,7 +76,7 @@ void ResponseData::setResponse(struct kevent& event) {
             _responseBody = streamFile(_responsePath);
         }
 	}
-    // if it is not a folder (it checks first if cgi -> if not then it checks text (includes error), else image
+    // if it is not a folder (it checks first if _cgi -> if not then it checks text (includes error), else image
     else {
         if (storage->getCgiData().getIsCgi() == true && storage->getHttpStatus() == OK) {
             _responseBody = storage->getRequestData().getCgiBody();

@@ -84,7 +84,7 @@ std::string ServerLocation::getInterpreterPath() const {
 /** #################################### Setters #################################### */
 
 void ServerLocation::setLocationAsCgi(bool isCgi) {
-    /* not mandatory | default: python cgi with a default index.html inside */
+    /* not mandatory */
     _is_location_cgi = isCgi;
 }
 

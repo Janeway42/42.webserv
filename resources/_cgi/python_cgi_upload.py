@@ -45,7 +45,7 @@ html_template = """
 </head>
 <body>
     <h3>This is the file python_cgi_upload.py</h3>
-    <p>(path  ./resources/cgi/python_cgi_upload.py)</p>
+    <p>(path  ./resources/_cgi/python_cgi_upload.py)</p>
     <hr>
     <h2>Uploaded Files:</h2>
     <br>
@@ -72,7 +72,7 @@ item_template = """
 """
 
 # # Check if a delete request has been made
-# form = cgi.FieldStorage()
+# form = _cgi.FieldStorage()
 # if "delete" in form:
 #     os.remove(os.path.join(folder_path, form["delete"].value))
 

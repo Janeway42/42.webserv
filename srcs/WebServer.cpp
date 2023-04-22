@@ -157,7 +157,7 @@ void WebServer::readRequest(struct kevent& event)
 		//std::cout << "  ---> read from CGI, ret: " << ret << "\n";		// jaka
 		if (ret < 0)
 		{
-			std::cout << "failed read in pipe _fd_out[0] from cgi\n";
+			std::cout << "failed read in pipe _fd_out[0] from _cgi\n";
 			storage->setHttpStatus(INTERNAL_SERVER_ERROR);
 			addFilter(storage->getFdClient(), event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, ret < 0 on _fd_out[0]");  //  this allows client write 
 			removeFilter(event, EVFILT_READ, "failed kevent EV_DELETE, EVFILT_READ, ret < 0 on _fd_out[0]"); // this removes the pipe fd 
@@ -210,7 +210,7 @@ void WebServer::readRequest(struct kevent& event)
 			}
 			else if (storage->getDone() == true && storage->getCgiData().getIsCgi() == true) {
 				std::cout << CYN "          ReadRequest: C) Done receiving the request, start CGI\n" RES;
-				removeFilter(event, EVFILT_READ, "failed kevent EV_DELETE EVFILT_READ - read success - start cgi"); // ??? jaka
+				removeFilter(event, EVFILT_READ, "failed kevent EV_DELETE EVFILT_READ - read success - start _cgi"); // ??? jaka
 				chooseMethod_StartCGI(event, storage);
 			}
 		}
@@ -430,7 +430,7 @@ void	WebServer::chooseMethod_StartCGI(struct kevent event, Request * storage) {
 			std::cout << RED_BG << "ERROR 404 Not Found" << RES << std::endl;
 			// status error 404 Not Found -> Server cannot find the requested resource.
 		}
-		// cgi or just delete the file literally? It's not with CGI: Your program should call the CGI with the file requested as first argument.
+		// _cgi or just delete the file literally? It's not with CGI: Your program should call the CGI with the file requested as first argument.
 		// How to delete a file froma  direcory: https://codescracker.com/cpp/program/cpp-program-delete-file.htm#:~:text=To%20delete%20any%20file%20from,used%20to%20delete%20a%20file.
 		if (remove(storage->getRequestData().getURLPath().c_str()) != 0) {
 			std::cout << RED_BG << "ERROR 204 No Content" << RES << std::endl;

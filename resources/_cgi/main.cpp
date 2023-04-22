@@ -43,7 +43,7 @@ int main() {
         char *args[3];
         args[0] = (char *)"/usr/bin/python";
         std::string tempPath = "python_cgi_POST.py";
-        const char *path = (char *)tempPath.c_str();	//  ie: "./resources/cgi//python_cgi_GET.py"
+        const char *path = (char *)tempPath.c_str();	//  ie: "./resources/_cgi//python_cgi_GET.py"
         args[1] = (char *)path;
         args[2] = NULL;
 

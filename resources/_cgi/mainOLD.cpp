@@ -9,7 +9,7 @@
 
 int main() {
 
-std::cout << "START CALL_CGI, cgi path: \n";
+std::cout << "START CALL_CGI, _cgi path: \n";
 	//(void)reqData;
 
 	// Declare all necessary variables
@@ -43,7 +43,7 @@ std::cout << "START CALL_CGI, cgi path: \n";
 	char *args[3];
 	args[0] = (char *)"/usr/bin/python";
 	std::string tempPath = "python_cgi_POST.py";
-	const char *path = (char *)tempPath.c_str();	//  ie: "./resources/cgi//python_cgi_GET.py"
+	const char *path = (char *)tempPath.c_str();	//  ie: "./resources/_cgi//python_cgi_GET.py"
 	args[1] = (char *)path;
 	args[2] = NULL;
 
@@ -110,7 +110,7 @@ std::cout << "START CALL_CGI, cgi path: \n";
         close(mypipeIN[1]);
 		std::cout <<  "   parent a)\n" ;
 
-		// ret = dup2(mypipeOUT[1]   ,  1);	// parent writes to cgi via pipe fd_in
+		// ret = dup2(mypipeOUT[1]   ,  1);	// parent writes to _cgi via pipe fd_in
         //  if (ret < 0)
 		// 	std::cout << "Error: pipe IN[1] failed\n";
 		// std::cout <<  "   parent b)\n" ;
@@ -122,7 +122,7 @@ std::cout << "START CALL_CGI, cgi path: \n";
        // close(mypipeOUT[1]);
 		
         //close(mypipeIN[0]);
-        //  ret = dup2(mypipeIN[0]   ,  0);	// parent reads from cgi
+        //  ret = dup2(mypipeIN[0]   ,  0);	// parent reads from _cgi
         //  if (ret < 0)
 		// 	std::cout << "Error: pipe OUT[0] failed\n";
 

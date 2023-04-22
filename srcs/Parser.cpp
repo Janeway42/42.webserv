@@ -130,6 +130,6 @@ DataType Parser::getValueType(std::string & lineContent) {// Todo: Maybe not nee
 		return BOOL;
 	}
 	return STRING;
-	// todo: add cgi location?
+	// todo: add _cgi location?
 }
 
