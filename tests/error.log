@@ -1,0 +1,4 @@
+2023/04/21 18:20:52 [error] 9239#0: *1 open() "/usr/local/var/www/resources/index.html" failed (2: No such file or directory), client: 127.0.0.1, server: localhost, request: "GET /index.html HTTP/1.1", host: "localhost:8080"
+2023/04/21 18:20:52 [error] 9239#0: *2 open() "/usr/local/var/www/resources/index.html" failed (2: No such file or directory), client: 127.0.0.1, server: localhost, request: "GET /index.html HTTP/1.1", host: "localhost:8080"
+2023/04/21 18:21:16 [error] 9334#0: *1 open() "/usr/local/var/www/resources/index.html" failed (2: No such file or directory), client: 127.0.0.1, server: localhost, request: "GET /index.html HTTP/1.1", host: "localhost:8080"
+2023/04/21 18:21:16 [error] 9334#0: *2 open() "/usr/local/var/www/resources/index.html" failed (2: No such file or directory), client: 127.0.0.1, server: localhost, request: "GET /index.html HTTP/1.1", host: "localhost:8080"

@@ -40,8 +40,7 @@ html_template = """
 	<title>Folder Contents</title>
 </head>
 <body>
-	<h4><a href='../index.html'> Main Page </a></h4>
-	<h4><a href='cgi_index.html'> Back </a></h4>
+	<h4><a href='cgi_index.html'> Main Page </a></h4>
 	<h1>Upload Folder Content:</h1>
 	<ul>
 		{}

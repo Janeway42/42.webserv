@@ -72,9 +72,16 @@ void ResponseData::setResponse(struct kevent& event) {
         }
         // Handling auto index
         if (storage->getRequestData().getAutoIndex() == true) {
-            // TODO handle auto index better?
-            _responseBody = streamFile(_responsePath);
-        }
+			std::cout << BLU "AUTOINDEX ON, must call storeFolderContent()\n" << RES;
+			std::cout << BLU "     URLPathFirstPart: [" << storage->getRequestData().getURLPathFirstPart() << "]\n" << RES;
+			// if (storage->getRequestData().getURLPathFirstPart().empty()) {
+			// 	std::cout << BLU "first part is empty\n" << RES;
+			// 	std::string newPath = "./resources/" + storage->getRequestData().getURLPath();
+			// 	_responseBody = storeFolderContent(newPath.c_str());
+			// }
+			// else
+	            _responseBody = storeFolderContent(storage->getRequestData().getURLPathFirstPart().c_str());
+		}
 	}
     // if it is not a folder (it checks first if cgi -> if not then it checks text (includes error), else image
     else {
@@ -94,6 +101,12 @@ void ResponseData::setResponse(struct kevent& event) {
             }
         }
     }
+
+	/* TODO
+		http://localhost:8080/xxx.html
+			Location found, file not found. Now it is set to 403 Forbidden, but it should be 404 Not Found ???
+			Then it goes into 'Path is an image', which causes Browser message 'Image cannot be displayed'
+	*/
 
 	// set up header
 	int temp = _responseBody.length();

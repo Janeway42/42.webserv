@@ -8,8 +8,8 @@ import cgi, cgitb
 # cgitb.enable()	# detailed errors msgs
 # cgitb.enable(display=0, logdir="/path/to/logdir")
 
-
-print("<p> ... This is Python script for POST method ...</p>")
+print("<p>")
+print(" ... The Start of python script ...")
 sys.stderr.write('START PYTHON SCRIPT ( via stderr)\n')
 
 
@@ -18,6 +18,9 @@ sys.stderr.write('START PYTHON SCRIPT ( via stderr)\n')
 # FieldStorage class reads the form contents from the standard input OR the environment (depending on the value of various environment variables set according to the CGI standard). Since it may consume ??? standard input, it should be instantiated only once.
 
 
+# WITHOUT SLEEP, NOTHING COMES YET TO THE FieldStoraeg() 
+# AND IT THEREFORE GIVES PYTHON ERROR: [Errno 35] Resource temporarily unavailable
+# time.sleep(5)
 
 
 class StdinStream(object):
@@ -42,41 +45,15 @@ class StdinStream(object):
 
 form = cgi.FieldStorage(fp=StdinStream(), environ={'REQUEST_METHOD': 'POST'})
 # print(form)
-# sys.stderr.write('FORM IS [' + str(form) + ']\n')
+sys.stderr.write('FORM IS [' + str(form) + ']\n')
 
 
 # iterate over the fields in the form
-# for field_name in form.keys():
-#     field = form[field_name]
-#     sys.stderr.write('   Field is [' + str(field) + ']\n')
-#     print("<p>")
-#     print(field) 
-#     print("</p>")
-
-print("<div style='background-color:lavender; padding:1%; margin: 5% 0% 0% 5%; width:30%'>")
-
-
-
-
-if "name" in form:
-        storedValue = form["name"].value
-        print("<h1>")
-        print("Hello ")
-        print(storedValue)
-        print(",</h1>")
-
-if "description" in form:
-        storedValue = form["description"].value
-        wordList = storedValue.split()
-        wordCount = len(wordList)
-        print("<h2>")
-        print("Your text has")
-        print(wordCount)
-        print("words")
-        print("</h2>")
-
-print ("</div>")
-
+for field_name in form.keys():
+    field = form[field_name]
+    sys.stderr.write('   Field is [' + str(field) + ']\n')
+    print(field)
+    
 
     # process the field data here
 
@@ -102,8 +79,8 @@ print ("</div>")
 
 
 
-# sys.stderr.write('END PYTHON SCRIPT (via stderr)\n')
+sys.stderr.write('END PYTHON SCRIPT (via stderr)\n')
 # sys.stderr.write(form_data)
-# print(" ... The End of Python Script ... ")
-# print("</p>")
+print(" ... The End of Python Script ... ")
+print("</p>")
 
