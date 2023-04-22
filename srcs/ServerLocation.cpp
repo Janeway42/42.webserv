@@ -11,7 +11,6 @@
 //    _index_file(std::string()),
 //    _auto_index(false),
 //    _interpreter_path(std::string()),
-//    _script_extension(std::string()),
 //    useServerBlockIndexFile(false) {
 //    std::cout << CYN << "ServerLocation Default constructor" << RES << std::endl;
 //}
@@ -26,7 +25,6 @@ ServerLocation::ServerLocation(std::string const & server_root_directory, std::s
     _index_file(server_index_file),
     _auto_index(false),
     _interpreter_path(std::string()),
-    _script_extension(std::string()),
     useServerBlockIndexFile(false) {
     _allow_methods.push_back(GET);
     std::cout << CYN << "ServerLocation Overloaded constructor" << RES << std::endl;
@@ -43,7 +41,6 @@ ServerLocation::~ServerLocation() {
     _index_file.clear();
     _auto_index = false;
     _interpreter_path.clear();
-    _script_extension.clear();
     useServerBlockIndexFile = false;
     std::cout << CYN << "ServerLocation Destructor" << RES << std::endl;
 }
@@ -82,10 +79,6 @@ bool ServerLocation::getAutoIndex() const {
 
 std::string ServerLocation::getInterpreterPath() const {
     return _interpreter_path;
-}
-
-std::string ServerLocation::getScriptExtension() const {
-    return _script_extension;
 }
 
 /** #################################### Setters #################################### */
@@ -235,21 +228,6 @@ void ServerLocation::setInterpreterPath(std::string const & interpreterPath) {
     } else {
         if (isLocationCgi()) {
             throw ParserException(CONFIG_FILE_ERROR("interpreter_path", MANDATORY));
-        }
-    }
-}
-
-void ServerLocation::setScriptExtension(std::string const & scriptExtension) {
-    /* mandatory */
-    if (not scriptExtension.empty()) {
-        if (scriptExtension == ".py") {// todo or php?
-            _script_extension = scriptExtension;
-        } else {
-            throw ParserException(CONFIG_FILE_ERROR("script_extension", NOT_SUPPORTED));
-        }
-    } else {
-        if (isLocationCgi()) {
-            throw ParserException(CONFIG_FILE_ERROR("script_extension", MANDATORY));
         }
     }
 }

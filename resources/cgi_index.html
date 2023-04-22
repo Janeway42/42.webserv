@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <h4><a href='index.html'> Main Page </a></h4>
+    <title>cgi_index.html</title>
+    <!-- to disable favicon -->
+<!--    <link rel="icon" href="data:,">-->
+</head>
+
+<body>
+    <h3>This is the file cgi_index.html</h3>
+    <p>(path ./resources/cgi/cgi_index.html)</p>
+    <hr>
+    <h2>Some Requests using Cgi </h2>
+    <br>
+
+    <!-------------------------------------------------------------------------------------------------- METHOD GET -->
+    <form action="cgi/python_cgi_GET.py" method="get">
+      <fieldset style="background: #fffdf6; border: 2px solid #caaf38;">
+      <legend> METHOD GET </legend>
+      <!--<form action="response_get.html" method="get">     -->
+      <label for="street">Street:</label>
+      <input type="text" id="street" name="street"><br><br>
+      <label for="city">City:</label>
+      <input type="text" id="city" name="city"><br><br>
+      <input type="submit" value="Submit">
+    </fieldset>
+    </form> <br><br><br>
+
+    <!------------------------------------------------------------------------------------------------- METHOD POST -->
+    <!-- <form action="response_post.php" method="post"> -->
+    <!--<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">-->
+    <form action="cgi/python_cgi_POST.py" method="post">
+      <fieldset style="background: #f6f8ff; border: 2px solid #4ca7ea;">
+        <legend> METHOD POST </legend>
+        <label for="fruit">Fruit:</label>
+        <input type="text" name="fruit" placeholder="fruit"><br><br>
+        <label for="vegetable">Vegetable:</label>
+        <input type="text" name="vegetable" placeholder="vegetable"><br><br>
+        <!--<input type="text" name="lastname" placeholder="Last name"><br /><br />-->
+        <button type="submit">Submit</button>
+      </fieldset>
+    </form> <br><br><br>
+
+    <!----------------------------------------------------------------------------------------- METHOD POST (upload)-->
+    <form action="cgi/python_cgi_upload.py" method="post" enctype="multipart/form-data">
+      <fieldset style="background: #fff3f3; border: 2px solid #fbd58f;">
+        <legend> UPLOAD FILE/IMAGE (method POST) </legend>
+        Select file/image:
+        <input type="file" name="filename" id="fileToUpload">
+        <br><br>
+        <input type="submit" value="Upload">
+      </fieldset>
+    </form>
+
+</body>
+</html>

@@ -55,6 +55,35 @@ enum HttpStatus {
     HTTP_VERSION_NOT_SUPPORTED = 505 // The HTTP version used in the request is not supported by the server.
 };
 
+inline const std::string httpStatusToString(HttpStatus status) {
+    switch (status)
+    {
+        case NO_STATUS:                     return "No Status";
+        case CONTINUE:                      return "Continue";
+        case PROCESSING:                    return "Processing";
+        case OK:                            return "OK";
+        case CREATED:                       return "Created";
+        case NO_CONTENT:                    return "No Content";
+        case MOVE_PERMANENTLY:              return "Move Permanently";
+        case BAD_REQUEST:                   return "Bad Request";
+        case UNAUTHORIZED:                  return "Unauthorized";
+        case FORBIDDEN:                     return "Forbidden";
+        case NOT_FOUND:                     return "Not Found";
+        case METHOD_NOT_ALLOWED:            return "Method Not Allowed";
+        case REQUEST_TIMEOUT:               return "Request Timeout";
+        case LENGTH_REQUIRED:               return "Length Required";
+        case PAYLOAD_TOO_LARGE:             return "Payload Too Long";
+        case URI_TOO_LONG:                  return "URI Too Long";
+        case UNSUPPORTED_MEDIA_TYPE:        return "Unsupported Media Type";
+        case I_AM_A_TEAPOT:                 return "I Am A Teapot";
+        case TOO_MANY_REQUESTS:             return "Too Many Requests";
+        case HEADER_FIELDS_TOO_LARGE:       return "Header Fields Too Large";
+        case INTERNAL_SERVER_ERROR:         return "Internal Server Error";
+        case HTTP_VERSION_NOT_SUPPORTED:    return "HTTP Version Not Supported";
+        default:                            return "No Status";
+    }
+}
+
 enum PathType {
     DIRECTORY = 0,
     REG_FILE,

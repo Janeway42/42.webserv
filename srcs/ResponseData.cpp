@@ -109,98 +109,71 @@ void ResponseData::setResponse(struct kevent& event) {
 	//std::cout << GRN << "\n_fullResponse:\n[\n" RES << _fullResponse << "]\n" <<RES;
 }
 
-static std::string matching_error_page(std::vector<std::string> const & errorPages, std::string const & status) {
+static std::string selectErrorPage(std::vector<std::string> const & errorPages, HttpStatus status, std::string const & defaultErrorPage) {
     std::vector<std::string>::const_iterator it = errorPages.cbegin();
     for (; it != errorPages.cend(); ++it) {
-        if (it->find(status) != std::string::npos) {
+        if (it->find(std::to_string(status)) != std::string::npos) {
+            // If error page is found on the config file, return it
             return *it;
         }
     }
-    return std::string();
+    // Otherwise return a default config file
+    return "./resources/_server_default_status/" + defaultErrorPage;
+}
+
+static std::string setResponseHeader(HttpStatus status) {
+    return "HTTP/1.1 " + std::to_string(status) + " " + httpStatusToString(status) + "\r\n"
+           "Content-Type: text/html\r\n"
+           "Content-Encoding: identity\r\n"// Corina - added it because firefox complained that itwas missing - not sure if we keep because firefox still complains even with it. We leave it for now.
+           "Connection: close\r\n";
 }
 
 std::string ResponseData::setResponseStatus(struct kevent& event)
 {	
 	std::cout << CYN << "start setResponseStatus()\n" << RES;
 	Request *storage = (Request *)event.udata;
-	std::string status;
-
+	std::string header = setResponseHeader(storage->getHttpStatus());
 //	std::string fileType = storage->getRequestData().getResponseContentType();	// fileType not used ?
 
-	switch (storage->getHttpStatus())
-	{
+    //todo add more default pages?
+	switch (storage->getHttpStatus()) {
 		case 400: {
-            status = "HTTP/1.1 400 Bad Request\r\n"
-                     "Content-Type: text/html\r\n"
-                     "Content-Encoding: identity\r\n";  // Corina - added it because firefox complained that itwas missing - not sure if we keep because firefox still complains even with it. We leave it for now.
-            std::string errorPage = matching_error_page(storage->getServerData().getErrorPages(), "400");
-            if (not errorPage.empty()) {
-                _responsePath = errorPage;
-            } else {
-                _responsePath = "./resources/error_pages/server_standard_status/404NotFound.html";
-            }
+            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
+                                            storage->getHttpStatus(),
+                                            "400BadRequest.html");
             break;
         } case 403: {
-            status = "HTTP/1.1 403 Forbidden\r\n"
-                     "Content-Type: text/html\r\n"
-                     "Content-Encoding: identity\r\n";
-            std::string errorPage = matching_error_page(storage->getServerData().getErrorPages(), "403");
-            if (not errorPage.empty()) {
-                _responsePath = errorPage;
-            } else {
-                _responsePath = "./resources/error_pages/server_standard_status/403Forbidden.html";
-            }
+            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
+                                            storage->getHttpStatus(),
+                                            "403Forbidden.html");
             break;
         } case 404: {
-            status = "HTTP/1.1 404 Not Found\r\n"
-                     "Content-Type: text/html\r\n"
-                     "Content-Encoding: identity\r\n";
-            std::string errorPage = matching_error_page(storage->getServerData().getErrorPages(), "404");
-            if (not errorPage.empty()) {
-                _responsePath = errorPage;
-            } else {
-                _responsePath = "./resources/error_pages/server_standard_status/404NotFound.html";
-            }
+            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
+                                            storage->getHttpStatus(),
+                                            "404NotFound.html");
             break;
         } case 405: {
-            status = "HTTP/1.1 405 Method Not Allowed\r\n"
-                     "Content-Type: text/html\r\n"
-                     "Content-Encoding: identity\r\n";
-            std::string errorPage = matching_error_page(storage->getServerData().getErrorPages(), "405");
-            if (not errorPage.empty()) {
-                _responsePath = errorPage;
-            } else {
-                _responsePath = "./resources/error_pages/server_standard_status/405MethodnotAllowed.html";
-            }
+            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
+                                            storage->getHttpStatus(),
+                                            "405MethodnotAllowed.html");
             break;
         } case 408: {
-            status = "HTTP/1.1 408 Request Timeout\r\n"
-                     "Content-Type: text/html\r\n"
-                     "Content-Encoding: identity\r\n";
-
-            _responsePath = "resources/error_pages/408RequestTimeout.html";
+            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
+                                            storage->getHttpStatus(),
+                                            "408RequestTimeout.html");
             break;
         } case 500: {
-            status = "HTTP/1.1 500 Internal Server Error\r\n"
-                     "Content-Type: text/html\r\n"
-                     "Content-Encoding: identity\r\n";
-            std::string errorPage = matching_error_page(storage->getServerData().getErrorPages(), "500");
-            if (not errorPage.empty()) {
-                _responsePath = errorPage;
-            } else {
-                _responsePath = "./resources/error_pages/server_standard_status/500InternarServerError.html";
-            }
+            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
+                                            storage->getHttpStatus(),
+                                            "500InternarServerError.html");
             break;
         } default: {
-            status = "HTTP/1.1 200 OK\r\n"
-                     "Content-Type: text/html\r\n"
-                     "Content-Encoding: identity\r\n";
             // "Content-Type: " + storage->getRequestData().getResponseContentType() + "\n";	// jaka
             std::cout << "_responsePath: [[" << GRN_BG << _responsePath << RES << "]]\n";
             break;
         }
 	}
-	return (status);
+	return (header);
 }
 
 void ResponseData::setResponseBody(std::string file)  
@@ -231,7 +204,8 @@ std::string ResponseData::setImage(std::string imagePath) {
 	// Create the header block
 	std::string headerBlock = 	"HTTP/1.1 200 OK\r\n"
 								"Content-Type: image/jpg\r\n"
-								"Content-Encoding: identity\r\n";	// Here it needs to grab the correct Type, jpg, png, gif, ico ...
+								"Content-Encoding: identity\r\n"	// Here it needs to grab the correct Type, jpg, png, gif, ico ...
+								"Connection: close\r\n";
 	headerBlock.append("accept-ranges: bytes\r\n");
 	std::string contentLen = "Content-Length: ";
 	std::string temp = std::to_string(content.size());
