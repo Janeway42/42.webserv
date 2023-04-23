@@ -533,6 +533,7 @@ std::string Request::parsePath_locationMatch(std::string const & originalUrlPath
     return URLPath_full;
 }
 
+
 // In case error 404, file not found, it's probably good to not continue after parsePath(), and just close the connection
 void Request::parsePath(std::string  const & originalUrlPath) {
     std::string serverBlockDir = getServerData().getRootDirectory();

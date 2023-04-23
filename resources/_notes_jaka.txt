@@ -1,0 +1,51 @@
+I added in the setRequestPath(), to erase all redundant slashes, because they were causing issues with constructing the autoindex
+	_reqHttpPath = remove_trailing_slashes(reqPath);
+	_reqHttpPath = remove_multiple_slashes(_reqHttpPath);
+
+
+
+
+URL VARIANTS TO CHECK:
+
+location  /images   { 
+    autoindex ON;  
+    index_file index_images.html; }
+
+A)
+AUTOINDEX ON and missing the default index_images.html in the folder
+        - URL: localhost:8080/images/   (only folder)
+                --> should try index_images.html, then index.html, then display folder content
+        - URL: localhost:8080/images/index_images.html   (file specified)    
+                --> should try only index_images.html, then display error 404 Not Found
+
+
+
+
+B)
+AUTOINDEX OFF and missing the default index_images.html in the folder
+        - URL: localhost:8080/images/   (only folder)
+                --> should try index_images.html, then index.html, then display error 403 Forbidden
+        - URL: localhost:8080/images/index_images.html   (file specified)    
+                --> should try only index_images.html, then display error 404 Not Found
+
+
+C)
+NON-EXISTING FOLDER WITHOUT A FILE SPECIFIED
+        - URL: localhost:8080/nonexisting/
+            now:        calling -ls
+            should be: 404 Not found
+
+NON-EXISTING FOLDER WITH A DEFAULT INDEX FILE SPECIFIED
+        - URL: localhost:8080/nonexisting/index.html
+            now:       403
+            should be: 404
+
+NON-EXISTING FOLDER WITH A NON-EXISTING FILE SPECIFIED
+        - URL: localhost:8080/nonexisting/indexXXX.html
+            now:       browser error, image error
+            should be: 404
+
+EXISTING FOLDER WITH A NON-EXISTING FILE SPECIFIED
+        - URL: localhost:8080/nonexisting/indexXXX.html
+            now:       browser error, image error
+            should be: 404

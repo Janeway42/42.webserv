@@ -49,7 +49,7 @@ std::string appendHTMLbody(std::string line, std::string path, std::string & htm
 	// std::cout << YEL << "Path: [" << path << "]\n" << RES;
 	found = line.find_last_of(" ");
 	std::string lastWord = line.substr(found + 1, std::string::npos);
-	//std::cout << YEL << "lastWord: [" << lastWord << "]\n" << RES;
+	std::cout << YEL << "lastWord: [" << lastWord << "]\n" << RES;
 	
 	htmlStr.append("<li><a href='");
 	if (lastWord != ".." && lastWord != ".") {
