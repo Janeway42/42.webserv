@@ -151,8 +151,8 @@ void ServerData::setListensTo(std::string const & port) {
     if (not port.empty()) {
         try {
             unsigned short const & listensToPort = std::strtol(port.c_str(), nullptr, 10);
-            if (listensToPort == 80 || listensToPort == 591 || listensToPort == 8008 || listensToPort == 8080 ||
-                    listensToPort >= 49152) {// todo:: add 65536 as acceptable? then change form short to int?
+            if (listensToPort == 4242 || listensToPort == 4243 || listensToPort == 8080 || listensToPort >= 49152) 
+			{// todo:: add 65536 as acceptable? then change form short to int?
                 /* No need to check port < 65536 since port is an unsigned short already */
                 _listens_to = port;
             } else {
