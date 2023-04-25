@@ -42,7 +42,8 @@ html_template = """
 <!DOCTYPE html>
 <html>
 <head>
-	<h4><a href='cgi_index.html'> Main Page </a></h4>
+    <h4><a href='../index.html'> Main Page </a></h4>
+	<h4><a href='cgi_index.html'> Back </a></h4>
     <title>Folder Content</title>
 </head>
 <body>

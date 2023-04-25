@@ -1,0 +1,126 @@
+
+If url is a folder, but without final slash, treat it as a file:	localhost:8080/images		If no such file, return 404 Not Found (even if such folder exists)
+																	localhost:8080/images/		OK, look for default index.html
+
+
+
+I added in the setRequestPath(), to erase all redundant slashes, because they were causing issues with constructing the autoindex
+	_reqHttpPath = remove_trailing_slashes(reqPath);
+	_reqHttpPath = remove_multiple_slashes(_reqHttpPath);
+
+
+- CGI:
+	Should change directory before calling execve().
+	Changing the current working directory to the directory where the CGI scripts are stored helps to ensure that any relative file paths used in the CGI scripts are resolved correctly. It also helps to prevent the CGI scripts from accessing files or directories outside of the CGI directory.
+
+- PATH_INFO
+	???
+
+- before execve(), get the cgi path from config file, via it_location->getInterpreterPath();
+	args[0] = (char *)"/usr/bin/python";// TODO: add from config file
+
+
+- autoindex another variant, without execve
+	#include <stdio.h>
+	#include <dirent.h>
+	int main(void) {
+	DIR *dr;
+	struct dirent *en;
+	dr = opendir("."); //open all or present directory
+	if (dr) {
+		while ((en = readdir(dr)) != NULL) {
+			printf("%s\n", en->d_name); //print all directory name
+		}
+		closedir(dr); //close all directory
+	}
+	return(0);
+	}
+
+
+
+
+
+***********************************************************************************************************
+TRAILING SLASH IN THE URL *********************************************************************************
+
+The browser makes subsequent requests based on the URLs contained in the resources it has received from the server. When the browser encounters a relative URL in a resource, such as an image URL in an HTML file, it will resolve the URL relative to the base URL of the page.
+
+In your case, when the browser requests "http://localhost:8080/images", it receives an HTML file that contains relative URLs for the images. When the browser encounters these relative URLs, it resolves them relative to the base URL of the HTML file, which is "http://localhost:8080/images".
+
+If the base URL contains a trailing slash, the relative URLs will be resolved relative to the directory represented by that URL. If the base URL does not contain a trailing slash, the relative URLs will be resolved relative to the parent directory of the directory represented by that URL.
+
+This is why the browser sends requests differently depending on whether there is a trailing slash in the base URL. When the base URL contains a trailing slash, the relative URLs are resolved relative to the directory represented by that URL, and the browser sends requests for resources within that directory. When the base URL does not contain a trailing slash, the relative URLs are resolved relative to the parent directory of that directory, and the browser sends requests for resources in the parent directory.
+
+In general, it is a good practice to use trailing slashes in URLs that represent directories to avoid ambiguity and to ensure that relative URLs in the response are always resolved consistently.
+***********************************************************************************************************
+***********************************************************************************************************
+
+
+
+
+***********************************************************************************************************
+URL VARIANTS TO CHECK: ************************************************************************************
+
+
+EXAMPLE		location  /images
+		{ 
+			autoindex	ON;  
+			index_file	index_images.html;
+		}
+
+		A1)
+		AUTOINDEX ON and missing the default .html file in the folder
+			- URL: localhost:8080/images/   (only folder)
+				--> should try index_images.html, then index.html, then display folder content		OK
+			- URL: localhost:8080/images/index_images.html   (file specified in url)    
+				--> should try only index_images.html, then display error 404 Not Found			!!!!!
+
+		A2)
+		AUTOINDEX ON and existing default .html file in the folder
+			- URL: localhost:8080/images/   (only folder)
+				--> should try index_images.html, then index.html, then display folder content		!!!!!
+			- URL: localhost:8080/images/index_images.html   (file specified in url)    
+				--> should try only index_images.html, then display error 404 Not Found			!!!!!
+
+
+		B1)
+		AUTOINDEX OFF and missing the default .html file in the folder
+			- URL: localhost:8080/images/   (only folder)
+				--> should try index_images.html, then index.html, then display error 403 Forbidden
+			- URL: localhost:8080/images/index_images.html   (file specified)    
+				--> should try only index_images.html, then display error 404 Not Found
+
+		B2)
+		AUTOINDEX OFF and existing default .html file in the folder
+			- URL: localhost:8080/images/   (only folder)
+				--> should try index_images.html, then index.html, then display error 403 Forbidden	!!!!! does not try inherited default index.html, 
+			- URL: localhost:8080/images/index_images.html   (file specified)    
+				--> should try only index_images.html, then display error 404 Not Found
+
+
+		C)
+		NON-EXISTING FOLDER WITHOUT A FILE SPECIFIED
+			- URL: localhost:8080/nonexisting/
+			now:        calling -ls
+			should be: 404 Not found
+
+		NON-EXISTING FOLDER WITH A DEFAULT INDEX FILE SPECIFIED
+			- URL: localhost:8080/nonexisting/index.html
+			now:       403
+			should be: 404
+
+		NON-EXISTING FOLDER WITH A NON-EXISTING FILE SPECIFIED
+			- URL: localhost:8080/nonexisting/indexXXX.html
+			now:       browser error, image error
+			should be: 404
+
+		EXISTING FOLDER WITH A NON-EXISTING FILE SPECIFIED
+			- URL: localhost:8080/nonexisting/indexXXX.html
+			now:       browser error, image error
+			should be: 404
+
+
+***********************************************************************************************************
+
+- Firefox sometimes automaticaly puts a slash at the end of the URL, if it is a folder. But sometimes not???
+	If it does not, then the images on this page dont come. Because the path for these images is not whole

@@ -1,5 +1,16 @@
 #!/usr/bin/python
 
+import sys
+
+import threading
+sys.modules['_dummy_thread'] = threading
+# sys.stderr.write(str(sys.path) + '\n')
+sys.path.append('/Users/jmurovec/.brew/lib/python3.11/site-packages')
+from flup.server.fcgi import WSGIServer
+
+
+# added jaka: nginx is complaining about unsopported version of fastcgi
+
 import os   # TO ACCESS execve ENV variables
 import time
 import sys	# to read from std input

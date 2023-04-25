@@ -72,9 +72,16 @@ void ResponseData::setResponse(struct kevent& event) {
         }
         // Handling auto index
         if (storage->getRequestData().getAutoIndex() == true) {
-            // TODO handle auto index better?
-            _responseBody = streamFile(_responsePath);
-        }
+			std::cout << BLU "AUTOINDEX ON, must call storeFolderContent()\n" << RES;
+			std::cout << BLU "     URLPathFirstPart: [" << storage->getRequestData().getURLPathFirstPart() << "]\n" << RES;
+			// if (storage->getRequestData().getURLPathFirstPart().empty()) {
+			// 	std::cout << BLU "first part is empty\n" << RES;
+			// 	std::string newPath = "./resources/" + storage->getRequestData().getURLPath();
+			// 	_responseBody = storeFolderContent(newPath.c_str());
+			// }
+			// else
+	            _responseBody = storeFolderContent(storage->getRequestData().getURLPathFirstPart().c_str());
+		}
 	}
     // if it is not a folder (it checks first if cgi -> if not then it checks text (includes error), else image
     else {
@@ -120,56 +127,39 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
 	switch (storage->getHttpStatus())
 	{
 		case 400:
-			status = "HTTP/1.1 400 Bad Request\r\n"
-						"Content-Type: text/html\r\n"
-						"Content-Encoding: identity\r\n"  // Corina - added it because firefox complained that itwas missing - not sure if we keep because firefox still complains even with it. We leave it for now.
-						"Connection: close\r\n";
+			status = "HTTP/1.1 400 Bad Request\r\n";
 			_responsePath = "resources/error_pages/400BadRequest.html";
 			break;
 		case 404:
-			status = "HTTP/1.1 404 Not Found\r\n"
-						"Content-Type: text/html\r\n"
-						"Content-Encoding: identity\r\n"
-						"Connection: close\r\n";
+			status = "HTTP/1.1 404 Not Found\r\n";
             _responsePath = "resources/error_pages/404NotFound.html";
 			break;
 		case 405:
-			status = "HTTP/1.1 405 Method Not Allowed\r\n"
-						"Content-Type: text/html\r\n"
-						"Content-Encoding: identity\r\n"
-						"Connection: close\r\n";
+			status = "HTTP/1.1 405 Method Not Allowed\r\n";
             _responsePath = "resources/error_pages/405MethodnotAllowed.html";
 			break;
 		case 408:
-			status = "HTTP/1.1 408 Request Timeout\r\n"
-						"Content-Type: text/html\r\n"
-						"Content-Encoding: identity\r\n"
-						"Connection: close\r\n";
+			status = "HTTP/1.1 408 Request Timeout\r\n";
             _responsePath = "resources/error_pages/408RequestTimeout.html";
 			break;
 		case 500:
-			status = "HTTP/1.1 500 Internal Server Error\r\n"
-						"Content-Type: text/html\r\n"
-						"Content-Encoding: identity\r\n"
-						"Connection: close\r\n";
+			status = "HTTP/1.1 500 Internal Server Error\r\n";
             _responsePath = "resources/error_pages/500InternarServerError.html";
             break;
 		case 403:
-			status = "HTTP/1.1 403 Forbidden\r\n"
-						"Content-Type: text/html\r\n"
-						"Content-Encoding: identity\r\n"
-						"Connection: close\r\n";
+			status = "HTTP/1.1 403 Forbidden\r\n";
             _responsePath = "resources/error_pages/403Forbidden.html";
             break;
 		default:
 			status = "HTTP/1.1 200 OK\r\n"
-						"Content-Type: text/html\r\n"
-						"Content-Encoding: identity\r\n"
-						"Connection: close\r\n";
+					 "Set-Cookie: id=123; jaka=500; Max-Age=10; HttpOnly\r\n";
 					// "Content-Type: " + storage->getRequestData().getResponseContentType() + "\n";	// jaka
 			std::cout << "_responsePath: [[" << GRN_BG << _responsePath << RES << "]]\n";
 			break;
 	}
+	status.append(	"Content-Type: text/html\r\n"
+					"Content-Encoding: identity\r\n"  // Corina - added it because firefox complained that itwas missing - not sure if we keep because firefox still complains even with it. We leave it for now.
+					"Connection: close\r\n");
 	return (status);
 }
 

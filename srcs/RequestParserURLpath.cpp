@@ -6,12 +6,13 @@
 #include <vector>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <filesystem> // temp, to test current directory
 
 // #include <sys/types.h>
 #include <sys/wait.h>	// for wait() on Linux
 
-#include "Parser.hpp"
-#include "RequestParser.hpp"
+#include "../includes/Parser.hpp"
+#include "../includes/RequestParser.hpp"
 
 /*
 	TODO What happens if you dont have a form on your page, but you directly write ?city=aaa in the URL?
@@ -45,22 +46,25 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 		if (ret == -1)
 		 	std::cout << RED "Error dup2() of PipeCgiIn_0, child\n" RES;
 		close(_cgi.getPipeCgiIn_0());
-		
+
 		//sleep(1);
 		ret = dup2(_cgi.getPipeCgiOut_1()   ,  1);	// cgi writes to parent via pipe fd_out NONBLOCK
 		if (ret == -1)
 		 	std::cout << RED "Error dup2() of PipeCgiOut_1, child\n" RES;
 		close(_cgi.getPipeCgiOut_1());
 
+        chdir("./resources/cgi/");  // Change current working directory to the CGI directory - best practice,
+                                    // to ensure the script to find correct relative paths, if needed
+
 	//	std::cerr << RED "Before execve in child\n" << RES;
 		ret = execve(args[0], args, ENV);
-	//	ret = execv(args[0], const_cast<char**>(args));
 		std::cerr << RED << "Error: Execve failed: " << ret << "\n" << RES;
+        // TODO: handle error if execve failed
 	}
 	else {				// PARENT
 		//wait(NULL);
 		
-		std::cerr << "    Start Parent\n";
+		//std::cerr << "    Start Parent\n";
 		close(_cgi.getPipeCgiOut_1());
 		close(_cgi.getPipeCgiIn_0());
 		//std::cout << BLU "\n       End runExecve()\n" << RES;
@@ -79,6 +83,7 @@ void Request::callCGI(struct kevent event) {
 	std::string query_string	= "QUERY_STRING=";
 	std::string server_name		= "SERVER_NAME=";
 	std::string comspec			= "COMSPEC=";
+	std::string info_path		= "INFO_PATH=";
 
 	// Convert length to string
 	std::stringstream ssContLen;
@@ -91,7 +96,8 @@ void Request::callCGI(struct kevent event) {
 	temp.push_back(content_length.append(ssContLen.str()));
 	temp.push_back(query_string.append(_data.getQueryString()));
 	temp.push_back(server_name.append("default"));// TODO add server name?
-	temp.push_back(comspec.append("default"));
+	temp.push_back(comspec.append(""));
+	temp.push_back(info_path.append(""));
 
 	// std::cout << "Size of vector temp: " << temp.size() << "\n";
 	// std::cout << YEL << "POST BODY: " << temp[2] << "\n" << RES;
@@ -123,8 +129,11 @@ void Request::callCGI(struct kevent event) {
 	// args[2] = NULL;
 
 	char *args[3];
-	args[0] = (char *)"/usr/bin/python";// todo add from config file
-	std::string tempPath = _data.getURLPath_full();
+	args[0] = (char *)"/usr/bin/python";    // TODO: add from config file
+	
+//  std::string tempPath = _data.getURLPath_full();   // Changed Jaka:
+    std::string tempPath = _data.getURLPathLastPart();  // must be only the script name, because the CWD is changed to CGI folder
+
 	char *path = (char *)tempPath.c_str();	//  ie: "./resources/cgi/python_cgi_GET.py"
 	args[1] = path;
 	args[2] = NULL;
@@ -532,6 +541,7 @@ std::string Request::parsePath_locationMatch(std::string const & originalUrlPath
     }
     return URLPath_full;
 }
+
 
 // In case error 404, file not found, it's probably good to not continue after parsePath(), and just close the connection
 void Request::parsePath(std::string  const & originalUrlPath) {
