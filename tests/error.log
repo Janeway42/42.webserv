@@ -94,3 +94,45 @@
 2023/04/24 17:55:14 [error] 3944#0: *3 directory index of "/Users/jmurovec/.brew/var/www/resources/" is forbidden, client: 127.0.0.1, server: localhost, request: "GET / HTTP/1.1", host: "localhost:8080"
 2023/04/24 17:55:14 [error] 3944#0: *3 directory index of "/Users/jmurovec/.brew/var/www/resources/" is forbidden, client: 127.0.0.1, server: localhost, request: "GET / HTTP/1.1", host: "localhost:8080"
 2023/04/24 17:55:14 [error] 3944#0: *3 directory index of "/Users/jmurovec/.brew/var/www/resources/" is forbidden, client: 127.0.0.1, server: localhost, request: "GET / HTTP/1.1", host: "localhost:8080"
+2023/04/24 17:57:02 [error] 4116#0: *1 directory index of "/Users/jmurovec/.brew/var/www/resources/texts/" is forbidden, client: 127.0.0.1, server: localhost, request: "GET /texts/ HTTP/1.1", host: "localhost:8080"
+2023/04/25 12:56:40 [error] 78863#0: *1 directory index of "/Users/jmurovec/.brew/var/www/resources/_folderA/" is forbidden, client: 127.0.0.1, server: localhost, request: "GET /_folderA/ HTTP/1.1", host: "localhost:8080"
+2023/04/25 12:58:37 [emerg] 79005#0: bind() to 0.0.0.0:8080 failed (48: Address already in use)
+2023/04/25 12:58:48 [error] 79057#0: *1 directory index of "/Users/jmurovec/.brew/var/www/resources/_folderA/" is forbidden, client: 127.0.0.1, server: localhost, request: "GET /_folderA/ HTTP/1.1", host: "localhost:8080"
+2023/04/25 13:01:40 [error] 79305#0: *1 directory index of "/Users/jmurovec/.brew/var/www/resources/_folderA/" is forbidden, client: 127.0.0.1, server: localhost, request: "GET /_folderA/ HTTP/1.1", host: "localhost:8080"
+2023/04/25 13:02:57 [emerg] 79351#0: bind() to 0.0.0.0:8080 failed (48: Address already in use)
+2023/04/25 13:02:57 [emerg] 79351#0: bind() to 0.0.0.0:8080 failed (48: Address already in use)
+2023/04/25 13:02:57 [emerg] 79351#0: bind() to 0.0.0.0:8080 failed (48: Address already in use)
+2023/04/25 13:02:57 [emerg] 79351#0: bind() to 0.0.0.0:8080 failed (48: Address already in use)
+2023/04/25 13:02:57 [emerg] 79351#0: bind() to 0.0.0.0:8080 failed (48: Address already in use)
+2023/04/25 13:02:57 [emerg] 79351#0: still could not bind()
+2023/04/25 13:03:50 [error] 79467#0: *1 directory index of "/Users/jmurovec/.brew/var/www/resources/_folderAA/" is forbidden, client: 127.0.0.1, server: localhost, request: "GET /_folderAA/ HTTP/1.1", host: "localhost:8081"
+2023/04/25 13:04:39 [emerg] 79506#0: bind() to 0.0.0.0:8081 failed (48: Address already in use)
+2023/04/25 13:04:39 [emerg] 79506#0: bind() to 0.0.0.0:8081 failed (48: Address already in use)
+2023/04/25 13:04:39 [emerg] 79506#0: bind() to 0.0.0.0:8081 failed (48: Address already in use)
+2023/04/25 13:04:39 [emerg] 79506#0: bind() to 0.0.0.0:8081 failed (48: Address already in use)
+2023/04/25 13:04:39 [emerg] 79506#0: bind() to 0.0.0.0:8081 failed (48: Address already in use)
+2023/04/25 13:04:39 [emerg] 79506#0: still could not bind()
+2023/04/25 13:05:06 [error] 79563#0: *1 directory index of "/Users/jmurovec/.brew/var/www/resources/_folderAA/" is forbidden, client: 127.0.0.1, server: localhost, request: "GET /_folderAA/ HTTP/1.1", host: "localhost:8081"
+2023/04/25 13:05:52 [emerg] 79609#0: bind() to 0.0.0.0:8081 failed (48: Address already in use)
+2023/04/25 13:05:52 [emerg] 79609#0: bind() to 0.0.0.0:8081 failed (48: Address already in use)
+2023/04/25 13:05:52 [emerg] 79609#0: bind() to 0.0.0.0:8081 failed (48: Address already in use)
+2023/04/25 13:05:52 [emerg] 79609#0: bind() to 0.0.0.0:8081 failed (48: Address already in use)
+2023/04/25 13:05:52 [emerg] 79609#0: bind() to 0.0.0.0:8081 failed (48: Address already in use)
+2023/04/25 13:05:52 [emerg] 79609#0: still could not bind()
+2023/04/25 13:06:00 [error] 79657#0: *1 directory index of "/Users/jmurovec/.brew/var/www/resources/_folderAA/" is forbidden, client: 127.0.0.1, server: localhost, request: "GET /_folderAA/ HTTP/1.1", host: "localhost:8081"
+2023/04/25 13:06:00 [error] 79657#0: *1 directory index of "/Users/jmurovec/.brew/var/www/resources/_folderAA/" is forbidden, client: 127.0.0.1, server: localhost, request: "GET /_folderAA/ HTTP/1.1", host: "localhost:8081"
+2023/04/25 13:06:00 [error] 79657#0: *1 directory index of "/Users/jmurovec/.brew/var/www/resources/_folderAA/" is forbidden, client: 127.0.0.1, server: localhost, request: "GET /_folderAA/ HTTP/1.1", host: "localhost:8081"
+2023/04/25 13:06:27 [emerg] 79687#0: bind() to 0.0.0.0:8081 failed (48: Address already in use)
+2023/04/25 13:06:27 [emerg] 79687#0: bind() to 0.0.0.0:8081 failed (48: Address already in use)
+2023/04/25 13:06:27 [emerg] 79687#0: bind() to 0.0.0.0:8081 failed (48: Address already in use)
+2023/04/25 13:06:27 [emerg] 79687#0: bind() to 0.0.0.0:8081 failed (48: Address already in use)
+2023/04/25 13:06:27 [emerg] 79687#0: bind() to 0.0.0.0:8081 failed (48: Address already in use)
+2023/04/25 13:06:27 [emerg] 79687#0: still could not bind()
+2023/04/25 13:06:49 [emerg] 79762#0: bind() to 0.0.0.0:8081 failed (48: Address already in use)
+2023/04/25 13:06:49 [emerg] 79762#0: bind() to 0.0.0.0:8081 failed (48: Address already in use)
+2023/04/25 13:06:49 [emerg] 79762#0: bind() to 0.0.0.0:8081 failed (48: Address already in use)
+2023/04/25 13:06:49 [emerg] 79762#0: bind() to 0.0.0.0:8081 failed (48: Address already in use)
+2023/04/25 13:10:49 [emerg] 80139#0: bind() to 0.0.0.0:8081 failed (48: Address already in use)
+2023/04/25 13:10:49 [emerg] 80139#0: bind() to 0.0.0.0:8081 failed (48: Address already in use)
+2023/04/25 13:10:49 [emerg] 80139#0: bind() to 0.0.0.0:8081 failed (48: Address already in use)
+2023/04/25 13:10:49 [emerg] 80139#0: bind() to 0.0.0.0:8081 failed (48: Address already in use)

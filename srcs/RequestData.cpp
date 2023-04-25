@@ -155,19 +155,20 @@ void RequestData::setRequestMethod(std::string reqMethod)
 
 
 
-// added jaka: to remove slashes at the end of path. It was causing a problem with autoindex structure
+// added jaka: to remove slashes at the end of path. Just leave 1 slash.
+// It was causing a problem with autoindex structure
 std::string remove_trailing_slashes(std:: string str) {
     std::string::reverse_iterator rit;
     for (rit = str.rbegin(); rit != str.rend(); rit++) {
         if (*rit != '/') {
-            str.erase(rit.base(), str.end());
+            //str.erase(rit.base(), str.end());
             break ;
         }
     }
     return (str);
 }
 
-// added jaka: to remove slashes at the end of path. It was causing a problem with autoindex structure
+// added jaka
 std::string remove_multiple_slashes(std::string str) {
     for (std::string::iterator it = str.begin(); it != str.end();) {
         if (*it == '/') {
@@ -186,6 +187,7 @@ void RequestData::setRequestPath(std::string reqPath)
 {
 	_reqHttpPath = remove_trailing_slashes(reqPath);
 	_reqHttpPath = remove_multiple_slashes(_reqHttpPath);
+	// std::cout << RED "AFTER REMOVED SLASHES: [" << _reqHttpPath << RES "]\n"; 
 }
 
 void RequestData::setHttpVersion(std::string reqHttpVersion)

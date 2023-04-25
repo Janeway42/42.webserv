@@ -151,7 +151,8 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
             _responsePath = "resources/error_pages/403Forbidden.html";
             break;
 		default:
-			status = "HTTP/1.1 200 OK\r\n";
+			status = "HTTP/1.1 200 OK\r\n"
+					 "Set-Cookie: id=123; jaka=500; Max-Age=10; HttpOnly\r\n";
 					// "Content-Type: " + storage->getRequestData().getResponseContentType() + "\n";	// jaka
 			std::cout << "_responsePath: [[" << GRN_BG << _responsePath << RES << "]]\n";
 			break;

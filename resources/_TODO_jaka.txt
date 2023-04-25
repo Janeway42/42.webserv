@@ -1,3 +1,9 @@
+
+If url is a folder, but without final slash, treat it as a file:	localhost:8080/images		If no such file, return 404 Not Found (even if such folder exists)
+																	localhost:8080/images/		OK, look for default index.html
+
+
+
 I added in the setRequestPath(), to erase all redundant slashes, because they were causing issues with constructing the autoindex
 	_reqHttpPath = remove_trailing_slashes(reqPath);
 	_reqHttpPath = remove_multiple_slashes(_reqHttpPath);
