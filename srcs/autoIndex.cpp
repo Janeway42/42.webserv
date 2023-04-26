@@ -13,23 +13,22 @@ std::string appendHTMLhead(std::string path, std::string & htmlStr) {
 	htmlStr.append("</title>\n</head>\n");
 	htmlStr.append("<body><h2>Index of the folder: <span style='color:blue;'>");
 	htmlStr.append(path);
-	htmlStr.append("</h2><ul></span>");
+	htmlStr.append("</h2><ul></span>\n");
 	return (htmlStr);
 }
 
 
-// std::string removeLastFolderFromPath(std::string path) {
-// 	std::string parentPath;
+std::string removeLastFolderFromPath(std::string path) {
+	std::string parentPath;
 
-// 	size_t len = path.length() - 1;
-// 	for ( ; path[len] == '/' ; len--);
-// 	for (; path[len] != '/' ; len--);
+	size_t len = path.length() - 1;
+	for ( ; path[len] == '/' ; len--);
+	for (; path[len] != '/' ; len--);
 
-// 	parentPath = path.substr(0, len);
-
-// 	//std::cout << GRN << "parentPath: [" << parentPath << "]\n" << RES;
-// 	return (parentPath);
-// }
+	parentPath = path.substr(0, len);
+	//std::cout << GRN << "parentPath: [" << parentPath << "]\n" << RES;
+	return (parentPath);
+}
 
 
 std::string removeRootFolderNameFromPath(std::string path) {
@@ -49,15 +48,27 @@ std::string appendHTMLbody(std::string line, std::string path, std::string & htm
 	// std::cout << YEL << "Path: [" << path << "]\n" << RES;
 	found = line.find_last_of(" ");
 	std::string lastWord = line.substr(found + 1, std::string::npos);
-	std::cout << YEL << "lastWord: [" << lastWord << "]\n" << RES;
+	//std::cout << YEL << "lastWord: [" << lastWord << "]\n" << RES;
 	
 	htmlStr.append("<li><a href='");
 	if (lastWord != ".." && lastWord != ".") {
 		htmlStr.append(removeRootFolderNameFromPath(path));
 		htmlStr.append(lastWord);
 	}
-	else if (lastWord == "..")
-		htmlStr.append("..");
+	else if (lastWord == "..") {
+		std::string temp = removeLastFolderFromPath(path);
+		size_t positionSecondSlash = path.find("/", 2);
+		std::string rootfolder = path.substr(0, positionSecondSlash);
+		std::cout << RED  "rootfolder: [" << rootfolder<< "]\n" RES;
+		if (temp == rootfolder) {
+			//std::cout << RED "NEW PATH IS NOW THE SAME AS ROOT FOLDER: [" << temp << "], rootfolder: [" << rootfolder<< "]\n" RES;
+			temp = "../";
+		}
+		//temp = removeRootFolderNameFromPath(temp);
+		//std::cout << RED "PARENT FOLDER: [" << temp << "\n" RES; 
+		htmlStr.append(temp);
+		// htmlStr.append("..");
+	}
 	htmlStr.append("'>  ");		// end < href >
 	if (lastWord == "..")
 		htmlStr.append(". .<br><br>");
