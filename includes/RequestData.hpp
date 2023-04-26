@@ -39,6 +39,8 @@ class RequestData {
 		std::map<std::string, std::string>	_formData;	 // maybe not needed, maybe Vector list will be enough
 		std::vector<std::string>			_formList;
 
+		std::string _reqCookies;
+
 		// cleanup ------------------------
 		// std::string 			_reqBody;	
 
@@ -64,6 +66,7 @@ class RequestData {
 		const std::string	getRequestContentType() const;
 		const std::string	getResponseContentType() const;
 		size_t				getRequestContentLength() const;
+		const std::string	getRequestCookies() const;
 
 		const std::string 	getURLPath()const;
 		const std::string 	getURLPath_full()const;
@@ -77,7 +80,6 @@ class RequestData {
 
 		std::vector<std::string>			getFormList() const;	// maybe not needed
 		std::map<std::string, std::string>	getFormData() const;	// maybe not needed
-
 
 		//setters
 		void	setKqFd(int kqFd);

@@ -23,6 +23,8 @@ RequestData::RequestData() {
 	_cgiBody			 = "";
 
 	_responseContentType 	= "text/html";
+
+	_reqCookies			= "";
 //	_formList			   = NULL;	// ???
 //	_formData			   = NULL;	// ???
 }
@@ -138,6 +140,10 @@ std::map<std::string, std::string> RequestData::getFormData() const {	// Cannot 
 
 std::vector<std::string> RequestData::getFormList() const {	// Cannot return const
 	return _formList;										// because iterator won't work
+}
+
+const std::string RequestData::getRequestCookies() const {
+	return _reqCookies;
 }
 
 /** ########################################################################## */

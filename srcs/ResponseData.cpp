@@ -151,8 +151,8 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
             _responsePath = "resources/error_pages/403Forbidden.html";
             break;
 		default:
-			status = "HTTP/1.1 200 OK\r\n"
-					 "Set-Cookie: id=123; jaka=500; Max-Age=10; HttpOnly\r\n";
+			status = "HTTP/1.1 200 OK\r\n";
+					//  "Set-Cookie: id=123; jaka=500; Max-Age=10; HttpOnly\r\n";
 					// "Content-Type: " + storage->getRequestData().getResponseContentType() + "\n";	// jaka
 			std::cout << "_responsePath: [[" << GRN_BG << _responsePath << RES << "]]\n";
 			break;
@@ -160,6 +160,16 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
 	status.append(	"Content-Type: text/html\r\n"
 					"Content-Encoding: identity\r\n"  // Corina - added it because firefox complained that itwas missing - not sure if we keep because firefox still complains even with it. We leave it for now.
 					"Connection: close\r\n");
+
+	// if (responsePath is in the setCookies folder)  // function getLocation().getCookies() to be written
+	// 	status.append("Cookies: " + storage->getServerData().getLocationCookies + "\r\n");  // find the location bloc and it's cookies
+	// if (storage->getRequestData().getRequestCookies() != "")
+	// {
+	// 	status.append("Cookies: " + storage->getRequestData().getRequestCookies() + "\r\n");
+	// 	if (storage->getRequestData().getURLPath() == "resources/cookies/noCookies.html")
+	// 		_responsePath = "resources/cookies/yesCookies.html"
+	// }
+
 	return (status);
 }
 

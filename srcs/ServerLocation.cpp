@@ -29,6 +29,7 @@ ServerLocation::ServerLocation(std::string const & server_root_directory, std::s
     _script_extension(std::string()),
     useServerBlockIndexFile(false) {
     _allow_methods.push_back(GET);
+	// _locationCookies = to be added from the configuration file - Joyce
     std::cout << CYN << "ServerLocation Overloaded constructor" << RES << std::endl;
 }
 
@@ -88,6 +89,9 @@ std::string ServerLocation::getScriptExtension() const {
     return _script_extension;
 }
 
+std::string ServerLocation::getLocationCookies() const {
+	return _locationCookies;
+ }
 /** #################################### Setters #################################### */
 
 void ServerLocation::setLocationAsCgi(bool isCgi) {
