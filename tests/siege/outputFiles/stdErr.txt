@@ -1,0 +1,109 @@
+** SIEGE 4.1.6
+** Preparing 1 concurrent users for battle.
+The server is now under siege...
+
+Lifting the server siege...
+Transactions:		        1635 hits
+Availability:		      100.00 %
+Elapsed time:		        2.95 secs
+Data transferred:	       12.71 MB
+Response time:		        0.00 secs
+Transaction rate:	      554.24 trans/sec
+Throughput:		        4.31 MB/sec
+Concurrency:		        0.99
+Successful transactions:        1635
+Failed transactions:	           0
+Longest transaction:	        0.02
+Shortest transaction:	        0.00
+ 
+** SIEGE 4.1.6
+** Preparing 20 concurrent users for battle.
+The server is now under siege...
+
+Lifting the server siege...
+Transactions:		        1600 hits
+Availability:		      100.00 %
+Elapsed time:		        2.99 secs
+Data transferred:	       12.44 MB
+Response time:		        0.04 secs
+Transaction rate:	      535.12 trans/sec
+Throughput:		        4.16 MB/sec
+Concurrency:		       19.32
+Successful transactions:        1600
+Failed transactions:	           0
+Longest transaction:	        0.45
+Shortest transaction:	        0.01
+ 
+** SIEGE 4.1.6
+** Preparing 50 concurrent users for battle.
+The server is now under siege...
+
+Lifting the server siege...
+Transactions:		         703 hits
+Availability:		      100.00 %
+Elapsed time:		        2.87 secs
+Data transferred:	        5.45 MB
+Response time:		        0.20 secs
+Transaction rate:	      244.95 trans/sec
+Throughput:		        1.90 MB/sec
+Concurrency:		       49.29
+Successful transactions:         703
+Failed transactions:	           0
+Longest transaction:	        1.91
+Shortest transaction:	        0.02
+ 
+** SIEGE 4.1.6
+** Preparing 100 concurrent users for battle.
+The server is now under siege...
+
+Lifting the server siege...
+Transactions:		        2409 hits
+Availability:		      100.00 %
+Elapsed time:		        2.98 secs
+Data transferred:	       18.67 MB
+Response time:		        0.12 secs
+Transaction rate:	      808.39 trans/sec
+Throughput:		        6.27 MB/sec
+Concurrency:		       97.29
+Successful transactions:        2409
+Failed transactions:	           0
+Longest transaction:	        0.24
+Shortest transaction:	        0.01
+ 
+** SIEGE 4.1.6
+** Preparing 200 concurrent users for battle.
+The server is now under siege...
+
+Lifting the server siege...
+Transactions:		        1048 hits
+Availability:		      100.00 %
+Elapsed time:		        2.93 secs
+Data transferred:	        7.46 MB
+Response time:		        0.50 secs
+Transaction rate:	      357.68 trans/sec
+Throughput:		        2.55 MB/sec
+Concurrency:		      177.73
+Successful transactions:        1048
+Failed transactions:	           0
+Longest transaction:	        1.54
+Shortest transaction:	        0.01
+ 
+** SIEGE 4.1.6
+** Preparing 200 concurrent users for battle.
+The server is now under siege...
+[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
+
+Lifting the server siege...
+Transactions:		         987 hits
+Availability:		       99.90 %
+Elapsed time:		        2.94 secs
+Data transferred:	        7.20 MB
+Response time:		        0.43 secs
+Transaction rate:	      335.71 trans/sec
+Throughput:		        2.45 MB/sec
+Concurrency:		      143.17
+Successful transactions:         987
+Failed transactions:	           1
+Longest transaction:	        1.39
+Shortest transaction:	        0.02
+ 
