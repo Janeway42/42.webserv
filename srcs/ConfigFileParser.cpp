@@ -47,6 +47,7 @@ unsigned short ConfigFileParser::numberOfLocationBlocks() const {
 /** #################################### Methods #################################### */
 
 void ConfigFileParser::handleFile(std::string const & configFileName) {
+
     // std::ifstream destructor will close the file automatically, which is one of the perks of using this class.
     // An IDE may compile the program on another directory and so the file to open would be on a different path.
     std::ifstream configFile;
@@ -62,6 +63,7 @@ void ConfigFileParser::handleFile(std::string const & configFileName) {
             } else if (lineContent == "server {") {
                 _server_block_counter++;
                 parseFileServerBlock(configFile);
+
                 continue;
             }
         }
@@ -78,6 +80,7 @@ void ConfigFileParser::handleFile(std::string const & configFileName) {
 void ConfigFileParser::parseFileServerBlock(std::ifstream & configFile) {
     ServerData _server_data = ServerData();
     while (configFile) {
+
         std::string lineContent;
         std::getline(configFile, lineContent);
 //        std::cout << RED << lineContent << RES << std::endl;

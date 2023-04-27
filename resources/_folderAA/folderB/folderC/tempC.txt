@@ -1,1 +1,0 @@
-tempC.txt

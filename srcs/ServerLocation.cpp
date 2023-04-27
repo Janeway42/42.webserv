@@ -246,7 +246,8 @@ void ServerLocation::setInterpreterPath(std::string const & interpreterPath) {
 void ServerLocation::setScriptExtension(std::string const & scriptExtension) {
     /* mandatory */
     if (not scriptExtension.empty()) {
-        if (scriptExtension == ".py") {// todo or php?
+        // if (scriptExtension == ".py") {// todo or php?
+        if (scriptExtension == ".py" || scriptExtension == ".php") {// added Jaka
             _script_extension = scriptExtension;
         } else {
             throw ParserException(CONFIG_FILE_ERROR("script_extension", NOT_SUPPORTED));
