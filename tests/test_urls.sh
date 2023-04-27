@@ -69,6 +69,7 @@ rm -rf $curlNginxOutput $curlWebservOutput
 mkdir -p $curlNginxOutput $curlWebservOutput
 # echo "nkdir name: " $curlNginxOutput
 
+echo -e  "$GRE\n ~ ~ ~ WEBSERV - TEST URLs ~ ~ ~ $RES \n" 1>&2
 
 
 # START NGINX
@@ -83,7 +84,7 @@ function testURLpath {
 	testURL=$1
 	testName=$2
 	# echo "name: " $curlNginxOutput/$testName
-	echo "URL to test by Nginx:" $testURL
+	# echo "URL to test by Nginx:" $testURL
 	curl -i -s  -X GET $testURL | head -n 1 > $curlNginxOutput/$testName
 	sleep 0.1
 	echo -e "\r" >> $curlNginxOutput/$testName
@@ -94,18 +95,18 @@ function testURLpath {
 
 ### TEST URLs ############################################################################
 # #               URL-PATH                                OUTPUT FILENAME
-# testURLpath "localhost:8080"                            "localhost:8080"
-# testURLpath "localhost:8080/"                           "localhost:8080"
+testURLpath "localhost:8080"                            "localhost:8080"
+testURLpath "localhost:8080/"                           "localhost:8080"
 testURLpath 'localhost:8080/index.html'                 "localhost:index.html"
-# testURLpath "localhost:8080/texts/index_texts.html"     "localhost:texts:index_texts.html"
-# testURLpath "localhost:8080/texts/one_sentence.html"    "localhost:texts:one_sentence.html"
-# testURLpath "localhost:8080/texts/one_page.html"        "localhost:texts:one_page.html"
-# testURLpath "localhost:8080/texts/bible.html"           "localhost:texts:bible.html"
+testURLpath "localhost:8080/texts/index_texts.html"     "localhost:texts:index_texts.html"
+testURLpath "localhost:8080/texts/one_sentence.html"    "localhost:texts:one_sentence.html"
+testURLpath "localhost:8080/texts/one_page.html"        "localhost:texts:one_page.html"
+testURLpath "localhost:8080/texts/bible.html"           "localhost:texts:bible.html"
 # # # IMAGES
-# testURLpath "localhost:8080/images/index_images.html"   "localhost:images:index_images.html"
+testURLpath "localhost:8080/images/index_images.html"   "localhost:images:index_images.html"
 # testURLpath "localhost:8080/images/img_36kb.jpg"       	"localhost:images:img_36kb.jpg"
 # # CGI
-# testURLpath "localhost:8080/cgi/cgi_index.html"         "localhost:cgi:cgi_index.html"
+testURLpath "localhost:8080/cgi/cgi_index.html"         "localhost:cgi:cgi_index.html"
 # testURLpath 'localhost:8080/cgi/python_cgi_GET.py?street=Singel&city=Tokio'         "localhost:cgi:python_get.py?street=Singel&city=Tokio"
 sleep 1
 # cat /usr/local/var/log/nginx/error.log > ./error.log					# HOME
@@ -162,18 +163,18 @@ function testURLpath {
 
 ### TEST URLs ############################################################################
 #               URL-PATH                             OUTPUT FILENAME
-# testURLpath "localhost:8080"                            "localhost:8080"
-# testURLpath "localhost:8080/"                           "localhost:8080"
+testURLpath "localhost:8080"                            "localhost:8080"
+testURLpath "localhost:8080/"                           "localhost:8080"
 testURLpath "localhost:8080/index.html"                 "localhost:index.html"
-# testURLpath "localhost:8080/texts/index_texts.html"     "localhost:texts:index_texts.html"
-# testURLpath "localhost:8080/texts/one_sentence.html"    "localhost:texts:one_sentence.html"
-# testURLpath "localhost:8080/texts/one_page.html"        "localhost:texts:one_page.html"
-# testURLpath "localhost:8080/texts/bible.html"           "localhost:texts:bible.html"
+testURLpath "localhost:8080/texts/index_texts.html"     "localhost:texts:index_texts.html"
+testURLpath "localhost:8080/texts/one_sentence.html"    "localhost:texts:one_sentence.html"
+testURLpath "localhost:8080/texts/one_page.html"        "localhost:texts:one_page.html"
+testURLpath "localhost:8080/texts/bible.html"           "localhost:texts:bible.html"
 # # # IMAGES
-# testURLpath "localhost:8080/images/index_images.html"   "localhost:images:index_images.html"
+testURLpath "localhost:8080/images/index_images.html"   "localhost:images:index_images.html"
 # testURLpath "localhost:8080/images/img_36kb.jpg"       	"localhost:images:img_36kb.jpg"
 # # CGI
-# testURLpath "localhost:8080/cgi/cgi_index.html"         "localhost:cgi:cgi_index.html"
+testURLpath "localhost:8080/cgi/cgi_index.html"         "localhost:cgi:cgi_index.html"
 # testURLpath "localhost:8080/cgi/python_cgi_GET.py?street=Singel&city=Tokio"         "localhost:cgi:python_get.py?street=Singel&city=Tokio"
 
 # diff $curlWebservOutput/$testName $curlNginxOutput/$testName
@@ -182,4 +183,13 @@ testURLpath "localhost:8080/index.html"                 "localhost:index.html"
 # echo "------------------------------------------------------"
 # cat -e $curlWebservOutput/$testName
 
-pkill webserv
+pkill -f webserv
+
+# sleep 1
+
+# Start Siege Test
+
+cd ./tests/siege
+bash testSiege.sh
+
+

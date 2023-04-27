@@ -1,0 +1,1996 @@
+[32mstandard_complete.conf will be used![0m
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Config File ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[34mConfigFileParser Overloaded constructor[0m
+[35mServerData Default constructor[0m
+[32m    server_name                 localhost;[0m
+[32m    listens_to                  8080;[0m
+[32m    ip_address                  ;[0m
+[32m    root_directory              resources;[0m
+[32m    index_file                  ;[0m
+[32m	client_max_body_size        20480;[0m
+[32m	error_page                  400.html 401.html 403.html 500.html;[0m
+[32m	port_redirection            80088;[0m
+[36mServerLocation Overloaded constructor[0m
+[32m    location /subfolder {[0m
+[32m        root_directory          ./resources/location_random_dir;[0m
+[32m        allow_methods           POST DELETE;[0m
+[32m        index_file              index_test.html;[0m
+[32m        auto_index              on;[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Overloaded constructor[0m
+[32m    location .py {[0m
+[32m        root_directory          resources/cgi;[0m
+[32m        interpreter_path        /usr/bin/python3;[0m
+[32m        script_extension        .py;[0m
+[32m        index_file              cgi_index.html;[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Overloaded constructor[0m
+[32m    location /cgi {[0m
+[32m        root_directory          ./resources;[0m
+[32m        allow_methods           GET POST DELETE;[0m
+[32m        index_file              cgi_index.html;[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Overloaded constructor[0m
+[32m    location /texts/ {[0m
+[32m        root_directory          ;[0m
+[32m        index_file              index_texts.html;[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Overloaded constructor[0m
+[32m    location / {[0m
+[32m        root_directory          ./resources;[0m
+[32m        auto_index              off;[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Overloaded constructor[0m
+[32m    location /images {[0m
+[32m        root_directory          ;[0m
+[32m        index_file              index_images.html;[0m
+[32m        auto_index              on;[0m
+[32m        allow_methods           GET;[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Overloaded constructor[0m
+[32m    location /_folderA {[0m
+[32m        root_directory          ;[0m
+[32m        index_file              index.html;[0m
+[32m        auto_index              on;[0m
+[32m        allow_methods           GET;[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Overloaded constructor[0m
+[32m    location /nonExistent {[0m
+[32m        root_directory          ;[0m
+[32m        auto_index              on;[0m
+[36mServerLocation Destructor[0m
+[35mServerData Copy constructor[0m
+[35mServerData Destructor[0m
+addr address: 0x0
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[35mServerData Copy constructor[0m
+Server blocks quantity: 1
+Location block quantity: 8
+IP ADDRESS: localhost
+PORT: 8080
+[36m[47mWebServer Overloaded Constructor[0m
+[34mConfigFileParser Destructor[0m
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[35mServerData Destructor[0m
+addr address: 0x0
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 0
+size server inside run loop: 1
+[47mResponseData Default Constructor[0m
+[35mServerData Copy constructor[0m
+[47mResponseData Default Constructor[0m
+[47mResponseData Destructor[0m
+[37mRequest Copy Constructor[0m
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 5
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 1
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[34mSTORED HEADER: 
+GET / HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+originalUrlPath:               [[42m/[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting parsePath() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir/subfolder[0m]
+[33mThe url path [/] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources/texts[0m]
+[33mThe url path [/] did not match the current location block [/texts] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mlocation block for [[0m[44m/[0m[34m] exists on config file as [[0m[44m/[0m[34m]
+[34mIts root_directory [./resources] and configuration will be used[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[36mStart storeURLPathParts(). URLPath_full: [./resources/index.html]
+[0m
+URL Path:        [[35m/[0m]
+Full URI Path:   [[35m./resources/index.html[0m]
+Path first part: [[35m./resources/[0m]
+Path LAST part:  [[35mindex.html[0m]
+File extension:  [[35m[0m]
+Form Data:    [33m(not present)
+[0m
+[36mStart CheckIfFIleExists(), URLPath_full [./resources/index.html] 
+[0m[32mPath [0m./resources/index.html[32m exists[0m
+
+[33mFound header ending /r/n, maybe there is body
+[0mprint start of body [[35m]
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: []
+[0m[33mstorage->getHttpStatus(): 200
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 2
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart setResponse()
+[0m_responsePath: [[[42m./resources/index.html[0m]]
+[34mThe Path is a folder: check for autoindex on/off
+[0m[34m   getURLPath: [/]
+[0m[34m  getFullPath: [./resources/index.html]
+[0mSetting _responsePath and _responseBody
+[32mFile to be streamed: ./resources/index.html[0m
+[34mStreamed: temp turned off by jaka[0m
+   getHttpStatus(): [200]
+[0m   response path:   [./resources/index.html]
+[0m   content type:    []
+[0m[36mSENDING CHUNK, response length before send: 1066[0m
+[36mSEND return - sucessfully sent: 1066[0m
+[36mALL SENT, CLOSE CLIENT[0m
+fd that will be closed: 5
+original request: /
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[35mServerData Destructor[0m
+addr address: 0x604000003e90
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[37mRequest Destructor[0m
+[47mResponseData Destructor[0m
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 3
+size server inside run loop: 1
+[47mResponseData Default Constructor[0m
+[35mServerData Copy constructor[0m
+[47mResponseData Default Constructor[0m
+[47mResponseData Destructor[0m
+[37mRequest Copy Constructor[0m
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 5
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 4
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[34mSTORED HEADER: 
+GET / HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+originalUrlPath:               [[42m/[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting parsePath() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir/subfolder[0m]
+[33mThe url path [/] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources/texts[0m]
+[33mThe url path [/] did not match the current location block [/texts] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mlocation block for [[0m[44m/[0m[34m] exists on config file as [[0m[44m/[0m[34m]
+[34mIts root_directory [./resources] and configuration will be used[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[36mStart storeURLPathParts(). URLPath_full: [./resources/index.html]
+[0m
+URL Path:        [[35m/[0m]
+Full URI Path:   [[35m./resources/index.html[0m]
+Path first part: [[35m./resources/[0m]
+Path LAST part:  [[35mindex.html[0m]
+File extension:  [[35m[0m]
+Form Data:    [33m(not present)
+[0m
+[36mStart CheckIfFIleExists(), URLPath_full [./resources/index.html] 
+[0m[32mPath [0m./resources/index.html[32m exists[0m
+
+[33mFound header ending /r/n, maybe there is body
+[0mprint start of body [[35m]
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: []
+[0m[33mstorage->getHttpStatus(): 200
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 5
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart setResponse()
+[0m_responsePath: [[[42m./resources/index.html[0m]]
+[34mThe Path is a folder: check for autoindex on/off
+[0m[34m   getURLPath: [/]
+[0m[34m  getFullPath: [./resources/index.html]
+[0mSetting _responsePath and _responseBody
+[32mFile to be streamed: ./resources/index.html[0m
+[34mStreamed: temp turned off by jaka[0m
+   getHttpStatus(): [200]
+[0m   response path:   [./resources/index.html]
+[0m   content type:    []
+[0m[36mSENDING CHUNK, response length before send: 1066[0m
+[36mSEND return - sucessfully sent: 1066[0m
+[36mALL SENT, CLOSE CLIENT[0m
+fd that will be closed: 5
+original request: /
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[35mServerData Destructor[0m
+addr address: 0x604000003e90
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[37mRequest Destructor[0m
+[47mResponseData Destructor[0m
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 6
+size server inside run loop: 1
+[47mResponseData Default Constructor[0m
+[35mServerData Copy constructor[0m
+[47mResponseData Default Constructor[0m
+[47mResponseData Destructor[0m
+[37mRequest Copy Constructor[0m
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 5
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 7
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[34mSTORED HEADER: 
+GET / HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+originalUrlPath:               [[42m/[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting parsePath() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir/subfolder[0m]
+[33mThe url path [/] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources/texts[0m]
+[33mThe url path [/] did not match the current location block [/texts] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mlocation block for [[0m[44m/[0m[34m] exists on config file as [[0m[44m/[0m[34m]
+[34mIts root_directory [./resources] and configuration will be used[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[36mStart storeURLPathParts(). URLPath_full: [./resources/index.html]
+[0m
+URL Path:        [[35m/[0m]
+Full URI Path:   [[35m./resources/index.html[0m]
+Path first part: [[35m./resources/[0m]
+Path LAST part:  [[35mindex.html[0m]
+File extension:  [[35m[0m]
+Form Data:    [33m(not present)
+[0m
+[36mStart CheckIfFIleExists(), URLPath_full [./resources/index.html] 
+[0m[32mPath [0m./resources/index.html[32m exists[0m
+
+[33mFound header ending /r/n, maybe there is body
+[0mprint start of body [[35m]
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: []
+[0m[33mstorage->getHttpStatus(): 200
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 8
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart setResponse()
+[0m_responsePath: [[[42m./resources/index.html[0m]]
+[34mThe Path is a folder: check for autoindex on/off
+[0m[34m   getURLPath: [/]
+[0m[34m  getFullPath: [./resources/index.html]
+[0mSetting _responsePath and _responseBody
+[32mFile to be streamed: ./resources/index.html[0m
+[34mStreamed: temp turned off by jaka[0m
+   getHttpStatus(): [200]
+[0m   response path:   [./resources/index.html]
+[0m   content type:    []
+[0m[36mSENDING CHUNK, response length before send: 1066[0m
+[36mSEND return - sucessfully sent: 1066[0m
+[36mALL SENT, CLOSE CLIENT[0m
+fd that will be closed: 5
+original request: /
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[35mServerData Destructor[0m
+addr address: 0x604000003e90
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[37mRequest Destructor[0m
+[47mResponseData Destructor[0m
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 9
+size server inside run loop: 1
+[47mResponseData Default Constructor[0m
+[35mServerData Copy constructor[0m
+[47mResponseData Default Constructor[0m
+[47mResponseData Destructor[0m
+[37mRequest Copy Constructor[0m
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 5
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 10
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[34mSTORED HEADER: 
+GET / HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+originalUrlPath:               [[42m/[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting parsePath() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir/subfolder[0m]
+[33mThe url path [/] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources/texts[0m]
+[33mThe url path [/] did not match the current location block [/texts] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mlocation block for [[0m[44m/[0m[34m] exists on config file as [[0m[44m/[0m[34m]
+[34mIts root_directory [./resources] and configuration will be used[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[36mStart storeURLPathParts(). URLPath_full: [./resources/index.html]
+[0m
+URL Path:        [[35m/[0m]
+Full URI Path:   [[35m./resources/index.html[0m]
+Path first part: [[35m./resources/[0m]
+Path LAST part:  [[35mindex.html[0m]
+File extension:  [[35m[0m]
+Form Data:    [33m(not present)
+[0m
+[36mStart CheckIfFIleExists(), URLPath_full [./resources/index.html] 
+[0m[32mPath [0m./resources/index.html[32m exists[0m
+
+[33mFound header ending /r/n, maybe there is body
+[0mprint start of body [[35m]
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: []
+[0m[33mstorage->getHttpStatus(): 200
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 11
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart setResponse()
+[0m_responsePath: [[[42m./resources/index.html[0m]]
+[34mThe Path is a folder: check for autoindex on/off
+[0m[34m   getURLPath: [/]
+[0m[34m  getFullPath: [./resources/index.html]
+[0mSetting _responsePath and _responseBody
+[32mFile to be streamed: ./resources/index.html[0m
+[34mStreamed: temp turned off by jaka[0m
+   getHttpStatus(): [200]
+[0m   response path:   [./resources/index.html]
+[0m   content type:    []
+[0m[36mSENDING CHUNK, response length before send: 1066[0m
+[36mSEND return - sucessfully sent: 1066[0m
+[36mALL SENT, CLOSE CLIENT[0m
+fd that will be closed: 5
+original request: /
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[35mServerData Destructor[0m
+addr address: 0x604000003e90
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[37mRequest Destructor[0m
+[47mResponseData Destructor[0m
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 12
+size server inside run loop: 1
+[47mResponseData Default Constructor[0m
+[35mServerData Copy constructor[0m
+[47mResponseData Default Constructor[0m
+[47mResponseData Destructor[0m
+[37mRequest Copy Constructor[0m
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 5
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 13
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[34mSTORED HEADER: 
+GET /index.html HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+originalUrlPath:               [[42m/index.html[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting parsePath() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir/subfolder[0m]
+[34mFile extension: .html[0m
+[34mNo '?' found, so no cgi root_directory needed[0m
+Path is a file. Deleting file from it so it can be matched against the location block uri name. Path: [42m/[0m
+[34mNo '?' found and URLPath_full has no GET-Form data[0m
+[33mThe url path [/index.html] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[34mNo '?' found and URLPath_full has no GET-Form data[0m
+[33mThe url path [/index.html] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[34mNo '?' found and URLPath_full has no GET-Form data[0m
+[33mThe url path [/index.html] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources/texts[0m]
+[34mNo '?' found and URLPath_full has no GET-Form data[0m
+[33mThe url path [/index.html] did not match the current location block [/texts] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mFile extension: .html[0m
+[34mNo '?' found, so no cgi root_directory needed[0m
+Path is a file. Deleting file from it so it can be matched against the location block uri name. Path: [42m/[0m
+[34mlocation block for [[0m[44m/index.html[0m[34m] exists on config file as [[0m[44m/[0m[34m]
+[34mIts root_directory [./resources] and configuration will be used[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[36mStart storeURLPathParts(). URLPath_full: [./resources/index.html]
+[0m
+URL Path:        [[35m/index.html[0m]
+Full URI Path:   [[35m./resources/index.html[0m]
+Path first part: [[35m./resources/[0m]
+Path LAST part:  [[35mindex.html[0m]
+File extension:  [[35m.html[0m]
+Form Data:    [33m(not present)
+[0m
+[36mStart CheckIfFIleExists(), URLPath_full [./resources/index.html] 
+[0m[32mPath [0m./resources/index.html[32m exists[0m
+
+[33mFound header ending /r/n, maybe there is body
+[0mprint start of body [[35m]
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: [text/html]
+[0m[33mstorage->getHttpStatus(): 200
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 14
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart setResponse()
+[0m_responsePath: [[[42m./resources/index.html[0m]]
+[32mThe path is a file: [[42m./resources/index.html[0m]
+[32mFile to be streamed: ./resources/index.html[0m
+[34mStreamed: temp turned off by jaka[0m
+[36mSENDING CHUNK, response length before send: 1066[0m
+[36mSEND return - sucessfully sent: 1066[0m
+[36mALL SENT, CLOSE CLIENT[0m
+fd that will be closed: 5
+original request: /index.html
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[35mServerData Destructor[0m
+addr address: 0x604000003e90
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[37mRequest Destructor[0m
+[47mResponseData Destructor[0m
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 15
+size server inside run loop: 1
+[47mResponseData Default Constructor[0m
+[35mServerData Copy constructor[0m
+[47mResponseData Default Constructor[0m
+[47mResponseData Destructor[0m
+[37mRequest Copy Constructor[0m
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 5
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 16
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[34mSTORED HEADER: 
+GET /index.html HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+originalUrlPath:               [[42m/index.html[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting parsePath() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir/subfolder[0m]
+[34mFile extension: .html[0m
+[34mNo '?' found, so no cgi root_directory needed[0m
+Path is a file. Deleting file from it so it can be matched against the location block uri name. Path: [42m/[0m
+[34mNo '?' found and URLPath_full has no GET-Form data[0m
+[33mThe url path [/index.html] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[34mNo '?' found and URLPath_full has no GET-Form data[0m
+[33mThe url path [/index.html] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[34mNo '?' found and URLPath_full has no GET-Form data[0m
+[33mThe url path [/index.html] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources/texts[0m]
+[34mNo '?' found and URLPath_full has no GET-Form data[0m
+[33mThe url path [/index.html] did not match the current location block [/texts] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mFile extension: .html[0m
+[34mNo '?' found, so no cgi root_directory needed[0m
+Path is a file. Deleting file from it so it can be matched against the location block uri name. Path: [42m/[0m
+[34mlocation block for [[0m[44m/index.html[0m[34m] exists on config file as [[0m[44m/[0m[34m]
+[34mIts root_directory [./resources] and configuration will be used[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[36mStart storeURLPathParts(). URLPath_full: [./resources/index.html]
+[0m
+URL Path:        [[35m/index.html[0m]
+Full URI Path:   [[35m./resources/index.html[0m]
+Path first part: [[35m./resources/[0m]
+Path LAST part:  [[35mindex.html[0m]
+File extension:  [[35m.html[0m]
+Form Data:    [33m(not present)
+[0m
+[36mStart CheckIfFIleExists(), URLPath_full [./resources/index.html] 
+[0m[32mPath [0m./resources/index.html[32m exists[0m
+
+[33mFound header ending /r/n, maybe there is body
+[0mprint start of body [[35m]
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: [text/html]
+[0m[33mstorage->getHttpStatus(): 200
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 17
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart setResponse()
+[0m_responsePath: [[[42m./resources/index.html[0m]]
+[32mThe path is a file: [[42m./resources/index.html[0m]
+[32mFile to be streamed: ./resources/index.html[0m
+[34mStreamed: temp turned off by jaka[0m
+[36mSENDING CHUNK, response length before send: 1066[0m
+[36mSEND return - sucessfully sent: 1066[0m
+[36mALL SENT, CLOSE CLIENT[0m
+fd that will be closed: 5
+original request: /index.html
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[35mServerData Destructor[0m
+addr address: 0x604000003e90
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[37mRequest Destructor[0m
+[47mResponseData Destructor[0m
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 18
+size server inside run loop: 1
+[47mResponseData Default Constructor[0m
+[35mServerData Copy constructor[0m
+[47mResponseData Default Constructor[0m
+[47mResponseData Destructor[0m
+[37mRequest Copy Constructor[0m
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 5
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 19
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[34mSTORED HEADER: 
+GET /texts/index_texts.html HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+originalUrlPath:               [[42m/texts/index_texts.html[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting parsePath() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir/subfolder[0m]
+[33mThe url path [/texts/index_texts.html] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/texts/index_texts.html] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/texts/index_texts.html] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources/texts[0m]
+[34mFile extension: .html[0m
+[34mNo '?' found, so no cgi root_directory needed[0m
+Path is a file. Deleting file from it so it can be matched against the location block uri name. Path: [42m/texts[0m
+[34mlocation block for [[0m[44m/texts/index_texts.html[0m[34m] exists on config file as [[0m[44m/texts[0m[34m]
+[34mIts root_directory [./resources/texts] and configuration will be used[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[36mStart storeURLPathParts(). URLPath_full: [./resources/texts/index_texts.html]
+[0m
+URL Path:        [[35m/texts/index_texts.html[0m]
+Full URI Path:   [[35m./resources/texts/index_texts.html[0m]
+Path first part: [[35m./resources/texts/[0m]
+Path LAST part:  [[35mindex_texts.html[0m]
+File extension:  [[35m.html[0m]
+Form Data:    [33m(not present)
+[0m
+[36mStart CheckIfFIleExists(), URLPath_full [./resources/texts/index_texts.html] 
+[0m[32mPath [0m./resources/texts/index_texts.html[32m exists[0m
+
+[33mFound header ending /r/n, maybe there is body
+[0mprint start of body [[35m]
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: [text/html]
+[0m[33mstorage->getHttpStatus(): 200
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 20
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart setResponse()
+[0m_responsePath: [[[42m./resources/texts/index_texts.html[0m]]
+[32mThe path is a file: [[42m./resources/texts/index_texts.html[0m]
+[32mFile to be streamed: ./resources/texts/index_texts.html[0m
+[34mStreamed: temp turned off by jaka[0m
+[36mSENDING CHUNK, response length before send: 807[0m
+[36mSEND return - sucessfully sent: 807[0m
+[36mALL SENT, CLOSE CLIENT[0m
+fd that will be closed: 5
+original request: /texts/index_texts.html
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[35mServerData Destructor[0m
+addr address: 0x604000003e90
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[37mRequest Destructor[0m
+[47mResponseData Destructor[0m
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 21
+size server inside run loop: 1
+[47mResponseData Default Constructor[0m
+[35mServerData Copy constructor[0m
+[47mResponseData Default Constructor[0m
+[47mResponseData Destructor[0m
+[37mRequest Copy Constructor[0m
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 5
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 22
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[34mSTORED HEADER: 
+GET /texts/index_texts.html HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+originalUrlPath:               [[42m/texts/index_texts.html[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting parsePath() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir/subfolder[0m]
+[33mThe url path [/texts/index_texts.html] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/texts/index_texts.html] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/texts/index_texts.html] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources/texts[0m]
+[34mFile extension: .html[0m
+[34mNo '?' found, so no cgi root_directory needed[0m
+Path is a file. Deleting file from it so it can be matched against the location block uri name. Path: [42m/texts[0m
+[34mlocation block for [[0m[44m/texts/index_texts.html[0m[34m] exists on config file as [[0m[44m/texts[0m[34m]
+[34mIts root_directory [./resources/texts] and configuration will be used[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[36mStart storeURLPathParts(). URLPath_full: [./resources/texts/index_texts.html]
+[0m
+URL Path:        [[35m/texts/index_texts.html[0m]
+Full URI Path:   [[35m./resources/texts/index_texts.html[0m]
+Path first part: [[35m./resources/texts/[0m]
+Path LAST part:  [[35mindex_texts.html[0m]
+File extension:  [[35m.html[0m]
+Form Data:    [33m(not present)
+[0m
+[36mStart CheckIfFIleExists(), URLPath_full [./resources/texts/index_texts.html] 
+[0m[32mPath [0m./resources/texts/index_texts.html[32m exists[0m
+
+[33mFound header ending /r/n, maybe there is body
+[0mprint start of body [[35m]
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: [text/html]
+[0m[33mstorage->getHttpStatus(): 200
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 23
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart setResponse()
+[0m_responsePath: [[[42m./resources/texts/index_texts.html[0m]]
+[32mThe path is a file: [[42m./resources/texts/index_texts.html[0m]
+[32mFile to be streamed: ./resources/texts/index_texts.html[0m
+[34mStreamed: temp turned off by jaka[0m
+[36mSENDING CHUNK, response length before send: 807[0m
+[36mSEND return - sucessfully sent: 807[0m
+[36mALL SENT, CLOSE CLIENT[0m
+fd that will be closed: 5
+original request: /texts/index_texts.html
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[35mServerData Destructor[0m
+addr address: 0x604000003e90
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[37mRequest Destructor[0m
+[47mResponseData Destructor[0m
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 24
+size server inside run loop: 1
+[47mResponseData Default Constructor[0m
+[35mServerData Copy constructor[0m
+[47mResponseData Default Constructor[0m
+[47mResponseData Destructor[0m
+[37mRequest Copy Constructor[0m
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 5
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 25
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[34mSTORED HEADER: 
+GET /texts/one_sentence.html HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+originalUrlPath:               [[42m/texts/one_sentence.html[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting parsePath() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir/subfolder[0m]
+[33mThe url path [/texts/one_sentence.html] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/texts/one_sentence.html] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/texts/one_sentence.html] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources/texts[0m]
+[34mFile extension: .html[0m
+[34mNo '?' found, so no cgi root_directory needed[0m
+Path is a file. Deleting file from it so it can be matched against the location block uri name. Path: [42m/texts[0m
+[34mlocation block for [[0m[44m/texts/one_sentence.html[0m[34m] exists on config file as [[0m[44m/texts[0m[34m]
+[34mIts root_directory [./resources/texts] and configuration will be used[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[36mStart storeURLPathParts(). URLPath_full: [./resources/texts/one_sentence.html]
+[0m
+URL Path:        [[35m/texts/one_sentence.html[0m]
+Full URI Path:   [[35m./resources/texts/one_sentence.html[0m]
+Path first part: [[35m./resources/texts/[0m]
+Path LAST part:  [[35mone_sentence.html[0m]
+File extension:  [[35m.html[0m]
+Form Data:    [33m(not present)
+[0m
+[36mStart CheckIfFIleExists(), URLPath_full [./resources/texts/one_sentence.html] 
+[0m[32mPath [0m./resources/texts/one_sentence.html[32m exists[0m
+
+[33mFound header ending /r/n, maybe there is body
+[0mprint start of body [[35m]
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: [text/html]
+[0m[33mstorage->getHttpStatus(): 200
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 26
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart setResponse()
+[0m_responsePath: [[[42m./resources/texts/one_sentence.html[0m]]
+[32mThe path is a file: [[42m./resources/texts/one_sentence.html[0m]
+[32mFile to be streamed: ./resources/texts/one_sentence.html[0m
+[34mStreamed: temp turned off by jaka[0m
+[36mSENDING CHUNK, response length before send: 307[0m
+[36mSEND return - sucessfully sent: 307[0m
+[36mALL SENT, CLOSE CLIENT[0m
+fd that will be closed: 5
+original request: /texts/one_sentence.html
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[35mServerData Destructor[0m
+addr address: 0x604000003e90
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[37mRequest Destructor[0m
+[47mResponseData Destructor[0m
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 27
+size server inside run loop: 1
+[47mResponseData Default Constructor[0m
+[35mServerData Copy constructor[0m
+[47mResponseData Default Constructor[0m
+[47mResponseData Destructor[0m
+[37mRequest Copy Constructor[0m
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 5
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 28
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[34mSTORED HEADER: 
+GET /texts/one_sentence.html HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+originalUrlPath:               [[42m/texts/one_sentence.html[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting parsePath() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir/subfolder[0m]
+[33mThe url path [/texts/one_sentence.html] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/texts/one_sentence.html] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/texts/one_sentence.html] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources/texts[0m]
+[34mFile extension: .html[0m
+[34mNo '?' found, so no cgi root_directory needed[0m
+Path is a file. Deleting file from it so it can be matched against the location block uri name. Path: [42m/texts[0m
+[34mlocation block for [[0m[44m/texts/one_sentence.html[0m[34m] exists on config file as [[0m[44m/texts[0m[34m]
+[34mIts root_directory [./resources/texts] and configuration will be used[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[36mStart storeURLPathParts(). URLPath_full: [./resources/texts/one_sentence.html]
+[0m
+URL Path:        [[35m/texts/one_sentence.html[0m]
+Full URI Path:   [[35m./resources/texts/one_sentence.html[0m]
+Path first part: [[35m./resources/texts/[0m]
+Path LAST part:  [[35mone_sentence.html[0m]
+File extension:  [[35m.html[0m]
+Form Data:    [33m(not present)
+[0m
+[36mStart CheckIfFIleExists(), URLPath_full [./resources/texts/one_sentence.html] 
+[0m[32mPath [0m./resources/texts/one_sentence.html[32m exists[0m
+
+[33mFound header ending /r/n, maybe there is body
+[0mprint start of body [[35m]
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: [text/html]
+[0m[33mstorage->getHttpStatus(): 200
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 29
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart setResponse()
+[0m_responsePath: [[[42m./resources/texts/one_sentence.html[0m]]
+[32mThe path is a file: [[42m./resources/texts/one_sentence.html[0m]
+[32mFile to be streamed: ./resources/texts/one_sentence.html[0m
+[34mStreamed: temp turned off by jaka[0m
+[36mSENDING CHUNK, response length before send: 307[0m
+[36mSEND return - sucessfully sent: 307[0m
+[36mALL SENT, CLOSE CLIENT[0m
+fd that will be closed: 5
+original request: /texts/one_sentence.html
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[35mServerData Destructor[0m
+addr address: 0x604000003e90
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[37mRequest Destructor[0m
+[47mResponseData Destructor[0m
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 30
+size server inside run loop: 1
+[47mResponseData Default Constructor[0m
+[35mServerData Copy constructor[0m
+[47mResponseData Default Constructor[0m
+[47mResponseData Destructor[0m
+[37mRequest Copy Constructor[0m
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 5
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 31
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[34mSTORED HEADER: 
+GET /texts/one_page.html HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+originalUrlPath:               [[42m/texts/one_page.html[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting parsePath() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir/subfolder[0m]
+[33mThe url path [/texts/one_page.html] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/texts/one_page.html] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/texts/one_page.html] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources/texts[0m]
+[34mFile extension: .html[0m
+[34mNo '?' found, so no cgi root_directory needed[0m
+Path is a file. Deleting file from it so it can be matched against the location block uri name. Path: [42m/texts[0m
+[34mlocation block for [[0m[44m/texts/one_page.html[0m[34m] exists on config file as [[0m[44m/texts[0m[34m]
+[34mIts root_directory [./resources/texts] and configuration will be used[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[36mStart storeURLPathParts(). URLPath_full: [./resources/texts/one_page.html]
+[0m
+URL Path:        [[35m/texts/one_page.html[0m]
+Full URI Path:   [[35m./resources/texts/one_page.html[0m]
+Path first part: [[35m./resources/texts/[0m]
+Path LAST part:  [[35mone_page.html[0m]
+File extension:  [[35m.html[0m]
+Form Data:    [33m(not present)
+[0m
+[36mStart CheckIfFIleExists(), URLPath_full [./resources/texts/one_page.html] 
+[0m[32mPath [0m./resources/texts/one_page.html[32m exists[0m
+
+[33mFound header ending /r/n, maybe there is body
+[0mprint start of body [[35m]
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: [text/html]
+[0m[33mstorage->getHttpStatus(): 200
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 32
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart setResponse()
+[0m_responsePath: [[[42m./resources/texts/one_page.html[0m]]
+[32mThe path is a file: [[42m./resources/texts/one_page.html[0m]
+[32mFile to be streamed: ./resources/texts/one_page.html[0m
+[34mStreamed: temp turned off by jaka[0m
+[36mSENDING CHUNK, response length before send: 3319[0m
+[36mSEND return - sucessfully sent: 3319[0m
+[36mALL SENT, CLOSE CLIENT[0m
+fd that will be closed: 5
+original request: /texts/one_page.html
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[35mServerData Destructor[0m
+addr address: 0x604000003e90
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[37mRequest Destructor[0m
+[47mResponseData Destructor[0m
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 33
+size server inside run loop: 1
+[47mResponseData Default Constructor[0m
+[35mServerData Copy constructor[0m
+[47mResponseData Default Constructor[0m
+[47mResponseData Destructor[0m
+[37mRequest Copy Constructor[0m
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 5
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 34
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[34mSTORED HEADER: 
+GET /texts/one_page.html HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+originalUrlPath:               [[42m/texts/one_page.html[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting parsePath() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir/subfolder[0m]
+[33mThe url path [/texts/one_page.html] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/texts/one_page.html] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/texts/one_page.html] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources/texts[0m]
+[34mFile extension: .html[0m
+[34mNo '?' found, so no cgi root_directory needed[0m
+Path is a file. Deleting file from it so it can be matched against the location block uri name. Path: [42m/texts[0m
+[34mlocation block for [[0m[44m/texts/one_page.html[0m[34m] exists on config file as [[0m[44m/texts[0m[34m]
+[34mIts root_directory [./resources/texts] and configuration will be used[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[36mStart storeURLPathParts(). URLPath_full: [./resources/texts/one_page.html]
+[0m
+URL Path:        [[35m/texts/one_page.html[0m]
+Full URI Path:   [[35m./resources/texts/one_page.html[0m]
+Path first part: [[35m./resources/texts/[0m]
+Path LAST part:  [[35mone_page.html[0m]
+File extension:  [[35m.html[0m]
+Form Data:    [33m(not present)
+[0m
+[36mStart CheckIfFIleExists(), URLPath_full [./resources/texts/one_page.html] 
+[0m[32mPath [0m./resources/texts/one_page.html[32m exists[0m
+
+[33mFound header ending /r/n, maybe there is body
+[0mprint start of body [[35m]
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: [text/html]
+[0m[33mstorage->getHttpStatus(): 200
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 35
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart setResponse()
+[0m_responsePath: [[[42m./resources/texts/one_page.html[0m]]
+[32mThe path is a file: [[42m./resources/texts/one_page.html[0m]
+[32mFile to be streamed: ./resources/texts/one_page.html[0m
+[34mStreamed: temp turned off by jaka[0m
+[36mSENDING CHUNK, response length before send: 3319[0m
+[36mSEND return - sucessfully sent: 3319[0m
+[36mALL SENT, CLOSE CLIENT[0m
+fd that will be closed: 5
+original request: /texts/one_page.html
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[35mServerData Destructor[0m
+addr address: 0x604000003e90
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[37mRequest Destructor[0m
+[47mResponseData Destructor[0m
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 36
+size server inside run loop: 1
+[47mResponseData Default Constructor[0m
+[35mServerData Copy constructor[0m
+[47mResponseData Default Constructor[0m
+[47mResponseData Destructor[0m
+[37mRequest Copy Constructor[0m
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 5
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 37
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[34mSTORED HEADER: 
+GET /texts/bible.html HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+originalUrlPath:               [[42m/texts/bible.html[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting parsePath() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir/subfolder[0m]
+[33mThe url path [/texts/bible.html] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/texts/bible.html] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/texts/bible.html] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources/texts[0m]
+[34mFile extension: .html[0m
+[34mNo '?' found, so no cgi root_directory needed[0m
+Path is a file. Deleting file from it so it can be matched against the location block uri name. Path: [42m/texts[0m
+[34mlocation block for [[0m[44m/texts/bible.html[0m[34m] exists on config file as [[0m[44m/texts[0m[34m]
+[34mIts root_directory [./resources/texts] and configuration will be used[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[36mStart storeURLPathParts(). URLPath_full: [./resources/texts/bible.html]
+[0m
+URL Path:        [[35m/texts/bible.html[0m]
+Full URI Path:   [[35m./resources/texts/bible.html[0m]
+Path first part: [[35m./resources/texts/[0m]
+Path LAST part:  [[35mbible.html[0m]
+File extension:  [[35m.html[0m]
+Form Data:    [33m(not present)
+[0m
+[36mStart CheckIfFIleExists(), URLPath_full [./resources/texts/bible.html] 
+[0m[32mPath [0m./resources/texts/bible.html[32m exists[0m
+
+[33mFound header ending /r/n, maybe there is body
+[0mprint start of body [[35m]
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: [text/html]
+[0m[33mstorage->getHttpStatus(): 200
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 38
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart setResponse()
+[0m_responsePath: [[[42m./resources/texts/bible.html[0m]]
+[32mThe path is a file: [[42m./resources/texts/bible.html[0m]
+[32mFile to be streamed: ./resources/texts/bible.html[0m
+[34mStreamed: temp turned off by jaka[0m
+[36mSENDING CHUNK, response length before send: 4332777[0m
+[36mSEND return - sucessfully sent: 261676[0m
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 39
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- WRITE
+fd that will be closed: 5
+original request: /texts/bible.html
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[35mServerData Destructor[0m
+addr address: 0x604000003e90
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[37mRequest Destructor[0m
+[47mResponseData Destructor[0m
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 40
+size server inside run loop: 1
+[47mResponseData Default Constructor[0m
+[35mServerData Copy constructor[0m
+[47mResponseData Default Constructor[0m
+[47mResponseData Destructor[0m
+[37mRequest Copy Constructor[0m
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 5
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 41
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[34mSTORED HEADER: 
+GET /texts/bible.html HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+originalUrlPath:               [[42m/texts/bible.html[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting parsePath() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir/subfolder[0m]
+[33mThe url path [/texts/bible.html] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/texts/bible.html] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/texts/bible.html] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources/texts[0m]
+[34mFile extension: .html[0m
+[34mNo '?' found, so no cgi root_directory needed[0m
+Path is a file. Deleting file from it so it can be matched against the location block uri name. Path: [42m/texts[0m
+[34mlocation block for [[0m[44m/texts/bible.html[0m[34m] exists on config file as [[0m[44m/texts[0m[34m]
+[34mIts root_directory [./resources/texts] and configuration will be used[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[36mStart storeURLPathParts(). URLPath_full: [./resources/texts/bible.html]
+[0m
+URL Path:        [[35m/texts/bible.html[0m]
+Full URI Path:   [[35m./resources/texts/bible.html[0m]
+Path first part: [[35m./resources/texts/[0m]
+Path LAST part:  [[35mbible.html[0m]
+File extension:  [[35m.html[0m]
+Form Data:    [33m(not present)
+[0m
+[36mStart CheckIfFIleExists(), URLPath_full [./resources/texts/bible.html] 
+[0m[32mPath [0m./resources/texts/bible.html[32m exists[0m
+
+[33mFound header ending /r/n, maybe there is body
+[0mprint start of body [[35m]
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: [text/html]
+[0m[33mstorage->getHttpStatus(): 200
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 42
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart setResponse()
+[0m_responsePath: [[[42m./resources/texts/bible.html[0m]]
+[32mThe path is a file: [[42m./resources/texts/bible.html[0m]
+[32mFile to be streamed: ./resources/texts/bible.html[0m
+[34mStreamed: temp turned off by jaka[0m
+[36mSENDING CHUNK, response length before send: 4332777[0m
+[36mSEND return - sucessfully sent: 261676[0m
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 43
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mSENDING CHUNK, response length before send: 4071101[0m
+[36mSEND return - sucessfully sent: 515628[0m
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 44
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mSENDING CHUNK, response length before send: 3555473[0m
+[36mSEND return - sucessfully sent: 1292568[0m
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 45
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mSENDING CHUNK, response length before send: 2262905[0m
+[36mSEND return - sucessfully sent: 1488968[0m
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 46
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mSENDING CHUNK, response length before send: 773937[0m
+[36mSEND return - sucessfully sent: 548292[0m
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 47
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mSENDING CHUNK, response length before send: 225645[0m
+[36mSEND return - sucessfully sent: 225645[0m
+[36mALL SENT, CLOSE CLIENT[0m
+fd that will be closed: 5
+original request: /texts/bible.html
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[35mServerData Destructor[0m
+addr address: 0x604000003e90
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[37mRequest Destructor[0m
+[47mResponseData Destructor[0m
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 48
+size server inside run loop: 1
+[47mResponseData Default Constructor[0m
+[35mServerData Copy constructor[0m
+[47mResponseData Default Constructor[0m
+[47mResponseData Destructor[0m
+[37mRequest Copy Constructor[0m
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 5
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 49
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[34mSTORED HEADER: 
+GET /images/index_images.html HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+originalUrlPath:               [[42m/images/index_images.html[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting parsePath() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir/subfolder[0m]
+[33mThe url path [/images/index_images.html] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/images/index_images.html] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/images/index_images.html] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources/texts[0m]
+[33mThe url path [/images/index_images.html] did not match the current location block [/texts] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[33mThe url path [/images/index_images.html] did not match the current location block [/] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/images[0m]
+locationBlockRootDir:            [[42m./resources/images[0m]
+[33mThe url path [/images/index_images.html] did not match the current location block [/images] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/_folderA[0m]
+locationBlockRootDir:            [[42m./resources/_folderA[0m]
+[33mThe url path [/images/index_images.html] did not match the current location block [/_folderA] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/nonExistent[0m]
+locationBlockRootDir:            [[42m./resources/nonExistent[0m]
+[33mThe url path [/images/index_images.html] did not match the current location block [/nonExistent] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[31mAs the UrlPath did not match any location block, the server cannot serve any file[0m
+
+[36mStart storeURLPathParts(). URLPath_full: []
+[0m
+URL Path:        [[35m/images/index_images.html[0m]
+Full URI Path:   [[35m[0m]
+Path first part: [[35m[0m]
+Path LAST part:  [[35m[0m]
+File extension:  [[35m[0m]
+Form Data:    [33m(not present)
+[0m
+[36mStart CheckIfFIleExists(), URLPath_full [] 
+[0m[31m
+Error: URI matched a location block, but file [0m[31m was not found. Returning 403 FORBIDDEN[0m
+
+[33mFound header ending /r/n, maybe there is body
+[0mprint start of body [[35m]
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: []
+[0m[33mstorage->getHttpStatus(): 403
+[0m[33mstorage->getCgiData().getIsCgi(): 0
+[0m[31merror parsing - sending response - failure, error 403
+[0m
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 50
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart setResponse()
+[0m[32mThe path is an image: [[42mresources/error_pages/403Forbidden.html[0m]
+[34mfrom setImage: content-length: 156[0m
+[36mSENDING CHUNK, response length before send: 290[0m
+[36mSEND return - sucessfully sent: 290[0m
+[36mALL SENT, CLOSE CLIENT[0m
+fd that will be closed: 5
+original request: /images/index_images.html
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[35mServerData Destructor[0m
+addr address: 0x604000003e90
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[37mRequest Destructor[0m
+[47mResponseData Destructor[0m
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 51
+size server inside run loop: 1
+[47mResponseData Default Constructor[0m
+[35mServerData Copy constructor[0m
+[47mResponseData Default Constructor[0m
+[47mResponseData Destructor[0m
+[37mRequest Copy Constructor[0m
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 5
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 52
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[34mSTORED HEADER: 
+GET /images/index_images.html HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+originalUrlPath:               [[42m/images/index_images.html[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting parsePath() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir/subfolder[0m]
+[33mThe url path [/images/index_images.html] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/images/index_images.html] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/images/index_images.html] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources/texts[0m]
+[33mThe url path [/images/index_images.html] did not match the current location block [/texts] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[33mThe url path [/images/index_images.html] did not match the current location block [/] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/images[0m]
+locationBlockRootDir:            [[42m./resources/images[0m]
+[33mThe url path [/images/index_images.html] did not match the current location block [/images] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/_folderA[0m]
+locationBlockRootDir:            [[42m./resources/_folderA[0m]
+[33mThe url path [/images/index_images.html] did not match the current location block [/_folderA] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/nonExistent[0m]
+locationBlockRootDir:            [[42m./resources/nonExistent[0m]
+[33mThe url path [/images/index_images.html] did not match the current location block [/nonExistent] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[31mAs the UrlPath did not match any location block, the server cannot serve any file[0m
+
+[36mStart storeURLPathParts(). URLPath_full: []
+[0m
+URL Path:        [[35m/images/index_images.html[0m]
+Full URI Path:   [[35m[0m]
+Path first part: [[35m[0m]
+Path LAST part:  [[35m[0m]
+File extension:  [[35m[0m]
+Form Data:    [33m(not present)
+[0m
+[36mStart CheckIfFIleExists(), URLPath_full [] 
+[0m[31m
+Error: URI matched a location block, but file [0m[31m was not found. Returning 403 FORBIDDEN[0m
+
+[33mFound header ending /r/n, maybe there is body
+[0mprint start of body [[35m]
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: []
+[0m[33mstorage->getHttpStatus(): 403
+[0m[33mstorage->getCgiData().getIsCgi(): 0
+[0m[31merror parsing - sending response - failure, error 403
+[0m
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 53
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart setResponse()
+[0m[32mThe path is an image: [[42mresources/error_pages/403Forbidden.html[0m]
+[34mfrom setImage: content-length: 156[0m
+[36mSENDING CHUNK, response length before send: 290[0m
+[36mSEND return - sucessfully sent: 290[0m
+[36mALL SENT, CLOSE CLIENT[0m
+fd that will be closed: 5
+original request: /images/index_images.html
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[35mServerData Destructor[0m
+addr address: 0x604000003e90
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[37mRequest Destructor[0m
+[47mResponseData Destructor[0m
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 54
+size server inside run loop: 1
+[47mResponseData Default Constructor[0m
+[35mServerData Copy constructor[0m
+[47mResponseData Default Constructor[0m
+[47mResponseData Destructor[0m
+[37mRequest Copy Constructor[0m
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 5
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 55
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[34mSTORED HEADER: 
+GET /cgi/cgi_index.html HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+originalUrlPath:               [[42m/cgi/cgi_index.html[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting parsePath() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir/subfolder[0m]
+[33mThe url path [/cgi/cgi_index.html] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/cgi/cgi_index.html] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/cgi/cgi_index.html] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources/texts[0m]
+[33mThe url path [/cgi/cgi_index.html] did not match the current location block [/texts] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mFile extension: .html[0m
+[34mNo '?' found, so no cgi root_directory needed[0m
+Path is a file. Deleting file from it so it can be matched against the location block uri name. Path: [42m/cgi[0m
+[33mThe url path [/cgi/cgi_index.html] did not match the current location block [/] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/images[0m]
+locationBlockRootDir:            [[42m./resources/images[0m]
+[33mThe url path [/cgi/cgi_index.html] did not match the current location block [/images] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/_folderA[0m]
+locationBlockRootDir:            [[42m./resources/_folderA[0m]
+[33mThe url path [/cgi/cgi_index.html] did not match the current location block [/_folderA] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/nonExistent[0m]
+locationBlockRootDir:            [[42m./resources/nonExistent[0m]
+[33mThe url path [/cgi/cgi_index.html] did not match the current location block [/nonExistent] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[31mAs the UrlPath did not match any location block, the server cannot serve any file[0m
+
+[36mStart storeURLPathParts(). URLPath_full: []
+[0m
+URL Path:        [[35m/cgi/cgi_index.html[0m]
+Full URI Path:   [[35m[0m]
+Path first part: [[35m[0m]
+Path LAST part:  [[35m[0m]
+File extension:  [[35m.html[0m]
+Form Data:    [33m(not present)
+[0m
+[36mStart CheckIfFIleExists(), URLPath_full [] 
+[0m[31m
+Error: URI matched a location block, but file [0m[31m was not found. Returning 403 FORBIDDEN[0m
+
+[33mFound header ending /r/n, maybe there is body
+[0mprint start of body [[35m]
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: [text/html]
+[0m[33mstorage->getHttpStatus(): 403
+[0m[33mstorage->getCgiData().getIsCgi(): 0
+[0m[31merror parsing - sending response - failure, error 403
+[0m
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 56
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart setResponse()
+[0m[32mThe path is a file: [[42mresources/error_pages/403Forbidden.html[0m]
+[32mFile to be streamed: resources/error_pages/403Forbidden.html[0m
+[34mStreamed: temp turned off by jaka[0m
+[36mSENDING CHUNK, response length before send: 276[0m
+[36mSEND return - sucessfully sent: 276[0m
+[36mALL SENT, CLOSE CLIENT[0m
+fd that will be closed: 5
+original request: /cgi/cgi_index.html
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[35mServerData Destructor[0m
+addr address: 0x604000003e90
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[37mRequest Destructor[0m
+[47mResponseData Destructor[0m
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 57
+size server inside run loop: 1
+[47mResponseData Default Constructor[0m
+[35mServerData Copy constructor[0m
+[47mResponseData Default Constructor[0m
+[47mResponseData Destructor[0m
+[37mRequest Copy Constructor[0m
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 5
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 58
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[34mSTORED HEADER: 
+GET /cgi/cgi_index.html HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+originalUrlPath:               [[42m/cgi/cgi_index.html[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting parsePath() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir/subfolder[0m]
+[33mThe url path [/cgi/cgi_index.html] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/cgi/cgi_index.html] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/cgi/cgi_index.html] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources/texts[0m]
+[33mThe url path [/cgi/cgi_index.html] did not match the current location block [/texts] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mFile extension: .html[0m
+[34mNo '?' found, so no cgi root_directory needed[0m
+Path is a file. Deleting file from it so it can be matched against the location block uri name. Path: [42m/cgi[0m
+[33mThe url path [/cgi/cgi_index.html] did not match the current location block [/] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/images[0m]
+locationBlockRootDir:            [[42m./resources/images[0m]
+[33mThe url path [/cgi/cgi_index.html] did not match the current location block [/images] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/_folderA[0m]
+locationBlockRootDir:            [[42m./resources/_folderA[0m]
+[33mThe url path [/cgi/cgi_index.html] did not match the current location block [/_folderA] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/nonExistent[0m]
+locationBlockRootDir:            [[42m./resources/nonExistent[0m]
+[33mThe url path [/cgi/cgi_index.html] did not match the current location block [/nonExistent] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[31mAs the UrlPath did not match any location block, the server cannot serve any file[0m
+
+[36mStart storeURLPathParts(). URLPath_full: []
+[0m
+URL Path:        [[35m/cgi/cgi_index.html[0m]
+Full URI Path:   [[35m[0m]
+Path first part: [[35m[0m]
+Path LAST part:  [[35m[0m]
+File extension:  [[35m.html[0m]
+Form Data:    [33m(not present)
+[0m
+[36mStart CheckIfFIleExists(), URLPath_full [] 
+[0m[31m
+Error: URI matched a location block, but file [0m[31m was not found. Returning 403 FORBIDDEN[0m
+
+[33mFound header ending /r/n, maybe there is body
+[0mprint start of body [[35m]
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: [text/html]
+[0m[33mstorage->getHttpStatus(): 403
+[0m[33mstorage->getCgiData().getIsCgi(): 0
+[0m[31merror parsing - sending response - failure, error 403
+[0m
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 59
+size server inside run loop: 1
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart setResponse()
+[0m[32mThe path is a file: [[42mresources/error_pages/403Forbidden.html[0m]
+[32mFile to be streamed: resources/error_pages/403Forbidden.html[0m
+[34mStreamed: temp turned off by jaka[0m
+[36mSENDING CHUNK, response length before send: 276[0m
+[36mSEND return - sucessfully sent: 276[0m
+[36mALL SENT, CLOSE CLIENT[0m
+fd that will be closed: 5
+original request: /cgi/cgi_index.html
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[35mServerData Destructor[0m
+addr address: 0x604000003e90
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[36mServerLocation Destructor[0m
+[37mRequest Destructor[0m
+[47mResponseData Destructor[0m
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 60
