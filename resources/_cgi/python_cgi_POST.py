@@ -1,16 +1,15 @@
 #!/usr/bin/python
-import time
-import cgitb
-import os  # to access execve ENV variables
-import cgi
-import sys  # to read from std input
 
+import cgi
+import cgitb
+import time
+import sys  # to read from std input
+import os  # to access execve ENV variables
 # cgitb.enable()	# detailed errors msgs
 # cgitb.enable(display=0, logdir="/path/to/logdir")
 
 print("<p> ... This is Python script for POST method ...</p>")
 sys.stderr.write('START PYTHON SCRIPT ( via stderr)\n')
-
 
 # To get at submitted form data, use the FieldStorage class.
 # If the form contains non-ASCII characters, use the encoding keyword parameter set to the value of the encoding
@@ -18,10 +17,6 @@ sys.stderr.write('START PYTHON SCRIPT ( via stderr)\n')
 # FieldStorage class reads the form contents from the standard input OR the environment (depending on the value of
 # various environment variables set according to the CGI standard).
 # Since it may consume ??? standard input, it should be instantiated only once.
-
-# WITHOUT SLEEP, NOTHING COMES YET TO THE FieldStoraeg()
-# AND IT THEREFORE GIVES PYTHON ERROR: [Errno 35] Resource temporarily unavailable
-# time.sleep(5)
 
 class StdinStream(object):
     def __init__(self, bufsize=8192):
@@ -52,7 +47,9 @@ form = cgi.FieldStorage(fp=StdinStream(), environ={'REQUEST_METHOD': 'POST'})
 # for field_name in form.keys():
 #     field = form[field_name]
 #     sys.stderr.write('   Field is [' + str(field) + ']\n')
+#     print("<p>")
 #     print(field)
+#     print("</p>")
 
 print("<div style='background-color:lavender; padding:1%; margin: 5% 0% 0% 5%; width:30%'>")
 
@@ -92,7 +89,6 @@ print("</div>")
 # print("Print form field fruit:")
 # for fruit in form["fruit"]:
 #     print(fruit)
-
 
 # sys.stderr.write('END PYTHON SCRIPT (via stderr)\n')
 # sys.stderr.write(form_data)

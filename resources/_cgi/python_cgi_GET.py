@@ -1,14 +1,25 @@
 #!/usr/bin/python
-import cgi
-import os  # TO ACCESS execve ENV variables
 
+################################### for nginx test
+import sys
+import threading
+
+sys.modules['_dummy_thread'] = threading
+# sys.stderr.write(str(sys.path) + '\n')
+sys.path.append('/Users/jmurovec/.brew/lib/python3.11/site-packages')
+from flup.server.fcgi import WSGIServer
+# added jaka: nginx is complaining about unsopported version of fastcgi
+################################### for nginx test
+
+import cgi
+import cgitb
+import os # TO ACCESS execve ENV variables
+import sys # to read from std input
+from urllib.parse import urlparse, parse_qs
 # from urllib.parse import urlparse, parse_qs # why is this not good ??
 # from urlparse import urlparse, parse_qs
-from urllib.parse import urlparse, parse_qs
+# cgitb.enable() # detailed errors msgs
 
-# cgitb.enable()	# detailed errors msgs
-
-# TO READ FROM STDIN, FROM PIPE
 print("<br><br><h3>THIS IS PYTHON SCRIPT:</h3>")
 
 # time.sleep(2)

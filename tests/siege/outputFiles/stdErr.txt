@@ -1,0 +1,154 @@
+** SIEGE 4.1.6
+** Preparing 1 concurrent users for battle.
+The server is now under siege...
+
+Lifting the server siege...
+Transactions:		       13846 hits
+Availability:		      100.00 %
+Elapsed time:		       20.77 secs
+Data transferred:	      107.67 MB
+Response time:		        0.00 secs
+Transaction rate:	      666.63 trans/sec
+Throughput:		        5.18 MB/sec
+Concurrency:		        0.98
+Successful transactions:       13846
+Failed transactions:	           0
+Longest transaction:	        0.19
+Shortest transaction:	        0.00
+ 
+** SIEGE 4.1.6
+** Preparing 20 concurrent users for battle.
+The server is now under siege...
+
+Lifting the server siege...
+Transactions:		        2540 hits
+Availability:		      100.00 %
+Elapsed time:		       20.91 secs
+Data transferred:	       19.67 MB
+Response time:		        0.02 secs
+Transaction rate:	      121.47 trans/sec
+Throughput:		        0.94 MB/sec
+Concurrency:		        2.62
+Successful transactions:        2540
+Failed transactions:	           0
+Longest transaction:	        0.21
+Shortest transaction:	        0.01
+ 
+** SIEGE 4.1.6
+** Preparing 50 concurrent users for battle.
+The server is now under siege...
+
+Lifting the server siege...
+Transactions:		       15456 hits
+Availability:		      100.00 %
+Elapsed time:		       20.98 secs
+Data transferred:	      120.02 MB
+Response time:		        0.07 secs
+Transaction rate:	      736.70 trans/sec
+Throughput:		        5.72 MB/sec
+Concurrency:		       49.90
+Successful transactions:       15456
+Failed transactions:	           0
+Longest transaction:	        2.25
+Shortest transaction:	        0.00
+ 
+** SIEGE 4.1.6
+** Preparing 100 concurrent users for battle.
+The server is now under siege...
+
+Lifting the server siege...
+Transactions:		        5791 hits
+Availability:		      100.00 %
+Elapsed time:		       20.94 secs
+Data transferred:	       44.74 MB
+Response time:		        0.36 secs
+Transaction rate:	      276.55 trans/sec
+Throughput:		        2.14 MB/sec
+Concurrency:		       99.56
+Successful transactions:        5792
+Failed transactions:	           0
+Longest transaction:	       13.46
+Shortest transaction:	        0.00
+ 
+** SIEGE 4.1.6
+** Preparing 150 concurrent users for battle.
+The server is now under siege...
+[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
+[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
+[[1;33merror[0m] unable to write to socket sock.c:733: Broken pipe
+
+Lifting the server siege...
+Transactions:		       11591 hits
+Availability:		       99.97 %
+Elapsed time:		       20.96 secs
+Data transferred:	       89.62 MB
+Response time:		        0.19 secs
+Transaction rate:	      553.01 trans/sec
+Throughput:		        4.28 MB/sec
+Concurrency:		      105.35
+Successful transactions:       11591
+Failed transactions:	           3
+Longest transaction:	        1.01
+Shortest transaction:	        0.00
+ 
+** SIEGE 4.1.6
+** Preparing 200 concurrent users for battle.
+The server is now under siege...
+
+Lifting the server siege...
+Transactions:		         940 hits
+Availability:		      100.00 %
+Elapsed time:		       20.90 secs
+Data transferred:	        6.53 MB
+Response time:		        4.42 secs
+Transaction rate:	       44.98 trans/sec
+Throughput:		        0.31 MB/sec
+Concurrency:		      198.73
+Successful transactions:         940
+Failed transactions:	           0
+Longest transaction:	       20.15
+Shortest transaction:	        0.00
+ 
+** SIEGE 4.1.6
+** Preparing 200 concurrent users for battle.
+The server is now under siege...
+[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
+[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
+[[1;33merror[0m] unable to write to socket sock.c:733: Broken pipe
+[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
+[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
+[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
+[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
+[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
+[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
+[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
+[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
+[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
+[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
+[[1;33merror[0m] unable to write to socket sock.c:733: Broken pipe
+[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
+[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
+[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
+[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
+[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
+[[1;33merror[0m] unable to write to socket sock.c:733: Broken pipe
+[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
+[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
+[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
+[[1;33merror[0m] unable to write to socket sock.c:733: Broken pipe
+[[1;33merror[0m] unable to write to socket sock.c:733: Broken pipe
+
+Lifting the server siege...
+Transactions:		       15665 hits
+Availability:		       99.84 %
+Elapsed time:		       20.99 secs
+Data transferred:	      120.96 MB
+Response time:		        0.23 secs
+Transaction rate:	      746.31 trans/sec
+Throughput:		        5.76 MB/sec
+Concurrency:		      170.93
+Successful transactions:       15665
+Failed transactions:	          25
+Longest transaction:	        1.30
+Shortest transaction:	        0.07
+ 

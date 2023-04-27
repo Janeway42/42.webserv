@@ -72,11 +72,18 @@ void ResponseData::setResponse(struct kevent& event) {
         }
         // Handling auto index
         if (storage->getRequestData().getAutoIndex() == true) {
-            // TODO handle auto index better?
-            _responseBody = streamFile(_responsePath);
-        }
+			std::cout << BLU "AUTOINDEX ON, must call storeFolderContent()\n" << RES;
+			std::cout << BLU "     URLPathFirstPart: [" << storage->getRequestData().getURLPathFirstPart() << "]\n" << RES;
+			// if (storage->getRequestData().getURLPathFirstPart().empty()) {
+			// 	std::cout << BLU "first part is empty\n" << RES;
+			// 	std::string newPath = "./resources/" + storage->getRequestData().getURLPath();
+			// 	_responseBody = storeFolderContent(newPath.c_str());
+			// }
+			// else
+	        _responseBody = storeFolderContent(storage->getRequestData().getURLPathFirstPart().c_str());
+		}
 	}
-    // if it is not a folder (it checks first if _cgi -> if not then it checks text (includes error), else image
+    // if it is not a folder (it checks first if cgi -> if not then it checks text (includes error), else image
     else {
         if (storage->getCgiData().getIsCgi() == true && storage->getHttpStatus() == OK) {
             _responseBody = storage->getRequestData().getCgiBody();
@@ -168,11 +175,20 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
                                             "500InternarServerError.html");
             break;
         } default: {
+            // "Set-Cookie: id=123; jaka=500; Max-Age=10; HttpOnly\r\n";
             // "Content-Type: " + storage->getRequestData().getResponseContentType() + "\n";	// jaka
             std::cout << "_responsePath: [[" << GRN_BG << _responsePath << RES << "]]\n";
             break;
         }
 	}
+    // if (responsePath is in the setCookies folder)  // function getLocation().getCookies() to be written
+    // 	status.append("Cookies: " + storage->getServerData().getLocationCookies + "\r\n");  // find the location bloc and it's cookies
+    // if (storage->getRequestData().getRequestCookies() != "")
+    // {
+    // 	status.append("Cookies: " + storage->getRequestData().getRequestCookies() + "\r\n");
+    // 	if (storage->getRequestData().getURLPath() == "resources/cookies/noCookies.html")
+    // 		_responsePath = "resources/cookies/yesCookies.html"
+    // }
 	return (header);
 }
 

@@ -23,6 +23,8 @@ RequestData::RequestData() {
 	_cgiBody			 = "";
 
 	_responseContentType 	= "text/html";
+
+	_reqCookies			= "";
 //	_formList			   = NULL;	// ???
 //	_formData			   = NULL;	// ???
 }
@@ -140,6 +142,10 @@ std::vector<std::string> RequestData::getFormList() const {	// Cannot return con
 	return _formList;										// because iterator won't work
 }
 
+const std::string RequestData::getRequestCookies() const {
+	return _reqCookies;
+}
+
 /** ########################################################################## */
 /** Request Setters */
 
@@ -153,9 +159,41 @@ void RequestData::setRequestMethod(std::string reqMethod)
 	_reqMethod = reqMethod;
 }
 
+
+
+// added jaka: to remove slashes at the end of path. Just leave 1 slash.
+// It was causing a problem with autoindex structure
+std::string remove_trailing_slashes(std:: string str) {
+    std::string::reverse_iterator rit;
+    for (rit = str.rbegin(); rit != str.rend(); rit++) {
+        if (*rit != '/') {
+            //str.erase(rit.base(), str.end());
+            break ;
+        }
+    }
+    return (str);
+}
+
+// added jaka
+std::string remove_multiple_slashes(std::string str) {
+    for (std::string::iterator it = str.begin(); it != str.end();) {
+        if (*it == '/') {
+            std::string::iterator next_it = std::next(it);
+            while (next_it != str.end() && *next_it == '/')
+                next_it = str.erase(next_it);
+        }
+        if (it != str.end())
+            ++it;
+    }
+    return str;
+}
+
+
 void RequestData::setRequestPath(std::string reqPath)
 {
-	_reqHttpPath = reqPath;
+	_reqHttpPath = remove_trailing_slashes(reqPath);
+	_reqHttpPath = remove_multiple_slashes(_reqHttpPath);
+	// std::cout << RED "AFTER REMOVED SLASHES: [" << _reqHttpPath << RES "]\n"; 
 }
 
 void RequestData::setHttpVersion(std::string reqHttpVersion)

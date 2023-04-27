@@ -96,8 +96,6 @@ DataType Parser::getValueType(std::string & lineContent) {// Todo: Maybe not nee
 		return STRING;
 	} else if (lineContent.find("listens_to") != std::string::npos) {
 		return PORT;
-	} else if (lineContent.find("ip_address") != std::string::npos) {
-		return IP_ADDRESS;
 	} else if (lineContent.find("root_directory") != std::string::npos) {
 		std::string value = getOneCleanValueFromKey(lineContent, "root_directory");
 		if (value[0] == '/') {
@@ -120,7 +118,7 @@ DataType Parser::getValueType(std::string & lineContent) {// Todo: Maybe not nee
 			/* Will be set to ./$server_name */
 			return RELATIVE_PATH_HTML;
 		}
-	} else if (lineContent.find("port_redirection") != std::string::npos) {
+	} else if (lineContent.find("redirection") != std::string::npos) {
 		return PORT;
 	} else if (lineContent.find("location") != std::string::npos) {
 		return RELATIVE_PATH;

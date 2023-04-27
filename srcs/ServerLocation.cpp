@@ -10,6 +10,7 @@
 //    _allow_methods(),
 //    _index_file(std::string()),
 //    _auto_index(false),
+//    _redirection(std::string()),
 //    _interpreter_path(std::string()),
 //    useServerBlockIndexFile(false) {
 //    std::cout << CYN << "ServerLocation Default constructor" << RES << std::endl;
@@ -24,9 +25,11 @@ ServerLocation::ServerLocation(std::string const & server_root_directory, std::s
     _root_directory(server_root_directory),
     _index_file(server_index_file),
     _auto_index(false),
+    _redirection(std::string()),
     _interpreter_path(std::string()),
     useServerBlockIndexFile(false) {
     _allow_methods.push_back(GET);
+	// _locationCookies = TODO to be added from the configuration file - Joyce
     std::cout << CYN << "ServerLocation Overloaded constructor" << RES << std::endl;
 }
 
@@ -40,6 +43,7 @@ ServerLocation::~ServerLocation() {
     _allow_methods = std::vector<AllowMethods>(NONE);
     _index_file.clear();
     _auto_index = false;
+    _redirection.clear();
     _interpreter_path.clear();
     useServerBlockIndexFile = false;
     std::cout << CYN << "ServerLocation Destructor" << RES << std::endl;
@@ -77,10 +81,17 @@ bool ServerLocation::getAutoIndex() const {
     return _auto_index;
 }
 
+std::string ServerLocation::getRedirection() const {
+    return _redirection;
+}
+
 std::string ServerLocation::getInterpreterPath() const {
     return _interpreter_path;
 }
 
+std::string ServerLocation::getLocationCookies() const {
+	return _locationCookies;
+ }
 /** #################################### Setters #################################### */
 
 void ServerLocation::setLocationAsCgi(bool isCgi) {
@@ -213,6 +224,17 @@ void ServerLocation::setAutoIndex(std::string const & autoIndex) {
             _auto_index = false;
         } else {
             throw ParserException(CONFIG_FILE_ERROR("auto_index", NOT_SUPPORTED));
+        }
+    }
+}
+
+void ServerLocation::setRedirection(std::string const & redirection) {
+    /* not mandatory | default: no redirection (empty) */
+    if (not redirection.empty()) {
+        if (redirection.find("http://") != std::string::npos) {
+            _redirection = redirection;
+        } else {
+            throw ParserException(CONFIG_FILE_ERROR("redirection", NOT_SUPPORTED));
         }
     }
 }

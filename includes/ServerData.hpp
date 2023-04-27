@@ -17,12 +17,10 @@ class ServerData : public Parser {
     private:
         std::string _server_name;
         std::string _listens_to;
-        std::string _ip_address;// todo change to in_addr_t so I can use inet_addr()???
         std::string _root_directory;
         std::string _index_file;
         unsigned int _client_max_body_size;
         std::vector<std::string> _error_page;
-        unsigned int _port_redirection;
         /* As more than 1 location block can be added to a server block */
         std::vector<ServerLocation> _location_data_vector;
 
@@ -37,12 +35,10 @@ class ServerData : public Parser {
         /** Getters */
         std::string getServerName() const;
         std::string getListensTo() const;
-        std::string getIpAddress() const;
         std::string getRootDirectory() const;
         std::string getIndexFile() const;
         unsigned int getClientMaxBodySize() const;
         std::vector<std::string> getErrorPages() const;
-        unsigned int getPortRedirection() const;
         std::vector<ServerLocation> & getLocationBlocks();
         int getListeningSocket() const;
         struct addrinfo* getAddr() const;
@@ -50,36 +46,27 @@ class ServerData : public Parser {
         /** Setters */
         void setServerName(std::string const & serverName);
         void setListensTo(std::string const & port);
-        void setIpAddress(std::string const & ip);
         void setRootDirectory(std::string const & rootDirectory);
         void setIndexFile(std::string const & indexFile);
         void setClientMaxBodySize(std::string const & bodySize);
         void setErrorPages(std::string const & errorPage);
-        void setPortRedirection(std::string const & portRedirection);
         void setListeningSocket();
 
         class ServerDataException: public std::exception {
-        private:
-            std::string _errorMessage;
-        public:
-		    ServerDataException(std::string message) throw()
-            {
-                _errorMessage = message;
-            }
-            virtual const char* what() const throw()
-            {
-                return (_errorMessage.c_str());
-            }
-            virtual ~ServerDataException() throw(){}
-
+            private:
+                std::string _errorMessage;
+            public:
+                ServerDataException(std::string const & errorMessage) throw() {
+                    _errorMessage = "ServerData error: " + errorMessage;
+                }
+                virtual const char* what() const throw() {
+                    return (_errorMessage.c_str());
+                }
+                virtual ~ServerDataException() throw() {}
 
             // explicit ServerDataException(std::string const & errorMessage) throw() {
-            //     _errorMessage = "ServerData error: " + errorMessage;// todo: maybe add a number to it? and make it an array, std::pair map?
+            //     _errorMessage = "ServerData error: " + errorMessage;
             // }
-            // virtual const char* what() const throw() {
-            //     return (_errorMessage.c_str());
-            // }
-            // virtual ~ServerDataException() throw() {}
         };
 };
 #endif //SERVERDATA_HPP

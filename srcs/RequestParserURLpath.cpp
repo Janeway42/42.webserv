@@ -6,12 +6,13 @@
 #include <vector>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <filesystem> // temp, to test current directory
 
 // #include <sys/types.h>
 #include <sys/wait.h>	// for wait() on Linux
 
-#include "Parser.hpp"
-#include "RequestParser.hpp"
+#include "../includes/Parser.hpp"
+#include "../includes/RequestParser.hpp"
 
 /*
 	TODO What happens if you dont have a form on your page, but you directly write ?city=aaa in the URL?
@@ -41,26 +42,30 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 		close(_cgi.getPipeCgiOut_0());
 		close(_cgi.getPipeCgiIn_1());
 
-		ret = dup2(_cgi.getPipeCgiIn_0()   ,  0);		// _cgi reads from parent via pipe fd_out
+		ret = dup2(_cgi.getPipeCgiIn_0()   ,  0);		// cgi reads from parent via pipe fd_out
 		if (ret == -1)
 		 	std::cout << RED "Error dup2() of PipeCgiIn_0, child\n" RES;
 		close(_cgi.getPipeCgiIn_0());
 		
 		//sleep(1);
-		ret = dup2(_cgi.getPipeCgiOut_1()   ,  1);	// _cgi writes to parent via pipe fd_out NONBLOCK
+		ret = dup2(_cgi.getPipeCgiOut_1()   ,  1);	// cgi writes to parent via pipe fd_out NONBLOCK
 		if (ret == -1)
 		 	std::cout << RED "Error dup2() of PipeCgiOut_1, child\n" RES;
 		close(_cgi.getPipeCgiOut_1());
 
+        // Change current working directory to the internal CGI directory
+        // Best practice to ensure the script to find correct relative paths, if needed
+        chdir("./resources/_cgi/");
+
 	//	std::cerr << RED "Before execve in child\n" << RES;
 		ret = execve(args[0], args, ENV);
-	//	ret = execv(args[0], const_cast<char**>(args));
 		std::cerr << RED << "Error: Execve failed: " << ret << "\n" << RES;
+        // TODO: handle error if execve failed
 	}
 	else {				// PARENT
 		//wait(NULL);
 		
-		std::cerr << "    Start Parent\n";
+		//std::cerr << "    Start Parent\n";
 		close(_cgi.getPipeCgiOut_1());
 		close(_cgi.getPipeCgiIn_0());
 		//std::cout << BLU "\n       End runExecve()\n" << RES;
@@ -69,7 +74,7 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 }
 
 void Request::callCGI(struct kevent event) {
-	std::cout << CYN << "Start callCGI, _cgi path: " << _data.getURLPath_full() << "\n" << RES;
+	std::cout << CYN << "Start callCGI, cgi path: " << _data.getURLPath_full() << "\n" << RES;
 	//(void)reqData;
 
 	// Declare all necessary variables
@@ -79,6 +84,7 @@ void Request::callCGI(struct kevent event) {
 	std::string query_string	= "QUERY_STRING=";
 	std::string server_name		= "SERVER_NAME=";
 	std::string comspec			= "COMSPEC=";
+	std::string info_path		= "INFO_PATH=";
 
 	// Convert length to string
 	std::stringstream ssContLen;
@@ -91,7 +97,8 @@ void Request::callCGI(struct kevent event) {
 	temp.push_back(content_length.append(ssContLen.str()));
 	temp.push_back(query_string.append(_data.getQueryString()));
 	temp.push_back(server_name.append("default"));// TODO add server name?
-	temp.push_back(comspec.append("default"));
+	temp.push_back(comspec.append(""));
+	temp.push_back(info_path.append(""));
 
 	// std::cout << "Size of vector temp: " << temp.size() << "\n";
 	// std::cout << YEL << "POST BODY: " << temp[2] << "\n" << RES;
@@ -123,9 +130,12 @@ void Request::callCGI(struct kevent event) {
 	// args[2] = NULL;
 
 	char *args[3];
-//	args[0] = (char *)"/usr/local/bin/python3";// joyce test
-	args[0] = (char *)"/usr/bin/python";// todo add from config file
-	std::string tempPath = _data.getURLPath_full();
+    //	args[0] = (char *)"/usr/local/bin/python3";
+	args[0] = (char *)"/usr/bin/python";    // TODO: add from config file
+
+//  std::string tempPath = _data.getURLPath_full();   // Changed Jaka:
+    std::string tempPath = _data.getURLPathLastPart();  // must be only the script name, because the CWD is changed to CGI folder
+
 	char *path = (char *)tempPath.c_str();	//  ie: "./resources/_cgi/python_cgi_GET.py"
 	args[1] = path;
 	args[2] = NULL;
@@ -207,7 +217,7 @@ void Request::storeURLPathParts(std::string const & originalUrlPath, std::string
             std::cout << "queryString:                   [" << GRN_BG << _data.getQueryString() << RES << "]" << std::endl;
             // _data.setBody(queryString);  // too early todo JAKA is it needed here?
         }
-        storeFormData(queryString);	// maybe not needed (the whole vector and map) if the _cgi script can handle the whole queryString todo JAKA is it needed?
+        storeFormData(queryString);	// maybe not needed (the whole vector and map) if the cgi script can handle the whole queryString todo JAKA is it needed?
     }
 
     _data.setURLPath(originalUrlPath);
@@ -295,7 +305,7 @@ std::string Request::parsePath_cgi(std::string const & originalUrlPath, std::vec
         std::string locationBlockRootDir = location->getRootDirectory();
         getCgiData().setIsCgi(true);
 
-        std::cout << BLU << "'?' was found, so _cgi location block config is needed" << RES << std::endl;
+        std::cout << BLU << "'?' was found, so cgi root_directory is needed" << RES << std::endl;
         std::cout << "Path is a script file. ";
 
         // blocks down below are just for logging
@@ -314,7 +324,7 @@ std::string Request::parsePath_cgi(std::string const & originalUrlPath, std::vec
         /* If the url is a script file, the match will be done between the extension of it, against the location uri
          * ex: url localhost/_cgi/script.py -> the .py part will be checked against a location uri */
         if (_data.getFileExtention() == locationBlockUriName) {
-            std::cout << BLU << "_cgi location block for [" << RES BLU_BG << originalUrlPath << RES BLU;
+            std::cout << BLU << "cgi location block for [" << RES BLU_BG << originalUrlPath << RES BLU;
             std::cout << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES BLU << "]" << std::endl;
             std::cout << BLU << "Its root_directory [" << locationBlockRootDir << "] and configuration will be used" << RES << std::endl;
             URLPath_full = locationBlockRootDir + file_cgi;
@@ -370,7 +380,7 @@ std::string Request::parsePath_file(std::string const & originalUrlPath, std::ve
         std::string DirFromUrl = std::string();
         std::string file = originalUrlPath.substr(originalUrlPath.find_last_of('/'));
 
-        std::cout << BLU << "No '?' found, so no _cgi root_directory needed" << RES << std::endl;
+        std::cout << BLU << "No '?' found, so no cgi root_directory needed" << RES << std::endl;
         std::cout << "Path is a file. ";
 
         // If there is only one / then it has to keep it, otherwise DirFromUrl can be without it
@@ -400,7 +410,7 @@ std::string Request::parsePath_file(std::string const & originalUrlPath, std::ve
         }
     }
     // Script file for POST, with no query ('?')
-    // Ex.: localhost:8080/python_POST.py or localhost:8080/_cgi/python_cgi_upload.py or localhost:8080/py/cgi_delete.py
+    // Ex.: localhost:8080/python_POST.py or localhost:8080/_cgi/python_cgi_POST_upload.py or localhost:8080/py/cgi_delete.py
     else if (originalUrlPath.find('?') == std::string::npos && _data.getRequestMethod() == "POST") {
         URLPath_full = parsePath_cgi(originalUrlPath, location, originalUrlPath.substr(originalUrlPath.find_last_of('/')));
     }
@@ -561,18 +571,25 @@ void Request::parsePath(std::string  const & originalUrlPath) {
         std::string URLPath_full = parsePath_locationMatch(originalUrlPath);
         std::cout << "⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻" << std::endl << std::endl;
         if (URLPath_full.empty()) {
-            _data.setURLPath(originalUrlPath);
-            std::cout << RED << "As the UrlPath did not match any location block, ";
-            std::cout << "the server cannot serve any file and will return 404 NOT_FOUND" << RES << std::endl << std::endl;
-            if (getHttpStatus() == NO_STATUS) {// todo -> here I think we dont need to check this anymore
-                setHttpStatus(NOT_FOUND);
+            if (originalUrlPath.find("/_") != std::string::npos) {
+                std::cout << YEL << "Internal directory requested, it will be server but no need to search for its"
+                                    "location on the config file" << RES << std::endl << std::endl;
+                _data.setFileExtention(getExtension(originalUrlPath));
+                URLPath_full = serverBlockDir + originalUrlPath;// without the first /
+            } else {
+                std::cout << RED << "As the UrlPath did not match any location block, ";
+                std::cout << "the server cannot serve any file and will return 404 NOT_FOUND" << RES << std::endl << std::endl;
+                if (getHttpStatus() == NO_STATUS) {// todo -> here I think we dont need to check this anymore
+                    setHttpStatus(NOT_FOUND);
+                }
+                _data.setURLPath(originalUrlPath);
+                return ;
             }
-        } else {
-            _data.setResponseContentType(_data.getFileExtention());
-            storeURLPathParts(originalUrlPath, URLPath_full);// TODO: do that only if _data.getRequestMethod() != "POST" ?????
-
-            printPathParts(_data);
-            checkIfPathExists(URLPath_full);
         }
+        _data.setResponseContentType(_data.getFileExtention());
+        storeURLPathParts(originalUrlPath, URLPath_full);// TODO: do that only if _data.getRequestMethod() != "POST" ?????
+
+        printPathParts(_data);
+        checkIfPathExists(URLPath_full);
     }
 }

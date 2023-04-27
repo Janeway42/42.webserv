@@ -47,6 +47,7 @@ unsigned short ConfigFileParser::numberOfLocationBlocks() const {
 /** #################################### Methods #################################### */
 
 void ConfigFileParser::handleFile(std::string const & configFileName) {
+
     // std::ifstream destructor will close the file automatically, which is one of the perks of using this class.
     // An IDE may compile the program on another directory and so the file to open would be on a different path.
     std::ifstream configFile;
@@ -62,6 +63,7 @@ void ConfigFileParser::handleFile(std::string const & configFileName) {
             } else if (lineContent == "server {") {
                 _server_block_counter++;
                 parseFileServerBlock(configFile);
+
                 continue;
             }
         }
@@ -78,6 +80,7 @@ void ConfigFileParser::handleFile(std::string const & configFileName) {
 void ConfigFileParser::parseFileServerBlock(std::ifstream & configFile) {
     ServerData _server_data = ServerData();
     while (configFile) {
+
         std::string lineContent;
         std::getline(configFile, lineContent);
 //        std::cout << RED << lineContent << RES << std::endl;
@@ -98,10 +101,6 @@ void ConfigFileParser::parseFileServerBlock(std::ifstream & configFile) {
             _server_data.setListensTo(keyParser(lineContent, "listens_to"));
             continue;
         }
-        if (lineContent.find("ip_address") != std::string::npos) {
-            _server_data.setIpAddress(keyParser(lineContent, "ip_address"));
-            continue;
-        }
         if (lineContent.find("root_directory") != std::string::npos) {
             _server_data.setRootDirectory(keyParser(lineContent, "root_directory"));
             continue;
@@ -116,10 +115,6 @@ void ConfigFileParser::parseFileServerBlock(std::ifstream & configFile) {
         }
         if (lineContent.find("error_page") != std::string::npos) {
             _server_data.setErrorPages(keyParser(lineContent, "error_page"));
-            continue;
-        }
-        if (lineContent.find("port_redirection") != std::string::npos) {
-            _server_data.setPortRedirection(keyParser(lineContent, "port_redirection"));
             continue;
         }
         /** Checking for _cgi or location/_cgi blocks */
@@ -180,6 +175,10 @@ void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile, Server
         }
         if (lineContent.find("interpreter_path") != std::string::npos) {
             _server_location.setInterpreterPath(keyParser(lineContent, "interpreter_path"));
+            continue;
+        }
+        if (lineContent.find("redirection") != std::string::npos) {
+            _server_location.setRedirection(keyParser(lineContent, "redirection"));
             continue;
         }
     }

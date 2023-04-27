@@ -50,6 +50,7 @@ class ResponseData: public Parser
 		std::string 	setImage(std::string imagePath);
 		void			increaseSentSoFar(size_t bytesSent);
 		std::string&	eraseSentChunkFromFullResponse(unsigned long retBytes); // to erase the sent chunk from the remaining response content
+		std::string		storeFolderContent(const char *path);
 
 
 		// NOT USED - to be cleaned out

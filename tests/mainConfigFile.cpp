@@ -29,9 +29,6 @@ int main(int ac, char **av) {
                 std::string listensTo = it_server->getListensTo();
                 std::cout << GRN << std::left << std::setw(30) << "\"listens_to\": " << listensTo << RES << std::endl;
 
-                std::string ipAddress = it_server->getIpAddress();
-                std::cout << GRN << std::left << std::setw(30) << "\"ip_address\": " << ipAddress << RES << std::endl;
-
                 std::string rootDirectory = it_server->getRootDirectory();
                 std::cout << GRN << std::left << std::setw(30) << "\"root_directory\": " << rootDirectory << RES << std::endl;
 
@@ -48,10 +45,6 @@ int main(int ac, char **av) {
                     std::cout << GRN << "" << *it_location_error_pages << " " << RES;
                 }
                 std::cout << std::endl;
-
-                unsigned int portRedirection = it_server->getPortRedirection();
-                std::cout << GRN << std::left << std::setw(30) << "\"port_redirection\": " << portRedirection << RES << std::endl;
-
 
                 std::vector<ServerLocation>::const_iterator it_location;
                 for (it_location = it_server->getLocationBlocks().cbegin(); it_location != it_server->getLocationBlocks().cend(); ++it_location) {
@@ -111,6 +104,9 @@ int main(int ac, char **av) {
 
                         bool locationAutoIndex = it_location->getAutoIndex();
                         std::cout << GRN << std::left << std::setw(30) << "\"auto_index\": " << locationAutoIndex << RES << std::endl;
+
+                        std::string redirection = it_location->getRedirection();
+                        std::cout << GRN << std::left << std::setw(30) << "\"redirection\": " << redirection << RES << std::endl;
                     }
                 }
             }
