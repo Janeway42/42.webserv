@@ -6,7 +6,7 @@ void func() {
 
 int main(int ac, char **av)
 {
-    // atexit(func);
+    atexit(func);
 
 	signal(SIGINT, endSignal);
 	signalCall = false;

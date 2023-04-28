@@ -2,11 +2,11 @@
 
 import sys
 
-import threading
-sys.modules['_dummy_thread'] = threading
+# import threading
+# sys.modules['_dummy_thread'] = threading
 # sys.stderr.write(str(sys.path) + '\n')
-sys.path.append('/Users/jmurovec/.brew/lib/python3.11/site-packages')
-from flup.server.fcgi import WSGIServer
+# sys.path.append('/Users/jmurovec/.brew/lib/python3.11/site-packages')
+# from flup.server.fcgi import WSGIServer
 
 
 # added jaka: nginx is complaining about unsopported version of fastcgi
@@ -22,7 +22,7 @@ import cgi, cgitb
 print ("<br><br><h3>THIS IS PYTHON SCRIPT:</h3>")
 
 
-#time.sleep(2)
+# time.sleep(30)
 # exit()
 
 
