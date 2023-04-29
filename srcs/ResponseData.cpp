@@ -136,7 +136,7 @@ static std::string setResponseHeader(HttpStatus status) {
 }
 
 std::string ResponseData::setResponseStatus(struct kevent& event)
-{	
+{
 	std::cout << CYN << "start setResponseStatus()\n" << RES;
 	Request *storage = (Request *)event.udata;
 	std::string header = setResponseHeader(storage->getHttpStatus());

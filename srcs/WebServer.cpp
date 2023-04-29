@@ -70,10 +70,7 @@ void WebServer::runServer()
 				ServerData* specificServer = getSpecificServer(evList[i].ident);
 
 				if (evList[i].flags & EV_ERROR)
-				{
 					std::cout << "Socket was deleted\n";
-					std::cout << "Erno: " << errno << std::endl;  // for testing purposes - to be erased
-				}
 				else if (specificServer != NULL)
 					newClient(evList[i], specificServer);
 				else if (evList[i].filter == EVFILT_TIMER)
@@ -89,7 +86,7 @@ void WebServer::runServer()
 						std::cout << RED "EOF from ReadRequest, close the reading FD: " << evList[i].ident << "\n" RES;
 						Request *storage = (Request *)evList[i].udata;
 						removeFilter(evList[i], EVFILT_READ, "failed kevent EV_EOF - EVFILT_READ");
-						if (storage->getCgiData().getIsCgi() == true) // pipe // this is specifically for ret = 0 && EV_EOF
+						if (storage->getCgiData().getIsCgi() == true) // <--eval--> this is specifically for ret = 0 && EV_EOF
 						{
 							std::cout << "EOF READ pipe\n";
 							close(evList[i].ident);
@@ -136,9 +133,9 @@ void WebServer::handleTimeout(struct kevent &event)
 	// std::cout << "done: " << storage->getDone() << std::endl;
 	if (storage->getDone() == false)
 	{
-		addFilter(event.ident, event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE - handle timeout");
 		removeFilter(event, EVFILT_READ, "failed kevent EV_DELETE, EVFILT_READ - handle timeout");
 	}
+	addFilter(event.ident, event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE - handle timeout");
 }
 
 void WebServer::readRequest(struct kevent& event)
@@ -154,8 +151,7 @@ void WebServer::readRequest(struct kevent& event)
 	if ((int)event.ident == (storage->getCgiData()).getPipeCgiOut_0())
 	{
 		size_t ret = read(event.ident, &buffer,  BUFFER_SIZE - 1);
-		//std::cout << "  ---> read from CGI, ret: " << ret << "\n";		// jaka
-		if (ret < 0)
+		if (ret < 0) // <--eval--> this checks for ret == -1, ret == 0 is checked in the main loop
 		{
 			std::cout << "failed read in pipe _fd_out[0] from _cgi\n";
 			storage->setHttpStatus(INTERNAL_SERVER_ERROR);
@@ -181,7 +177,7 @@ void WebServer::readRequest(struct kevent& event)
 		int ret = recv(event.ident, &buffer, BUFFER_SIZE - 1, 0);
 		//std::cout << "    recv: " << ret << "\n";
 
-		if (ret <= 0) // kq will NEVER send a READ event if there is nothing to receive thus ret == 0 will never happen  
+		if (ret <= 0) // <--eval--> kq will NEVER send a READ event if there is nothing to receive thus ret == 0 will never happen  
 		{
 			std::cout << "failed recv in client fd\n";
 			removeFilter(event, EVFILT_READ, "failed kevent EV_DELETE, EVFILT_READ, ret < 0, _fdClient");
@@ -254,7 +250,7 @@ void WebServer::sendResponse(struct kevent& event)
 		ssize_t ret = write(storage->getCgiData().getPipeCgiIn_1(), buffer, static_cast<std::size_t>(endPoint - startPoint));
 		//std::cout << "        Returned write: " << ret << "\n";
 
-		if (ret == -1)
+		if (ret == -1) // <--eval--> this checks for ret == -1
 		{
 			std::cout << "    Send() response returned -1\n";
 			storage->setHttpStatus(INTERNAL_SERVER_ERROR);
@@ -262,13 +258,10 @@ void WebServer::sendResponse(struct kevent& event)
 			addFilter(storage->getFdClient(), event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, ret = -1 on _fd_in[1]");    //  this allows client write 
 			removeFilter(event, EVFILT_WRITE, "failed kevent, EV_DELETE, EVFILT_WRITE failure on _fd_in[1]");  // this removes the pipe fd _fd_in[1]
 		}
-		else 
+		else // <--eval--> this also accounts for ret = write() = 0 
 		{
-			// Jaka -  keep track of what has been sent-> change file to be written if necessary
 			storage->getCgiData().setBytesToCgi(ret);
-			//std::cout << RES "    current sent getBytesToCGI " << storage->getCgiData().getBytesToCgi() << "\n" RES;
-
-			if (storage->getCgiData().getBytesToCgi() == (storage->getRequestData()).getRequestContentLength())
+			if (storage->getCgiData().getBytesToCgi() == (storage->getRequestData()).getRequestContentLength()) // ---- this checks if everything has been sent
 			{
 				std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ CGI Response sent ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
                 removeFilter(event, EVFILT_WRITE, "failed kevent EV_DELETE, EVFILT_WRITE - success on _fd_in[1]");
@@ -313,13 +306,13 @@ void WebServer::sendResponse(struct kevent& event)
 		}
 		else
 		{
-			if (content.size() == myRet)
+			if (content.size() == myRet) // <--eval--> this includes also the = 0 case ===> myRet == 0 and fullResponse.length() == 0
 			{
 				std::cout << CYN << "ALL SENT, CLOSE CLIENT" RES "\n";
 				removeFilter(event, EVFILT_WRITE, "failed kevent, EV_DELETE, EVFILT_WRITE, success on _fdClient");
 				closeClient(event);
 			}
-			else
+			else // <--eval--> includes also the = 0 case ===> if myRet == 0 and fullResponse.length() != 0
 			{
 				storage->getResponseData().increaseSentSoFar(myRet);
 				storage->getResponseData().eraseSentChunkFromFullResponse(myRet);

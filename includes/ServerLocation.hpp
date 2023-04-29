@@ -45,8 +45,7 @@ class ServerLocation : public Parser {
         bool getAutoIndex() const;
         std::string getRedirection() const;
         std::string getInterpreterPath() const;
-        std::string getScriptExtension() const;
-		std::string getLocationCookies() const;
+		std::string getLocationCookies() const ;
 
         /** Setters */
         void setLocationAsCgi(bool isCgi);
@@ -57,6 +56,5 @@ class ServerLocation : public Parser {
         void setAutoIndex(std::string const & autoIndex);
         void setRedirection(std::string const & redirection);
         void setInterpreterPath(std::string const & interpreterPath);
-        void setScriptExtension(std::string const & scriptExtension);
 };
 #endif //SERVERLOCATION_HPP

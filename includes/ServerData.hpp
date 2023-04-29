@@ -63,10 +63,6 @@ class ServerData : public Parser {
                     return (_errorMessage.c_str());
                 }
                 virtual ~ServerDataException() throw() {}
-
-            // explicit ServerDataException(std::string const & errorMessage) throw() {
-            //     _errorMessage = "ServerData error: " + errorMessage;
-            // }
         };
 };
 #endif //SERVERDATA_HPP

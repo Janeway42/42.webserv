@@ -11,8 +11,8 @@
 // #include <sys/types.h>
 #include <sys/wait.h>	// for wait() on Linux
 
-#include "../includes/Parser.hpp"
-#include "../includes/RequestParser.hpp"
+#include "Parser.hpp"
+#include "RequestParser.hpp"
 
 /*
 	TODO What happens if you dont have a form on your page, but you directly write ?city=aaa in the URL?
@@ -46,7 +46,7 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 		if (ret == -1)
 		 	std::cout << RED "Error dup2() of PipeCgiIn_0, child\n" RES;
 		close(_cgi.getPipeCgiIn_0());
-		
+
 		//sleep(1);
 		ret = dup2(_cgi.getPipeCgiOut_1()   ,  1);	// cgi writes to parent via pipe fd_out NONBLOCK
 		if (ret == -1)

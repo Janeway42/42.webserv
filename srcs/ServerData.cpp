@@ -290,7 +290,6 @@ void ServerData::setListeningSocket() {
 	// 			Apparently Siege wants the IP address, not ServerName 'localhost'
 	//			Now Siege works.
 	if (getaddrinfo(_server_name.c_str(), _listens_to.c_str(), &hints, &_addr) != 0) {
-//	if (getaddrinfo(_ip_address.c_str(), _listens_to.c_str(), &hints, &_addr) != 0) {// deleted the ip_address now
 		//freeaddrinfo(_addr); no need?
 		throw ServerDataException("failed getaddrinfo");
 	}
