@@ -144,7 +144,10 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
 
     //todo add more default pages?
 	switch (storage->getHttpStatus()) {
-		case 400: {
+        case 301: {
+            header = header + "Location: " + storage->getRedirection() + "close\r\n";
+            break;
+        } case 400: {
             _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
                                             storage->getHttpStatus(),
                                             "400BadRequest.html");

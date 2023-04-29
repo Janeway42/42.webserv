@@ -42,6 +42,7 @@ class Request : public Parser {
 		bool			_doneParsing;
 		bool 			_hasBody;
 		HttpStatus		_httpStatus;
+		std::string		_redirection;
 		ServerData  	*_server;
 
 		void        parseHeaderAndPath(std::string & tmpHeader, std::string::size_type it);
@@ -64,6 +65,7 @@ class Request : public Parser {
 		ResponseData &	getResponseData();
 		CgiData &		getCgiData();
 		HttpStatus		getHttpStatus();
+		std::string		getRedirection();
 		bool			getDone();
 		int				getFdClient();
 		int				getKq();
@@ -71,16 +73,19 @@ class Request : public Parser {
 		// setters
 		void			setDone(bool val);
 		void			setHttpStatus(HttpStatus val);
+		void			setRedirection(std::string const & redirection);
 
 		// methods
 		std::map<std::string, std::string>	storeFormData(std::string pq);
 		void			    parseHeader(std::string header);
 		void    		    parsePath(std::string const & originalUrlPath);
+        std::string                redirection(std::string getRedirection);
 		std::string	        parsePath_locationMatch(std::string const & originalUrlPath);
         std::string		    parsePath_file(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);
         std::string     	parsePath_cgi(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location, std::string const & file_cgi);
         std::string		    parsePath_dir(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location, std::string const & subdirectory);
         std::string         parsePath_regularCase(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);
+        std::string         parsePath_root(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);
         std::string         parsePath_edgeCase(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);//todo mayne not needed?
 		void		    	appendToRequest(const char str[], size_t len);
 		void			    storeURLPathParts(std::string const & originalUrlPath, std::string const & newUrlPath);
