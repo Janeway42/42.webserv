@@ -141,7 +141,7 @@ class Parser {
                 std::string _errorMessage;
             public:
                 explicit ParserException(std::string const & errorMessage) throw() {
-                    _errorMessage = "Config file error: " + errorMessage;// todo: maybe add a number to it? and make it an array, std::pair map?
+                    _errorMessage = "Config file error: " + errorMessage;
                 }
                 virtual const char* what() const throw() {
                     return (_errorMessage.c_str());

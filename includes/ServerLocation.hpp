@@ -45,7 +45,7 @@ class ServerLocation : public Parser {
         bool getAutoIndex() const;
         std::string getRedirection() const;
         std::string getInterpreterPath() const;
-		std::string getLocationCookies() const ;
+		std::string getLocationCookies() const;
 
         /** Setters */
         void setLocationAsCgi(bool isCgi);

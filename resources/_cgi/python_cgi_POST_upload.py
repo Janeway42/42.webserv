@@ -71,7 +71,7 @@ item_template = """
 <br>
 """
 
-# # Check if a delete request has been made
+# # Check if a delete request has been made // (joyce comment for jaka) I have moved it to the python_cgi_POST_delete.py
 # form = _cgi.FieldStorage()
 # if "delete" in form:
 #     os.remove(os.path.join(folder_path, form["delete"].value))

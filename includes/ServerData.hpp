@@ -52,17 +52,17 @@ class ServerData : public Parser {
         void setErrorPages(std::string const & errorPage);
         void setListeningSocket();
 
-        class ServerDataException: public std::exception {
-            private:
-                std::string _errorMessage;
-            public:
-                ServerDataException(std::string const & errorMessage) throw() {
-                    _errorMessage = "ServerData error: " + errorMessage;
-                }
-                virtual const char* what() const throw() {
-                    return (_errorMessage.c_str());
-                }
-                virtual ~ServerDataException() throw() {}
-        };
+//        class ServerDataException: public std::exception {
+//            private:
+//                std::string _errorMessage;
+//            public:
+//                explicit ServerDataException(std::string const & errorMessage) throw() {
+//                    _errorMessage = "ServerData error: " + errorMessage;
+//                }
+//                virtual const char* what() const throw() {
+//                    return (_errorMessage.c_str());
+//                }
+//                virtual ~ServerDataException() throw() {}
+//        };
 };
 #endif //SERVERDATA_HPP

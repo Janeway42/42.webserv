@@ -291,7 +291,7 @@ void ServerData::setListeningSocket() {
 	//			Now Siege works.
 	if (getaddrinfo(_server_name.c_str(), _listens_to.c_str(), &hints, &_addr) != 0) {
 		//freeaddrinfo(_addr); no need?
-		throw ServerDataException("failed getaddrinfo");
+		throw std::runtime_error("Failed getaddrinfo");
 	}
 
 	// for testing memory leaks
@@ -300,18 +300,18 @@ void ServerData::setListeningSocket() {
 	// if (out != 0)
 	// {
 	// 	std::cout << "------------------- failed addr!!!!\n";
-	// 	throw ServerDataException("failed getaddrinfo");
+	// 	throw std::runtime_error("Failed getaddrinfo");
 	// }
 
 	_listening_socket = socket(_addr->ai_family, _addr->ai_socktype, _addr->ai_protocol);
 	if (_listening_socket < 0)
-		throw ServerDataException(("failed socket"));
+		throw std::runtime_error("Failed socket");
 	fcntl(_listening_socket, F_SETFL, O_NONBLOCK);
 
 	int socket_on = 1;
 	setsockopt(_listening_socket, SOL_SOCKET, SO_REUSEADDR, &socket_on, sizeof(socket_on));
 	if (bind(_listening_socket, _addr->ai_addr, _addr->ai_addrlen) == -1)
-		throw ServerDataException(("failed bind: " + std::to_string(errno)));
+		throw std::runtime_error("Failed bind (errno: " + std::to_string(errno) + ")");
 	if (listen(_listening_socket, SOMAXCONN) == -1)  // max nr of accepted connections
-		throw ServerDataException(("failed listen"));
+		throw std::runtime_error("Failed listen");
 }

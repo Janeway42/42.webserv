@@ -28,7 +28,8 @@ WebServer::WebServer(std::string const & configFileName)
         }
         std::cout << CYN << GRY_BG << "WebServer Overloaded Constructor" << RES << std::endl;
     } catch (std::exception const & e) {
-        throw ServerException("Failed to initialise webserv");
+//        std::cout << RED << "Error: " << e.what() << RES <<std::endl;
+        throw ServerException(std::string("Failed to initialise webserv: ") + e.what());
     }
 }
 

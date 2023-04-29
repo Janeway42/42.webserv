@@ -515,6 +515,7 @@ std::string Request::parsePath_locationMatch(std::string const & originalUrlPath
 
     std::vector<ServerLocation>::const_iterator location = getServerData().getLocationBlocks().cbegin();
     for (; location != getServerData().getLocationBlocks().cend(); ++location) {
+        // TODO -> Set 405 Method Not Allowed IF specific location allowed methods does not match with the method received
         std::string locationBlockUriName = location->getLocationUriName();
         std::string locationBlockRootDir = location->getRootDirectory();
         std::cout << "⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻" << std::endl;
