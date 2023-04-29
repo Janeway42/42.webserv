@@ -4,7 +4,7 @@ import time
 import cgitb
 import cgi
 import os
-import sys # to read from std input
+import sys  # to read from std input
 # cgitb.enable()
 
 environ = os.environ.copy()
@@ -23,17 +23,17 @@ if fileItem.filename:
     fn = os.path.basename(fileItem.filename)
     try:
         parent_dir = os.getcwd()
-        with open(parent_dir + '/resources/uploads/' + fn, 'wb') as f: # TODO this path has to come from the config file??? (look pdF)
+        with open(parent_dir + '/resources/uploads/' + fn, 'wb') as f:  # TODO this path has to come from the config file??? (look pdF)
             f.write(fileItem.file.read())
-        #   message = 'The file ' + fn + ' was uploaded successfully'
+            message = 'The file ' + fn + ' was uploaded successfully'
     except IOError as e:
         message = 'Error uploading file: ' + str(e)
         sys.stderr.write('Error uploading file: ' + str(e))
-        # print(message)
+        print(message)
         exit
 
 # Define the path to the folder you want to list
-folder_path = parent_dir + '/resources/uploads/' # TODO this path has to come from the config file??? (look pdF)
+folder_path = parent_dir + '/resources/uploads/'  # TODO this path has to come from the config file??? (look pdF)
 
 # Define the HTML template
 html_template = """

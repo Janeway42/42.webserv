@@ -71,26 +71,3 @@ if "description" in form:
     print("</h2>")
 
 print("</div>")
-
-# process the field data here
-
-# time.sleep(5)
-
-# if "street" not in form or "city" not in form:
-# 	print("<H1>Error</H1>")
-# 	print("Please fill in the street and city fields.")
-# 	exit
-
-# print("<p>street:", form["street"].value)
-# print("<p>city:", form["city"].value)
-# print("<p>fruit:", form["fruit"].value)
-# print("<p>vegetable:", form["vegetable"].value)
-# print(form)
-# print("Print form field fruit:")
-# for fruit in form["fruit"]:
-#     print(fruit)
-
-# sys.stderr.write('END PYTHON SCRIPT (via stderr)\n')
-# sys.stderr.write(form_data)
-# print(" ... The End of Python Script ... ")
-# print("</p>")

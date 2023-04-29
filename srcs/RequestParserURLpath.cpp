@@ -455,10 +455,10 @@ std::string Request::parsePath_regularCase(std::string const & originalUrlPath, 
         std::string::size_type lastSlash = originalUrlPath.find_last_of('/');
         if (lastSlash != std::string::npos) {
             std::string file = originalUrlPath.substr(lastSlash);
-            std::cout << RED << "joyce locationBlockRootDir + file: " << locationBlockRootDir + file << RES << std::endl;
+//            std::cout << RED << "joyce locationBlockRootDir + file: " << locationBlockRootDir + file << RES << std::endl;
             if (not file.empty() && (pathType(locationBlockRootDir + file) != DIRECTORY
                     && pathType(locationBlockRootDir + file) != PATH_TYPE_ERROR)) {
-                std::cout << RED << "joyce file: " << file << RES << std::endl;
+//                std::cout << RED << "joyce file: " << file << RES << std::endl;
                 _data.setFileExtention(getExtension(originalUrlPath));
                 std::string URLPath_full_file = parsePath_file(originalUrlPath, location);
                 if (not URLPath_full_file.empty()) {
@@ -487,7 +487,7 @@ std::string Request::parsePath_regularCase(std::string const & originalUrlPath, 
                 subdirectoryFromUrl = originalUrlPath.substr(secondSlash);
             }
         }
-        std::cout << RED << "JOYCE locationBlockRootDir + subdirectoryFromUrl: " << locationBlockRootDir + subdirectoryFromUrl << RES << std::endl;
+//        std::cout << RED << "JOYCE locationBlockRootDir + subdirectoryFromUrl: " << locationBlockRootDir + subdirectoryFromUrl << RES << std::endl;
         if (pathType(locationBlockRootDir + subdirectoryFromUrl) != REG_FILE
                 && pathType(locationBlockRootDir + subdirectoryFromUrl) != PATH_TYPE_ERROR) {
             std::string URLPath_full_dir = parsePath_dir(originalUrlPath, location, subdirectoryFromUrl);
