@@ -16,7 +16,7 @@
 ServerData::ServerData()
 	/** Initializing default values for the server block */
 	: _server_name("localhost"),//127.0.0.1
-	_listens_to("80"),
+	_listens_to("8080"),
 	_root_directory(_server_name),
 	_index_file("index.html"),
 	_client_max_body_size(1024),
@@ -102,11 +102,11 @@ struct addrinfo* ServerData::getAddr() const {
 
 /** #################################### Setters #################################### */
 
-static bool isServerNameValid(int ch) {
-	if (isalpha(ch) != 0 || ch == '.') {
-		return true;
-	}
-	return false;
+static bool isIp(int ch) {
+    if ((ch >= '0' && ch <= '9') || ch == '-' || ch == '.') {
+        return true;
+    }
+    return false;
 }
 
 /*
@@ -121,78 +121,60 @@ static bool isServerNameValid(int ch) {
  * 3. Finally, flush the DNS cache by typing the following command in the Terminal: sudo dscacheutil -flushcache
  *    This will ensure that the updated hosts file is used by the operating system.
  * After making these changes, you should be able to use the hostname or IP address you added to access the associated network resource on your Mac.
+ * Obs.: We don't have right's permission to /etc :/
  */
 void ServerData::setServerName(std::string const & serverName) {
-//    /* not mandatory | default: 127.0.0.1 */ todo it now can also be the ip address
-//    if (not ip.empty()) {
-//        struct sockaddr_in sockAddr;
-//        if (inet_pton(AF_INET, ip.c_str(), &(sockAddr.sin_addr))) {
-//            _ip_address = ip;// TODO _ip_address = inet_addr(ip.c_str()); ???
-//
-//        } else {
-//            throw ParserException(CONFIG_FILE_ERROR("ip_address", NOT_SUPPORTED));
-//        }
-//    }
-	/* not mandatory | default: localhost */
+    /* not mandatory | default: localhost (127.0.0.1)*/
 	if (not serverName.empty()) {
-		if (std::all_of(serverName.begin(), serverName.end(), isServerNameValid)) {
-			_server_name = serverName;
-		} else {
-			throw ParserException(CONFIG_FILE_ERROR("server_name", NOT_SUPPORTED));
-		}
+        struct sockaddr_in sockAddr = {};
+        /* The inet_pton() converts a format address (char*) to network format in network byte order (sin_addr)
+         * It returns:
+         *      1 if the address was valid for the specified address family (AF_INET here)
+         *      0 if the address was not parseable in the specified address family
+         *      -1 if some system error occurred (in which case errno will have been set).
+         * AF_INET (int) = for TCP address family
+         * serverName (char*) = a presentation format address
+         * sin_addr (void*) = base type for internet address (in_addr -> in_addr_t)
+         * Another option:
+         * in_addr_t if ((ret = inet_addr(serverName.c_str()) != INADDR_NONE) */
+        if (std::all_of(serverName.begin(), serverName.end(), isIp)) {
+            int ret = inet_pton(AF_INET, serverName.c_str(), &(sockAddr.sin_addr));
+            if (ret == 1) {
+                _server_name = serverName;
+            } else {
+                if (ret == -1) {
+                    std::string err = "(errno: " + std::to_string(errno) + ") ";
+                    throw ParserException(err + CONFIG_FILE_ERROR( "server_name", NOT_SUPPORTED));
+                }
+                throw ParserException(CONFIG_FILE_ERROR("server_name", NOT_SUPPORTED));
+            }
+        }
+        // If serverName is a string (as localhost or www.test for example)
+        else {
+            _server_name = serverName;
+        }
 	}
 }
-//    WTF? LOL (I was trying to do my self first -  I will keep it comment out for now in case we can't use inet_pton
-//    std::string::size_type it;
-//    int dots_quantity = 0;
-//    int ip_chunk = 0;
-//    std::string copy_ip = ip;
-//
-//    while (not copy_ip.empty()) {
-//        std::cout << RED_BG << "copy_ip: " << copy_ip << RES << std::endl;
-//
-//        it = copy_ip.find('.');
-//        try {
-//            ip_chunk = std::stoi(copy_ip.substr(0, it));
-//        } catch (...) {
-//            throw ParserException(IP_ERROR);
-//        }
-//        if (ip_chunk < 0 || ip_chunk > 255) {
-//            throw ParserException(IP_ERROR);
-//        }
-//        if (it != std::string::npos) {
-//            dots_quantity++;
-//        } else {
-//            if (dots_quantity == 3) {
-//                break;
-//            } else if (dots_quantity > 3 || dots_quantity < 3) {
-//                throw ParserException(IP_ERROR);
-//            }
-//        }
-//        copy_ip = copy_ip.substr(it + 1);
-//        if (copy_ip.empty() && dots_quantity == 3) {
-//            throw ParserException(IP_ERROR);
-//        }
-//    }
 
 /* Available ports:
  * - Port 80 (standard): a well-known system ports (they are assigned and controlled by IANA).
- * - Port 591 (): a well-known system ports (they are assigned and controlled by IANA).
- * - Port 8008: a user or registered port (they are not assigned and controlled but registered by IANA only).
+ *   Obs.: Ports under 1024 need to be run as root (so we can't have access to it).
  * - Port 8080 (second most used): a user or registered port (they are not assigned and controlled but registered by IANA only).
- * - Ports ranging from 49152 to 65536: are available for anyone to use.
+ * - Ports ranging from 49152 to 65536: are available for anyone to use IF you register it.
  *
  * E.g.: If a web server is already running on the default port (80) and another web server needs to be hosted on
  * the HTTP service, it's best practice to host it on port 8080 (but not mandatory, any other alternative or custom
  * port can be used instead).
- * https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml?search=http-alt
+ * https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml?search=http
  */
 void ServerData::setListensTo(std::string const & port) {
 	/* not mandatory | default 80 */
 	if (not port.empty()) {
 		try {
 			unsigned short const & listensToPort = std::strtol(port.c_str(), nullptr, 10);
-			if (listensToPort == 4242 || listensToPort == 4243 || listensToPort == 8080 || listensToPort >= 49152) {// todo:: add 65536 as acceptable? then change form short to int? -> WHAT ABOUT listensToPort == 80 || listensToPort == 591 ?????
+            // todo:: add 65536 as acceptable? then change form short to int?
+            //  WHAT ABOUT listensToPort == 8008 ?
+			if (listensToPort == 4242 || listensToPort == 4243 || listensToPort == 8080 || listensToPort < 49152) {
 				/* No need to check port < 65536 since port is an unsigned short already */
 				_listens_to = port;
 			} else {

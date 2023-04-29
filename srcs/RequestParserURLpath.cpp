@@ -247,7 +247,9 @@ void Request::checkIfPathExists(std::string const & URLPath_full) {
         setHttpStatus(NOT_FOUND);
     } else {
         std::cout << GRN << "Path " << RES << URLPath_full << GRN << " exists" << RES << std::endl << std::endl;
-        setHttpStatus(OK);
+        if (getHttpStatus() != MOVE_PERMANENTLY) {
+            setHttpStatus(OK);
+        }
     }
 }
 
@@ -297,8 +299,6 @@ static std::string getExtension(std::string const & originalUrlPath) {
 }
 
 std::string Request::parsePath_cgi(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location, std::string const & file_cgi) {
-    std::string URLPath_full = std::string();
-
     // localhost:8080/_cgi/python_cgi_GET.py?street=test&city=test+city
 //    if (originalUrlPath.find('?') != std::string::npos) {
         std::string locationBlockUriName = location->getLocationUriName();
@@ -327,21 +327,19 @@ std::string Request::parsePath_cgi(std::string const & originalUrlPath, std::vec
             std::cout << BLU << "cgi location block for [" << RES BLU_BG << originalUrlPath << RES BLU;
             std::cout << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES BLU << "]" << std::endl;
             std::cout << BLU << "Its root_directory [" << locationBlockRootDir << "] and configuration will be used" << RES << std::endl;
-            URLPath_full = locationBlockRootDir + file_cgi;
+            return locationBlockRootDir + file_cgi;
         }
 //    }
-    return URLPath_full;
+    return std::string();
 }
 
 std::string Request::parsePath_dir(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location, std::string const & subdirectory) {
-    std::string URLPath_full = std::string();
-
     // Ex.: localhost:8080/test/ or localhost:8080/test
     if (originalUrlPath.find('?') == std::string::npos) {
         std::string locationBlockUriName = location->getLocationUriName();
         std::string locationBlockRootDir = location->getRootDirectory();
 
-        std::cout << BLU << "No '?' found and URLPath_full has no GET-Form data" << RES << std::endl;
+        std::cout << BLU << "No '?' found and originalUrlPath has no GET-Form data" << RES << std::endl;
 
         // If it is a directory and has a / at the end, delete it, so it can be matched against the config file locations
         std::string originalUrlPath_NoSlash = originalUrlPath;
@@ -357,9 +355,9 @@ std::string Request::parsePath_dir(std::string const & originalUrlPath, std::vec
             std::cout << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES BLU << "]" << std::endl;
             std::cout << BLU << "Its root_directory [" << locationBlockRootDir << "] and configuration will be used" << RES << std::endl;
 
-            std::cout << RED << "JJOOYYCCEE subdirectory: " << subdirectory << RES << std::endl;
+//            std::cout << RED << "JJOOYYCCEE subdirectory: " << subdirectory << RES << std::endl;
             //if (pathType(locationBlockRootDir + subdirectory) == DIRECTORY)// todo ????
-            URLPath_full = locationBlockRootDir + (subdirectory == "/" ? "" : subdirectory) + '/' + location->getIndexFile();
+            return locationBlockRootDir + (subdirectory == "/" ? "" : subdirectory) + '/' + location->getIndexFile();
             // TODO _data.setFileExtention(getExtension(originalUrlPath)) here too for .html??
         }
     }
@@ -367,12 +365,10 @@ std::string Request::parsePath_dir(std::string const & originalUrlPath, std::vec
     // todo: does it mean that is there is no / at the end you were considering it was not a folder?
     // todo: and so if it is not a folder we ca look for a '?' but if it a folder no '?' is possible?
     // todo: otherwise, if '?' if possible with a url containing a folder, then we need to handler query here too
-    return URLPath_full;
+    return std::string();
 }
 
 std::string Request::parsePath_file(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location) {
-    std::string URLPath_full = std::string();
-
     // Ex.: localhost:8080/favicon.ico or localhost:8080/_cgi/cgi_index.html
     if (originalUrlPath.find('?') == std::string::npos && _data.getRequestMethod() != "POST") {
         std::string locationBlockUriName = location->getLocationUriName();
@@ -404,47 +400,17 @@ std::string Request::parsePath_file(std::string const & originalUrlPath, std::ve
             std::cout << BLU << "Its root_directory [" << locationBlockRootDir << "] and configuration will be used" << RES << std::endl;
 
 //            if (pathType(locationBlockRootDir + file) == REG_FILE)// todo????
-            URLPath_full = locationBlockRootDir + file;
+            return locationBlockRootDir + file;
 //            else
-//                URLPath_full = locationBlockRootDir;
+//                return locationBlockRootDir;
         }
     }
     // Script file for POST, with no query ('?')
     // Ex.: localhost:8080/python_POST.py or localhost:8080/_cgi/python_cgi_POST_upload.py or localhost:8080/py/cgi_delete.py
     else if (originalUrlPath.find('?') == std::string::npos && _data.getRequestMethod() == "POST") {
-        URLPath_full = parsePath_cgi(originalUrlPath, location, originalUrlPath.substr(originalUrlPath.find_last_of('/')));
+        return parsePath_cgi(originalUrlPath, location, originalUrlPath.substr(originalUrlPath.find_last_of('/')));
     }
-    return URLPath_full;
-}
-
-std::string Request::parsePath_edgeCase(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location) {//todo mayne not needed?
-    std::string URLPath_full = std::string();
-    std::string locationBlockUriName = location->getLocationUriName();
-    std::string locationBlockRootDir = location->getRootDirectory();
-    /* https://www.tutorialspoint.com/http/http_requests.htm
-     * The most common form of Request-URI is that used to identify a resource on an origin server or gateway. Note that
-     * the absolute path cannot be empty; if none is present in the original URI, it MUST be given as "/" (the server root) */
-
-    /* The absoluteURI is used when an HTTP request is being made to a proxy.
-     * The proxy is requested to forward the request or service from a valid cache, and return the response.
-     * For example: GET http://www.w3.org/pub/WWW/TheProject.html HTTP/1.1 */
-
-    //if (originalUrlPath == "./") {// TODO WHEN IT CAN BE LIKE THIS ./ ???????????????
-    //    URLPath_full = serverBlockDir;// is being done down below if it does not match any location
-    //    std::cout << "Path is the root '/'    [" << GRN_BG << URLPath_full << RES << "]\n";
-    //    break;
-    //}
-
-    //Todo Ex.: ????
-    if (originalUrlPath == "./" && locationBlockUriName == "/") {
-        std::cout << BLU << "location block for [" << RES BLU_BG << originalUrlPath << RES BLU;
-        std::cout << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES BLU << "]" << std::endl;
-        std::cout << BLU << "Its root_directory [" << locationBlockRootDir << "] and configuration will be used" << RES << std::endl;
-        _data.setIsFolder(true);
-        _data.setAutoIndex(location->getAutoIndex());
-        URLPath_full = locationBlockRootDir + '/' + location->getIndexFile();
-    }
-    return URLPath_full;
+    return std::string();
 }
 
 std::string Request::parsePath_regularCase(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location) {
@@ -510,6 +476,71 @@ std::string Request::parsePath_regularCase(std::string const & originalUrlPath, 
     return std::string();
 }
 
+std::string Request::parsePath_edgeCase(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location) {//todo mayne not needed?
+    std::string locationBlockUriName = location->getLocationUriName();
+    std::string locationBlockRootDir = location->getRootDirectory();
+    /* https://www.tutorialspoint.com/http/http_requests.htm
+     * The most common form of Request-URI is that used to identify a resource on an origin server or gateway. Note that
+     * the absolute path cannot be empty; if none is present in the original URI, it MUST be given as "/" (the server root) */
+
+    /* The absoluteURI is used when an HTTP request is being made to a proxy.
+     * The proxy is requested to forward the request or service from a valid cache, and return the response.
+     * For example: GET http://www.w3.org/pub/WWW/TheProject.html HTTP/1.1 */
+
+    //if (originalUrlPath == "./") {// TODO WHEN IT CAN BE LIKE THIS ./ ???????????????
+    //    std::cout << "Path is the root '/'    [" << GRN_BG << originalUrlPath << RES << "]\n";
+    //    return serverBlockDir;// is being done down below if it does not match any location
+
+    //Todo Ex.: ????
+    if (originalUrlPath == "./" && locationBlockUriName == "/") {
+        std::cout << BLU << "location block for [" << RES BLU_BG << originalUrlPath << RES BLU;
+        std::cout << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES BLU << "]" << std::endl;
+        std::cout << BLU << "Its root_directory [" << locationBlockRootDir << "] and configuration will be used" << RES << std::endl;
+        _data.setIsFolder(true);
+        _data.setAutoIndex(location->getAutoIndex());
+        return locationBlockRootDir + '/' + location->getIndexFile();
+    }
+    return std::string();
+}
+
+std::string Request::parsePath_root(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location) {
+    std::string locationBlockUriName = location->getLocationUriName();
+    std::string locationBlockRootDir = location->getRootDirectory();
+    /* Ex.: localhost:8080
+     * If the URI is "/", nginx will look for a file named "index.html" in the root directory of the server block.
+     * If it finds the file, it will be served to the client as the response to the request.
+     * If it doesn't find the file, nginx will return a "404 Not Found" error to the client (at the end of parsePath()) */
+    if (originalUrlPath == locationBlockUriName) {
+        std::cout << BLU << "location block for [" << RES BLU_BG << originalUrlPath << RES BLU;
+        std::cout << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES BLU << "]"
+                  << std::endl;
+        std::cout << BLU << "Its root_directory [" << locationBlockRootDir << "] and configuration will be used" << RES
+                  << std::endl;
+        _data.setIsFolder(true);
+        _data.setAutoIndex(location->getAutoIndex());
+        // Checking if it needs to be redirected to another location, if so, it will run parsePath_locationMatch()
+        // again looking to the new location match
+        return locationBlockRootDir + '/' + location->getIndexFile();
+    }
+    return std::string();
+}
+
+// receiving a copy of originalUrlPath, so it can be modified in case we have a redirection on the location block
+std::string Request::redirection(std::string getRedirection) {
+    std::string redirection = getRedirection;
+    if (not redirection.empty()) {
+//        std::string::size_type it = redirection.find("//") + 2;
+//        redirection = redirection.substr(it);
+//        std::string originalUrlPath = redirection.substr(redirection.find('/'));
+        std::cout << YEL << "Redirection found: " << getRedirection << RES << std::endl;
+        std::cout << YEL << "A 301 response response will be sent, with the redirection url on it!" << RES << std::endl;
+        setHttpStatus(MOVE_PERMANENTLY);
+        setRedirection(getRedirection);
+//        return parsePath_locationMatch(originalUrlPath);
+    }
+    return std::string();
+}
+
 std::string Request::parsePath_locationMatch(std::string const & originalUrlPath) {
     std::string URLPath_full = std::string();
 
@@ -523,31 +554,15 @@ std::string Request::parsePath_locationMatch(std::string const & originalUrlPath
         std::cout << "locationBlockRootDir:            [" << GRN_BG << locationBlockRootDir << RES << "]" << std::endl;
 
         if (originalUrlPath.size() == 1) {// was: originalUrlPath == "/"
-            /* Ex.: localhost:8080
-             * If the URI is "/", nginx will look for a file named "index.html" in the root directory of the server block.
-             * If it finds the file, it will be served to the client as the response to the request.
-             * If it doesn't find the file, nginx will return a "404 Not Found" error to the client (at the end of parsePath()) */
-            if (originalUrlPath == locationBlockUriName) {
-                std::cout << BLU << "location block for [" << RES BLU_BG << originalUrlPath << RES BLU;
-                std::cout << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES BLU << "]" << std::endl;
-                std::cout << BLU << "Its root_directory [" << locationBlockRootDir << "] and configuration will be used" << RES << std::endl;
-                _data.setIsFolder(true);
-                _data.setAutoIndex(location->getAutoIndex());
-                URLPath_full = locationBlockRootDir + '/' + location->getIndexFile();
-                break;
-            }
+            URLPath_full = parsePath_root(originalUrlPath, location);
         } else if (originalUrlPath[0] == '/') {
             URLPath_full = parsePath_regularCase(originalUrlPath, location);
-            if (not URLPath_full.empty()) {
-                break;
-            }
+//            std::cout << RED << "JOYCEEEEEE URLPath_full: " << URLPath_full<< RES << std::endl;
         } else if (originalUrlPath[0] != '/') {
             URLPath_full = parsePath_edgeCase(originalUrlPath, location);
-            if (not URLPath_full.empty()) {
-                break;
-            }
         }
-        if (getHttpStatus() == FORBIDDEN) {
+        if (not URLPath_full.empty() || getHttpStatus() == FORBIDDEN) {
+            redirection(location->getRedirection());// TODO CHECK IF REDIRECITON IS WORKING
             break;
         }
 
@@ -572,11 +587,14 @@ void Request::parsePath(std::string  const & originalUrlPath) {
         std::string URLPath_full = parsePath_locationMatch(originalUrlPath);
         std::cout << "⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻" << std::endl << std::endl;
         if (URLPath_full.empty()) {
+            // Ex.:
+            // localhost/_cgi [ok -> internal]
+            // localhost/_cgi/file.php [ko -> 404] since the _cgi is not a location (and is internal)
             if (originalUrlPath.find("/_") != std::string::npos) {
                 std::cout << YEL << "Internal directory requested, it will be server but no need to search for its"
                                     "location on the config file" << RES << std::endl << std::endl;
                 _data.setFileExtention(getExtension(originalUrlPath));
-                URLPath_full = serverBlockDir + originalUrlPath;// without the first /
+                URLPath_full = serverBlockDir + originalUrlPath;
             } else {
                 std::cout << RED << "As the UrlPath did not match any location block, ";
                 std::cout << "the server cannot serve any file and will return 404 NOT_FOUND" << RES << std::endl << std::endl;

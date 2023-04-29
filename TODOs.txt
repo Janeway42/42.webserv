@@ -22,6 +22,7 @@ More important:
         - Use max_body_size from the config file on the server (on the request parser)
           Limit the client body (use: curl -X POST -H "Content-Type: plain/text" --data "BODY IS HERE write something shorter or longer than body limit").
     JOYCE:
+        - Delete ip_address and add the option of server_name contain an ip address number or a string (domain) -> DONE
         - Add a redirection location to the config file
         - Accepted HTTP methods from config file are not being used, but it’s mandatory to use
         - If the server cannot server anything from an existing location (on the config file), it serves a FORBIDDEN
