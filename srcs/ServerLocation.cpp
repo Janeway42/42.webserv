@@ -97,6 +97,7 @@ void ServerLocation::setLocationAsCgi(bool isCgi) {
 
 void ServerLocation::setLocation(std::string const & location) {
     /* mandatory | if request contains an uri directory path, it can be made accessible by making it a location block */
+        std::cout << "LOCATION: " << location << "\n";
     if (not location.empty()) {
         std::string locationName = location;
         // deleting the last / in case it is added

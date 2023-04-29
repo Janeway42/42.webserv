@@ -31,25 +31,25 @@ sleep 2     # Wait that the Webserver starts
 printf "$GRE Testing Siege: $GRY http://localhost:$portNr/index.html $RES \n" 1>&2
 
 echo -e "$BLU   TEST: 1 user, $TIME seconds $RES" 1>&2
-siege -c1 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
+siege -b -c1 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
 
 echo -e "$BLU   TEST: 20 users, $TIME seconds $RES" 1>&2
-siege -c20 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
+siege -b -c20 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
 
 echo -e "$BLU   TEST: 50 users, $TIME seconds $RES" 1>&2
-siege -c50 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
+siege -b -c50 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
 
 echo -e "$BLU   TEST: 100 users, $TIME seconds $RES" 1>&2
-siege -c100 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
+siege -b -c100 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
 
 echo -e "$BLU   TEST: 150 users, $TIME seconds $RES" 1>&2
-siege -c150 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
+siege -b -c150 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
 
 echo -e "$BLU   TEST: 200 users, $TIME seconds $RES" 1>&2
-siege -c200 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
+siege -b -c200 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
 
 echo -e "$BLU   TEST: 250 users, $TIME seconds $RES" 1>&2
-siege -c200 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
+siege -b -c200 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
 
 pkill -f webserv
 cat ./outputFiles/stdErr.txt | grep Availability 1>&2

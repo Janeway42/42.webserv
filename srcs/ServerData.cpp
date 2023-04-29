@@ -16,6 +16,7 @@
 ServerData::ServerData()
 	/** Initializing default values for the server block */
 	: _server_name("localhost"),
+	//: _server_name("dummyhost"),	// Added  Jaka: we need to enable different server names. This is tested with Curl --resolve  ,ie: curl --resolve dummyhost:8080:127.0.0.1 dummyhost:8080/ 
 	_listens_to("80"),
 	_ip_address("127.0.0.1"),
 	_root_directory(_server_name),

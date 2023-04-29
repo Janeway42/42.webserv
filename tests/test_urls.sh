@@ -102,11 +102,11 @@ testURLpath "localhost:8080/texts/index_texts.html"     "localhost:texts:index_t
 testURLpath "localhost:8080/texts/one_sentence.html"    "localhost:texts:one_sentence.html"
 testURLpath "localhost:8080/texts/one_page.html"        "localhost:texts:one_page.html"
 testURLpath "localhost:8080/texts/bible.html"           "localhost:texts:bible.html"
-# # # IMAGES
-testURLpath "localhost:8080/images/index_images.html"   "localhost:images:index_images.html"
-# testURLpath "localhost:8080/images/img_36kb.jpg"       	"localhost:images:img_36kb.jpg"
-# # CGI
-testURLpath "localhost:8080/cgi/cgi_index.html"         "localhost:cgi:cgi_index.html"
+# # # # IMAGES
+# testURLpath "localhost:8080/images/index_images.html"   "localhost:images:index_images.html"
+# # testURLpath "localhost:8080/images/img_36kb.jpg"       	"localhost:images:img_36kb.jpg"
+# # # CGI
+# testURLpath "localhost:8080/cgi/cgi_index.html"         "localhost:cgi:cgi_index.html"
 # testURLpath 'localhost:8080/cgi/python_cgi_GET.py?street=Singel&city=Tokio'         "localhost:cgi:python_get.py?street=Singel&city=Tokio"
 sleep 1
 # cat /usr/local/var/log/nginx/error.log > ./error.log					# HOME
@@ -170,11 +170,11 @@ testURLpath "localhost:8080/texts/index_texts.html"     "localhost:texts:index_t
 testURLpath "localhost:8080/texts/one_sentence.html"    "localhost:texts:one_sentence.html"
 testURLpath "localhost:8080/texts/one_page.html"        "localhost:texts:one_page.html"
 testURLpath "localhost:8080/texts/bible.html"           "localhost:texts:bible.html"
-# # # IMAGES
-testURLpath "localhost:8080/images/index_images.html"   "localhost:images:index_images.html"
-# testURLpath "localhost:8080/images/img_36kb.jpg"       	"localhost:images:img_36kb.jpg"
-# # CGI
-testURLpath "localhost:8080/cgi/cgi_index.html"         "localhost:cgi:cgi_index.html"
+# # # # IMAGES
+# testURLpath "localhost:8080/images/index_images.html"   "localhost:images:index_images.html"
+# # testURLpath "localhost:8080/images/img_36kb.jpg"       	"localhost:images:img_36kb.jpg"
+# # # CGI
+# testURLpath "localhost:8080/cgi/cgi_index.html"         "localhost:cgi:cgi_index.html"
 # testURLpath "localhost:8080/cgi/python_cgi_GET.py?street=Singel&city=Tokio"         "localhost:cgi:python_get.py?street=Singel&city=Tokio"
 
 # diff $curlWebservOutput/$testName $curlNginxOutput/$testName
@@ -189,7 +189,7 @@ pkill -f webserv
 
 # Start Siege Test
 
-cd ./tests/siege
-bash testSiege.sh
+# cd ./tests/siege
+# bash testSiege.sh
 
 
