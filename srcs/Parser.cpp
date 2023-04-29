@@ -62,8 +62,8 @@ std::string Parser::addRootDirectoryPath(std::string const & rootDirectory, std:
     if (rootDirectory == "./" + possiblePath) {
         return is_root_dir_or_has_path;
     }
-    // If there is no / in the possiblePath, then it is not a path. It's either a file or directory name
-    if (possiblePath.find('/') == std::string::npos) {
+    // If possiblePath does not start with '/' or '.', then it is not a path. It's either a file or directory name
+    if (possiblePath[0] != '/' && possiblePath[0] != '.') {
         // Adding the rootDirectory path to the file or directory name
         std::string::size_type lastIndex = rootDirectory.size() - 1;
         if (rootDirectory[lastIndex] == '/') {
@@ -91,8 +91,6 @@ DataType Parser::getValueType(std::string & lineContent) {// Todo: Maybe not nee
 		return STRING;
 	} else if (lineContent.find("listens_to") != std::string::npos) {
 		return PORT;
-	} else if (lineContent.find("ip_address") != std::string::npos) {
-		return IP_ADDRESS;
 	} else if (lineContent.find("root_directory") != std::string::npos) {
 		std::string value = getOneCleanValueFromKey(lineContent, "root_directory");
 		if (value[0] == '/') {
@@ -115,7 +113,7 @@ DataType Parser::getValueType(std::string & lineContent) {// Todo: Maybe not nee
 			/* Will be set to ./$server_name */
 			return RELATIVE_PATH_HTML;
 		}
-	} else if (lineContent.find("port_redirection") != std::string::npos) {
+	} else if (lineContent.find("redirection") != std::string::npos) {
 		return PORT;
 	} else if (lineContent.find("location") != std::string::npos) {
 		return RELATIVE_PATH;
@@ -125,6 +123,6 @@ DataType Parser::getValueType(std::string & lineContent) {// Todo: Maybe not nee
 		return BOOL;
 	}
 	return STRING;
-	// todo: add cgi location?
+	// todo: add _cgi location?
 }
 

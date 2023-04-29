@@ -20,6 +20,7 @@ class ServerLocation : public Parser {
         std::vector<AllowMethods> _allow_methods;
         std::string _index_file;
         bool _auto_index;
+        std::string _redirection;
         std::string _interpreter_path;
         std::string _script_extension;
 		std::string _locationCookies;  // to be added from the config file - Joyce
@@ -42,8 +43,8 @@ class ServerLocation : public Parser {
         std::vector<AllowMethods> getAllowMethods() const;
         std::string getIndexFile() const;
         bool getAutoIndex() const;
+        std::string getRedirection() const;
         std::string getInterpreterPath() const;
-        std::string getScriptExtension() const;
 		std::string getLocationCookies() const ;
 
         /** Setters */
@@ -53,7 +54,7 @@ class ServerLocation : public Parser {
         void setAllowMethods(std::string const & allowMethods);
         void setIndexFile(std::string const & indexFile);
         void setAutoIndex(std::string const & autoIndex);
+        void setRedirection(std::string const & redirection);
         void setInterpreterPath(std::string const & interpreterPath);
-        void setScriptExtension(std::string const & scriptExtension);
 };
 #endif //SERVERLOCATION_HPP

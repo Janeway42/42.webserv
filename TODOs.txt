@@ -1,0 +1,46 @@
+Research:
+    - Make a location able to accept uploaded files (it’s on the pdf). Is it saved on the root directory of the
+      location? Or there is another key that we are not aware of?
+------------------------------------------------------------------------------------------------------------------------
+More important:
+    CORINA:
+        - run default server - config file
+        - Use max_body_size from the config file on the server
+    JAKA:
+        - The slash at the end of url should be always a folder, without a slash should be a file
+        - Index file has to be served if it exists (even if autoindex is on)
+    JOYCE:
+        - Add a redirection location to the config file (and delete the port redirection)
+        - Accepted HTTP methods from config file are not being used, but it’s mandatory to use
+        - If the server cannot server anything from an existing location (on the config file), it serves a FORBIDDEN
+          (we tested with nginx)
+        - Finish connecting config data with the webserv (ex: error pages) - (I am done but don't know if we need to
+          add more default pages to our server)
+------------------------------------------------------------------------------------------------------------------------
+Less important:
+    CORINA:
+    JAKA:
+        - Standardising htmls and .py/.php?
+    JOYCE:
+        - Clean up config file (delete some keys)
+------------------------------------------------------------------------------------------------------------------------
+Tests:
+    CORINA:
+        - test more with curl? (maybe already included on Jaka's tester)
+        - run test script from codam - this tests for some stuff we don't need to implement!
+    JAKA:
+        - Maybe another stress test from somewhere else (siege)? (I think codam one is fine but if we find another one
+          it would not hurt to test).
+        - Finish tester
+    JOYCE:
+        - Add more config files examples (mandatory by the pdf)
+------------------------------------------------------------------------------------------------------------------------
+Extras:
+    CORINA:
+        - Cookies as extra
+    JAKA:
+        - possibly adding a second cgi (php)
+        - cgi - correct folder
+    JOYCE:
+        - Add the set_cookies key to the location on the config file
+        - Another .php location is not working for the config file (no error too)

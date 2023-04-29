@@ -14,7 +14,7 @@ int main(int ac, char **av) {
             ConfigFileParser configFileData(av[1]);
             std::cout << "-----------------------------------------------------------------------------------" << std::endl;
             std::cout << BLU << "Number of server block(s): " << configFileData.numberOfServerBlocks() << RES << std::endl;
-            std::cout << BLU << "Number of location + cgi block(s): " << configFileData.numberOfLocationBlocks() << RES << std::endl;
+            std::cout << BLU << "Number of location + _cgi block(s): " << configFileData.numberOfLocationBlocks() << RES << std::endl;
 
             /* begin() returns an iterator to beginning while cbegin() returns a const_iterator to beginning. */
             std::vector<ServerData>::iterator it_server;
@@ -28,9 +28,6 @@ int main(int ac, char **av) {
 
                 std::string listensTo = it_server->getListensTo();
                 std::cout << GRN << std::left << std::setw(30) << "\"listens_to\": " << listensTo << RES << std::endl;
-
-                std::string ipAddress = it_server->getIpAddress();
-                std::cout << GRN << std::left << std::setw(30) << "\"ip_address\": " << ipAddress << RES << std::endl;
 
                 std::string rootDirectory = it_server->getRootDirectory();
                 std::cout << GRN << std::left << std::setw(30) << "\"root_directory\": " << rootDirectory << RES << std::endl;
@@ -49,15 +46,11 @@ int main(int ac, char **av) {
                 }
                 std::cout << std::endl;
 
-                unsigned int portRedirection = it_server->getPortRedirection();
-                std::cout << GRN << std::left << std::setw(30) << "\"port_redirection\": " << portRedirection << RES << std::endl;
-
-
                 std::vector<ServerLocation>::const_iterator it_location;
                 for (it_location = it_server->getLocationBlocks().cbegin(); it_location != it_server->getLocationBlocks().cend(); ++it_location) {
 
                     if (it_location->isLocationCgi()) {
-                        /************************************* cgi location block data ************************************/
+                        /************************************* _cgi location block data ************************************/
                         std::cout << std::endl << "Starting location block" << std::endl;
                         std::cout << "Is this location a CGI location: " << it_location->isLocationCgi() << std::endl;
                         std::cout << "Server block and location block index files can be used for requests that match this location: " << it_location->useServerBlockIndexFile << std::endl;
@@ -70,9 +63,6 @@ int main(int ac, char **av) {
 
                         std::string interpreterPath = it_location->getInterpreterPath();
                         std::cout << GRN << std::left << std::setw(30) << "\"interpreter_path\": " << interpreterPath << RES << std::endl;
-
-                        std::string scriptExtension = it_location->getScriptExtension();
-                        std::cout << GRN << std::left << std::setw(30) << "\"script_extension\": " << scriptExtension << RES << std::endl;
 
                         std::string cgiLocationIndexFile = it_location->getIndexFile();
                         std::cout << GRN << std::left << std::setw(30) << "\"index_file\": " << cgiLocationIndexFile << RES << std::endl;
@@ -114,6 +104,9 @@ int main(int ac, char **av) {
 
                         bool locationAutoIndex = it_location->getAutoIndex();
                         std::cout << GRN << std::left << std::setw(30) << "\"auto_index\": " << locationAutoIndex << RES << std::endl;
+
+                        std::string redirection = it_location->getRedirection();
+                        std::cout << GRN << std::left << std::setw(30) << "\"redirection\": " << redirection << RES << std::endl;
                     }
                 }
             }

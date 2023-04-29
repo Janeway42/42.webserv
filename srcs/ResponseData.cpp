@@ -80,7 +80,7 @@ void ResponseData::setResponse(struct kevent& event) {
 			// 	_responseBody = storeFolderContent(newPath.c_str());
 			// }
 			// else
-	            _responseBody = storeFolderContent(storage->getRequestData().getURLPathFirstPart().c_str());
+	        _responseBody = storeFolderContent(storage->getRequestData().getURLPathFirstPart().c_str());
 		}
 	}
     // if it is not a folder (it checks first if cgi -> if not then it checks text (includes error), else image
@@ -116,61 +116,80 @@ void ResponseData::setResponse(struct kevent& event) {
 	//std::cout << GRN << "\n_fullResponse:\n[\n" RES << _fullResponse << "]\n" <<RES;
 }
 
-std::string ResponseData::setResponseStatus(struct kevent& event)
-{	
-	//std::cout << CYN << "start setResponseStatus()\n" << RES;
-	Request *storage = (Request *)event.udata;
-	std::string status;
+static std::string selectErrorPage(std::vector<std::string> const & errorPages, HttpStatus status, std::string const & defaultErrorPage) {
+    std::vector<std::string>::const_iterator it = errorPages.cbegin();
+    for (; it != errorPages.cend(); ++it) {
+        if (it->find(std::to_string(status)) != std::string::npos) {
+            // If error page is found on the config file, return it
+            return *it;
+        }
+    }
+    // Otherwise return a default config file
+    return "./resources/_server_default_status/" + defaultErrorPage;
+}
 
+static std::string setResponseHeader(HttpStatus status) {
+    return "HTTP/1.1 " + std::to_string(status) + " " + httpStatusToString(status) + "\r\n"
+           "Content-Type: text/html\r\n"
+           "Content-Encoding: identity\r\n"// Corina - added it because firefox complained that itwas missing - not sure if we keep because firefox still complains even with it. We leave it for now.
+           "Connection: close\r\n";
+}
+
+std::string ResponseData::setResponseStatus(struct kevent& event)
+{
+	std::cout << CYN << "start setResponseStatus()\n" << RES;
+	Request *storage = (Request *)event.udata;
+	std::string header = setResponseHeader(storage->getHttpStatus());
 //	std::string fileType = storage->getRequestData().getResponseContentType();	// fileType not used ?
 
-	switch (storage->getHttpStatus())
-	{
-		case 400:
-			status = "HTTP/1.1 400 Bad Request\r\n";
-			_responsePath = "resources/error_pages/400BadRequest.html";
-			break;
-		case 404:
-			status = "HTTP/1.1 404 Not Found\r\n";
-            _responsePath = "resources/error_pages/404NotFound.html";
-			break;
-		case 405:
-			status = "HTTP/1.1 405 Method Not Allowed\r\n";
-            _responsePath = "resources/error_pages/405MethodnotAllowed.html";
-			break;
-		case 408:
-			status = "HTTP/1.1 408 Request Timeout\r\n";
-            _responsePath = "resources/error_pages/408RequestTimeout.html";
-			break;
-		case 500:
-			status = "HTTP/1.1 500 Internal Server Error\r\n";
-            _responsePath = "resources/error_pages/500InternarServerError.html";
+    //todo add more default pages?
+	switch (storage->getHttpStatus()) {
+		case 400: {
+            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
+                                            storage->getHttpStatus(),
+                                            "400BadRequest.html");
             break;
-		case 403:
-			status = "HTTP/1.1 403 Forbidden\r\n";
-            _responsePath = "resources/error_pages/403Forbidden.html";
+        } case 403: {
+            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
+                                            storage->getHttpStatus(),
+                                            "403Forbidden.html");
             break;
-		default:
-			status = "HTTP/1.1 200 OK\r\n";
-					//  "Set-Cookie: id=123; jaka=500; Max-Age=10; HttpOnly\r\n";
-					// "Content-Type: " + storage->getRequestData().getResponseContentType() + "\n";	// jaka
-			std::cout << "_responsePath: [[" << GRN_BG << _responsePath << RES << "]]\n";
-			break;
+        } case 404: {
+            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
+                                            storage->getHttpStatus(),
+                                            "404NotFound.html");
+            break;
+        } case 405: {
+            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
+                                            storage->getHttpStatus(),
+                                            "405MethodnotAllowed.html");
+            break;
+        } case 408: {
+            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
+                                            storage->getHttpStatus(),
+                                            "408RequestTimeout.html");
+            break;
+        } case 500: {
+            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
+                                            storage->getHttpStatus(),
+                                            "500InternarServerError.html");
+            break;
+        } default: {
+            // "Set-Cookie: id=123; jaka=500; Max-Age=10; HttpOnly\r\n";
+            // "Content-Type: " + storage->getRequestData().getResponseContentType() + "\n";	// jaka
+            std::cout << "_responsePath: [[" << GRN_BG << _responsePath << RES << "]]\n";
+            break;
+        }
 	}
-	status.append(	"Content-Type: text/html\r\n"
-					"Content-Encoding: identity\r\n"  // Corina - added it because firefox complained that itwas missing - not sure if we keep because firefox still complains even with it. We leave it for now.
-					"Connection: close\r\n");
-
-	// if (responsePath is in the setCookies folder)  // function getLocation().getCookies() to be written
-	// 	status.append("Cookies: " + storage->getServerData().getLocationCookies + "\r\n");  // find the location bloc and it's cookies
-	// if (storage->getRequestData().getRequestCookies() != "")
-	// {
-	// 	status.append("Cookies: " + storage->getRequestData().getRequestCookies() + "\r\n");
-	// 	if (storage->getRequestData().getURLPath() == "resources/cookies/noCookies.html")
-	// 		_responsePath = "resources/cookies/yesCookies.html"
-	// }
-
-	return (status);
+    // if (responsePath is in the setCookies folder)  // function getLocation().getCookies() to be written
+    // 	status.append("Cookies: " + storage->getServerData().getLocationCookies + "\r\n");  // find the location bloc and it's cookies
+    // if (storage->getRequestData().getRequestCookies() != "")
+    // {
+    // 	status.append("Cookies: " + storage->getRequestData().getRequestCookies() + "\r\n");
+    // 	if (storage->getRequestData().getURLPath() == "resources/cookies/noCookies.html")
+    // 		_responsePath = "resources/cookies/yesCookies.html"
+    // }
+	return (header);
 }
 
 void ResponseData::setResponseBody(std::string file)  

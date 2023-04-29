@@ -37,7 +37,7 @@ if fileitem.filename:
 # print(os.listdir('/Users/jmurovec/Desktop/projects/webservCJJ_25mar01_newVarHasCGI/resources/uploads/'))
 
 
-# form = cgi.FieldStorage()
+# form = _cgi.FieldStorage()
 # sys.stderr.write('FORM IS [' + str(form) + ']\n')
 # # Get filename here.
 # fileitem = form['filename']

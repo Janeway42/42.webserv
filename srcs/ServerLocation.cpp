@@ -10,8 +10,8 @@
 //    _allow_methods(),
 //    _index_file(std::string()),
 //    _auto_index(false),
+//    _redirection(std::string()),
 //    _interpreter_path(std::string()),
-//    _script_extension(std::string()),
 //    useServerBlockIndexFile(false) {
 //    std::cout << CYN << "ServerLocation Default constructor" << RES << std::endl;
 //}
@@ -25,11 +25,11 @@ ServerLocation::ServerLocation(std::string const & server_root_directory, std::s
     _root_directory(server_root_directory),
     _index_file(server_index_file),
     _auto_index(false),
+    _redirection(std::string()),
     _interpreter_path(std::string()),
-    _script_extension(std::string()),
     useServerBlockIndexFile(false) {
     _allow_methods.push_back(GET);
-	// _locationCookies = to be added from the configuration file - Joyce
+	// _locationCookies = TODO to be added from the configuration file - Joyce
     std::cout << CYN << "ServerLocation Overloaded constructor" << RES << std::endl;
 }
 
@@ -43,8 +43,8 @@ ServerLocation::~ServerLocation() {
     _allow_methods = std::vector<AllowMethods>(NONE);
     _index_file.clear();
     _auto_index = false;
+    _redirection.clear();
     _interpreter_path.clear();
-    _script_extension.clear();
     useServerBlockIndexFile = false;
     std::cout << CYN << "ServerLocation Destructor" << RES << std::endl;
 }
@@ -81,12 +81,12 @@ bool ServerLocation::getAutoIndex() const {
     return _auto_index;
 }
 
-std::string ServerLocation::getInterpreterPath() const {
-    return _interpreter_path;
+std::string ServerLocation::getRedirection() const {
+    return _redirection;
 }
 
-std::string ServerLocation::getScriptExtension() const {
-    return _script_extension;
+std::string ServerLocation::getInterpreterPath() const {
+    return _interpreter_path;
 }
 
 std::string ServerLocation::getLocationCookies() const {
@@ -95,7 +95,7 @@ std::string ServerLocation::getLocationCookies() const {
 /** #################################### Setters #################################### */
 
 void ServerLocation::setLocationAsCgi(bool isCgi) {
-    /* not mandatory | default: python cgi with a default index.html inside */
+    /* not mandatory */
     _is_location_cgi = isCgi;
 }
 
@@ -228,6 +228,17 @@ void ServerLocation::setAutoIndex(std::string const & autoIndex) {
     }
 }
 
+void ServerLocation::setRedirection(std::string const & redirection) {
+    /* not mandatory | default: no redirection (empty) */
+    if (not redirection.empty()) {
+        if (redirection.find("http://") != std::string::npos) {
+            _redirection = redirection;
+        } else {
+            throw ParserException(CONFIG_FILE_ERROR("redirection", NOT_SUPPORTED));
+        }
+    }
+}
+
 void ServerLocation::setInterpreterPath(std::string const & interpreterPath) {
     /* mandatory */
     if (not interpreterPath.empty()) {
@@ -239,22 +250,6 @@ void ServerLocation::setInterpreterPath(std::string const & interpreterPath) {
     } else {
         if (isLocationCgi()) {
             throw ParserException(CONFIG_FILE_ERROR("interpreter_path", MANDATORY));
-        }
-    }
-}
-
-void ServerLocation::setScriptExtension(std::string const & scriptExtension) {
-    /* mandatory */
-    if (not scriptExtension.empty()) {
-        // if (scriptExtension == ".py") {// todo or php?
-        if (scriptExtension == ".py" || scriptExtension == ".php") {// added Jaka
-            _script_extension = scriptExtension;
-        } else {
-            throw ParserException(CONFIG_FILE_ERROR("script_extension", NOT_SUPPORTED));
-        }
-    } else {
-        if (isLocationCgi()) {
-            throw ParserException(CONFIG_FILE_ERROR("script_extension", MANDATORY));
         }
     }
 }

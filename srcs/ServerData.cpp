@@ -15,14 +15,12 @@
 /** Default constructor */
 ServerData::ServerData()
 	/** Initializing default values for the server block */
-	: _server_name("localhost"),
+	: _server_name("localhost"),//127.0.0.1
 	_listens_to("80"),
-	_ip_address("127.0.0.1"),
 	_root_directory(_server_name),
 	_index_file("index.html"),
 	_client_max_body_size(1024),
 	_error_page(std::vector<std::string>()),
-	_port_redirection(0),
 	_listening_socket(-1),
 	_addr(NULL){
 	std::cout << PUR << "ServerData Default constructor" << RES << std::endl;
@@ -32,12 +30,10 @@ ServerData::ServerData()
 ServerData::ServerData(ServerData const & rhs)
 	: _server_name(rhs._server_name),
 	_listens_to(rhs._listens_to),
-	_ip_address(rhs._ip_address),
 	_root_directory(rhs._root_directory),
 	_index_file(rhs._index_file),
 	_client_max_body_size(rhs._client_max_body_size),
 	_error_page(rhs._error_page),
-	_port_redirection(rhs._port_redirection),
 	_location_data_vector(rhs._location_data_vector),
 	_listening_socket(rhs._listening_socket),
 	_addr(rhs._addr) {
@@ -49,12 +45,10 @@ ServerData::~ServerData() {
 	/** Cleaning default values for the server block */
 	_server_name.clear();
 	_listens_to.clear();
-	_ip_address.clear();
 	_root_directory.clear();
 	_index_file.clear();
 	_client_max_body_size = 0;
 	_error_page.clear();
-	_port_redirection = 0;
 	std::cout << PUR << "ServerData Destructor" << RES << std::endl;
 	std::cout << "addr address: " << _addr << std::endl;
 	if (_addr != NULL)
@@ -78,10 +72,6 @@ std::string ServerData::getListensTo() const {
 	return _listens_to;
 }
 
-std::string ServerData::getIpAddress() const {
-	return _ip_address;
-}
-
 std::string ServerData::getRootDirectory() const {
 	return _root_directory;
 }
@@ -96,10 +86,6 @@ unsigned int ServerData::getClientMaxBodySize() const {
 
 std::vector<std::string> ServerData::getErrorPages() const {
 	return _error_page;
-}
-
-unsigned int ServerData::getPortRedirection() const {
-	return _port_redirection;
 }
 
 std::vector<ServerLocation> & ServerData::getLocationBlocks() {
@@ -123,47 +109,6 @@ static bool isServerNameValid(int ch) {
 	return false;
 }
 
-void ServerData::setServerName(std::string const & serverName) {
-	/* not mandatory | default: localhost */
-	if (not serverName.empty()) {
-		if (std::all_of(serverName.begin(), serverName.end(), isServerNameValid)) {
-			_server_name = serverName;
-		} else {
-			throw ParserException(CONFIG_FILE_ERROR("server_name", NOT_SUPPORTED));
-		}
-	}
-}
-
-/* Available ports:
- * - Port 80 (standard): a well-known system ports (they are assigned and controlled by IANA).
- * - Port 591 (): a well-known system ports (they are assigned and controlled by IANA).
- * - Port 8008: a user or registered port (they are not assigned and controlled but registered by IANA only).
- * - Port 8080 (second most used): a user or registered port (they are not assigned and controlled but registered by IANA only).
- * - Ports ranging from 49152 to 65536: are available for anyone to use.
- *
- * E.g.: If a web server is already running on the default port (80) and another web server needs to be hosted on
- * the HTTP service, it's best practice to host it on port 8080 (but not mandatory, any other alternative or custom
- * port can be used instead).
- * https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml?search=http-alt
- */
-void ServerData::setListensTo(std::string const & port) {
-	/* not mandatory | default 80 */
-	if (not port.empty()) {
-		try {
-			unsigned short const & listensToPort = std::strtol(port.c_str(), nullptr, 10);
-			if (listensToPort == 4242 || listensToPort == 4243 || listensToPort == 8080 || listensToPort >= 49152) 
-			{// todo:: add 65536 as acceptable? then change form short to int?
-				/* No need to check port < 65536 since port is an unsigned short already */
-				_listens_to = port;
-			} else {
-				throw ParserException(CONFIG_FILE_ERROR("listens_to", NOT_SUPPORTED));
-			}
-		} catch (...) {
-			throw ParserException(CONFIG_FILE_ERROR("listens_to", NOT_SUPPORTED));
-		}
-	}
-}
-
 /*
  * To add a hostname or IP address to your macOS machine, you can modify the "hosts" file located at /etc/hosts.
  * This file maps hostnames to IP addresses and is used by the operating system to resolve domain names to IP addresses locally, without querying a DNS server.
@@ -177,18 +122,26 @@ void ServerData::setListensTo(std::string const & port) {
  *    This will ensure that the updated hosts file is used by the operating system.
  * After making these changes, you should be able to use the hostname or IP address you added to access the associated network resource on your Mac.
  */
-void ServerData::setIpAddress(std::string const & ip) {
-	/* not mandatory | default: 127.0.0.1 */
-	if (not ip.empty()) {
-		struct sockaddr_in sockAddr;
-		if (inet_pton(AF_INET, ip.c_str(), &(sockAddr.sin_addr))) {
-			_ip_address = ip;// TODO _ip_address = inet_addr(ip.c_str()); ???
-
+void ServerData::setServerName(std::string const & serverName) {
+//    /* not mandatory | default: 127.0.0.1 */ todo it now can also be the ip address
+//    if (not ip.empty()) {
+//        struct sockaddr_in sockAddr;
+//        if (inet_pton(AF_INET, ip.c_str(), &(sockAddr.sin_addr))) {
+//            _ip_address = ip;// TODO _ip_address = inet_addr(ip.c_str()); ???
+//
+//        } else {
+//            throw ParserException(CONFIG_FILE_ERROR("ip_address", NOT_SUPPORTED));
+//        }
+//    }
+	/* not mandatory | default: localhost */
+	if (not serverName.empty()) {
+		if (std::all_of(serverName.begin(), serverName.end(), isServerNameValid)) {
+			_server_name = serverName;
 		} else {
-			throw ParserException(CONFIG_FILE_ERROR("ip_address", NOT_SUPPORTED));
+			throw ParserException(CONFIG_FILE_ERROR("server_name", NOT_SUPPORTED));
 		}
 	}
-
+}
 //    WTF? LOL (I was trying to do my self first -  I will keep it comment out for now in case we can't use inet_pton
 //    std::string::size_type it;
 //    int dots_quantity = 0;
@@ -221,7 +174,34 @@ void ServerData::setIpAddress(std::string const & ip) {
 //            throw ParserException(IP_ERROR);
 //        }
 //    }
-//    _ip_address = ip;
+
+/* Available ports:
+ * - Port 80 (standard): a well-known system ports (they are assigned and controlled by IANA).
+ * - Port 591 (): a well-known system ports (they are assigned and controlled by IANA).
+ * - Port 8008: a user or registered port (they are not assigned and controlled but registered by IANA only).
+ * - Port 8080 (second most used): a user or registered port (they are not assigned and controlled but registered by IANA only).
+ * - Ports ranging from 49152 to 65536: are available for anyone to use.
+ *
+ * E.g.: If a web server is already running on the default port (80) and another web server needs to be hosted on
+ * the HTTP service, it's best practice to host it on port 8080 (but not mandatory, any other alternative or custom
+ * port can be used instead).
+ * https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml?search=http-alt
+ */
+void ServerData::setListensTo(std::string const & port) {
+	/* not mandatory | default 80 */
+	if (not port.empty()) {
+		try {
+			unsigned short const & listensToPort = std::strtol(port.c_str(), nullptr, 10);
+			if (listensToPort == 4242 || listensToPort == 4243 || listensToPort == 8080 || listensToPort >= 49152) {// todo:: add 65536 as acceptable? then change form short to int? -> WHAT ABOUT listensToPort == 80 || listensToPort == 591 ?????
+				/* No need to check port < 65536 since port is an unsigned short already */
+				_listens_to = port;
+			} else {
+				throw ParserException(CONFIG_FILE_ERROR("listens_to", NOT_SUPPORTED));
+			}
+		} catch (...) {
+			throw ParserException(CONFIG_FILE_ERROR("listens_to", NOT_SUPPORTED));
+		}
+	}
 }
 
 void ServerData::setRootDirectory(std::string const & rootDirectory) {
@@ -271,38 +251,26 @@ void ServerData::setClientMaxBodySize(std::string const & bodySize) {
 	}
 }
 
-/* The Http Request class has to check if the file exists, using something like:
- * if (pathType(addRootDirectoryPath(servers.getRootDirectory(), servers.getLocationBlocks().getErrorPages())) == REG_FILE) */
 void ServerData::setErrorPages(std::string const & errorPage) {
-	/* not mandatory | default: empty, no set error page, webserver will decide */
-	if (not errorPage.empty()) {
-		std::vector<std::string> error_page_vector;
-		std::string error_page;
-		std::stringstream ss(errorPage);
-		while(getline(ss, error_page, ' ')){
-			if (error_page.find(".html") != std::string::npos) {
-				error_page_vector.push_back(error_page);
-			} else {
-				throw ParserException(CONFIG_FILE_ERROR("error_page", NOT_SUPPORTED));
-			}
-		}
-		_error_page = error_page_vector;
-	}
-}
-
-void ServerData::setPortRedirection(std::string const & portRedirection) {
-	/* not mandatory | default: zero, no redirection */
-	if (not portRedirection.empty()) {
-		unsigned int port_redirection = std::strtol(portRedirection.c_str(), nullptr, 10);
-		if (portRedirection != _listens_to &&
-			(port_redirection == 80 || port_redirection == 591 || port_redirection == 8008 || port_redirection == 8080 ||
-					port_redirection >= 49152)) {// todo:: add 65536 as acceptable? then change form short to int?
-			/* No need to check port < 65536 since port is an unsigned short already */
-			_port_redirection = port_redirection;
-		} else {
-			throw ParserException(CONFIG_FILE_ERROR("port_redirection", NOT_SUPPORTED));
-		}
-	}
+    /* not mandatory | default: empty, no set error page, webserver will decide */
+    if (not errorPage.empty()) {
+        std::vector<std::string> error_page_vector;
+        std::string error_page;
+        std::stringstream ss(errorPage);
+        while(getline(ss, error_page, ' ')){
+            if (error_page.find(".html") != std::string::npos) {
+                std::string path_error_page = addRootDirectoryPath(_root_directory, "error_pages/" + error_page);
+                if (pathType(path_error_page) == REG_FILE) {
+                    error_page_vector.push_back(path_error_page);
+                } else {
+                    throw ParserException(CONFIG_FILE_ERROR("error_page", MISSING));
+                }
+            } else {
+                throw ParserException(CONFIG_FILE_ERROR("error_page", NOT_SUPPORTED));
+            }
+        }
+        _error_page = error_page_vector;
+    }
 }
 
 void ServerData::setListeningSocket() {
@@ -317,12 +285,11 @@ void ServerData::setListeningSocket() {
 	std::cout  << "PORT: " << _listens_to << std::endl;
 	// hostname: is either a valid host name or a numeric host address string consisting of a dotted decimal IPv4 address or an IPv6 address.
 	// servname: is either a decimal port number or a service name listed in services(5).
-	
-	// CHANGED:	This was causing the Siege error. 
+
+	// CHANGED:	This was causing the Siege error.
 	// 			Apparently Siege wants the IP address, not ServerName 'localhost'
-	//			Now Siege works. 
-//	if (getaddrinfo(_server_name.c_str(), _listens_to.c_str(), &hints, &_addr) != 0) {
-	if (getaddrinfo(_ip_address.c_str(), _listens_to.c_str(), &hints, &_addr) != 0) {
+	//			Now Siege works.
+	if (getaddrinfo(_server_name.c_str(), _listens_to.c_str(), &hints, &_addr) != 0) {
 		//freeaddrinfo(_addr); no need?
 		throw ServerDataException("failed getaddrinfo");
 	}
