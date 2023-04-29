@@ -136,12 +136,14 @@ std::string ResponseData::storeFolderContent(const char *path) {
 		for (int ret = 1; ret != 0; ) {
 			memset(buff, '\0', 100);
 			ret = read(fd[0], buff, 99);
-			//std::cout << YEL "Returned buffer, ret " << ret << "\n" RES;
+			std::cout << YEL "Returned buffer, ret " << ret << "\n" RES;
 			incomingStr.append(buff);
+			//std::cout << CYN "[" << buff << "]\n" RES;
+			//std::cout << BLU "[" << incomingStr << "]\n" RES;
 		}
 	}    
 	std::string htmlStr = makeHtmlString(incomingStr, path);
-	std::cout << "\nHTML CONTENT OF THE FOLDER: [\n" << htmlStr << "\n]\n";
+	//std::cout << "\nHTML CONTENT OF THE FOLDER: [\n" << htmlStr << "\n]\n";
 	return (htmlStr);
 }
 

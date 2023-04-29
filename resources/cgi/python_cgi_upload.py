@@ -5,9 +5,18 @@ import cgi, os
 import cgitb
 # cgitb.enable()
 
+# To get the UPLOAD_DIR path from the env[]
+for param in os.environ.keys():
+	# print ("<b>%30s</b>: %s</br>") % (param, os.environ[param])
+	# print (param, os.environ[param])
+	if param == 'UPLOAD_DIR':
+		uploadDir = os.environ[param]  
+		sys.stderr.write("FOUND UPLOAD DIR: ")
+		sys.stderr.write(uploadDir)
+
+
+
 environ = os.environ.copy()
-
-
 
 form = cgi.FieldStorage()
 #sys.stderr.write('FORM IS [' + str(form) + ']\n')
@@ -21,15 +30,16 @@ if fileitem.filename:
    # directory traversal attacks
    fn = os.path.basename(fileitem.filename)
    try:
-       parent_dir = os.getcwd()
-       with open(parent_dir + '/resources/uploads/' + fn, 'wb') as f:
-           f.write(fileitem.file.read())
-         #   message = 'The file ' + fn + ' was uploaded successfully'
+	   parent_dir = os.getcwd() # CWD is now the CGI directory. The changedir() is called before execve()
+								# The /resources/uploads should be replaced by the env[] UPLOAD_DIR variable
+	   with open(parent_dir + '/resources/uploads/' + fn, 'wb') as f:
+		   f.write(fileitem.file.read())
+		 #   message = 'The file ' + fn + ' was uploaded successfully'
    except IOError as e:
-       message = 'Error uploading file: ' + str(e)
-       sys.stderr.write('Error uploading file: ' + str(e))
-       print (message)
-       exit
+	   message = 'Error uploading file: ' + str(e)
+	   sys.stderr.write('Error uploading file: ' + str(e))
+	   print (message)
+	   exit
 
 
 
@@ -42,15 +52,15 @@ html_template = """
 <!DOCTYPE html>
 <html>
 <head>
-    <h4><a href='../index.html'> Main Page </a></h4>
+	<h4><a href='../index.html'> Main Page </a></h4>
 	<h4><a href='cgi_index.html'> Back </a></h4>
-    <title>Folder Content</title>
+	<title>Folder Content</title>
 </head>
 <body>
-    <h1>Upload Folder Contents:</h1>
-    <ul>
-        <a href=''> {} </a>
-    </ul>
+	<h1>Upload Folder Contents:</h1>
+	<ul>
+		<a href=''> {} </a>
+	</ul>
 </body>
 </html>
 """
@@ -59,11 +69,11 @@ html_template = """
 # Define the item HTML template
 item_template = """
 <li>
-    {}
-    <form method="post" action="python_cgi_delete.py">
-        <input type="hidden" name="delete" value="{}">
-        <input type="submit" value="Delete">
-    </form>
+	{}
+	<form method="post" action="python_cgi_delete.py">
+		<input type="hidden" name="delete" value="{}">
+		<input type="submit" value="Delete">
+	</form>
 </li>
 """
 
@@ -71,17 +81,17 @@ item_template = """
 # Check if a delete request has been made
 form = cgi.FieldStorage()
 if "delete" in form:
-    os.remove(os.path.join(folder_path, form["delete"].value))
-    
-    
+	os.remove(os.path.join(folder_path, form["delete"].value))
+	
+	
 # Generate the item HTML
 items_html = ""
 for item in os.listdir(folder_path):
-    item_path = os.path.join(folder_path, item)
-    item_html = item_template.format(item, item_path)
-    items_html += item_html
-    
-    
+	item_path = os.path.join(folder_path, item)
+	item_html = item_template.format(item, item_path)
+	items_html += item_html
+	
+	
 # Generate the full HTML page
 html = html_template.format(items_html)
 

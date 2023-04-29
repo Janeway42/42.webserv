@@ -21,7 +21,8 @@ printf "$GRE Start the Webserv  $RES \n" 1>&2
 
 # Run WebServ
 rm ./tests/siege/outputFiles/webservOutput.txt
-cd ../../ ;  ./webserv >> ./tests/siege/outputFiles/webservOutput.txt & 
+# cd ../../ ;  ./webserv >> ./tests/siege/outputFiles/webservOutput.txt & 
+cd ../../ ;  ./webserv > /dev/null & 
 cd tests/siege/
 sleep 2     # Wait that the Webserver starts
 

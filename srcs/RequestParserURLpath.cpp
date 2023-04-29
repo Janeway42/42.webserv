@@ -84,6 +84,7 @@ void Request::callCGI(struct kevent event) {
 	std::string server_name		= "SERVER_NAME=";
 	std::string comspec			= "COMSPEC=";
 	std::string info_path		= "INFO_PATH=";
+	std::string upload_path		= "UPLOAD_DIR=";
 
 	// Convert length to string
 	std::stringstream ssContLen;
@@ -95,9 +96,11 @@ void Request::callCGI(struct kevent event) {
 	temp.push_back(content_type.append(_data.getRequestContentType()));
 	temp.push_back(content_length.append(ssContLen.str()));
 	temp.push_back(query_string.append(_data.getQueryString()));
-	temp.push_back(server_name.append("default"));// TODO add server name?
+	temp.push_back(server_name.append(getServerData().getServerName()));
+//  temp.push_back(server_name.append("defaultServerName"));// TODO add server name?
 	temp.push_back(comspec.append(""));
-	temp.push_back(info_path.append(""));
+	temp.push_back(info_path.append(""));           // todo: find out if info_path is mandatory and how to test it?
+//	temp.push_back(upload_path.append(_data.get));  // todo: append the /upload folder name 
 
 	// std::cout << "Size of vector temp: " << temp.size() << "\n";
 	// std::cout << YEL << "POST BODY: " << temp[2] << "\n" << RES;
