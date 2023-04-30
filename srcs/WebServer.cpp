@@ -7,8 +7,8 @@ WebServer::WebServer(std::string const & configFileName)
     try {
         ConfigFileParser configFileData = ConfigFileParser(configFileName);
         _servers = configFileData.servers;
-        std::cout  << "Server blocks quantity: " << configFileData.numberOfServerBlocks() << std::endl;
-        std::cout  << "Location block quantity: " << configFileData.numberOfLocationBlocks() << std::endl;
+//        std::cout  << "Server blocks quantity: " << configFileData.numberOfServerBlocks() << std::endl;
+//        std::cout  << "Location block quantity: " << configFileData.numberOfLocationBlocks() << std::endl;
 
         // ----------- create kq structure --------------------------
         struct kevent evSet;
@@ -255,7 +255,7 @@ void WebServer::sendResponse(struct kevent& event)
 		{
 			std::cout << "    Send() response returned -1\n";
 			storage->setHttpStatus(INTERNAL_SERVER_ERROR);
-			storage->getResponseData().setResponse(event);
+			storage->getResponseData().createResponse(event);
 			addFilter(storage->getFdClient(), event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, ret = -1 on _fd_in[1]");    //  this allows client write 
 			removeFilter(event, EVFILT_WRITE, "failed kevent, EV_DELETE, EVFILT_WRITE failure on _fd_in[1]");  // this removes the pipe fd _fd_in[1]
 		}
@@ -286,7 +286,7 @@ void WebServer::sendResponse(struct kevent& event)
 
         if (storage->getResponseData().getResponseDone() == false)
 		{
-			storage->getResponseData().setResponse(event);
+			storage->getResponseData().createResponse(event);
 			storage->getResponseData().setResponseDone(true);
 			// std::cout << "----------- FULL RESPONSE: -----------------------\n" << storage->getResponseData().getFullResponse() << std::endl;
 		}

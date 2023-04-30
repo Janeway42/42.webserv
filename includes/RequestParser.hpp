@@ -79,7 +79,7 @@ class Request : public Parser {
 		std::map<std::string, std::string>	storeFormData(std::string pq);
 		void			    parseHeader(std::string header);
 		void    		    parsePath(std::string const & originalUrlPath);
-        std::string                redirection(std::string getRedirection);
+        void                checkRedirection(std::string getRedirection);
 		std::string	        parsePath_locationMatch(std::string const & originalUrlPath);
         std::string		    parsePath_file(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);
         std::string     	parsePath_cgi(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location, std::string const & file_cgi);

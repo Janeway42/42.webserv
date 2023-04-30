@@ -24,6 +24,7 @@ More important:
     JOYCE:
         - Delete ip_address and add the option of server_name contain an ip address number or a string (domain) -> DONE
         - Add a redirection location to the config file
+        - if uri has a / at the end, then it's a directory, otherwise itd a file
         - Accepted HTTP methods from config file are not being used, but it’s mandatory to use
         - If the server cannot server anything from an existing location (on the config file), it serves a FORBIDDEN
           (we tested with nginx)

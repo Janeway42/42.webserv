@@ -130,8 +130,8 @@ void Request::callCGI(struct kevent event) {
 	// args[2] = NULL;
 
 	char *args[3];
-    //	args[0] = (char *)"/usr/local/bin/python3";
-	args[0] = (char *)"/usr/bin/python";    // TODO: add from config file
+    	args[0] = (char *)"/usr/local/bin/python3";
+//	args[0] = (char *)"/usr/bin/python";    // TODO: add from config file -> /bin/bash -c python or /usr/bin/env python
 
 //  std::string tempPath = _data.getURLPath_full();   // Changed Jaka:
     std::string tempPath = _data.getURLPathLastPart();  // must be only the script name, because the CWD is changed to CGI folder
@@ -241,15 +241,14 @@ void Request::checkIfPathExists(std::string const & URLPath_full) {
 
     // Here at the end URLPath_full will always be a file, either because the request was a file, or because
     // the correct index file was appended to it (from location or server block, the config file parser decided already)
-    if (pathType(URLPath_full) != REG_FILE) {
+    PathType type = pathType(URLPath_full);
+    if (type != REG_FILE) {
         std::cout << RED << std::endl << "Error: file [" << RES << URLPath_full << RED;
         std::cout << "] was not found. Returning 404 NOT FOUND" << RES << std::endl << std::endl;
         setHttpStatus(NOT_FOUND);
-    } else {
+    } else if (type == REG_FILE) {
         std::cout << GRN << "Path " << RES << URLPath_full << GRN << " exists" << RES << std::endl << std::endl;
-        if (getHttpStatus() != MOVE_PERMANENTLY) {
-            setHttpStatus(OK);
-        }
+        setHttpStatus(OK);
     }
 }
 
@@ -526,19 +525,13 @@ std::string Request::parsePath_root(std::string const & originalUrlPath, std::ve
 }
 
 // receiving a copy of originalUrlPath, so it can be modified in case we have a redirection on the location block
-std::string Request::redirection(std::string getRedirection) {
-    std::string redirection = getRedirection;
-    if (not redirection.empty()) {
-//        std::string::size_type it = redirection.find("//") + 2;
-//        redirection = redirection.substr(it);
-//        std::string originalUrlPath = redirection.substr(redirection.find('/'));
+void Request::checkRedirection(std::string getRedirection) {
+    if (not getRedirection.empty()) {
         std::cout << YEL << "Redirection found: " << getRedirection << RES << std::endl;
         std::cout << YEL << "A 301 response response will be sent, with the redirection url on it!" << RES << std::endl;
         setHttpStatus(MOVE_PERMANENTLY);
         setRedirection(getRedirection);
-//        return parsePath_locationMatch(originalUrlPath);
     }
-    return std::string();
 }
 
 std::string Request::parsePath_locationMatch(std::string const & originalUrlPath) {
@@ -562,7 +555,7 @@ std::string Request::parsePath_locationMatch(std::string const & originalUrlPath
             URLPath_full = parsePath_edgeCase(originalUrlPath, location);
         }
         if (not URLPath_full.empty() || getHttpStatus() == FORBIDDEN) {
-            redirection(location->getRedirection());// TODO CHECK IF REDIRECITON IS WORKING
+            checkRedirection(location->getRedirection());// TODO CHECK IF REDIRECTION IS WORKING and change name to Check
             break;
         }
 
@@ -609,6 +602,8 @@ void Request::parsePath(std::string  const & originalUrlPath) {
         storeURLPathParts(originalUrlPath, URLPath_full);// TODO: do that only if _data.getRequestMethod() != "POST" ?????
 
         printPathParts(_data);
-        checkIfPathExists(URLPath_full);
+        if (getHttpStatus() == NO_STATUS) {
+            checkIfPathExists(URLPath_full);
+        }
     }
 }
