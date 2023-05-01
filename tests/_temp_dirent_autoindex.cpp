@@ -72,7 +72,5 @@ void print_directory_contents(const char* path) {
 
 
 int main() {
-
 	print_directory_contents(".");
-
 }

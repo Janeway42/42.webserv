@@ -1,7 +1,6 @@
-#include <iostream>
 #include <sstream>
-#include <unistd.h>
-#include <string.h>
+#include <dirent.h>
+#include <sys/stat.h>
 #include "../includes/Parser.hpp"
 #include "../includes/ResponseData.hpp"
 
@@ -32,10 +31,8 @@ std::string removeLastFolderFromPath(std::string path) {
 
 
 std::string removeRootFolderNameFromPath(std::string path) {
-
 	size_t positionSecondSlash = path.find("/", 2);
 	//std::cout << RED << "positionSecondSlash: [" << positionSecondSlash << "]\n" << RES;
-
 	std::string pathWithoutRoot = path.substr(positionSecondSlash);
 	return pathWithoutRoot;
 }
@@ -43,12 +40,10 @@ std::string removeRootFolderNameFromPath(std::string path) {
 
 std::string appendHTMLbody(std::string line, std::string path, std::string & htmlStr) {
 	int	found;
-	//(void)path;
 	// std::cout << BLU << "Line: [" << line << "]\n" << RES;
 	// std::cout << YEL << "Path: [" << path << "]\n" << RES;
-	found = line.find_last_of(" ");
+	found = line.find_first_of(" ");
 	std::string lastWord = line.substr(found + 1, std::string::npos);
-	//std::cout << YEL << "lastWord: [" << lastWord << "]\n" << RES;
 	
 	htmlStr.append("<li><a href='");
 	if (lastWord != ".." && lastWord != ".") {
@@ -67,7 +62,6 @@ std::string appendHTMLbody(std::string line, std::string path, std::string & htm
 		//temp = removeRootFolderNameFromPath(temp);
 		//std::cout << RED "PARENT FOLDER: [" << temp << "\n" RES; 
 		htmlStr.append(temp);
-		// htmlStr.append("..");
 	}
 	htmlStr.append("'>  ");		// end < href >
 	if (lastWord == "..")
@@ -79,24 +73,20 @@ std::string appendHTMLbody(std::string line, std::string path, std::string & htm
 }
 
 
-// void	makeHtmlString(std::string folderContent, std::string path) {
 std::string	makeHtmlString(std::string folderContent, std::string path) {
 
-	// int					found;
 	std::string			line;
 	std::istringstream	iss(folderContent);
 	std::string			htmlStr;
-	// std::string			lastWord;
 
 	appendHTMLhead(path, htmlStr);
-
 	while (std::getline(iss, line)) {
-		if (line[0] == 'd') {
-			// std::cout << "Is DIR  [" << line << "]\n";
+		if (line[0] == 'D') {
+			std::cout << "Is DIR  [" << line << "]\n";
 			appendHTMLbody(line, path, htmlStr);
 		}
-		else if (line[0] == '-') {
-			// std::cout << "Not DIR [" << line << "]\n";
+		else if (line[0] == 'F') {
+			std::cout << "Not DIR [" << line << "]\n";
 			htmlStr = appendHTMLbody(line, path, htmlStr);
 		}
 	}
@@ -106,52 +96,83 @@ std::string	makeHtmlString(std::string folderContent, std::string path) {
 }
 
 
-// Check if maybe fds are leaking
-std::string ResponseData::storeFolderContent(const char *path) {
-	std::cout << RED "start StoreFolderContent(), PATH: [" << path << "]\n" RES;
-	int    		fd[2];
-	pid_t		retFork;
-	std::string	incomingStr;
 
-	if (pipe(fd) == -1)
-		std::cout << "Error: Pipe failed\n";
-	retFork = fork();
+std::string ResponseData::storeFolderContent(const char* path) {
+	DIR *dir;
+	struct dirent *entry;
+	struct stat file_stat;
+	char full_path[512];
 
-	if (retFork == 0) {
-		//std::cout << "Start CHILD LS\n";
-		if (retFork < 0)
-			std::cout << "Error: Fork failed\n";
-		dup2(fd[1], 1);
-		close(fd[0]);
-
-		char *arr[4] = {(char*)"/bin/ls", (char*)"-la", (char*)path, NULL};
-		int ret = execve(arr[0], arr, NULL);
-		std::cout << RED "Error: Execve failed: " << ret << "\n" RES;
+	dir = opendir(path);
+	if (dir == NULL) {
+		printf("Failed to open directory: %s\n", path);
+		exit(EXIT_FAILURE);
 	}
-	else {
-		close(fd[1]);
-		char buff[100];
-		dup2(fd[0], 0);
 
-		for (int ret = 1; ret != 0; ) {
-			memset(buff, '\0', 100);
-			ret = read(fd[0], buff, 99);
-			std::cout << YEL "Returned buffer, ret " << ret << "\n" RES;
-			incomingStr.append(buff);
-			//std::cout << CYN "[" << buff << "]\n" RES;
-			//std::cout << BLU "[" << incomingStr << "]\n" RES;
+	std::string folders;
+	std::string files;
+	std::string allFolderContent;
+
+	while ((entry = readdir(dir)) != NULL) {                                    //      . /    filename
+		snprintf(full_path, sizeof(full_path), "%s/%s", path, entry->d_name);   // joins path + d_name and stores it into full_path
+		if (stat(full_path, &file_stat) == -1) {
+			printf("Failed to get file information for %s\n", full_path);
+			continue;
 		}
-	}    
-	std::string htmlStr = makeHtmlString(incomingStr, path);
-	//std::cout << "\nHTML CONTENT OF THE FOLDER: [\n" << htmlStr << "\n]\n";
+		if (S_ISREG(file_stat.st_mode)) {
+			files.append("F ").append(entry->d_name).append("\n");
+		} else if (S_ISDIR(file_stat.st_mode)) {
+			folders.append("D ").append(entry->d_name).append("\n");
+		}
+	}
+	closedir(dir);
+	allFolderContent.append(folders).append(files);
+	std::cout << BLU "ALL CONTENT:\n" << allFolderContent << "\n" RES;
+	std::string htmlStr = makeHtmlString(allFolderContent, path);
 	return (htmlStr);
 }
 
-//int main()
-//{
-//	std::string path = "../resources/_folderA/folderB/";
-//	std::string folderContentStr = storeFolderContent((char*)path.c_str());
-//	makeHtmlString(folderContentStr, path);
-//
-//	return (0);
-//}
+
+// OLD OLD
+// // Check if maybe fds are leaking
+// std::string ResponseData::storeFolderContentOLD(const char *path) {
+// 	std::cout << RED "start StoreFolderContent(), PATH: [" << path << "]\n" RES;
+// 	int    		fd[2];
+// 	pid_t		retFork;
+// 	std::string	incomingStr;
+
+// 	if (pipe(fd) == -1)
+// 		std::cout << "Error: Pipe failed\n";
+// 	retFork = fork();
+
+// 	if (retFork == 0) {
+// 		//std::cout << "Start CHILD LS\n";
+// 		if (retFork < 0)
+// 			std::cout << "Error: Fork failed\n";
+// 		dup2(fd[1], 1);
+// 		close(fd[0]);
+
+// 		char *arr[4] = {(char*)"/bin/ls", (char*)"-la", (char*)path, NULL};
+// 		int ret = execve(arr[0], arr, NULL);
+// 		std::cout << RED "Error: Execve failed: " << ret << "\n" RES;
+// 	}
+// 	else {
+// 		close(fd[1]);
+// 		char buff[100];
+// 		dup2(fd[0], 0);
+
+// 		for (int ret = 1; ret != 0; ) {
+// 			memset(buff, '\0', 100);
+// 			ret = read(fd[0], buff, 99);
+// 			incomingStr.append(buff);
+// 			// std::cout << YEL "Returned buffer, ret " << ret << "\n" RES;
+// 			//std::cout << CYN "[" << buff << "]\n" RES;
+// 			//std::cout << BLU "[" << incomingStr << "]\n" RES;
+// 		}
+// 	}    
+// 	// std::cout << BLU "[" << incomingStr << "]\n" RES;
+// 	std::string htmlStr = makeHtmlString(incomingStr, path);
+// 	//std::cout << "\nHTML CONTENT OF THE FOLDER: [\n" << htmlStr << "\n]\n";
+// 	return (htmlStr);
+// }
+

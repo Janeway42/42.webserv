@@ -11,7 +11,7 @@ RES='\033[0m'
 outputOut="./outputFiles/stdOut.txt"
 outputErr="./outputFiles/stdErr.txt"
 portNr="8080"
-TIME="-t20s"
+TIME="-t1s"
 
 rm $outputOut
 rm $outputErr
@@ -20,9 +20,9 @@ echo -e  "$GRE\n ~ ~ ~ TEST SIEGE ~ ~ ~ $RES \n" 1>&2
 printf "$GRE Start the Webserv  $RES \n" 1>&2
 
 # Run WebServ
-rm ./tests/siege/outputFiles/webservOutput.txt
-# cd ../../ ;  ./webserv >> ./tests/siege/outputFiles/webservOutput.txt & 
-cd ../../ ;  ./webserv > /dev/null & 
+rm -f ./tests/siege/outputFiles/webservOutput.txt
+cd ../../ ;  ./webserv >> ./tests/siege/outputFiles/webservOutput.txt & 
+# cd ../../ ;  ./webserv >> /dev/null & 
 cd tests/siege/
 sleep 2     # Wait that the Webserver starts
 
@@ -54,4 +54,6 @@ siege -b -c200 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outp
 
 pkill -f webserv
 cat ./outputFiles/stdErr.txt | grep Availability 1>&2
+rm -f ./outputFiles/webservOutput.txt
+
 echo -e "\n$GRE TEST SIEGE FINISHED, CHECK THE OUTPUT RESULTS IN 'tests/siege/outputFiles/stdOut.txt' $RES\n" 1>&2

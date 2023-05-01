@@ -3,17 +3,17 @@
 The server is now under siege...
 
 Lifting the server siege...
-Transactions:		       16371 hits
+Transactions:		        1631 hits
 Availability:		      100.00 %
-Elapsed time:		       20.12 secs
-Data transferred:	        2.42 MB
+Elapsed time:		        1.72 secs
+Data transferred:	        0.24 MB
 Response time:		        0.00 secs
-Transaction rate:	      813.67 trans/sec
-Throughput:		        0.12 MB/sec
-Concurrency:		        0.89
+Transaction rate:	      948.26 trans/sec
+Throughput:		        0.14 MB/sec
+Concurrency:		        0.98
 Successful transactions:           0
 Failed transactions:	           0
-Longest transaction:	        0.47
+Longest transaction:	        0.02
 Shortest transaction:	        0.00
  
 ** SIEGE 4.1.6
@@ -21,17 +21,17 @@ Shortest transaction:	        0.00
 The server is now under siege...
 
 Lifting the server siege...
-Transactions:		        1381 hits
+Transactions:		        3040 hits
 Availability:		      100.00 %
-Elapsed time:		       20.91 secs
-Data transferred:	        0.20 MB
-Response time:		        0.30 secs
-Transaction rate:	       66.04 trans/sec
-Throughput:		        0.01 MB/sec
-Concurrency:		       19.99
+Elapsed time:		        1.98 secs
+Data transferred:	        0.45 MB
+Response time:		        0.01 secs
+Transaction rate:	     1535.35 trans/sec
+Throughput:		        0.23 MB/sec
+Concurrency:		       17.84
 Successful transactions:           0
 Failed transactions:	           0
-Longest transaction:	       19.81
+Longest transaction:	        0.06
 Shortest transaction:	        0.00
  
 ** SIEGE 4.1.6
@@ -39,17 +39,17 @@ Shortest transaction:	        0.00
 The server is now under siege...
 
 Lifting the server siege...
-Transactions:		       15035 hits
+Transactions:		        3153 hits
 Availability:		      100.00 %
-Elapsed time:		       20.98 secs
-Data transferred:	        2.22 MB
-Response time:		        0.05 secs
-Transaction rate:	      716.63 trans/sec
-Throughput:		        0.11 MB/sec
-Concurrency:		       34.73
+Elapsed time:		        1.97 secs
+Data transferred:	        0.47 MB
+Response time:		        0.03 secs
+Transaction rate:	     1600.51 trans/sec
+Throughput:		        0.24 MB/sec
+Concurrency:		       42.54
 Successful transactions:           0
 Failed transactions:	           0
-Longest transaction:	        0.91
+Longest transaction:	        0.05
 Shortest transaction:	        0.00
  
 ** SIEGE 4.1.6
@@ -57,265 +57,72 @@ Shortest transaction:	        0.00
 The server is now under siege...
 
 Lifting the server siege...
-Transactions:		         966 hits
+Transactions:		        3517 hits
 Availability:		      100.00 %
-Elapsed time:		       20.97 secs
-Data transferred:	        0.14 MB
-Response time:		        1.43 secs
-Transaction rate:	       46.07 trans/sec
-Throughput:		        0.01 MB/sec
-Concurrency:		       65.83
+Elapsed time:		        1.74 secs
+Data transferred:	        0.52 MB
+Response time:		        0.05 secs
+Transaction rate:	     2021.26 trans/sec
+Throughput:		        0.30 MB/sec
+Concurrency:		       98.59
 Successful transactions:           0
 Failed transactions:	           0
-Longest transaction:	       13.35
+Longest transaction:	        0.08
 Shortest transaction:	        0.00
  
 ** SIEGE 4.1.6
 ** Preparing 150 concurrent users for battle.
 The server is now under siege...
+[[1;33merror[0m] unable to write to socket sock.c:733: Broken pipe
 
 Lifting the server siege...
-Transactions:		       15554 hits
+Transactions:		        3421 hits
+Availability:		       99.97 %
+Elapsed time:		        1.89 secs
+Data transferred:	        0.51 MB
+Response time:		        0.08 secs
+Transaction rate:	     1810.05 trans/sec
+Throughput:		        0.27 MB/sec
+Concurrency:		      141.34
+Successful transactions:           0
+Failed transactions:	           1
+Longest transaction:	        1.14
+Shortest transaction:	        0.00
+ 
+** SIEGE 4.1.6
+** Preparing 200 concurrent users for battle.
+The server is now under siege...
+[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
+
+Lifting the server siege...
+Transactions:		        1524 hits
+Availability:		       99.93 %
+Elapsed time:		        1.91 secs
+Data transferred:	        0.23 MB
+Response time:		        0.12 secs
+Transaction rate:	      797.91 trans/sec
+Throughput:		        0.12 MB/sec
+Concurrency:		       99.05
+Successful transactions:           0
+Failed transactions:	           1
+Longest transaction:	        1.05
+Shortest transaction:	        0.00
+ 
+** SIEGE 4.1.6
+** Preparing 200 concurrent users for battle.
+The server is now under siege...
+
+Lifting the server siege...
+Transactions:		         189 hits
 Availability:		      100.00 %
-Elapsed time:		       20.31 secs
-Data transferred:	        2.30 MB
-Response time:		        0.15 secs
-Transaction rate:	      765.83 trans/sec
-Throughput:		        0.11 MB/sec
-Concurrency:		      114.19
+Elapsed time:		        1.92 secs
+Data transferred:	        0.03 MB
+Response time:		        0.04 secs
+Transaction rate:	       98.44 trans/sec
+Throughput:		        0.01 MB/sec
+Concurrency:		        3.83
 Successful transactions:           0
 Failed transactions:	           0
-Longest transaction:	        1.76
-Shortest transaction:	        0.00
- 
-** SIEGE 4.1.6
-** Preparing 200 concurrent users for battle.
-The server is now under siege...
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: read error Connection reset by peer sock.c:635: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-
-Lifting the server siege...
-Transactions:		        4717 hits
-Availability:		       99.66 %
-Elapsed time:		       20.91 secs
-Data transferred:	        0.70 MB
-Response time:		        0.79 secs
-Transaction rate:	      225.59 trans/sec
-Throughput:		        0.03 MB/sec
-Concurrency:		      178.64
-Successful transactions:           0
-Failed transactions:	          16
-Longest transaction:	       13.91
-Shortest transaction:	        0.00
- 
-** SIEGE 4.1.6
-** Preparing 200 concurrent users for battle.
-The server is now under siege...
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: read error Connection reset by peer sock.c:635: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: read error Connection reset by peer sock.c:635: Connection reset by peer
-[[1;33merror[0m] socket: unable to connect sock.c:282: Connection reset by peer
-[[1;33merror[0m] socket: read error Connection reset by peer sock.c:635: Connection reset by peer
-
-Lifting the server siege...
-Transactions:		       11696 hits
-Availability:		       98.49 %
-Elapsed time:		       20.98 secs
-Data transferred:	        1.73 MB
-Response time:		        0.20 secs
-Transaction rate:	      557.48 trans/sec
-Throughput:		        0.08 MB/sec
-Concurrency:		      111.54
-Successful transactions:           0
-Failed transactions:	         179
-Longest transaction:	        2.25
+Longest transaction:	        0.12
 Shortest transaction:	        0.00
  
