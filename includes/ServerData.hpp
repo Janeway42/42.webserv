@@ -44,13 +44,16 @@ class ServerData : public Parser {
         struct addrinfo* getAddr() const;
 
         /** Setters */
-        void setServerName(std::string const & serverName);
-        void setListensTo(std::string const & port);
-        void setRootDirectory(std::string const & rootDirectory);
-        void setIndexFile(std::string const & indexFile);
-        void setClientMaxBodySize(std::string const & bodySize);
-        void setErrorPages(std::string const & errorPage);
-        void setListeningSocket();
+        void	setServerName(std::string const & serverName);
+        void	setListensTo(std::string const & port);
+        void	setRootDirectory(std::string const & rootDirectory);
+        void	setIndexFile(std::string const & indexFile);
+        void	setClientMaxBodySize(std::string const & bodySize);
+        void	setErrorPages(std::string const & errorPage);
+        void	setListeningSocket();
+
+		void	setExistingListeningSocket(int fd);
+
 
 //        class ServerDataException: public std::exception {
 //            private:

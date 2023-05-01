@@ -44,7 +44,7 @@ void ResponseData::createResponseHeader(HttpStatus status, std::string const & r
 
     _responseHeader = "HTTP/1.1 " + std::to_string(status) + " " + httpStatusToString(status) + "\r\n"
         "Content-Type: text/html\r\n"
-        "Content-Encoding: identity\r\n"// Corina - added it because firefox complained that itwas missing - not sure if we keep because firefox still complains even with it. We leave it for now.
+        "Content-Encoding: identity\r\n"// Corina - added it because firefox complained that it was missing - not sure if we keep because firefox still complains even with it. We leave it for now.
         "Connection: close\r\n"
         "Content-Length: " + std::to_string(_responseBody.length()) + "\r\n"
         + redirection + "\r\n\r\n";
@@ -188,6 +188,11 @@ void ResponseData::setResponseStatus(struct kevent& event)
             _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
                                             storage->getHttpStatus(),
                                             defaultStatusPath + "500InternarServerError.html");
+            break;
+		} case 505: {
+            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
+                                            storage->getHttpStatus(),
+                                            defaultStatusPath + "500HttpVersionNotSupported.html");
             break;
         } default: {
             // "Set-Cookie: id=123; jaka=500; Max-Age=10; HttpOnly\r\n";

@@ -19,18 +19,43 @@ WebServer::WebServer(std::string const & configFileName)
         // ----------- loop to create all listening sockets ---------
         std::vector<ServerData>::iterator it_server;
         //std::cout << "before vector loop ---------------\n";
+		int location = 0;
         for (it_server = _servers.begin(); it_server != _servers.end(); ++it_server)
         {
-            it_server->setListeningSocket();
-            EV_SET(&evSet, it_server->getListeningSocket(), EVFILT_READ, EV_ADD | EV_CLEAR, NOTE_WRITE, 0, NULL);
-            if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
-                throw ServerException("Failed kevent start listening socket"); // getaddrinfo uses malloc - freeaddrinfo is needed !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! - TO DO
+			int tempSocket = -1;
+			tempSocket = checkExistingSocket(location, it_server->getListensTo());
+			if (tempSocket != -1)
+				it_server->setExistingListeningSocket(tempSocket);	// socket already on kq, no need to add it again			
+			else 
+			{
+			   	it_server->setListeningSocket();
+            	EV_SET(&evSet, it_server->getListeningSocket(), EVFILT_READ, EV_ADD | EV_CLEAR, NOTE_WRITE, 0, NULL);
+            	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
+               		throw ServerException("Failed kevent start listening socket");
+			}
+			location++;
         }
         std::cout << CYN << GRY_BG << "WebServer Overloaded Constructor" << RES << std::endl;
     } catch (std::exception const & e) {
 //        std::cout << RED << "Error: " << e.what() << RES <<std::endl;
         throw ServerException(std::string("Failed to initialise webserv: ") + e.what());
     }
+}
+
+int WebServer::checkExistingSocket(int location, std::string port)
+{
+	std::vector<ServerData>::iterator it_server;
+	int i = 0;
+
+	if (location > 0)
+	{
+		for (it_server = _servers.begin(); i != location && it_server != _servers.end(); ++it_server)
+		{
+			if (it_server->getListensTo() == port)
+				return (it_server->getListeningSocket());
+		}
+	}
+	return (-1);
 }
 
 WebServer::~WebServer()
@@ -41,6 +66,7 @@ WebServer::~WebServer()
 		if (it_server->getAddr() != NULL) {
 			std::cout << "_addr: " << it_server->getAddr() << std::endl;
 			freeaddrinfo(it_server->getAddr());
+			// set it-server->getAddr() to NULL so it doesn't free twice. 
 		}
 	}
     std::cout << CYN << GRY_BG << "WebServer Destructor" << RES << std::endl;
@@ -127,16 +153,14 @@ void WebServer::handleTimeout(struct kevent &event)
 {
 	Request *storage = (Request *)event.udata;
 
-	// std::cout << "existing HTTP status: " << storage->getHttpStatus() << std::endl;
 	storage->setHttpStatus(REQUEST_TIMEOUT);
 	std::cout << "Unable to process, it takes too long - TIMER\n";
 	storage->getCgiData().closePipes();
-	// std::cout << "done: " << storage->getDone() << std::endl;
+
 	if (storage->getDone() == false)
-	{
 		removeFilter(event, EVFILT_READ, "failed kevent EV_DELETE, EVFILT_READ - handle timeout");
-	}
-	addFilter(event.ident, event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE - handle timeout");
+	if (fcntl(event.ident, F_GETFD) != -1)
+		addFilter(event.ident, event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE - handle timeout");
 }
 
 void WebServer::readRequest(struct kevent& event)
@@ -191,7 +215,8 @@ void WebServer::readRequest(struct kevent& event)
 			//std::cout << CYN "    returned from ATR(), _parsingDone: " << storage->getDone() << ", isCGI: " << storage->getResponseData().getIsCgi() << "\n" RES;
 
 
-			// if (storage->getHttpStatus() != NO_STATUS || storage->getDone() == true)				// new Jaka: getIsCGI()
+			std::cout << RED << "HTTP STATUS: " << storage->getHttpStatus() << std::endl << RES;
+
 			if ((storage->getHttpStatus() != NO_STATUS && storage->getHttpStatus() != OK) || (storage->getDone() == true && storage->getCgiData().getIsCgi() == false))
 			{
 //				std::cout << CYN "           ReadRequest: B)\n" RES;
@@ -288,6 +313,9 @@ void WebServer::sendResponse(struct kevent& event)
 		{
 			storage->getResponseData().createResponse(event);
 			storage->getResponseData().setResponseDone(true);
+
+			std::cout << "full response: \n";
+			std::cout << storage->getResponseData().getFullResponse() << std::endl;
 			// std::cout << "----------- FULL RESPONSE: -----------------------\n" << storage->getResponseData().getFullResponse() << std::endl;
 		}
 
@@ -349,7 +377,7 @@ void WebServer::newClient(struct kevent event, ServerData * specificServer)
         // specificServer to the Request class?? and the Request class would loop through the available servers to decide
         // from which one it will retrieve data !? (by matching server_name and port for example) ?? I don't know just an idea
 		Request *storage = new Request(_kq, fd, specificServer);
-		// storage->getRequestData().setKqFd(getKq());	 // moved to Request itself
+
 
 		EV_SET(&evSet, fd, EVFILT_READ, EV_ADD, 0, 0, storage); 
 		if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
@@ -412,6 +440,7 @@ void WebServer::removeFilter(struct kevent& event, int filter, std::string error
 	EV_SET(&evSet, event.ident, filter, EV_DELETE, 0, 0, storage); 
 	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 		throw ServerException(errorMessage);
+		// std::cout << "event already removed: " << event.ident << " filter: " << filter << " error to be: " << errorMessage <<  std::endl;
 }
 
 void	WebServer::chooseMethod_StartCGI(struct kevent event, Request * storage) {

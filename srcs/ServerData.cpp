@@ -297,3 +297,8 @@ void ServerData::setListeningSocket() {
 	if (listen(_listening_socket, SOMAXCONN) == -1)  // max nr of accepted connections
 		throw std::runtime_error("Failed listen");
 }
+
+void ServerData::setExistingListeningSocket(int fd)
+{
+	_listening_socket = fd;
+}
