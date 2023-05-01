@@ -1,0 +1,62 @@
+Research:
+    - Make a location able to accept uploaded files (it’s on the pdf). Is it saved on the root directory of the
+      location? Or there is another key that we are not aware of?
+    - The first server for a host:port will be the default for this host:port (that means
+it will answer to all the requests that don’t belong to an other server).
+    - Setup default error page (try to change the error 404).
+    - In the browser we CAN'T type anything else than localhost or ip, but on curl we CAN (curl always has port)??????
+------------------------------------------------------------------------------------------------------------------------
+More important:
+    CORINA:
+        - Multiple servers leak (take a look)
+        - run default server - config file
+        - Set 405 Method Not Allowed in the request parser
+        - You need to test with files containing errors to see if the error handling works properly. You can use a script containing an infinite loop or an error; you are free to do whatever tests you want within the limits of acceptability that remain at your discretion.
+        - Launch multiple servers at the same time with different configurations but with common ports. Does it work? If it does, ask why the server should work if one of the configurations isn't functional.
+    JAKA:
+        - Setup multiple servers with different hostnames (use something like: curl --resolve example.com:80:127.0.0.1 http://example.com/)
+        - match server_name from config file with Host from request form
+        - Upload some file to the server and get it back (check if just clickin gon the file/image is enough)
+        - The slash at the end of url should be always a folder, without a slash should be a file
+        - Index file has to be served if it exists (even if autoindex is on)
+        - Use max_body_size from the config file on the server (on the request parser)
+          Limit the client body (use: curl -X POST -H "Content-Type: plain/text" --data "BODY IS HERE write something shorter or longer than body limit").
+    JOYCE:
+        - Delete ip_address and add the option of server_name contain an ip address number or a string (domain) -> DONE
+        - Add a redirection location to the config file
+        - Accepted HTTP methods from config file are not being used, but it’s mandatory to use
+        - If the server cannot server anything from an existing location (on the config file), it serves a FORBIDDEN
+          (we tested with nginx)
+        - Finish connecting config data with the webserv (ex: error pages, methods)
+          Set 405 Method Not Allowed IF specific location allowed methods does not match with the method received
+------------------------------------------------------------------------------------------------------------------------
+Less important:
+    CORINA:
+    JAKA:
+        - Standardising htmls and .py/.php?
+    JOYCE:
+        - Clean up config file (delete some keys)
+------------------------------------------------------------------------------------------------------------------------
+Tests:
+    Try a wrong URL on the server.
+    Try to list a directory.
+    Try a redirected URL.
+    CORINA:
+        - test more with curl? (maybe already included on Jaka's tester)
+        - run test script from codam - this tests for some stuff we don't need to implement!
+    JAKA:
+        - Maybe another stress test from somewhere else (siege)? (I think codam one is fine but if we find another one
+          it would not hurt to test).
+        - Finish tester
+    JOYCE:
+        - Add more config files examples (mandatory by the pdf)
+------------------------------------------------------------------------------------------------------------------------
+Extras:
+    CORINA:
+        - Cookies as extra
+    JAKA:
+        - possibly adding a second cgi (php)
+        - cgi - correct folder
+    JOYCE:
+        - Add the set_cookies key to the location on the config file
+        - Another .php location is not working for the config file (no error too)

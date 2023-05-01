@@ -62,7 +62,8 @@ class WebServer
                 std::string _errorMessage;
 
             public:
-                ServerException(std::string message) throw()
+                // explicit: https://leimao.github.io/blog/CPP-Explicit-Constructor/
+                explicit ServerException(const std::string& message) throw()
                 {
                     _errorMessage = message;
                 }

@@ -26,6 +26,7 @@ Request::Request() {
     _headerDone = false;
     _doneParsing = false;
     _httpStatus = NO_STATUS;
+    _redirection = std::string();
     _hasBody = false;
     std::cout << GRY << "Request Constructor" << RES << std::endl;
 }
@@ -42,6 +43,7 @@ Request::Request(int kq, int fd, ServerData *specificServer) {
 	_headerDone = false;
 	_doneParsing = false;
     _httpStatus = NO_STATUS;
+    _redirection = std::string();
 	_hasBody = false;
     std::cout << GRY << "Request Copy Constructor" << RES << std::endl;
 }
@@ -89,7 +91,7 @@ void Request::parseHeader(std::string header) {
 
 // TODO MAYBE WON'T BE NEEDED
 void	storeBodyAsFile(std::string body) {
-	std::ofstream bodyFile("./resources/cgi/bodyFile.txt");
+	std::ofstream bodyFile("./resources/_cgi/bodyFile.txt");
 	if (bodyFile.is_open()) {
 		bodyFile << body;
 		bodyFile.close();
@@ -360,6 +362,11 @@ HttpStatus Request::getHttpStatus()
 	return (_httpStatus);
 }
 
+std::string Request::getRedirection()
+{
+    return (_redirection);
+}
+
 int Request::getFdClient()
 {
 	return (_clientFd);
@@ -375,4 +382,9 @@ void Request::setDone(bool val)
 void Request::setHttpStatus(HttpStatus val)
 {
     _httpStatus = val;
+}
+
+void Request::setRedirection(std::string const & redirection)
+{
+    _redirection = redirection;
 }

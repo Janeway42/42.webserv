@@ -11,7 +11,7 @@
   <br><br><br>
 
 
-<form action="/cgi/python_cgi_GET.py" method="get">
+<form action="python_cgi_GET.py" method="get">
   <fieldset style="background: #fffdf6; border: 2px solid #caaf38;">
   <legend> METHOD GET </legend>
 
@@ -24,7 +24,7 @@
 </form> <br><br><br>
 
 
-<form action="/cgi/python_cgi_POST.py" method="post">
+<form action="../cgi/python_cgi_POST.py" method="post">
   <fieldset style="background: #f6f8ff; border: 2px solid #4238ca;">
     <legend> METHOD POST </legend>
     <label for="name ...">Name:</label>
@@ -38,25 +38,10 @@
 
 <fieldset style="background: #fff3f3; border: 2px solid #fbd58f;">
   <legend> UPLOAD FILE/IMAGE (method POST) </legend><br>
-   <form  action="/cgi/python_cgi_upload.py" method="post" enctype="multipart/form-data">
+   <form action="../cgi/python_cgi_upload.py" method="post" enctype="multipart/form-data">
     Select file/image: <br><br>
     <input type="file" name="filename" id="fileToUpload">
     <input type="submit" value="Upload">
   </form> <br>
-</fieldset><br><br><br>
-
-
-
-  <form action="/cgi/php_cgi_simple.php" method="get">
-    <fieldset style="background: #fffdf6; border: 2px solid #caaf38;">
-    <legend> BONUS: PHP CGI - Simple </legend>
-  
-    <label for="street">Street:</label>
-    <input type="text" id="street" name="street" minlength="3" maxlength="1024"><br><br>
-    <label for="city">City:</label>
-    <input type="text" id="city" name="city" minlength="3" maxlength="1024"><br><br>
-    <input type="submit" value="Submit">
-  </fieldset>
-  </form> <br><br><br>
 
 </body>
