@@ -95,6 +95,8 @@ class Request : public Parser {
 		int				    storeWordsFromFirstLine(std::string firstLine);
 		int				    storeWordsFromOtherLine(std::string otherLine);
 
+		std::string			getErrorPage();
+
 
 		// cleanup ------------------------
 		void    printStoredRequestData(Request &request); // Just for checking

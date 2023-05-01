@@ -73,6 +73,8 @@ void Request::parseHeader(std::string header) {
 		}
 		i++;
 	}
+	std::cout << RED << "HTTP STATUS IN parseHeader: " << _httpStatus << std::endl << RES;
+
 }
 
 // void Request::storeBody(std::istringstream &iss)// TODO NOT NEEDED ??
@@ -123,7 +125,7 @@ int Request::storeWordsFromFirstLine(std::string firstLine) {
 				_data.setRequestMethod(*iter);
 			} else {
 				std::cout << RED << "Error: This method is not recognized\n" << RES;
-				// TODO -> Set 405 Method Not Allowed
+				_httpStatus = METHOD_NOT_ALLOWED; 
 			}
 		}
 		else if (i == 1)
@@ -137,6 +139,8 @@ int Request::storeWordsFromFirstLine(std::string firstLine) {
 			_data.setHttpVersion(*iter);
 		}
 	}
+	std::cout << RED << "HTTP STATUS IN FUNCTION: " << _httpStatus << std::endl << RES;
+
 	return (0);
 }
 
@@ -198,15 +202,88 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, std::string::size_type
 	_headerDone = true;
 	std::cout << BLU << "STORED HEADER: \n" << tmpHeader << "\n" << RES;
 	parseHeader(_data.getHeader());
+	std::cout << RED << "HTTP STATUS IN parseHeaderAndPath 1: " << _httpStatus << std::endl << RES;
+
+
 	//std::cout << RED "server root path: " << getServerData().getRootDirectory() << "\n" RES;
-	parsePath(_data.getHttpPath());	// IF FILE NOT FOUND 404, IT COULD JUST CLOSE THE CONNECTION (return now?)
+	if (_httpStatus == NO_STATUS || _httpStatus == OK)
+		parsePath(_data.getHttpPath());	// IF FILE NOT FOUND 404, IT COULD JUST CLOSE THE CONNECTION (return now?)
+	else
+		parsePath(getErrorPage());
 
 	if (_data.getRequestContentLength() == 0){
 		// if (_data.getRequestMethod() == "GET" && _data.getQueryString() != "")
 		//	; //callCGI(getRequestData(), fdClient); 		// moved to chooseMethod_StartAction()
 		_doneParsing = true;
     }
+	std::cout << RED << "HTTP STATUS IN parseHeaderAndPath: " << _httpStatus << std::endl << RES;
+
 }
+
+
+// --------------------------------------------------------------- double functions / maybe combine -------------------------------------------
+
+static std::string getSpecificErrorPage(std::vector<std::string> const & errorPages, HttpStatus status, std::string const & defaultErrorPage) {
+    std::vector<std::string>::const_iterator it = errorPages.cbegin();
+    for (; it != errorPages.cend(); ++it) {
+        if (it->find(std::to_string(status)) != std::string::npos) {
+            // If error page is found on the config file, return it
+            return *it;
+        }
+    }
+    // Otherwise return a default config file
+    return "./resources/_server_default_status/" + defaultErrorPage;
+}
+
+std::string Request::getErrorPage()
+{
+	std::string temp = "";
+
+	switch (_httpStatus) {
+        case 301: {
+            temp = _redirection;
+            break;
+        } case 400: {
+            temp = getSpecificErrorPage(_server->getErrorPages(), _httpStatus,
+                                            "400BadRequest.html");
+            break;
+        } case 403: {
+            temp = getSpecificErrorPage(_server->getErrorPages(), _httpStatus,
+                                            "403Forbidden.html");
+            break;
+        } case 404: {
+            temp = getSpecificErrorPage(_server->getErrorPages(), _httpStatus,
+                                            "404NotFound.html");
+            break;
+        } case 405: {
+            temp = getSpecificErrorPage(_server->getErrorPages(), _httpStatus,
+                                            "405MethodnotAllowed.html");
+            break;
+        } case 408: {
+            temp = getSpecificErrorPage(_server->getErrorPages(), _httpStatus,
+                                            "408RequestTimeout.html");
+            break;
+        } case 500: {
+            temp = getSpecificErrorPage(_server->getErrorPages(), _httpStatus,
+                                            "500InternarServerError.html");
+            break;
+		} case 505: {
+            temp = getSpecificErrorPage(_server->getErrorPages(), _httpStatus,
+                                            "HTTPVersionNotSupported.html");
+            break;
+        } default: {
+            // "Set-Cookie: id=123; jaka=500; Max-Age=10; HttpOnly\r\n";
+            // "Content-Type: " + storage->getRequestData().getResponseContentType() + "\n";	// jaka
+            std::cout << "_httpStatus: [[" << GRN_BG << _httpStatus << RES << "]]\n";
+            break;
+        }
+	}
+	return (temp);
+}
+
+
+// ---------------------------------------------------------------------------------------------------------------------------------------
+
 
 void Request::appendToRequest(const char str[], size_t len) {
 	std::cout << PUR << "Start appendToRequest(): _hasBody: " << _hasBody << " | _doneParsing: " << _doneParsing << " \n" << RES;

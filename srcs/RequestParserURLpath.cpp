@@ -577,6 +577,7 @@ std::string Request::parsePath_locationMatch(std::string const & originalUrlPath
 void Request::parsePath(std::string  const & originalUrlPath) {
     std::string serverBlockDir = getServerData().getRootDirectory();
 
+
     std::cout << "originalUrlPath:               [" << GRN_BG << originalUrlPath << RES << "]" << std::endl;
     std::cout << "server block root directory:   [" << GRN_BG << getServerData().getRootDirectory() << RES << "]" << std::endl;
     std::cout << std::endl << GRN << "Starting parsePath() and searching for the correct location block on the config file:" << RES;
@@ -610,5 +611,8 @@ void Request::parsePath(std::string  const & originalUrlPath) {
 
         printPathParts(_data);
         checkIfPathExists(URLPath_full);
+		std::cout << RED << "HTTP STATUS IN parsePath first: " << _httpStatus << std::endl << RES; // ---------------------------------------------
     }
+	std::cout << RED << "HTTP STATUS IN parsePath: " << _httpStatus << std::endl << RES;
+
 }
