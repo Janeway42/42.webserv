@@ -172,6 +172,11 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
                                             storage->getHttpStatus(),
                                             "408RequestTimeout.html");
             break;
+		} case 413: {
+            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
+                                            storage->getHttpStatus(),
+                                            "413ContentTooLarge.html");
+            break;
         } case 500: {
             _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
                                             storage->getHttpStatus(),

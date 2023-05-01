@@ -48,7 +48,7 @@ class WebServer
 
 
 		void sendProcesssedResponse(struct kevent& event);
-		std::string streamFile(std::string file);
+		// std::string streamFile(std::string file);
 		//void sendResponseFile(struct kevent& event, std::string file);
 		//void sendImmage(struct kevent& event, std::string imgFileName);
 		// int closeClient(struct kevent event, int filter);
