@@ -115,6 +115,10 @@ clean:
 
 fclean: clean
 	rm -f $(NAME)
+#	added jaka:
+	@rm -rf ./tests/curlNginxOutput
+	@rm -rf ./tests/curlWebservOutput
+	@rm -rf ./tests/siege/outputFiles
 	@echo "$(YELLOW)fclean done$(RESET)"
 
 re: fclean all

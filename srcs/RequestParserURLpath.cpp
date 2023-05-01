@@ -39,21 +39,18 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 		if (retFork < 0)
 			std::cout << "Error: Fork failed\n";
 	
-		// close(_cgi.getPipeCgiOut_0());
-		// close(_cgi.getPipeCgiIn_1());
+		close(_cgi.getPipeCgiOut_0());
+		close(_cgi.getPipeCgiIn_1());
 
 		ret = dup2(_cgi.getPipeCgiIn_0()   ,  0);		// cgi reads from parent via pipe fd_out
 		if (ret == -1)
 		 	std::cout << RED "Error dup2() of PipeCgiIn_0, child\n" RES;
+		close(_cgi.getPipeCgiIn_0());
 
 		//sleep(1);
 		ret = dup2(_cgi.getPipeCgiOut_1()   ,  1);	// cgi writes to parent via pipe fd_out NONBLOCK
 		if (ret == -1)
 		 	std::cout << RED "Error dup2() of PipeCgiOut_1, child\n" RES;
-		
-		close(_cgi.getPipeCgiIn_0());
-        close(_cgi.getPipeCgiOut_0());
-		close(_cgi.getPipeCgiIn_1());
         close(_cgi.getPipeCgiOut_1());
 
         chdir("./resources/cgi/");  // Change current working directory to the CGI directory - best practice,
@@ -68,8 +65,8 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 		//wait(NULL);
 		
 		//std::cerr << "    Start Parent\n";
-		close(_cgi.getPipeCgiIn_0());
 		close(_cgi.getPipeCgiOut_1());
+		close(_cgi.getPipeCgiIn_0());
 		//std::cout << BLU "\n       End runExecve()\n" << RES;
 		// sleep(1);
 	}
