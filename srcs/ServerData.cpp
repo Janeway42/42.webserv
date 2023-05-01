@@ -15,15 +15,8 @@
 /** Default constructor */
 ServerData::ServerData()
 	/** Initializing default values for the server block */
-<<<<<<< HEAD
-	: _server_name("localhost"),
-	//: _server_name("dummyhost"),	// Added  Jaka: we need to enable different server names. This is tested with Curl --resolve  ,ie: curl --resolve dummyhost:8080:127.0.0.1 dummyhost:8080/ 
-	_listens_to("80"),
-	_ip_address("127.0.0.1"),
-=======
 	: _server_name("localhost"),//127.0.0.1
 	_listens_to("8080"),
->>>>>>> main
 	_root_directory(_server_name),
 	_index_file("index.html"),
 	_client_max_body_size(1024),
