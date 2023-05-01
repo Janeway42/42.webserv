@@ -333,20 +333,17 @@ std::string Request::parsePath_cgi(std::string const & originalUrlPath, std::vec
 }
 
 std::string Request::parsePath_dir(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location, std::string const & subdirectory) {
-    // Ex.: localhost:8080/test/ or localhost:8080/test
+    // Ex.: localhost:8080/test/ or localhost:8080/test/sub/
+    // Obs.: A directory URI always have a / at the end (otherwise it is a file)
     if (originalUrlPath.find('?') == std::string::npos) {
         std::string locationBlockUriName = location->getLocationUriName();
         std::string locationBlockRootDir = location->getRootDirectory();
 
         std::cout << BLU << "No '?' found and originalUrlPath has no GET-Form data" << RES << std::endl;
 
-        // If it is a directory and has a / at the end, delete it, so it can be matched against the config file locations
-        std::string originalUrlPath_NoSlash = originalUrlPath;
-        if (originalUrlPath.back() == '/') {
-            originalUrlPath_NoSlash = originalUrlPath.substr(0, originalUrlPath.size() - 1);
-        }
-
-        if (originalUrlPath_NoSlash == locationBlockUriName) {
+        // Here we are matching the whole path with the whole locationBlockUriName + / (since it comes without it
+        // from the config file)
+        if (originalUrlPath == (locationBlockUriName + '/')) {
             std::cout << "Path is a directory." << std::endl << RES;
             _data.setIsFolder(true);
             _data.setAutoIndex(location->getAutoIndex());
@@ -416,8 +413,9 @@ std::string Request::parsePath_regularCase(std::string const & originalUrlPath, 
     std::string locationBlockRootDir = location->getRootDirectory();
 
     if (originalUrlPath != "/") {
-        // -------------------------------------------------------------------------------------------------- FILE
         std::string::size_type lastSlash = originalUrlPath.find_last_of('/');
+
+        // -------------------------------------------------------------------------------------------------- FILE
         if (lastSlash != std::string::npos) {
             std::string file = originalUrlPath.substr(lastSlash);
 //            std::cout << RED << "joyce locationBlockRootDir + file: " << locationBlockRootDir + file << RES << std::endl;
@@ -444,31 +442,32 @@ std::string Request::parsePath_regularCase(std::string const & originalUrlPath, 
             }
         }
         // -------------------------------------------------------------------------------------------------- DIRECTORY
-        std::string subdirectoryFromUrl;
+        std::string locationBlockRootDir;
         if (lastSlash > 0) {
-            // Is lastSlash is not zero, then we are dealing with subdirectories (i.e.: we are dealing with /dir/dir1)
+            // If lastSlash is not zero, then we are dealing with subdirectories (i.e.: we are dealing with /dir/dir1/ex/)
+            // Which means we want to Match the locationBlockRootDir (without the location dir on it) to the path
+            // to it. E.g.: path /dir/dir1/ex/ will be ./resources/dir/dir1/ex/
             std::string::size_type secondSlash = originalUrlPath.find_first_of('/', 1);
             if (secondSlash != std::string::npos) {
                 subdirectoryFromUrl = originalUrlPath.substr(secondSlash);
             }
         }
-//        std::cout << RED << "JOYCE locationBlockRootDir + subdirectoryFromUrl: " << locationBlockRootDir + subdirectoryFromUrl << RES << std::endl;
-        if (pathType(locationBlockRootDir + subdirectoryFromUrl) != REG_FILE
-                && pathType(locationBlockRootDir + subdirectoryFromUrl) != PATH_TYPE_ERROR) {
+//      std::cout << RED << "JOYCE locationBlockRootDir + subdirectoryFromUrl: " << locationBlockRootDir + subdirectoryFromUrl << RES << std::endl;
+        if (pathType(locationBlockRootDir + subdirectoryFromUrl) == DIRECTORY) {
+        //if (pathType(locationBlockRootDir + subdirectoryFromUrl) != REG_FILE
+                //&& pathType(locationBlockRootDir + subdirectoryFromUrl) != PATH_TYPE_ERROR) {
             std::string URLPath_full_dir = parsePath_dir(originalUrlPath, location, subdirectoryFromUrl);
             if (not URLPath_full_dir.empty()) {
                 return URLPath_full_dir;
             }
-        } else { // todo find a better way to set the auto index??
-            // Handling auto index in case the path is not a directory (which is an error):
-            if (originalUrlPath.find('.') == std::string::npos) {
-//                _data.setIsFolder(true);
-//                _data.setAutoIndex(location->getAutoIndex());
-                if (_data.getAutoIndex() == true) {
-                    setHttpStatus(FORBIDDEN);
-                } else {
-                    setHttpStatus(NOT_FOUND);
-                }
+        } else {
+            // Handling auto index errors, (in the case where the path is NOT a directory):
+            // if auto index is on: return 403
+            // if auto index is off: return 404
+            if (_data.getAutoIndex()) {
+                setHttpStatus(FORBIDDEN);
+            } else {
+                setHttpStatus(NOT_FOUND);
             }
         }
     }
