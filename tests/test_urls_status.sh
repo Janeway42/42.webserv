@@ -108,7 +108,6 @@ testURLpath "localhost:8080/texts/bible.html"           "localhost:texts:bible.h
 # # # CGI
 # testURLpath "localhost:8080/cgi/cgi_index.html"         "localhost:cgi:cgi_index.html"
 # testURLpath 'localhost:8080/cgi/python_cgi_GET.py?street=Singel&city=Tokio'         "localhost:cgi:python_get.py?street=Singel&city=Tokio"
-# curl -X POST -d "name=Jaka&description=qwe asd wer ert dffgh rt rty." http://localhost:8008/_cgi/python_cgi_POST.py
 sleep 1
 # cat /usr/local/var/log/nginx/error.log > ./error.log					# HOME
 cat /Users/jmurovec/.brew/Cellar/nginx/logs/error.log > ./error.log		# CODAM

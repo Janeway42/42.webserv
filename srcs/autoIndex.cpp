@@ -82,11 +82,11 @@ std::string	makeHtmlString(std::string folderContent, std::string path) {
 	appendHTMLhead(path, htmlStr);
 	while (std::getline(iss, line)) {
 		if (line[0] == 'D') {
-			std::cout << "Is DIR  [" << line << "]\n";
+			//std::cout << "Is DIR  [" << line << "]\n";
 			appendHTMLbody(line, path, htmlStr);
 		}
 		else if (line[0] == 'F') {
-			std::cout << "Not DIR [" << line << "]\n";
+			//std::cout << "Not DIR [" << line << "]\n";
 			htmlStr = appendHTMLbody(line, path, htmlStr);
 		}
 	}
@@ -127,7 +127,7 @@ std::string ResponseData::storeFolderContent(const char* path) {
 	}
 	closedir(dir);
 	allFolderContent.append(folders).append(files);
-	std::cout << BLU "ALL CONTENT:\n" << allFolderContent << "\n" RES;
+	//std::cout << BLU "ALL CONTENT:\n" << allFolderContent << "\n" RES;
 	std::string htmlStr = makeHtmlString(allFolderContent, path);
 	return (htmlStr);
 }

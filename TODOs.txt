@@ -19,8 +19,9 @@ More important:
         - Upload some file to the server and get it back (check if just clickin gon the file/image is enough)
         - The slash at the end of url should be always a folder, without a slash should be a file
         - Index file has to be served if it exists (even if autoindex is on)
-        - Use max_body_size from the config file on the server (on the request parser)
-          Limit the client body (use: curl -X POST -H "Content-Type: plain/text" --data "BODY IS HERE write something shorter or longer than body limit").
+        - Bonus cgi .php --> If I add a new location block called .php, the parsing of the config file stops at that location
+        - DONE - Use max_body_size from the config file on the server (on the request parser)
+                 Limit the client body (use: curl -X POST -H "Content-Type: plain/text" --data "BODY IS HERE write something shorter or longer than body limit").
     JOYCE:
         - Delete ip_address and add the option of server_name contain an ip address number or a string (domain) -> DONE
         - Add a redirection location to the config file
