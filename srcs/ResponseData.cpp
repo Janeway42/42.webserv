@@ -177,6 +177,11 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
                                             storage->getHttpStatus(),
                                             "500InternarServerError.html");
             break;
+		} case 504: {
+            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
+                                            storage->getHttpStatus(),
+                                            "504GatewayTimeout.html");
+            break;
 		} case 505: {
             _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
                                             storage->getHttpStatus(),

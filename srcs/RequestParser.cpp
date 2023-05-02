@@ -194,7 +194,8 @@ int Request::storeWordsFromOtherLine(std::string otherLine) {
  */
 
 void Request::parseHeaderAndPath(std::string & tmpHeader, std::string::size_type it) {
-    std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
+    std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: " << _clientFd << std::endl;
+
 	_hasBody = true;
 	tmpHeader = _data.getHeader();
 	tmpHeader.append(_data.getTemp().substr(0, it));
@@ -266,6 +267,10 @@ std::string Request::getErrorPage()
         } case 500: {
             temp = getSpecificErrorPage(_server->getErrorPages(), _httpStatus,
                                             "500InternarServerError.html");
+            break;
+		} case 504: {
+            temp = getSpecificErrorPage(_server->getErrorPages(), _httpStatus,
+                                            "504GatewayTimeout.html");
             break;
 		} case 505: {
             temp = getSpecificErrorPage(_server->getErrorPages(), _httpStatus,

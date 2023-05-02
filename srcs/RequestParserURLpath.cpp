@@ -611,8 +611,5 @@ void Request::parsePath(std::string  const & originalUrlPath) {
 
         printPathParts(_data);
         checkIfPathExists(URLPath_full);
-		std::cout << RED << "HTTP STATUS IN parsePath first: " << _httpStatus << std::endl << RES; // ---------------------------------------------
     }
-	std::cout << RED << "HTTP STATUS IN parsePath: " << _httpStatus << std::endl << RES;
-
 }

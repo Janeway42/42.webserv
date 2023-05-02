@@ -153,12 +153,16 @@ void WebServer::handleTimeout(struct kevent &event)
 {
 	Request *storage = (Request *)event.udata;
 
-	storage->setHttpStatus(REQUEST_TIMEOUT);
 	std::cout << "Unable to process, it takes too long - TIMER\n";
-	storage->getCgiData().closePipes();
 
 	if (storage->getDone() == false)
+	{
+		storage->setHttpStatus(REQUEST_TIMEOUT);
 		removeFilter(event, EVFILT_READ, "failed kevent EV_DELETE, EVFILT_READ - handle timeout");
+	}
+	else
+		storage->setHttpStatus(GATEWAY_TIMEOUT);
+	storage->getCgiData().closePipes();
 	if (fcntl(event.ident, F_GETFD) != -1)
 		addFilter(event.ident, event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE - handle timeout");
 }
@@ -383,7 +387,7 @@ void WebServer::newClient(struct kevent event, ServerData * specificServer)
 		if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 			throw ServerException("Failed kevent EV_ADD, EVFILT_READ, new client");
 
-		int time = 30 * 1000;     // needs to be 30 for final version -----------------------------------------
+		int time = 5 * 1000;     // needs to be 30 for final version -----------------------------------------
 		EV_SET(&evSet, fd, EVFILT_TIMER, EV_ADD, 0, time, storage); 
 		if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 			throw ServerException("Failed kevent EV_ADD, EVFILT_TIMER, new client");
@@ -400,8 +404,10 @@ void WebServer::closeClient(struct kevent& event)
 
 	storage->getCgiData().closePipes();  // if any pipes are still open, function cleans them out
 	removeFilter(event, EVFILT_TIMER, "failed kevent EV_DELETE EVFILT_TIMER - closeClient");
+
 	std::cout << "fd that will be closed: " << event.ident << std::endl;
 	std::cout << "original request: " << storage->getRequestData().getHttpPath() << std::endl;
+
 	close(event.ident);
 	std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
     delete(storage);
