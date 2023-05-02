@@ -11,6 +11,11 @@ DELETE http://api.example.com/employee/1
 // curl -X POST localhost:8080  -H "Content-Length: 444"  -H "Content-Type: text/html" -d 'abc'
 // curl -X DELETE localhost:8080/resources/test_index.html -H "Content-Type: text/html"
 
+// curl --resolve localhost:4243:127.0.0.1 http://localhost:4243
+// curl --resolve whatever:8080:127.0.0.1 http://whatever:8080
+// curl --resolve testserver:8080:127.0.0.1 http://testserver:8080
+
+
 #include <unistd.h> // sleep
 #include "RequestParser.hpp"
 
@@ -18,7 +23,6 @@ DELETE http://api.example.com/employee/1
 Request::Request() {
 	_kq = -1;
     _clientFd = -1;
-    _server = new ServerData();
     _data = RequestData();
     _answer = ResponseData();
     _cgi = CgiData();
@@ -32,10 +36,11 @@ Request::Request() {
 }
 
 /** Overloaded constructor */
-Request::Request(int kq, int fd, ServerData *specificServer) {
+Request::Request(int kq, int listeningSocket, int fd, std::vector<ServerData> servers) {
 	_kq = kq;
+	_listeningSocket = listeningSocket;
 	_clientFd = fd;
-	_server = new ServerData(*specificServer);
+	_servers = servers;
 	_data = RequestData();
 	_answer = ResponseData();
 	_cgi = CgiData();
@@ -50,7 +55,6 @@ Request::Request(int kq, int fd, ServerData *specificServer) {
 
 /** Destructor */
 Request::~Request() {
-	delete _server;
     std::cout << GRY << "Request Destructor" << RES << std::endl;
 }
 
@@ -73,8 +77,6 @@ void Request::parseHeader(std::string header) {
 		}
 		i++;
 	}
-	std::cout << RED << "HTTP STATUS IN parseHeader: " << _httpStatus << std::endl << RES;
-
 }
 
 // void Request::storeBody(std::istringstream &iss)// TODO NOT NEEDED ??
@@ -139,8 +141,6 @@ int Request::storeWordsFromFirstLine(std::string firstLine) {
 			_data.setHttpVersion(*iter);
 		}
 	}
-	std::cout << RED << "HTTP STATUS IN FUNCTION: " << _httpStatus << std::endl << RES;
-
 	return (0);
 }
 
@@ -164,7 +164,8 @@ int Request::storeWordsFromOtherLine(std::string otherLine) {
 			}
 			else if (*iter == "Host:") {
 				iter++;
-				_data.setRequestHost(*iter);
+				std::string temp = (*iter).substr(0, (*iter).find(":"));
+				_data.setRequestHost(temp);
 			}
 			else if (*iter == "Content-Length:") {
 				iter++;
@@ -188,6 +189,32 @@ int Request::storeWordsFromOtherLine(std::string otherLine) {
 	return (0);
 }
 
+void Request::setSpecificServer()
+{
+	std::vector<ServerData>::iterator it;
+
+	for(it = _servers.begin(); it != _servers.end(); it++)
+	{
+		if (_listeningSocket == it->getListeningSocket())
+		{
+			if(getRequestData().getRequestHost() == it->getServerName())
+			{
+				_specificServer = *it;
+				return ;
+			}
+		}
+	}
+	for(it = _servers.begin(); it != _servers.end(); it++)
+	{
+		if (_listeningSocket == it->getListeningSocket())
+		{
+			_specificServer = *it;
+			return ;
+		}
+	}
+}
+
+
 /* TODO
  * - What if method is GET (normaly without body) AND content-length is not zero ???
  * - What if method POST and content-length is zero ???
@@ -200,12 +227,13 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, std::string::size_type
 	tmpHeader = _data.getHeader();
 	tmpHeader.append(_data.getTemp().substr(0, it));
 	_data.setHeader(tmpHeader);
-	_headerDone = true;
 	std::cout << BLU << "STORED HEADER: \n" << tmpHeader << "\n" << RES;
 	parseHeader(_data.getHeader());
-	std::cout << RED << "HTTP STATUS IN parseHeaderAndPath 1: " << _httpStatus << std::endl << RES;
+	setSpecificServer();
 
-
+	std::cout << "-------------------- _specificServer: " << _specificServer.getServerName() << std::endl;
+	
+	_headerDone = true;
 	//std::cout << RED "server root path: " << getServerData().getRootDirectory() << "\n" RES;
 	if (_httpStatus == NO_STATUS || _httpStatus == OK)
 		parsePath(_data.getHttpPath());	// IF FILE NOT FOUND 404, IT COULD JUST CLOSE THE CONNECTION (return now?)
@@ -217,8 +245,6 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, std::string::size_type
 		//	; //callCGI(getRequestData(), fdClient); 		// moved to chooseMethod_StartAction()
 		_doneParsing = true;
     }
-	std::cout << RED << "HTTP STATUS IN parseHeaderAndPath: " << _httpStatus << std::endl << RES;
-
 }
 
 
@@ -245,35 +271,35 @@ std::string Request::getErrorPage()
             temp = _redirection;
             break;
         } case 400: {
-            temp = getSpecificErrorPage(_server->getErrorPages(), _httpStatus,
+            temp = getSpecificErrorPage(_specificServer.getErrorPages(), _httpStatus,
                                             "400BadRequest.html");
             break;
         } case 403: {
-            temp = getSpecificErrorPage(_server->getErrorPages(), _httpStatus,
+            temp = getSpecificErrorPage(_specificServer.getErrorPages(), _httpStatus,
                                             "403Forbidden.html");
             break;
         } case 404: {
-            temp = getSpecificErrorPage(_server->getErrorPages(), _httpStatus,
+            temp = getSpecificErrorPage(_specificServer.getErrorPages(), _httpStatus,
                                             "404NotFound.html");
             break;
         } case 405: {
-            temp = getSpecificErrorPage(_server->getErrorPages(), _httpStatus,
+            temp = getSpecificErrorPage(_specificServer.getErrorPages(), _httpStatus,
                                             "405MethodnotAllowed.html");
             break;
         } case 408: {
-            temp = getSpecificErrorPage(_server->getErrorPages(), _httpStatus,
+            temp = getSpecificErrorPage(_specificServer.getErrorPages(), _httpStatus,
                                             "408RequestTimeout.html");
             break;
         } case 500: {
-            temp = getSpecificErrorPage(_server->getErrorPages(), _httpStatus,
+            temp = getSpecificErrorPage(_specificServer.getErrorPages(), _httpStatus,
                                             "500InternarServerError.html");
             break;
 		} case 504: {
-            temp = getSpecificErrorPage(_server->getErrorPages(), _httpStatus,
+            temp = getSpecificErrorPage(_specificServer.getErrorPages(), _httpStatus,
                                             "504GatewayTimeout.html");
             break;
 		} case 505: {
-            temp = getSpecificErrorPage(_server->getErrorPages(), _httpStatus,
+            temp = getSpecificErrorPage(_specificServer.getErrorPages(), _httpStatus,
                                             "HTTPVersionNotSupported.html");
             break;
         } default: {
@@ -306,6 +332,11 @@ void Request::appendToRequest(const char str[], size_t len) {
 
 		if ((it = _data.getTemp().find(strToFind)) != std::string::npos) {
 			parseHeaderAndPath(tmpHeader, it);
+
+			// in case of error shouldn't it directly return here? 
+			// if (_doneParsing == true)
+			//	return  ;
+
 			std::cout << YEL << "Found header ending /r/n, maybe there is body\n" << RES;
 			//std::cout << PUR << "size_type 'it' value: " << it << "\n" << RES;
 			it2 = chunk.find(strToFind) + strToFind.length();	// needed to find the start of body, as char*, not std::string, because body will be vector
@@ -417,8 +448,8 @@ RequestData & Request::getRequestData(){
     return _data;
 }
 
-ServerData & Request::getServerData(){
-    return *_server;
+ServerData & Request::getServerData(){   // do we need reference? 
+    return _specificServer;
 }
 
 ResponseData & Request::getResponseData(){

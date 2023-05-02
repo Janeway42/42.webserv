@@ -33,6 +33,9 @@ WebServer::WebServer(std::string const & configFileName)
             	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
                		throw ServerException("Failed kevent start listening socket");
 			}
+			std::cout  << "IP ADDRESS: " << it_server->getServerName() << std::endl;
+			std::cout  << "PORT: " << it_server->getListensTo() << std::endl;
+			std::cout << "LISTENING SOCKET: " << it_server->getListeningSocket() << std::endl;
 			location++;
         }
         std::cout << CYN << GRY_BG << "WebServer Overloaded Constructor" << RES << std::endl;
@@ -61,15 +64,7 @@ int WebServer::checkExistingSocket(int location, std::string port)
 WebServer::~WebServer()
 {
 	close(_kq);
-	std::vector<ServerData>::iterator it_server = _servers.begin();
-	for (; it_server != _servers.end(); ++it_server) {
-		if (it_server->getAddr() != NULL) {
-			std::cout << "_addr: " << it_server->getAddr() << std::endl;
-			freeaddrinfo(it_server->getAddr());
-			// set it-server->getAddr() to NULL so it doesn't free twice. 
-		}
-	}
-    std::cout << CYN << GRY_BG << "WebServer Destructor" << RES << std::endl;
+	std::cout << CYN << GRY_BG << "WebServer Destructor" << RES << std::endl;
 }
 
 // --------------------------------------------------------- server main loop
@@ -99,7 +94,7 @@ void WebServer::runServer()
 				if (evList[i].flags & EV_ERROR)
 					std::cout << "Socket was deleted\n";
 				else if (specificServer != NULL)
-					newClient(evList[i], specificServer);
+					newClient(evList[i]);
 				else if (evList[i].filter == EVFILT_TIMER)
 				{
 					std::cout << "----------------------------------------------------------------------------------------------------------------- TIMER\n"; // Corina: I need these for testing purposes
@@ -359,7 +354,7 @@ void WebServer::sendResponse(struct kevent& event)
 // --------------------------------------------------------- client functions 
 // --------------------------------------------------------------------------
 
-void WebServer::newClient(struct kevent event, ServerData * specificServer)
+void WebServer::newClient(struct kevent event)
 {
 	struct kevent evSet;
 	struct sockaddr_storage socket_addr;
@@ -380,7 +375,7 @@ void WebServer::newClient(struct kevent event, ServerData * specificServer)
         // Also, I think a new client won't be actually a new Request class each time, it will maybe just add a new
         // specificServer to the Request class?? and the Request class would loop through the available servers to decide
         // from which one it will retrieve data !? (by matching server_name and port for example) ?? I don't know just an idea
-		Request *storage = new Request(_kq, fd, specificServer);
+		Request *storage = new Request(_kq, event.ident, fd, _servers);
 
 
 		EV_SET(&evSet, fd, EVFILT_READ, EV_ADD, 0, 0, storage); 
