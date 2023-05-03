@@ -38,7 +38,6 @@ RES='\033[0m'
 # Our server outputs 2 more characters '\r\n' than nginx, after the header
 
 
-
 ### SETTINGS #################################################################
 PASSWORD="..."													# local sudo password, to run /usr/local/opt/nginx/bin/nginx -g "daemon off;" (this method is bad, but for now brew is not working)
 # PathMyWebServer="/Users/jmb/Desktop/projects/webserv03may00"		# path to ./webserv executable  HOME
