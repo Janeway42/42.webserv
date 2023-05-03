@@ -314,7 +314,7 @@ void WebServer::sendResponse(struct kevent& event)
 			storage->getResponseData().setResponseDone(true);
 
 			std::cout << "full response: \n";
-			std::cout << storage->getResponseData().getFullResponse() << std::endl;
+			// std::cout << storage->getResponseData().getFullResponse() << std::endl;
 			// std::cout << "----------- FULL RESPONSE: -----------------------\n" << storage->getResponseData().getFullResponse() << std::endl;
 		}
 
