@@ -140,7 +140,7 @@ static std::string selectErrorPage(std::vector<std::string> const & errorPages, 
 static std::string setResponseHeader(HttpStatus status) {
     return "HTTP/1.1 " + std::to_string(status) + " " + httpStatusToString(status) + "\r\n"
            "Content-Type: text/html\r\n"
-           "Content-Encoding: identity\r\n"// Corina - added it because firefox complained that itwas missing - not sure if we keep because firefox still complains even with it. We leave it for now.
+           "Content-Encoding: identity\r\n"// Corina - added it because firefox complained that it was missing - not sure if we keep because firefox still complains even with it. We leave it for now.
            "Connection: close\r\n";
 }
 
@@ -191,6 +191,16 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
             _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
                                             storage->getHttpStatus(),
                                             "500InternarServerError.html");
+            break;
+		} case 504: {
+            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
+                                            storage->getHttpStatus(),
+                                            "504GatewayTimeout.html");
+            break;
+		} case 505: {
+            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
+                                            storage->getHttpStatus(),
+                                            "500HttpVersionNotSupported.html");
             break;
         } default: {
             // "Set-Cookie: id=123; jaka=500; Max-Age=10; HttpOnly\r\n";

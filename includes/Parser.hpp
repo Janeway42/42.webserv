@@ -52,6 +52,7 @@ enum HttpStatus {
     HEADER_FIELDS_TOO_LARGE = 431, // The server is unwilling to process the request because its header fields are too large. The request may be resubmitted after reducing the size of the request header fields.
     /** Server error responses */
     INTERNAL_SERVER_ERROR = 500, // The server has encountered a situation it does not know how to handle.
+	GATEWAY_TIMEOUT = 504,
     HTTP_VERSION_NOT_SUPPORTED = 505 // The HTTP version used in the request is not supported by the server.
 };
 

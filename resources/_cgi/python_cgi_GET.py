@@ -19,7 +19,7 @@ import cgi, cgitb
 # TO READ FROM STDIN, FROM PIPE
 print ("<br><br><h3>THIS IS PYTHON SCRIPT:</h3>")
 
-# time.sleep(30)
+# time.sleep(11)
 # exit()
 
 # for l in sys.stdin:

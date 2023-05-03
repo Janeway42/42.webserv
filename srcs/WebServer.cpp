@@ -19,12 +19,24 @@ WebServer::WebServer(std::string const & configFileName)
         // ----------- loop to create all listening sockets ---------
         std::vector<ServerData>::iterator it_server;
         //std::cout << "before vector loop ---------------\n";
+		int location = 0;
         for (it_server = _servers.begin(); it_server != _servers.end(); ++it_server)
         {
-            it_server->setListeningSocket();
-            EV_SET(&evSet, it_server->getListeningSocket(), EVFILT_READ, EV_ADD | EV_CLEAR, NOTE_WRITE, 0, NULL);
-            if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
-                throw ServerException("Failed kevent start listening socket"); // getaddrinfo uses malloc - freeaddrinfo is needed !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! - TO DO
+			int tempSocket = -1;
+			tempSocket = checkExistingSocket(location, it_server->getListensTo());
+			if (tempSocket != -1)
+				it_server->setExistingListeningSocket(tempSocket);	// socket already on kq, no need to add it again			
+			else 
+			{
+			   	it_server->setListeningSocket();
+            	EV_SET(&evSet, it_server->getListeningSocket(), EVFILT_READ, EV_ADD | EV_CLEAR, NOTE_WRITE, 0, NULL);
+            	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
+               		throw ServerException("Failed kevent start listening socket");
+			}
+			std::cout  << "IP ADDRESS: " << it_server->getServerName() << std::endl;
+			std::cout  << "PORT: " << it_server->getListensTo() << std::endl;
+			std::cout << "LISTENING SOCKET: " << it_server->getListeningSocket() << std::endl;
+			location++;
         }
         std::cout << CYN << GRY_BG << "WebServer Overloaded Constructor" << RES << std::endl;
     } catch (std::exception const & e) {
@@ -33,17 +45,26 @@ WebServer::WebServer(std::string const & configFileName)
     }
 }
 
+int WebServer::checkExistingSocket(int location, std::string port)
+{
+	std::vector<ServerData>::iterator it_server;
+	int i = 0;
+
+	if (location > 0)
+	{
+		for (it_server = _servers.begin(); i != location && it_server != _servers.end(); ++it_server)
+		{
+			if (it_server->getListensTo() == port)
+				return (it_server->getListeningSocket());
+		}
+	}
+	return (-1);
+}
+
 WebServer::~WebServer()
 {
 	close(_kq);
-	std::vector<ServerData>::iterator it_server = _servers.begin();
-	for (; it_server != _servers.end(); ++it_server) {
-		if (it_server->getAddr() != NULL) {
-			std::cout << "_addr: " << it_server->getAddr() << std::endl;
-			freeaddrinfo(it_server->getAddr());
-		}
-	}
-    std::cout << CYN << GRY_BG << "WebServer Destructor" << RES << std::endl;
+	std::cout << CYN << GRY_BG << "WebServer Destructor" << RES << std::endl;
 }
 
 // --------------------------------------------------------- server main loop
@@ -73,7 +94,7 @@ void WebServer::runServer()
 				if (evList[i].flags & EV_ERROR)
 					std::cout << "Socket was deleted\n";
 				else if (specificServer != NULL)
-					newClient(evList[i], specificServer);
+					newClient(evList[i]);
 				else if (evList[i].filter == EVFILT_TIMER)
 				{
 					std::cout << "----------------------------------------------------------------------------------------------------------------- TIMER\n"; // Corina: I need these for testing purposes
@@ -127,16 +148,18 @@ void WebServer::handleTimeout(struct kevent &event)
 {
 	Request *storage = (Request *)event.udata;
 
-	// std::cout << "existing HTTP status: " << storage->getHttpStatus() << std::endl;
-	storage->setHttpStatus(REQUEST_TIMEOUT);
 	std::cout << "Unable to process, it takes too long - TIMER\n";
-	storage->getCgiData().closePipes();
-	// std::cout << "done: " << storage->getDone() << std::endl;
+
 	if (storage->getDone() == false)
 	{
+		storage->setHttpStatus(REQUEST_TIMEOUT);
 		removeFilter(event, EVFILT_READ, "failed kevent EV_DELETE, EVFILT_READ - handle timeout");
 	}
-	addFilter(event.ident, event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE - handle timeout");
+	else
+		storage->setHttpStatus(GATEWAY_TIMEOUT);
+	storage->getCgiData().closePipes();
+	if (fcntl(event.ident, F_GETFD) != -1)
+		addFilter(event.ident, event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE - handle timeout");
 }
 
 void WebServer::readRequest(struct kevent& event)
@@ -191,7 +214,8 @@ void WebServer::readRequest(struct kevent& event)
 			//std::cout << CYN "    returned from ATR(), _parsingDone: " << storage->getDone() << ", isCGI: " << storage->getResponseData().getIsCgi() << "\n" RES;
 
 
-			// if (storage->getHttpStatus() != NO_STATUS || storage->getDone() == true)				// new Jaka: getIsCGI()
+			std::cout << RED << "HTTP STATUS: " << storage->getHttpStatus() << std::endl << RES;
+
 			if ((storage->getHttpStatus() != NO_STATUS && storage->getHttpStatus() != OK) || (storage->getDone() == true && storage->getCgiData().getIsCgi() == false))
 			{
 //				std::cout << CYN "           ReadRequest: B)\n" RES;
@@ -288,6 +312,9 @@ void WebServer::sendResponse(struct kevent& event)
 		{
 			storage->getResponseData().setResponse(event);
 			storage->getResponseData().setResponseDone(true);
+
+			std::cout << "full response: \n";
+			std::cout << storage->getResponseData().getFullResponse() << std::endl;
 			// std::cout << "----------- FULL RESPONSE: -----------------------\n" << storage->getResponseData().getFullResponse() << std::endl;
 		}
 
@@ -327,7 +354,7 @@ void WebServer::sendResponse(struct kevent& event)
 // --------------------------------------------------------- client functions 
 // --------------------------------------------------------------------------
 
-void WebServer::newClient(struct kevent event, ServerData * specificServer)
+void WebServer::newClient(struct kevent event)
 {
 	struct kevent evSet;
 	struct sockaddr_storage socket_addr;
@@ -348,14 +375,14 @@ void WebServer::newClient(struct kevent event, ServerData * specificServer)
         // Also, I think a new client won't be actually a new Request class each time, it will maybe just add a new
         // specificServer to the Request class?? and the Request class would loop through the available servers to decide
         // from which one it will retrieve data !? (by matching server_name and port for example) ?? I don't know just an idea
-		Request *storage = new Request(_kq, fd, specificServer);
-		// storage->getRequestData().setKqFd(getKq());	 // moved to Request itself
+		Request *storage = new Request(_kq, event.ident, fd, _servers);
+
 
 		EV_SET(&evSet, fd, EVFILT_READ, EV_ADD, 0, 0, storage); 
 		if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 			throw ServerException("Failed kevent EV_ADD, EVFILT_READ, new client");
 
-		int time = 30 * 1000;     // needs to be 30 for final version -----------------------------------------
+		int time = 5 * 1000;     // needs to be 30 for final version -----------------------------------------
 		EV_SET(&evSet, fd, EVFILT_TIMER, EV_ADD, 0, time, storage); 
 		if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 			throw ServerException("Failed kevent EV_ADD, EVFILT_TIMER, new client");
@@ -372,8 +399,10 @@ void WebServer::closeClient(struct kevent& event)
 
 	storage->getCgiData().closePipes();  // if any pipes are still open, function cleans them out
 	removeFilter(event, EVFILT_TIMER, "failed kevent EV_DELETE EVFILT_TIMER - closeClient");
+
 	std::cout << "fd that will be closed: " << event.ident << std::endl;
 	std::cout << "original request: " << storage->getRequestData().getHttpPath() << std::endl;
+
 	close(event.ident);
 	std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
     delete(storage);
@@ -412,6 +441,7 @@ void WebServer::removeFilter(struct kevent& event, int filter, std::string error
 	EV_SET(&evSet, event.ident, filter, EV_DELETE, 0, 0, storage); 
 	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 		throw ServerException(errorMessage);
+		// std::cout << "event already removed: " << event.ident << " filter: " << filter << " error to be: " << errorMessage <<  std::endl;
 }
 
 void	WebServer::chooseMethod_StartCGI(struct kevent event, Request * storage) {

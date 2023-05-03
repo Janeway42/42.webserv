@@ -35,7 +35,7 @@ class WebServer
 		void readRequest(struct kevent& event);
 		void sendResponse(struct kevent& event);
 		void handleTimeout(struct kevent &event);
-		void newClient(struct kevent event, ServerData * specificServer);
+		void newClient(struct kevent event);
 		void addFilter(int fd, struct kevent& event, int filter, std::string errormMsesage);
 		void removeFilter(struct kevent& event, int filter, std::string errorMessage);
 		void closeClient(struct kevent& event);
@@ -43,6 +43,7 @@ class WebServer
 		// utils 
 		bool isListeningSocket(int fd);
 		ServerData * getSpecificServer(int fd);
+		int		checkExistingSocket(int location, std::string port);
 
 		void	chooseMethod_StartCGI(struct kevent event, Request* storage); 	// added Jaka
 

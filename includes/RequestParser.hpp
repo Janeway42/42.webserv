@@ -33,6 +33,7 @@ class Request : public Parser {
 	
 	private:
 		int _kq;
+		int _listeningSocket;
 		int				_clientFd;
 		RequestData		_data;
 		ResponseData	_answer;
@@ -43,7 +44,8 @@ class Request : public Parser {
 		bool 			_hasBody;
 		HttpStatus		_httpStatus;
 		std::string		_redirection;
-		ServerData  	*_server;
+		ServerData  	_specificServer;
+		std::vector<ServerData> _servers;
 
 		void        parseHeaderAndPath(std::string & tmpHeader, std::string::size_type it);
 		int 		appendLastChunkToBody2(const char *str, size_t len);
@@ -56,7 +58,7 @@ class Request : public Parser {
 
 	public:
 		Request();
-		Request(int kq, int fd, ServerData * specificServer);
+		Request(int kq, int listenigSocket, int fd, std::vector<ServerData> servers);
 		virtual ~Request();
 
 		// getters
@@ -74,6 +76,7 @@ class Request : public Parser {
 		void			setDone(bool val);
 		void			setHttpStatus(HttpStatus val);
 		void			setRedirection(std::string const & redirection);
+		void			setSpecificServer();
 
 		// methods
 		std::map<std::string, std::string>	storeFormData(std::string pq);
@@ -94,6 +97,8 @@ class Request : public Parser {
 		void			    runExecve(char *ENV[], char *args[], struct kevent event);
 		int				    storeWordsFromFirstLine(std::string firstLine);
 		int				    storeWordsFromOtherLine(std::string otherLine);
+
+		std::string			getErrorPage();
 
 
 		// cleanup ------------------------

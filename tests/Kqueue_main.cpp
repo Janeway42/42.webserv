@@ -1,12 +1,12 @@
 #include "WebServer.hpp"
 
-//void func() {
-//    system("leaks webserv");
-//}
+void func() {
+   system("leaks webserv");
+}
 
 int main(int ac, char **av)
 {
-//    atexit(func);
+   atexit(func);
 
 	signal(SIGINT, endSignal);
 	signalCall = false;
