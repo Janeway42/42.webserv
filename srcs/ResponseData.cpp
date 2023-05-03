@@ -76,6 +76,8 @@ void ResponseData::createResponse(struct kevent& event) {
 
     _responsePath = storage->getRequestData().getURLPath_full();
 	setResponseStatus(event);
+    std::cout << RED << "_response path after SetResponseStatus(): " << _responsePath << "\n" << RES;
+
     if (storage->getRedirection().empty()) {
         if (storage->getRequestData().getIsFolder() && not storage->getCgiData().getIsCgi()) {
             /* No need to loop through the locations to find the matching,  the getURLPath_full() already contains
@@ -91,14 +93,14 @@ void ResponseData::createResponse(struct kevent& event) {
 
                 std::cout << "   getHttpStatus(): [" << storage->getHttpStatus() << "]\n" << RES;
                 std::cout << "   response path:   [" << _responsePath << "]\n" << RES;
-                std::cout << "   content type:    [" << storage->getRequestData().getResponseContentType() << "]\n"
-                          << RES;
+                std::cout << "   content type:    [" << storage->getRequestData().getResponseContentType() << "]\n" << RES;
+            } else if (storage->getHttpStatus() != OK) {
+                _responseBody = streamFile(_responsePath);
             }
             // Handling auto index
             if (storage->getRequestData().getAutoIndex()) {
                 std::cout << BLU "AUTOINDEX ON, must call storeFolderContent()\n" << RES;
-                std::cout << BLU "     URLPathFirstPart: [" << storage->getRequestData().getURLPathFirstPart() << "]\n"
-                          << RES;
+                std::cout << BLU "     URLPathFirstPart: [" << storage->getRequestData().getURLPathFirstPart() << "]\n" << RES;
                 // if (storage->getRequestData().getURLPathFirstPart().empty()) {
                 // 	std::cout << BLU "first part is empty\n" << RES;
                 // 	std::string newPath = "./resources/" + storage->getRequestData().getURLPath();
@@ -108,7 +110,7 @@ void ResponseData::createResponse(struct kevent& event) {
                 _responseBody = storeFolderContent(storage->getRequestData().getURLPathFirstPart().c_str());
             }
         }
-            // if it is not a folder (it checks first if cgi -> if not then it checks text (includes error), else image
+        // if it is not a folder (it checks first if cgi -> if not then it checks text (includes error), else image
         else {
             if (storage->getCgiData().getIsCgi() && storage->getHttpStatus() == OK) {
                 _responseBody = storage->getRequestData().getCgiBody();
@@ -117,7 +119,7 @@ void ResponseData::createResponse(struct kevent& event) {
                     std::cout << GRN << "The path is a file: [" << GRN_BG << _responsePath << RES << "]\n";
                     _responseBody = streamFile(_responsePath);
                     //_responseBody = streamFile(storage->getServerData().getRootDirectory() + "/" + _responsePath);
-                } else {    // IF IMAGE, FULL RESPONSE IS CREATED IN setImage()
+                } else { // IF IMAGE, FULL RESPONSE IS CREATED IN setImage()
                     std::cout << GRN << "The path is an image: [" << GRN_BG << _responsePath << RES << "]\n";
                     _fullResponse = setImage(_responsePath);
                     // std::cout << BLU "_fullResponse.length(): [\n" << _fullResponse.size() << "\n" RES;
@@ -149,7 +151,7 @@ static std::string selectErrorPage(std::vector<std::string> const & errorPages, 
 
 void ResponseData::setResponseStatus(struct kevent& event)
 {
-	std::cout << CYN << "start setResponseStatus()\n" << RES;
+	std::cout << CYN << "Start setResponseStatus()\n" << RES;
 	Request *storage = (Request *)event.udata;
 
 //	std::string fileType = storage->getRequestData().getResponseContentType();	// fileType not used ?
@@ -170,6 +172,7 @@ void ResponseData::setResponseStatus(struct kevent& event)
                                             defaultStatusPath + "403Forbidden.html");
             break;
         } case 404: {
+			std::cout << RED "SELECTED_responsepath 404" << "\n" RES;
             _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
                                             storage->getHttpStatus(),
                                             defaultStatusPath + "404NotFound.html");
@@ -184,10 +187,20 @@ void ResponseData::setResponseStatus(struct kevent& event)
                                             storage->getHttpStatus(),
                                             defaultStatusPath + "408RequestTimeout.html");
             break;
+		} case 413: {
+            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
+                                            storage->getHttpStatus(),
+                                            "413ContentTooLarge.html");
+            break;
         } case 500: {
             _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
                                             storage->getHttpStatus(),
                                             defaultStatusPath + "500InternarServerError.html");
+            break;
+		} case 504: {
+            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
+                                            storage->getHttpStatus(),
+                                            "504GatewayTimeout.html");
             break;
 		} case 505: {
             _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),

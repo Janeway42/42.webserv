@@ -8,20 +8,19 @@ it will answer to all the requests that don’t belong to an other server).
 ------------------------------------------------------------------------------------------------------------------------
 More important:
     CORINA:
-        - Multiple servers leak (take a look)
-        - run default server - config file
         - Set 405 Method Not Allowed in the request parser
         - You need to test with files containing errors to see if the error handling works properly. You can use a script containing an infinite loop or an error; you are free to do whatever tests you want within the limits of acceptability that remain at your discretion.
-        - Launch multiple servers at the same time with different configurations but with common ports. Does it work? If it does, ask why the server should work if one of the configurations isn't functional.
     JAKA:
         - Setup multiple servers with different hostnames (use something like: curl --resolve example.com:80:127.0.0.1 http://example.com/)
         - match server_name from config file with Host from request form
         - Upload some file to the server and get it back (check if just clickin gon the file/image is enough)
         - The slash at the end of url should be always a folder, without a slash should be a file
         - Index file has to be served if it exists (even if autoindex is on)
-        - Use max_body_size from the config file on the server (on the request parser)
-          Limit the client body (use: curl -X POST -H "Content-Type: plain/text" --data "BODY IS HERE write something shorter or longer than body limit").
+        - Bonus cgi .php --> If I add a new location block called .php, the parsing of the config file stops at that location
+        - DONE - Use max_body_size from the config file on the server (on the request parser)
+                 Limit the client body (use: curl -X POST -H "Content-Type: plain/text" --data "BODY IS HERE write something shorter or longer than body limit").
     JOYCE:
+		- Our error pages have to be in the root of our directory!
         - Delete ip_address and add the option of server_name contain an ip address number or a string (domain) -> DONE
         - Add a redirection location to the config file
         - if uri has a / at the end, then it's a directory, otherwise itd a file
@@ -61,3 +60,4 @@ Extras:
     JOYCE:
         - Add the set_cookies key to the location on the config file
         - Another .php location is not working for the config file (no error too)
+

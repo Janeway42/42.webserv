@@ -35,7 +35,7 @@ class WebServer
 		void readRequest(struct kevent& event);
 		void sendResponse(struct kevent& event);
 		void handleTimeout(struct kevent &event);
-		void newClient(struct kevent event, ServerData * specificServer);
+		void newClient(struct kevent event);
 		void addFilter(int fd, struct kevent& event, int filter, std::string errormMsesage);
 		void removeFilter(struct kevent& event, int filter, std::string errorMessage);
 		void closeClient(struct kevent& event);
@@ -49,7 +49,7 @@ class WebServer
 
 
 		void sendProcesssedResponse(struct kevent& event);
-		std::string streamFile(std::string file);
+		// std::string streamFile(std::string file);
 		//void sendResponseFile(struct kevent& event, std::string file);
 		//void sendImmage(struct kevent& event, std::string imgFileName);
 		// int closeClient(struct kevent event, int filter);

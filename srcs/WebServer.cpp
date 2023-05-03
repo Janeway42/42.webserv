@@ -33,6 +33,9 @@ WebServer::WebServer(std::string const & configFileName)
             	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
                		throw ServerException("Failed kevent start listening socket");
 			}
+			std::cout  << "IP ADDRESS: " << it_server->getServerName() << std::endl;
+			std::cout  << "PORT: " << it_server->getListensTo() << std::endl;
+			std::cout << "LISTENING SOCKET: " << it_server->getListeningSocket() << std::endl;
 			location++;
         }
         std::cout << CYN << GRY_BG << "WebServer Overloaded Constructor" << RES << std::endl;
@@ -61,15 +64,7 @@ int WebServer::checkExistingSocket(int location, std::string port)
 WebServer::~WebServer()
 {
 	close(_kq);
-	std::vector<ServerData>::iterator it_server = _servers.begin();
-	for (; it_server != _servers.end(); ++it_server) {
-		if (it_server->getAddr() != NULL) {
-			std::cout << "_addr: " << it_server->getAddr() << std::endl;
-			freeaddrinfo(it_server->getAddr());
-			// set it-server->getAddr() to NULL so it doesn't free twice. 
-		}
-	}
-    std::cout << CYN << GRY_BG << "WebServer Destructor" << RES << std::endl;
+	std::cout << CYN << GRY_BG << "WebServer Destructor" << RES << std::endl;
 }
 
 // --------------------------------------------------------- server main loop
@@ -99,7 +94,7 @@ void WebServer::runServer()
 				if (evList[i].flags & EV_ERROR)
 					std::cout << "Socket was deleted\n";
 				else if (specificServer != NULL)
-					newClient(evList[i], specificServer);
+					newClient(evList[i]);
 				else if (evList[i].filter == EVFILT_TIMER)
 				{
 					std::cout << "----------------------------------------------------------------------------------------------------------------- TIMER\n"; // Corina: I need these for testing purposes
@@ -153,12 +148,16 @@ void WebServer::handleTimeout(struct kevent &event)
 {
 	Request *storage = (Request *)event.udata;
 
-	storage->setHttpStatus(REQUEST_TIMEOUT);
 	std::cout << "Unable to process, it takes too long - TIMER\n";
-	storage->getCgiData().closePipes();
 
 	if (storage->getDone() == false)
+	{
+		storage->setHttpStatus(REQUEST_TIMEOUT);
 		removeFilter(event, EVFILT_READ, "failed kevent EV_DELETE, EVFILT_READ - handle timeout");
+	}
+	else
+		storage->setHttpStatus(GATEWAY_TIMEOUT);
+	storage->getCgiData().closePipes();
 	if (fcntl(event.ident, F_GETFD) != -1)
 		addFilter(event.ident, event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE - handle timeout");
 }
@@ -355,7 +354,7 @@ void WebServer::sendResponse(struct kevent& event)
 // --------------------------------------------------------- client functions 
 // --------------------------------------------------------------------------
 
-void WebServer::newClient(struct kevent event, ServerData * specificServer)
+void WebServer::newClient(struct kevent event)
 {
 	struct kevent evSet;
 	struct sockaddr_storage socket_addr;
@@ -369,21 +368,13 @@ void WebServer::newClient(struct kevent event, ServerData * specificServer)
 		if (fd == -1)
 			throw ServerException("Failed accept");
 
-        // joyce's comment: I think this allocation is not being deleted on the closeClient(), that one is another instance !?.
-        // unless we pass the new Request pointer around (by returning it here and passing it everywhere we need as
-        // a parameter (so we keep the pointer), or we have this pointer allocated as a WebServer class member) we won't
-        // have access to this specific pointer allocated here.
-        // Also, I think a new client won't be actually a new Request class each time, it will maybe just add a new
-        // specificServer to the Request class?? and the Request class would loop through the available servers to decide
-        // from which one it will retrieve data !? (by matching server_name and port for example) ?? I don't know just an idea
-		Request *storage = new Request(_kq, fd, specificServer);
-
+        Request *storage = new Request(_kq, event.ident, fd, _servers);
 
 		EV_SET(&evSet, fd, EVFILT_READ, EV_ADD, 0, 0, storage); 
 		if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 			throw ServerException("Failed kevent EV_ADD, EVFILT_READ, new client");
 
-		int time = 30 * 1000;     // needs to be 30 for final version -----------------------------------------
+		int time = 5 * 1000;     // TODO needs to be 30 for final version -----------------------------------------
 		EV_SET(&evSet, fd, EVFILT_TIMER, EV_ADD, 0, time, storage); 
 		if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 			throw ServerException("Failed kevent EV_ADD, EVFILT_TIMER, new client");
@@ -400,8 +391,10 @@ void WebServer::closeClient(struct kevent& event)
 
 	storage->getCgiData().closePipes();  // if any pipes are still open, function cleans them out
 	removeFilter(event, EVFILT_TIMER, "failed kevent EV_DELETE EVFILT_TIMER - closeClient");
+
 	std::cout << "fd that will be closed: " << event.ident << std::endl;
 	std::cout << "original request: " << storage->getRequestData().getHttpPath() << std::endl;
+
 	close(event.ident);
 	std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
     delete(storage);
@@ -474,25 +467,26 @@ void	WebServer::chooseMethod_StartCGI(struct kevent event, Request * storage) {
 // --------------------------------------------------------- other functions
 // -------------------------------------------------------------------------
 
-std::string WebServer::streamFile(std::string file)
-{
-	std::string responseNoFav;
-	std::fstream    infile;
+// Function moved to ResponseData
+// std::string WebServer::streamFile(std::string file)
+// {
+// 	std::string responseNoFav;
+// 	std::fstream    infile;
 
 
-	infile.open(file, std::fstream::in);
-	if (!infile)
-		throw ServerException("Error: File not be opened for reading!");
-	while (infile)     // While there's still stuff left to read
-	{
-		std::string strInput;
-		std::getline(infile, strInput);
-		responseNoFav.append(strInput);
-		responseNoFav.append("\n");
-	}
-	infile.close();
-	return (responseNoFav);
-}
+// 	infile.open(file, std::fstream::in);
+// 	if (!infile)
+// 		throw ServerException("Error: File not be opened for reading!");
+// 	while (infile)     // While there's still stuff left to read
+// 	{
+// 		std::string strInput;
+// 		std::getline(infile, strInput);
+// 		responseNoFav.append(strInput);
+// 		responseNoFav.append("\n");
+// 	}
+// 	infile.close();
+// 	return (responseNoFav);
+// }
 
 bool WebServer::isListeningSocket(int fd)
 {

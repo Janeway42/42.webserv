@@ -44,7 +44,7 @@ enum HttpStatus {
     METHOD_NOT_ALLOWED = 405, // The request method is known by the server but is not supported by the target resource. For example, an API may not allow calling DELETE to remove a resource.
     REQUEST_TIMEOUT = 408, // This response is sent on an idle connection by some servers, even without any previous request by the client. It means that the server would like to shut down this unused connection. This response is used much more since some browsers, like Chrome, Firefox 27+, or IE9, use HTTP pre-connection mechanisms to speed up surfing.
     LENGTH_REQUIRED = 411, // Server rejected the request because the Content-Length header field is not defined and the server requires it.
-    PAYLOAD_TOO_LARGE = 413, // Request entity is larger than limits defined by server. The server might close the connection or return a Retry-After header field.
+    CONTENT_TOO_LARGE = 413, // Request entity is larger than limits defined by server. The server might close the connection or return a Retry-After header field.
     URI_TOO_LONG = 414, // The URI requested by the client is longer than the server is willing to interpret.
     UNSUPPORTED_MEDIA_TYPE = 415, // The media format of the requested data is not supported by the server, so the server is rejecting the request.
     I_AM_A_TEAPOT = 418, // The server refuses the attempt to brew coffee with a teapot. LOL
@@ -52,6 +52,7 @@ enum HttpStatus {
     HEADER_FIELDS_TOO_LARGE = 431, // The server is unwilling to process the request because its header fields are too large. The request may be resubmitted after reducing the size of the request header fields.
     /** Server error responses */
     INTERNAL_SERVER_ERROR = 500, // The server has encountered a situation it does not know how to handle.
+	GATEWAY_TIMEOUT = 504,
     HTTP_VERSION_NOT_SUPPORTED = 505 // The HTTP version used in the request is not supported by the server.
 };
 
@@ -72,7 +73,7 @@ inline const std::string httpStatusToString(HttpStatus status) {
         case METHOD_NOT_ALLOWED:            return "Method Not Allowed";
         case REQUEST_TIMEOUT:               return "Request Timeout";
         case LENGTH_REQUIRED:               return "Length Required";
-        case PAYLOAD_TOO_LARGE:             return "Payload Too Long";
+        case CONTENT_TOO_LARGE:             return "Content Too Long";
         case URI_TOO_LONG:                  return "URI Too Long";
         case UNSUPPORTED_MEDIA_TYPE:        return "Unsupported Media Type";
         case I_AM_A_TEAPOT:                 return "I Am A Teapot";
