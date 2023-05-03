@@ -81,12 +81,12 @@ class Request : public Parser {
 		// methods
 		std::map<std::string, std::string>	storeFormData(std::string pq);
 		void			    parseHeader(std::string header);
-		void    		    parsePath(std::string const & originalUrlPath);
-        std::string                redirection(std::string getRedirection);
+		void    		    checkIfPathCanBeServed(std::string const & originalUrlPath);
+        void                checkRedirection(std::string getRedirection);
 		std::string	        parsePath_locationMatch(std::string const & originalUrlPath);
         std::string		    parsePath_file(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);
         std::string     	parsePath_cgi(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location, std::string const & file_cgi);
-        std::string		    parsePath_dir(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location, std::string const & subdirectory);
+        std::string		    parsePath_dir(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);//, std::string const & firstDirectoryFromUrlPath);
         std::string         parsePath_regularCase(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);
         std::string         parsePath_root(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);
         std::string         parsePath_edgeCase(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);//todo mayne not needed?

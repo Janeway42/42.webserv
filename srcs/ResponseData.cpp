@@ -25,7 +25,30 @@ ResponseData::~ResponseData(void) {
     std::cout << GRY_BG << "ResponseData Destructor" << RES << std::endl;
 }
 
-/** #################################### Setters #################################### */
+/** #################################### Methods #################################### */
+
+void ResponseData::createResponseHeader(HttpStatus status, std::string const & redirectionUrl) {
+
+    // For cookies
+    // if (responsePath is in the setCookies folder)  // function getLocation().getCookies() to be written
+    // 	header.append("Cookies: " + storage->getServerData().getLocationCookies + "\r\n");  // find the location bloc and it's cookies
+    // if (storage->getRequestData().getRequestCookies() != "")
+    // {createResponseHeader(
+    // 	header.append("Cookies: " + storage->getRequestData().getRequestCookies() + "\r\n");
+    // 	if (storage->getRequestData().getURLPath() == "resources/cookies/noCookies.html")
+    // 		_responsePath = "resources/cookies/yesCookies.html"
+    // }
+
+    std::cout << RED << "JOYE redirectionUrl: " << redirectionUrl << RES << std::endl;
+    std::string redirection = redirectionUrl.empty() ? "" : "Location: " + redirectionUrl;
+
+    _responseHeader = "HTTP/1.1 " + std::to_string(status) + " " + httpStatusToString(status) + "\r\n"
+        "Content-Type: text/html\r\n"//TODO WE CONT HAVE MORE CONTENT TYPES?
+        "Content-Encoding: identity\r\n"// Corina - added it because firefox complained that it was missing - not sure if we keep because firefox still complains even with it. We leave it for now.
+        "Connection: close\r\n"
+        "Content-Length: " + std::to_string(_responseBody.length()) + "\r\n"
+        + redirection + "\r\n\r\n";
+}
 
 /* If the path from the URL is:
  * - Directory:
@@ -45,189 +68,134 @@ ResponseData::~ResponseData(void) {
  * --------------------------------------------------------------------------------------------------------------------
  * This function creates the header only for text/html requests, but not for images.
  * If it is an image, then setImage() is called, where both header and body are created, and
- * then setResponse() returns this full content, ready to be sent
+ * then createResponse() returns this full content, ready to be sent
  */
-void ResponseData::setResponse(struct kevent& event) {
-	std::cout << CYN <<  "Start setResponse()\n" << RES;
+void ResponseData::createResponse(struct kevent& event) {
+	std::cout << CYN <<  "Start createResponse()\n" << RES;
 	Request *storage = (Request *)event.udata;
+
     _responsePath = storage->getRequestData().getURLPath_full();
-	
+	setResponseStatus(event);
+    std::cout << RED << "_responsePath after SetResponseStatus(): " << _responsePath << "\n" << RES;
 
-	_responseHeader += setResponseStatus(event);
-	std::cout << RED << "_response path after SetResponseStatus(): " << _responsePath << "\n" << RES;
+    if (storage->getRedirection().empty()) {
+        if (storage->getRequestData().getIsFolder() && not storage->getCgiData().getIsCgi()) {
+            /* No need to loop through the locations to find the matching,  the getURLPath_full() already contains
+             * the matching one. Also, no need to append the corresponding index file (checkIfPathCanBeServed() has done it) */
+            std::cout << BLU "The Path is a folder: check for autoindex on/off\n" << RES;
+            std::cout << BLU "   getURLPath: [" << storage->getRequestData().getURLPath() << "]\n" RES;
+            std::cout << BLU "  getFullPath: [" << storage->getRequestData().getURLPath_full() << "]\n" RES;
 
-
-	if (storage->getRequestData().getIsFolder() == true && storage->getCgiData().getIsCgi() == false) {
-        /* No need to loop through the locations to find the matching,  the getURLPath_full() already contains
-         * the matching one. Also, no need to append the corresponding index file */
-         std::cout << BLU "The Path is a folder: check for autoindex on/off\n" << RES;
-         std::cout << BLU "   getURLPath: [" << storage->getRequestData().getURLPath() << "]\n" RES;
-         std::cout << BLU "  getFullPath: [" << storage->getRequestData().getURLPath_full() << "]\n" RES;
-
-		//if (storage->getRequestData().getResponseContentType().compare("text/html") == 0) { // IF FOLDER, THE CONT. TYPE SHOULD BE text.html todo use this check still?
-        if (storage->getHttpStatus() == OK) {
-            std::cout << "Setting _responsePath and _responseBody\n";
-			_responseBody = streamFile(_responsePath);
-
-			std::cout << "   getHttpStatus(): [" << storage->getHttpStatus() << "]\n" << RES;
-			std::cout << "   response path:   [" << _responsePath << "]\n" << RES;
-			std::cout << "   content type:    [" << storage->getRequestData().getResponseContentType() << "]\n" << RES;
-        }
-		else if (storage->getHttpStatus() != OK) {
-			_responseBody = streamFile(_responsePath);
-		}
-
-
-
-        // Handling auto index
-        if (storage->getRequestData().getAutoIndex() == true) {
-			std::cout << BLU "AUTOINDEX ON, must call storeFolderContent()\n" << RES;
-			std::cout << BLU "     URLPathFirstPart: [" << storage->getRequestData().getURLPathFirstPart() << "]\n" << RES;
-			// if (storage->getRequestData().getURLPathFirstPart().empty()) {
-			// 	std::cout << BLU "first part is empty\n" << RES;
-			// 	std::string newPath = "./resources/" + storage->getRequestData().getURLPath();
-			// 	_responseBody = storeFolderContent(newPath.c_str());
-			// }
-			// else
-	        _responseBody = storeFolderContent(storage->getRequestData().getURLPathFirstPart().c_str());
-		}
-	}
-    // if it is not a folder (it checks first if cgi -> if not then it checks text (includes error), else image
-    else {
-        if (storage->getCgiData().getIsCgi() == true && storage->getHttpStatus() == OK) {
-            _responseBody = storage->getRequestData().getCgiBody();
-        } else {
-            if (storage->getRequestData().getResponseContentType().compare("text/html") == 0) {
-                std::cout << GRN << "The path is a file: [" << GRN_BG << _responsePath << RES << "]\n";
+            //if (storage->getRequestData().getResponseContentType().compare("text/html") == 0) { // IF FOLDER, THE CONT. TYPE SHOULD BE text.html todo use this check still?
+            if (storage->getHttpStatus() == OK) {
+                std::cout << "Setting _responsePath and _responseBody\n";
                 _responseBody = streamFile(_responsePath);
-                //_responseBody = streamFile(storage->getServerData().getRootDirectory() + "/" + _responsePath);
+
+                std::cout << "   getHttpStatus(): [" << storage->getHttpStatus() << "]\n" << RES;
+                std::cout << "   response path:   [" << _responsePath << "]\n" << RES;
+                std::cout << "   content type:    [" << storage->getRequestData().getResponseContentType() << "]\n" << RES;
+            } else if (storage->getHttpStatus() != OK) {
+                _responseBody = streamFile(_responsePath);
             }
-            else {	// IF IMAGE, FULL RESPONSE IS CREATED IN setImage()
-                std::cout << GRN << "The path is an image: [" << GRN_BG << _responsePath << RES << "]\n";
-                _fullResponse = setImage(_responsePath);
-                // std::cout << BLU "_fullResponse.length(): [\n" << _fullResponse.size() << "\n" RES;
-                return ;
+            // Handling auto index
+            if (storage->getRequestData().getAutoIndex()) {
+                std::cout << BLU "AUTOINDEX ON, must call storeFolderContent()\n" << RES;
+                std::cout << BLU "     URLPathFirstPart: [" << storage->getRequestData().getURLPathFirstPart() << "]\n" << RES;
+                // if (storage->getRequestData().getURLPathFirstPart().empty()) {
+                // 	std::cout << BLU "first part is empty\n" << RES;
+                // 	std::string newPath = "./resources/" + storage->getRequestData().getURLPath();
+                // 	_responseBody = storeFolderContent(newPath.c_str());
+                // }
+                // else
+                _responseBody = storeFolderContent(storage->getRequestData().getURLPathFirstPart().c_str());
+            }
+        }
+        // if it is not a folder (it checks first if cgi -> if not then it checks text (includes error), else image
+        else {
+            if (storage->getCgiData().getIsCgi() && storage->getHttpStatus() == OK) {
+                _responseBody = storage->getRequestData().getCgiBody();
+            } else {
+                if (storage->getRequestData().getResponseContentType().compare("text/html") == 0) {
+                    std::cout << GRN << "The path is a file: [" << GRN_BG << _responsePath << RES << "]\n";
+                    _responseBody = streamFile(_responsePath);
+                    //_responseBody = streamFile(storage->getServerData().getRootDirectory() + "/" + _responsePath);
+                } else { // IF IMAGE, FULL RESPONSE IS CREATED IN setImage()
+                    std::cout << GRN << "The path is an image: [" << GRN_BG << _responsePath << RES << "]\n";
+                    _fullResponse = setImage(_responsePath);
+                    // std::cout << BLU "_fullResponse.length(): [\n" << _fullResponse.size() << "\n" RES;
+                    return;
+                }
             }
         }
     }
 
 	// set up header
-	int temp = _responseBody.length();
-	std::string fileLen = std::to_string(temp);
-	std::string contentLen = "Content-Length: ";
-	contentLen.append(fileLen);
-	contentLen.append("\r\n");
-	_responseHeader += contentLen;
-	_responseHeader += "\r\n\r\n";
+    createResponseHeader(storage->getHttpStatus(), storage->getRedirection());
 
-	// std::cout << GRN << "complete response header: [" << _responseHeader << "]\n" << RES;
 	_fullResponse += _responseHeader + _responseBody;
-	//std::cout << GRN << "\n_fullResponse:\n[\n" RES << _fullResponse << "]\n" <<RES;
+     std::cout << "_responseHeader:\n-------------\n" RES << _responseHeader << "\n-------------" << std::endl;
+//     std::cout << "_fullResponse:\n-------------\n" RES << _fullResponse << "\n-------------" << std::endl;
 }
 
-static std::string selectErrorPage(std::vector<std::string> const & errorPages, HttpStatus status, std::string const & defaultErrorPage) {
+static std::string selectErrorPage(Request* storage, std::vector<std::string> const & errorPages, std::string const & defaultErrorPage) {
+    storage->getRequestData().setFileExtention(defaultErrorPage);
     std::vector<std::string>::const_iterator it = errorPages.cbegin();
     for (; it != errorPages.cend(); ++it) {
-        if (it->find(std::to_string(status)) != std::string::npos) {
+        if (it->find(std::to_string(storage->getHttpStatus())) != std::string::npos) {
             // If error page is found on the config file, return it
             return *it;
         }
     }
     // Otherwise return a default config file
-    return "./resources/_server_default_status/" + defaultErrorPage;
+    return defaultErrorPage;
 }
 
-static std::string setResponseHeader(HttpStatus status) {
-    return "HTTP/1.1 " + std::to_string(status) + " " + httpStatusToString(status) + "\r\n"
-           "Content-Type: text/html\r\n"
-           "Content-Encoding: identity\r\n"// Corina - added it because firefox complained that it was missing - not sure if we keep because firefox still complains even with it. We leave it for now.
-           "Connection: close\r\n";
-}
-
-std::string ResponseData::setResponseStatus(struct kevent& event)
+void ResponseData::setResponseStatus(struct kevent& event)
 {
 	std::cout << CYN << "Start setResponseStatus()\n" << RES;
 	Request *storage = (Request *)event.udata;
-	std::string header = setResponseHeader(storage->getHttpStatus());
+
 //	std::string fileType = storage->getRequestData().getResponseContentType();	// fileType not used ?
 
+    std::string defaultStatusPath = "./_server_default_status/";
     //todo add more default pages?
 	switch (storage->getHttpStatus()) {
         case 301: {
-            header = header + "Location: " + storage->getRedirection() + "close\r\n";
             break;
         } case 400: {
-            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
-                                            storage->getHttpStatus(),
-                                            "400BadRequest.html");
+            _responsePath = selectErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "400BadRequest.html");
             break;
         } case 403: {
-            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
-                                            storage->getHttpStatus(),
-                                            "403Forbidden.html");
+            _responsePath = selectErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "403Forbidden.html");
             break;
         } case 404: {
-			std::cout << RED "SELECTED_responsepath 404" << "\n" RES;
-            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
-                                            storage->getHttpStatus(),
-                                            "404NotFound.html");
+            _responsePath = selectErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "404NotFound.html");
             break;
         } case 405: {
-            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
-                                            storage->getHttpStatus(),
-                                            "405MethodnotAllowed.html");
+            _responsePath = selectErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "405MethodnotAllowed.html");
             break;
         } case 408: {
-            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
-                                            storage->getHttpStatus(),
-                                            "408RequestTimeout.html");
+            _responsePath = selectErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "408RequestTimeout.html");
             break;
 		} case 413: {
-            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
-                                            storage->getHttpStatus(),
-                                            "413ContentTooLarge.html");
+            _responsePath = selectErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "413ContentTooLarge.html");
             break;
         } case 500: {
-            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
-                                            storage->getHttpStatus(),
-                                            "500InternarServerError.html");
+            _responsePath = selectErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "500InternarServerError.html");
             break;
 		} case 504: {
-            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
-                                            storage->getHttpStatus(),
-                                            "504GatewayTimeout.html");
+            _responsePath = selectErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "504GatewayTimeout.html");
             break;
 		} case 505: {
-            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
-                                            storage->getHttpStatus(),
-                                            "500HttpVersionNotSupported.html");
+            _responsePath = selectErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "500HttpVersionNotSupported.html");
             break;
         } default: {
             // "Set-Cookie: id=123; jaka=500; Max-Age=10; HttpOnly\r\n";
-            // "Content-Type: " + storage->getRequestData().getResponseContentType() + "\n";	// jaka
+//             "Content-Type: " + storage->getRequestData().getResponseContentType() + "\n";	// jaka
             std::cout << "_responsePath: [[" << GRN_BG << _responsePath << RES << "]]\n";
             break;
         }
 	}
-    // if (responsePath is in the setCookies folder)  // function getLocation().getCookies() to be written
-    // 	status.append("Cookies: " + storage->getServerData().getLocationCookies + "\r\n");  // find the location bloc and it's cookies
-    // if (storage->getRequestData().getRequestCookies() != "")
-    // {
-    // 	status.append("Cookies: " + storage->getRequestData().getRequestCookies() + "\r\n");
-    // 	if (storage->getRequestData().getURLPath() == "resources/cookies/noCookies.html")
-    // 		_responsePath = "resources/cookies/yesCookies.html"
-    // }
-	return (header);
-}
-
-void ResponseData::setResponseBody(std::string file)  
-{
-	_responseBody += file;
-}
-
-void ResponseData::setBytesToClient(int val)
-{
-	_bytesToClient += val;
 }
 
 // NEW SETIMAGE
@@ -249,8 +217,8 @@ std::string ResponseData::setImage(std::string imagePath) {
 	std::string headerBlock = 	"HTTP/1.1 200 OK\r\n"
 								"Content-Type: image/jpg\r\n"
 								"Content-Encoding: identity\r\n"	// Here it needs to grab the correct Type, jpg, png, gif, ico ...
-								"Connection: close\r\n";
-	headerBlock.append("accept-ranges: bytes\r\n");
+								"Connection: close\r\n"
+	                            "accept-ranges: bytes\r\n";
 	std::string contentLen = "Content-Length: ";
 	std::string temp = std::to_string(content.size());
 	std::cout << BLU << "from setImage: content-length: " << temp << RES << "\n";
@@ -261,31 +229,6 @@ std::string ResponseData::setImage(std::string imagePath) {
 	headerBlock.append(content);
 	return (headerBlock);	// Both header and image content
 }
-
-void ResponseData::setResponsePath(std::string path)
-{
-	_responsePath = path;
-}
-
-void ResponseData::setResponseDone(bool val)
-{
-	_responseDone = val;
-}
-
-// void ResponseData::setOverride(bool val)   // NOT USED anymore - to be cleanned out
-// {
-// 	_errorOverride = val;
-// }
-
-// --------------------------------------------------------------------------- util functions
-// ------------------------------------------------------------------------------------------
-
-// void ResponseData::overrideFullResponse()  // NOT USED anymore - to be cleaned out
-// {
-// 	std::string errorMessage = " insert html code";
-// 	_fullResponse = errorMessage;
-// 	_errorOverride = true;
-// }
 
 std::string ResponseData::streamFile(std::string file)
 {
@@ -311,19 +254,20 @@ std::string ResponseData::streamFile(std::string file)
 	return (responseNoFav);
 }
 
-// ***************************************************************************
 // added JAKA, to erase the sent chunk from the remaining response content
 std::string&	ResponseData::eraseSentChunkFromFullResponse(unsigned long retBytes) {
 	return (_fullResponse.erase(0, retBytes));
 }
 
-size_t	ResponseData::getSentSoFar() { // jaka
-	return (_bytesToClient);
-}
-
 void	ResponseData::increaseSentSoFar(size_t bytesSent) {
 	_bytesToClient += bytesSent;
 }
+// void ResponseData::overrideFullResponse()  // NOT USED anymore - to be cleaned out
+// {
+// 	std::string errorMessage = " insert html code";
+// 	_fullResponse = errorMessage;
+// 	_errorOverride = true;
+// }
 
 // size_t	ResponseData::getCurrentLength() { // jaka
 // 	return (_lengthFullResponse);
@@ -331,6 +275,33 @@ void	ResponseData::increaseSentSoFar(size_t bytesSent) {
 
 // void 	ResponseData::setCurrentLength(size_t len) {
 // 	_lengthFullResponse = len;
+// }
+
+/** #################################### Setters #################################### */
+
+void ResponseData::setResponseBody(std::string file)
+{
+    _responseBody += file;
+}
+
+void ResponseData::setBytesToClient(int val)
+{
+    _bytesToClient += val;
+}
+
+void ResponseData::setResponsePath(std::string path)
+{
+    _responsePath = path;
+}
+
+void ResponseData::setResponseDone(bool val)
+{
+    _responseDone = val;
+}
+
+// void ResponseData::setOverride(bool val)   // NOT USED anymore - to be cleanned out
+// {
+// 	_errorOverride = val;
 // }
 
 /** #################################### Getters #################################### */
@@ -368,6 +339,10 @@ unsigned long ResponseData::getBytesToClient()
 bool ResponseData::getResponseDone()
 {
 	return (_responseDone);
+}
+
+size_t	ResponseData::getSentSoFar() { // jaka
+    return (_bytesToClient);
 }
 
 // bool ResponseData::getOverride()  // NOT USED - To be cleaned out!

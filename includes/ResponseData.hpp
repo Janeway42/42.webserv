@@ -28,7 +28,17 @@ class ResponseData: public Parser
 		ResponseData();
 		virtual ~ResponseData();
 
-		// getters
+        // Methods
+        void			createResponse(struct kevent& event);
+        void    		setResponseStatus(struct kevent& event);
+        void			createResponseHeader(HttpStatus status, std::string const & redirectionUrl);
+        std::string		streamFile(std::string file);
+        std::string 	setImage(std::string imagePath);
+        void			increaseSentSoFar(size_t bytesSent);
+        std::string&	eraseSentChunkFromFullResponse(unsigned long retBytes); // to erase the sent chunk from the remaining response content
+        std::string		storeFolderContent(const char *path);
+
+		// Getters
 		std::string		getHeader();
 		std::string		getBody();
 		std::string		getResponsePath();
@@ -38,20 +48,11 @@ class ResponseData: public Parser
 		size_t			getSentSoFar();
 		bool			getResponseDone();
 
-		//setters
-		void			setResponse(struct kevent& event);
-		std::string		setResponseStatus(struct kevent& event);
+        // Setters
 		void			setResponsePath(std::string path);
 		void			setResponseBody(std::string file);
 		void			setResponseDone(bool val);
 		void			setBytesToClient(int val);
-
-		std::string		streamFile(std::string file);
-		std::string 	setImage(std::string imagePath);
-		void			increaseSentSoFar(size_t bytesSent);
-		std::string&	eraseSentChunkFromFullResponse(unsigned long retBytes); // to erase the sent chunk from the remaining response content
-		std::string		storeFolderContent(const char *path);
-
 
 		// NOT USED - to be cleaned out
 		// ***************************************************************************

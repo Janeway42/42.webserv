@@ -7,8 +7,8 @@ WebServer::WebServer(std::string const & configFileName)
     try {
         ConfigFileParser configFileData = ConfigFileParser(configFileName);
         _servers = configFileData.servers;
-        std::cout  << "Server blocks quantity: " << configFileData.numberOfServerBlocks() << std::endl;
-        std::cout  << "Location block quantity: " << configFileData.numberOfLocationBlocks() << std::endl;
+//        std::cout  << "Server blocks quantity: " << configFileData.numberOfServerBlocks() << std::endl;
+//        std::cout  << "Location block quantity: " << configFileData.numberOfLocationBlocks() << std::endl;
 
         // ----------- create kq structure --------------------------
         struct kevent evSet;
@@ -279,7 +279,7 @@ void WebServer::sendResponse(struct kevent& event)
 		{
 			std::cout << "    Send() response returned -1\n";
 			storage->setHttpStatus(INTERNAL_SERVER_ERROR);
-			storage->getResponseData().setResponse(event);
+			storage->getResponseData().createResponse(event);
 			addFilter(storage->getFdClient(), event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, ret = -1 on _fd_in[1]");    //  this allows client write 
 			removeFilter(event, EVFILT_WRITE, "failed kevent, EV_DELETE, EVFILT_WRITE failure on _fd_in[1]");  // this removes the pipe fd _fd_in[1]
 		}
@@ -310,11 +310,11 @@ void WebServer::sendResponse(struct kevent& event)
 
         if (storage->getResponseData().getResponseDone() == false)
 		{
-			storage->getResponseData().setResponse(event);
+			storage->getResponseData().createResponse(event);
 			storage->getResponseData().setResponseDone(true);
 
-			std::cout << "full response: \n";
-			// std::cout << storage->getResponseData().getFullResponse() << std::endl;
+//			std::cout << "full response: \n";
+//			std::cout << storage->getResponseData().getFullResponse() << std::endl;
 			// std::cout << "----------- FULL RESPONSE: -----------------------\n" << storage->getResponseData().getFullResponse() << std::endl;
 		}
 
@@ -368,21 +368,13 @@ void WebServer::newClient(struct kevent event)
 		if (fd == -1)
 			throw ServerException("Failed accept");
 
-        // joyce's comment: I think this allocation is not being deleted on the closeClient(), that one is another instance !?.
-        // unless we pass the new Request pointer around (by returning it here and passing it everywhere we need as
-        // a parameter (so we keep the pointer), or we have this pointer allocated as a WebServer class member) we won't
-        // have access to this specific pointer allocated here.
-        // Also, I think a new client won't be actually a new Request class each time, it will maybe just add a new
-        // specificServer to the Request class?? and the Request class would loop through the available servers to decide
-        // from which one it will retrieve data !? (by matching server_name and port for example) ?? I don't know just an idea
-		Request *storage = new Request(_kq, event.ident, fd, _servers);
-
+        Request *storage = new Request(_kq, event.ident, fd, _servers);
 
 		EV_SET(&evSet, fd, EVFILT_READ, EV_ADD, 0, 0, storage); 
 		if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 			throw ServerException("Failed kevent EV_ADD, EVFILT_READ, new client");
 
-		int time = 5 * 1000;     // needs to be 30 for final version -----------------------------------------
+		int time = 5 * 1000;     // TODO needs to be 30 for final version -----------------------------------------
 		EV_SET(&evSet, fd, EVFILT_TIMER, EV_ADD, 0, time, storage); 
 		if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 			throw ServerException("Failed kevent EV_ADD, EVFILT_TIMER, new client");

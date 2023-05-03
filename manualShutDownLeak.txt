@@ -1,0 +1,97 @@
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ New client connection ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 6
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 7
+^C
+============= manual shut down =============
+WebServer Destructor
+ServerData Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerData Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerData Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+Failed number events
+Process:         webserv [86845]
+Path:            /Users/USER/*/webserv
+Load Address:    0x109012000
+Identifier:      webserv
+Version:         ???
+Code Type:       X86-64
+Platform:        macOS
+Parent Process:  zsh [79638]
+
+Date/Time:       2023-05-03 23:59:57.952 +0200
+Launch Time:     2023-05-03 23:59:18.731 +0200
+OS Version:      macOS 12.6 (21G115)
+Report Version:  7
+Analysis Tool:   /usr/bin/leaks
+
+Physical footprint:         612K
+Physical footprint (peak):  612K
+----
+
+leaks Report Version: 4.0
+Process 86845: 244 nodes malloced for 30 KB
+Process 86845: 41 leaks for 8784 total leaked bytes.
+
+    41 (8.58K) ROOT LEAK: <Request 0x7f9d85904080> [1008]
+       40 (7.59K) <ServerData 0x7f9d85a04080> [528]
+          13 (2.75K) <ServerLocation 0x7f9d86008200> [2560]
+             1 (48 bytes) 0x6000013d00c0 [48]  length: 41  "http://localhost:8080/texts/one_page.html"
+             1 (32 bytes) 0x600001dd0000 [32]  length: 31  "./resources/location_random_dir"
+             1 (32 bytes) 0x600001dd0020 [32]  length: 29  "http://localhost:8080/images/"
+             1 (16 bytes) 0x600001fd0000 [16]
+             1 (16 bytes) 0x600001fd0010 [16]
+             1 (16 bytes) 0x600001fd0020 [16]
+             1 (16 bytes) 0x600001fd0030 [16]
+             1 (16 bytes) 0x600001fd0040 [16]
+             1 (16 bytes) 0x600001fd0050 [16]
+             1 (16 bytes) 0x600001fd0060 [16]
+             1 (16 bytes) 0x600001fd0070 [16]
+             1 (16 bytes) 0x600001fd0080 [16]
+          9 (2.14K) <ServerLocation 0x7f9d86008c00> [2048]
+             1 (32 bytes) 0x600001dd0040 [32]  length: 31  "./resources/location_random_dir"
+             1 (16 bytes) 0x600001fd0090 [16]
+             1 (16 bytes) 0x600001fd00a0 [16]
+             1 (16 bytes) 0x600001fd00b0 [16]
+             1 (16 bytes) 0x600001fd00c0 [16]
+             1 (16 bytes) 0x600001fd00d0 [16]
+             1 (16 bytes) 0x600001fd00e0 [16]
+             1 (16 bytes) 0x600001fd00f0 [16]
+          7 (1.62K) <ServerLocation 0x7f9d8600b400> [1536]
+             1 (48 bytes) 0x6000013d01b0 [48]  length: 35  "./resources4243/location_random_dir"
+             1 (16 bytes) 0x600001fd0100 [16]
+             1 (16 bytes) 0x600001fd0110 [16]
+             1 (16 bytes) 0x600001fd0120 [16]
+             1 (16 bytes) 0x600001fd0130 [16]
+             1 (16 bytes) 0x600001fd0140 [16]
+          5 (288 bytes) 0x6000039d0000 [96]
+             1 (48 bytes) 0x6000013d0000 [48]  length: 32  "./resources/error_pages/404.html"
+             1 (48 bytes) 0x6000013d0030 [48]  length: 32  "./resources/error_pages/405.html"
+             1 (48 bytes) 0x6000013d0060 [48]  length: 32  "./resources/error_pages/500.html"
+             1 (48 bytes) 0x6000013d0090 [48]  length: 32  "./resources/error_pages/504.html"
+          5 (288 bytes) 0x6000039d0060 [96]
+             1 (48 bytes) 0x6000013d00f0 [48]  length: 32  "./resources/error_pages/404.html"
+             1 (48 bytes) 0x6000013d0120 [48]  length: 32  "./resources/error_pages/405.html"
+             1 (48 bytes) 0x6000013d0150 [48]  length: 32  "./resources/error_pages/500.html"
+             1 (48 bytes) 0x6000013d0180 [48]  length: 32  "./resources/error_pages/504.html"
+

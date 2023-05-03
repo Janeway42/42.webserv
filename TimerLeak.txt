@@ -1,0 +1,101 @@
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ New client connection ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 6
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 47
+size server inside run loop: 3
+----------------------------------------------------------------------------------------------------------------- TIMER
+Unable to process, it takes too long - TIMER
+size server inside run loop: 3
+----------------------------------------------------------------------------------------------------------------- READ
+EOF from ReadRequest, close the reading FD: 6
+WebServer Destructor
+ServerData Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerData Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerData Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+ServerLocation Destructor
+failed kevent EV_EOF - EVFILT_READ
+Process:         webserv [86086]
+Path:            /Users/USER/*/webserv
+Load Address:    0x103162000
+Identifier:      webserv
+Version:         ???
+Code Type:       X86-64
+Platform:        macOS
+Parent Process:  zsh [79638]
+
+Date/Time:       2023-05-03 23:42:02.618 +0200
+Launch Time:     2023-05-03 23:40:59.201 +0200
+OS Version:      macOS 12.6 (21G115)
+Report Version:  7
+Analysis Tool:   /usr/bin/leaks
+
+Physical footprint:         824K
+Physical footprint (peak):  824K
+----
+
+leaks Report Version: 4.0
+Process 86086: 244 nodes malloced for 30 KB
+Process 86086: 41 leaks for 8784 total leaked bytes.
+
+    41 (8.58K) ROOT LEAK: <Request 0x7f9a55904080> [1008]
+       40 (7.59K) <ServerData 0x7f9a55904680> [528]
+          13 (2.75K) <ServerLocation 0x7f9a54009a00> [2560]
+             1 (48 bytes) 0x6000009fc2a0 [48]  length: 41  "http://localhost:8080/texts/one_page.html"
+             1 (32 bytes) 0x6000007fc060 [32]  length: 31  "./resources/location_random_dir"
+             1 (32 bytes) 0x6000007fc080 [32]  length: 29  "http://localhost:8080/images/"
+             1 (16 bytes) 0x6000005f8150 [16]
+             1 (16 bytes) 0x6000005f8160 [16]
+             1 (16 bytes) 0x6000005f8170 [16]
+             1 (16 bytes) 0x6000005f8180 [16]
+             1 (16 bytes) 0x6000005f8190 [16]
+             1 (16 bytes) 0x6000005f81a0 [16]
+             1 (16 bytes) 0x6000005f81b0 [16]
+             1 (16 bytes) 0x6000005f81c0 [16]
+             1 (16 bytes) 0x6000005f81d0 [16]
+          9 (2.14K) <ServerLocation 0x7f9a5400a400> [2048]
+             1 (32 bytes) 0x6000007fc0a0 [32]  length: 31  "./resources/location_random_dir"
+             1 (16 bytes) 0x6000005f81e0 [16]
+             1 (16 bytes) 0x6000005f81f0 [16]
+             1 (16 bytes) 0x6000005f8200 [16]
+             1 (16 bytes) 0x6000005f8210 [16]
+             1 (16 bytes) 0x6000005f8220 [16]
+             1 (16 bytes) 0x6000005f8230 [16]
+             1 (16 bytes) 0x6000005f8240 [16]
+          7 (1.62K) <ServerLocation 0x7f9a5400ac00> [1536]
+             1 (48 bytes) 0x6000009fc390 [48]  length: 35  "./resources4243/location_random_dir"
+             1 (16 bytes) 0x6000005f8250 [16]
+             1 (16 bytes) 0x6000005f8260 [16]
+             1 (16 bytes) 0x6000005f8270 [16]
+             1 (16 bytes) 0x6000005f8280 [16]
+             1 (16 bytes) 0x6000005f8290 [16]
+          5 (288 bytes) 0x6000023f00c0 [96]
+             1 (48 bytes) 0x6000009fc1e0 [48]  length: 32  "./resources/error_pages/404.html"
+             1 (48 bytes) 0x6000009fc210 [48]  length: 32  "./resources/error_pages/405.html"
+             1 (48 bytes) 0x6000009fc240 [48]  length: 32  "./resources/error_pages/500.html"
+             1 (48 bytes) 0x6000009fc270 [48]  length: 32  "./resources/error_pages/504.html"
+          5 (288 bytes) 0x6000023f0120 [96]
+             1 (48 bytes) 0x6000009fc2d0 [48]  length: 32  "./resources/error_pages/404.html"
+             1 (48 bytes) 0x6000009fc300 [48]  length: 32  "./resources/error_pages/405.html"
+             1 (48 bytes) 0x6000009fc330 [48]  length: 32  "./resources/error_pages/500.html"
+             1 (48 bytes) 0x6000009fc360 [48]  length: 32  "./resources/error_pages/504.html"
+
