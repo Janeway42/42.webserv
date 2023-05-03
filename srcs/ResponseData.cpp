@@ -51,7 +51,10 @@ void ResponseData::setResponse(struct kevent& event) {
 	std::cout << CYN <<  "Start setResponse()\n" << RES;
 	Request *storage = (Request *)event.udata;
     _responsePath = storage->getRequestData().getURLPath_full();
+	
+
 	_responseHeader += setResponseStatus(event);
+	std::cout << RED << "_response path after SetResponseStatus(): " << _responsePath << "\n" << RES;
 
 
 	if (storage->getRequestData().getIsFolder() == true && storage->getCgiData().getIsCgi() == false) {
@@ -70,6 +73,12 @@ void ResponseData::setResponse(struct kevent& event) {
 			std::cout << "   response path:   [" << _responsePath << "]\n" << RES;
 			std::cout << "   content type:    [" << storage->getRequestData().getResponseContentType() << "]\n" << RES;
         }
+		else if (storage->getHttpStatus() != OK) {
+			_responseBody = streamFile(_responsePath);
+		}
+
+
+
         // Handling auto index
         if (storage->getRequestData().getAutoIndex() == true) {
 			std::cout << BLU "AUTOINDEX ON, must call storeFolderContent()\n" << RES;
@@ -137,7 +146,7 @@ static std::string setResponseHeader(HttpStatus status) {
 
 std::string ResponseData::setResponseStatus(struct kevent& event)
 {
-	std::cout << CYN << "start setResponseStatus()\n" << RES;
+	std::cout << CYN << "Start setResponseStatus()\n" << RES;
 	Request *storage = (Request *)event.udata;
 	std::string header = setResponseHeader(storage->getHttpStatus());
 //	std::string fileType = storage->getRequestData().getResponseContentType();	// fileType not used ?
@@ -158,6 +167,7 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
                                             "403Forbidden.html");
             break;
         } case 404: {
+			std::cout << RED "SELECTED_responsepath 404" << "\n" RES;
             _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
                                             storage->getHttpStatus(),
                                             "404NotFound.html");
@@ -171,6 +181,11 @@ std::string ResponseData::setResponseStatus(struct kevent& event)
             _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
                                             storage->getHttpStatus(),
                                             "408RequestTimeout.html");
+            break;
+		} case 413: {
+            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
+                                            storage->getHttpStatus(),
+                                            "413ContentTooLarge.html");
             break;
         } case 500: {
             _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),

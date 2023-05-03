@@ -11,7 +11,7 @@ RES='\033[0m'
 outputOut="./outputFiles/stdOut.txt"
 outputErr="./outputFiles/stdErr.txt"
 portNr="8080"
-TIME="-t20s"
+TIME="-t1s"
 
 rm $outputOut
 rm $outputErr
@@ -20,8 +20,9 @@ echo -e  "$GRE\n ~ ~ ~ TEST SIEGE ~ ~ ~ $RES \n" 1>&2
 printf "$GRE Start the Webserv  $RES \n" 1>&2
 
 # Run WebServ
-rm ./tests/siege/outputFiles/webservOutput.txt
+rm -f ./tests/siege/outputFiles/webservOutput.txt
 cd ../../ ;  ./webserv >> ./tests/siege/outputFiles/webservOutput.txt & 
+# cd ../../ ;  ./webserv >> /dev/null & 
 cd tests/siege/
 sleep 2     # Wait that the Webserver starts
 
@@ -31,26 +32,28 @@ sleep 2     # Wait that the Webserver starts
 printf "$GRE Testing Siege: $GRY http://localhost:$portNr/index.html $RES \n" 1>&2
 
 echo -e "$BLU   TEST: 1 user, $TIME seconds $RES" 1>&2
-siege -c1 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
+siege -b -c1 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
 
 echo -e "$BLU   TEST: 20 users, $TIME seconds $RES" 1>&2
-siege -c20 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
+siege -b -c20 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
 
 echo -e "$BLU   TEST: 50 users, $TIME seconds $RES" 1>&2
-siege -c50 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
+siege -b -c50 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
 
 echo -e "$BLU   TEST: 100 users, $TIME seconds $RES" 1>&2
-siege -c100 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
+siege -b -c100 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
 
 echo -e "$BLU   TEST: 150 users, $TIME seconds $RES" 1>&2
-siege -c150 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
+siege -b -c150 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
 
 echo -e "$BLU   TEST: 200 users, $TIME seconds $RES" 1>&2
-siege -c200 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
+siege -b -c200 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
 
 echo -e "$BLU   TEST: 250 users, $TIME seconds $RES" 1>&2
-siege -c200 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
+siege -b -c200 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
 
 pkill -f webserv
 cat ./outputFiles/stdErr.txt | grep Availability 1>&2
+rm -f ./outputFiles/webservOutput.txt
+
 echo -e "\n$GRE TEST SIEGE FINISHED, CHECK THE OUTPUT RESULTS IN 'tests/siege/outputFiles/stdOut.txt' $RES\n" 1>&2

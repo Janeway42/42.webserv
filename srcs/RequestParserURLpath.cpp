@@ -51,7 +51,7 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 		ret = dup2(_cgi.getPipeCgiOut_1()   ,  1);	// cgi writes to parent via pipe fd_out NONBLOCK
 		if (ret == -1)
 		 	std::cout << RED "Error dup2() of PipeCgiOut_1, child\n" RES;
-		close(_cgi.getPipeCgiOut_1());
+        close(_cgi.getPipeCgiOut_1());
 
         // Change current working directory to the internal CGI directory
         // Best practice to ensure the script to find correct relative paths, if needed
@@ -85,6 +85,7 @@ void Request::callCGI(struct kevent event) {
 	std::string server_name		= "SERVER_NAME=";
 	std::string comspec			= "COMSPEC=";
 	std::string info_path		= "INFO_PATH=";
+	std::string upload_path		= "UPLOAD_DIR=";
 
 	// Convert length to string
 	std::stringstream ssContLen;
@@ -96,9 +97,11 @@ void Request::callCGI(struct kevent event) {
 	temp.push_back(content_type.append(_data.getRequestContentType()));
 	temp.push_back(content_length.append(ssContLen.str()));
 	temp.push_back(query_string.append(_data.getQueryString()));
-	temp.push_back(server_name.append("default"));// TODO add server name?
+	temp.push_back(server_name.append(getServerData().getServerName()));
+//  temp.push_back(server_name.append("defaultServerName"));// TODO add server name?
 	temp.push_back(comspec.append(""));
-	temp.push_back(info_path.append(""));
+	temp.push_back(info_path.append(""));           // todo: find out if info_path is mandatory and how to test it?
+//	temp.push_back(upload_path.append(_data.get));  // todo: append the /upload folder name 
 
 	// std::cout << "Size of vector temp: " << temp.size() << "\n";
 	// std::cout << YEL << "POST BODY: " << temp[2] << "\n" << RES;
@@ -236,8 +239,27 @@ char* ENV[25] = {
 }; TODO THIS COMMENT CAN BE DELETED??
 */
 
+
+// Disabled by Jaka, new function is below
+// void Request::checkIfPathExistsOLD(std::string const & URLPath_full) {
+//     std::cout << CYN << "Start CheckIfPathExists(), URLPath_full [" << URLPath_full << "] \n" << RES;
+
+//     // Here at the end URLPath_full will always be a file, either because the request was a file, or because
+//     // the correct index file was appended to it (from location or server block, the config file parser decided already)
+//     if (pathType(URLPath_full) != REG_FILE) {
+//         std::cout << RED << std::endl << "Error: file [" << RES << URLPath_full << RED;
+//         std::cout << "] was not found. Returning 404 NOT FOUND" << RES << std::endl << std::endl;
+//         setHttpStatus(NOT_FOUND);
+//     } else {
+//         std::cout << GRN << "Path " << RES << URLPath_full << GRN << " exists" << RES << std::endl << std::endl;
+//         if (getHttpStatus() != MOVE_PERMANENTLY) {
+//             setHttpStatus(OK);
+//         }
+//     }
+// }
+
 void Request::checkIfPathExists(std::string const & URLPath_full) {
-    std::cout << CYN << "Start CheckIfFIleExists(), URLPath_full [" << URLPath_full << "] \n" << RES;
+    std::cout << CYN << "Start CheckIfPathExists(), URLPath_full [" << URLPath_full << "] \n" << RES;
 
     // Here at the end URLPath_full will always be a file, either because the request was a file, or because
     // the correct index file was appended to it (from location or server block, the config file parser decided already)
@@ -251,11 +273,27 @@ void Request::checkIfPathExists(std::string const & URLPath_full) {
             setHttpStatus(OK);
         }
     }
+
+    // If the path with a file does not exist, maybe the original URL is just a folder.
+    // In this case, check if the original path is a folder, then check if this location has autoindex on or off.
+    // If autindex is off, return 403 Forbidden, else return folder content.
+    std::string urlPathFolder = getServerData().getRootDirectory();
+    urlPathFolder.append(_data.getURLPath());               // Append root to URLpath, to get the correct path of the folder
+    if (pathType(URLPath_full) != REG_FILE && pathType(urlPathFolder) == DIRECTORY) {
+        std::cout << YEL "Path is " << "\n" RES;
+
+        // TODO FIRST: it needs to iterate through all locations and look at the autindex status !!
+        // if autindex is off, return 403, else the folder content
+        //if (getServerData().getAutoindexStatus() == "off")
+            setHttpStatus(FORBIDDEN);
+    }
+
 }
 
 static void printPathParts(RequestData reqData) {
 	std::cout << std::endl;
 	std::cout << "URL Path:        [" << PUR << reqData.getURLPath() << RES << "]\n";
+//	std::cout << "HTTP Path:       [" << PUR << reqData.getHttpPath() << RES << "]\n";  // todo, this is the same as getURLPath(), can be deleted from .hpp
 	std::cout << "Full URI Path:   [" << PUR << reqData.getURLPath_full() << RES << "]\n";
 	std::cout << "Path first part: [" << PUR << reqData.getURLPathFirstPart() << RES << "]\n";
 	std::cout << "Path LAST part:  [" << PUR << reqData.getURLPathLastPart() << RES << "]\n";

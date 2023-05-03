@@ -94,17 +94,17 @@ void Request::parseHeader(std::string header) {
 // }
 
 // TODO MAYBE WON'T BE NEEDED
-void	storeBodyAsFile(std::string body) {
-	std::ofstream bodyFile("./resources/_cgi/bodyFile.txt");
-	if (bodyFile.is_open()) {
-		bodyFile << body;
-		bodyFile.close();
-		std::cout << GRN "Body string written succesfuly to the file\n" RES;
-	}
-	else {
-		std::cout << RED "Error opening the file to write the body into\n" RES;
-	}
-}
+// void	storeBodyAsFile(std::string body) {
+// 	std::ofstream bodyFile("./resources/_cgi/bodyFile.txt");
+// 	if (bodyFile.is_open()) {
+// 		bodyFile << body;
+// 		bodyFile.close();
+// 		std::cout << GRN "Body string written succesfuly to the file\n" RES;
+// 	}
+// 	else {
+// 		std::cout << RED "Error opening the file to write the body into\n" RES;
+// 	}
+// }
 
 // !!!!!!! need to remove the file and links
 int Request::storeWordsFromFirstLine(std::string firstLine) {
@@ -367,6 +367,12 @@ int Request::appendLastChunkToBody2(const char *str, size_t len) {
 	//std::cout << YEL "Body:\n" RES;
 	//std::copy(tempVec.begin(), tempVec.end(), std::ostream_iterator<uint8_t>(std::cout));  // just to print
 
+	if (_data.getClientBytesSoFar() > getServerData().getClientMaxBodySize()) {
+		std::cout << RED "REQUEST BODY CONTENT TOO LARGE\n" RES;
+		_httpStatus = CONTENT_TOO_LARGE;
+		return (1);
+	}
+
 	if (_data.getClientBytesSoFar() > _data.getRequestContentLength()) {   // Compare body length
 		std::cout << RED << "Error: Body-Length, first chunk (" << _data.getClientBytesSoFar() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;
         _httpStatus = I_AM_A_TEAPOT;
@@ -392,19 +398,25 @@ int Request::appendLastChunkToBody2(const char *str, size_t len) {
 }
 
 int Request::appendToBody(const char* str, size_t len) {
-	// std::cout << RED << "start appendToBOdy(), current len, " << _data.getBody().length() << " expected len: " << _data.getRequestContentLength() << "\n" RES;
+	//std::cout << RED << "start appendToBOdy(), current len, " << " expected len: " << _data.getRequestContentLength() << "\n" RES;
 	//std::cout << RED << "    body before append: [" << _data.getBody() << "\n" << RES;
 	std::vector<uint8_t> newChunk(str, str + len); // convert adn assign str to vector
 	_data.setClientBytesSoFar(len);
-	std::cout << YEL "CLIENT BYTES SO FAR: " << _data.getClientBytesSoFar() << "\n" << RES;
+	//std::cout << YEL "CLIENT BYTES SO FAR: " << _data.getClientBytesSoFar() << "\n" << RES;
 
 	std::vector<uint8_t> & tmp = _data.getBody();
 	tmp.reserve(_data.getRequestContentLength() + len);
 	tmp.insert(tmp.end(), newChunk.begin(), newChunk.end());
 	_data.setBody(tmp);
 	//std::cout << CYN << "    body after append:  [" << _data.getBody() << "]\n" << RES;
+	//std::cout << CYN << "    getClientMaxBodySize:  [" << getServerData().getClientMaxBodySize() << "]\n" << RES;
 	
-//	if (_data.getBody().size()      > _data.getRequestContentLength()) {		// Compare body lenght
+	if (_data.getClientBytesSoFar() > getServerData().getClientMaxBodySize()) {
+		std::cout << RED "REQUEST BODY CONTENT TOO LARGE\n" RES;
+		_httpStatus = CONTENT_TOO_LARGE;
+		return (1);
+	}
+
 	if (_data.getClientBytesSoFar() > _data.getRequestContentLength()) {		// Compare body lenght
 		std::cout << RED << "Error: Body-Length (" << _data.getClientBytesSoFar() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;// sleep(2);
 		//std::cout << YEL "Body:\n" RES;
@@ -420,7 +432,6 @@ int Request::appendToBody(const char* str, size_t len) {
 		//std::cout << "BODY:   [" BLU << _data.getBody()   << RES "]\n\n";	// sleep(1);
 		return (0);
 	}
-	//std::cout << RED << "End appendToBody()\n" << RES;
 	//std::cout << RED << "END appendToBOdy(), current len, " << _data.getClientBytesSoFar() << " expected len: " << _data.getRequestContentLength() << "\n" RES;
 	return (0);
 }

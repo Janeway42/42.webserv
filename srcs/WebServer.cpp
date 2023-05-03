@@ -314,7 +314,7 @@ void WebServer::sendResponse(struct kevent& event)
 			storage->getResponseData().setResponseDone(true);
 
 			std::cout << "full response: \n";
-			std::cout << storage->getResponseData().getFullResponse() << std::endl;
+			// std::cout << storage->getResponseData().getFullResponse() << std::endl;
 			// std::cout << "----------- FULL RESPONSE: -----------------------\n" << storage->getResponseData().getFullResponse() << std::endl;
 		}
 
@@ -475,25 +475,26 @@ void	WebServer::chooseMethod_StartCGI(struct kevent event, Request * storage) {
 // --------------------------------------------------------- other functions
 // -------------------------------------------------------------------------
 
-std::string WebServer::streamFile(std::string file)
-{
-	std::string responseNoFav;
-	std::fstream    infile;
+// Function moved to ResponseData
+// std::string WebServer::streamFile(std::string file)
+// {
+// 	std::string responseNoFav;
+// 	std::fstream    infile;
 
 
-	infile.open(file, std::fstream::in);
-	if (!infile)
-		throw ServerException("Error: File not be opened for reading!");
-	while (infile)     // While there's still stuff left to read
-	{
-		std::string strInput;
-		std::getline(infile, strInput);
-		responseNoFav.append(strInput);
-		responseNoFav.append("\n");
-	}
-	infile.close();
-	return (responseNoFav);
-}
+// 	infile.open(file, std::fstream::in);
+// 	if (!infile)
+// 		throw ServerException("Error: File not be opened for reading!");
+// 	while (infile)     // While there's still stuff left to read
+// 	{
+// 		std::string strInput;
+// 		std::getline(infile, strInput);
+// 		responseNoFav.append(strInput);
+// 		responseNoFav.append("\n");
+// 	}
+// 	infile.close();
+// 	return (responseNoFav);
+// }
 
 bool WebServer::isListeningSocket(int fd)
 {
