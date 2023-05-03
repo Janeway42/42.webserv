@@ -2792,7 +2792,7 @@ Accept: */*
 originalUrlPath:               [[42m/texts/bible.html[0m]
 server block root directory:   [[42m./resources[0m]
 
-[32mStarting parsePath() and searching for the correct location block on the config file:[0m
+[32mStarting checkIfPathCanBeServed() and searching for the correct location block on the config file:[0m
 
 ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
 locationBlockUriName:            [[42m/subfolder[0m]

@@ -7,7 +7,7 @@
 std::string Parser::keyParser(std::string & lineContent, std::string const & keyToFind) {
     if (not lineContent.empty() || not keyToFind.empty()) {
         if (lineContent.find(keyToFind) != std::string::npos) {
-            std::cout << GRN << lineContent << RES << std::endl;
+            std::cout << GRY << lineContent << RES << std::endl;
             return getOneCleanValueFromKey(lineContent, keyToFind);
         }
     }

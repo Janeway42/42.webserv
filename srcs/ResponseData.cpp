@@ -43,7 +43,7 @@ void ResponseData::createResponseHeader(HttpStatus status, std::string const & r
     std::string redirection = redirectionUrl.empty() ? "" : "Location: " + redirectionUrl;
 
     _responseHeader = "HTTP/1.1 " + std::to_string(status) + " " + httpStatusToString(status) + "\r\n"
-        "Content-Type: text/html\r\n"
+        "Content-Type: text/html\r\n"//TODO WE CONT HAVE MORE CONTENT TYPES?
         "Content-Encoding: identity\r\n"// Corina - added it because firefox complained that it was missing - not sure if we keep because firefox still complains even with it. We leave it for now.
         "Connection: close\r\n"
         "Content-Length: " + std::to_string(_responseBody.length()) + "\r\n"
@@ -76,12 +76,12 @@ void ResponseData::createResponse(struct kevent& event) {
 
     _responsePath = storage->getRequestData().getURLPath_full();
 	setResponseStatus(event);
-    std::cout << RED << "_response path after SetResponseStatus(): " << _responsePath << "\n" << RES;
+    std::cout << RED << "_responsePath after SetResponseStatus(): " << _responsePath << "\n" << RES;
 
     if (storage->getRedirection().empty()) {
         if (storage->getRequestData().getIsFolder() && not storage->getCgiData().getIsCgi()) {
             /* No need to loop through the locations to find the matching,  the getURLPath_full() already contains
-             * the matching one. Also, no need to append the corresponding index file (parsePath() has done it) */
+             * the matching one. Also, no need to append the corresponding index file (checkIfPathCanBeServed() has done it) */
             std::cout << BLU "The Path is a folder: check for autoindex on/off\n" << RES;
             std::cout << BLU "   getURLPath: [" << storage->getRequestData().getURLPath() << "]\n" RES;
             std::cout << BLU "  getFullPath: [" << storage->getRequestData().getURLPath_full() << "]\n" RES;
@@ -137,10 +137,11 @@ void ResponseData::createResponse(struct kevent& event) {
 //     std::cout << "_fullResponse:\n-------------\n" RES << _fullResponse << "\n-------------" << std::endl;
 }
 
-static std::string selectErrorPage(std::vector<std::string> const & errorPages, HttpStatus status, std::string const & defaultErrorPage) {
+static std::string selectErrorPage(Request* storage, std::vector<std::string> const & errorPages, std::string const & defaultErrorPage) {
+    storage->getRequestData().setFileExtention(defaultErrorPage);
     std::vector<std::string>::const_iterator it = errorPages.cbegin();
     for (; it != errorPages.cend(); ++it) {
-        if (it->find(std::to_string(status)) != std::string::npos) {
+        if (it->find(std::to_string(storage->getHttpStatus())) != std::string::npos) {
             // If error page is found on the config file, return it
             return *it;
         }
@@ -156,60 +157,41 @@ void ResponseData::setResponseStatus(struct kevent& event)
 
 //	std::string fileType = storage->getRequestData().getResponseContentType();	// fileType not used ?
 
-    std::string defaultStatusPath = storage->getServerData().getRootDirectory() + "/_server_default_status/";
+    std::string defaultStatusPath = "./_server_default_status/";
     //todo add more default pages?
 	switch (storage->getHttpStatus()) {
         case 301: {
             break;
         } case 400: {
-            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
-                                            storage->getHttpStatus(),
-                                            defaultStatusPath + "400BadRequest.html");
+            _responsePath = selectErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "400BadRequest.html");
             break;
         } case 403: {
-            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
-                                            storage->getHttpStatus(),
-                                            defaultStatusPath + "403Forbidden.html");
+            _responsePath = selectErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "403Forbidden.html");
             break;
         } case 404: {
-			std::cout << RED "SELECTED_responsepath 404" << "\n" RES;
-            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
-                                            storage->getHttpStatus(),
-                                            defaultStatusPath + "404NotFound.html");
+            _responsePath = selectErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "404NotFound.html");
             break;
         } case 405: {
-            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
-                                            storage->getHttpStatus(),
-                                            defaultStatusPath + "405MethodnotAllowed.html");
+            _responsePath = selectErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "405MethodnotAllowed.html");
             break;
         } case 408: {
-            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
-                                            storage->getHttpStatus(),
-                                            defaultStatusPath + "408RequestTimeout.html");
+            _responsePath = selectErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "408RequestTimeout.html");
             break;
 		} case 413: {
-            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
-                                            storage->getHttpStatus(),
-                                            "413ContentTooLarge.html");
+            _responsePath = selectErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "413ContentTooLarge.html");
             break;
         } case 500: {
-            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
-                                            storage->getHttpStatus(),
-                                            defaultStatusPath + "500InternarServerError.html");
+            _responsePath = selectErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "500InternarServerError.html");
             break;
 		} case 504: {
-            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
-                                            storage->getHttpStatus(),
-                                            "504GatewayTimeout.html");
+            _responsePath = selectErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "504GatewayTimeout.html");
             break;
 		} case 505: {
-            _responsePath = selectErrorPage(storage->getServerData().getErrorPages(),
-                                            storage->getHttpStatus(),
-                                            defaultStatusPath + "500HttpVersionNotSupported.html");
+            _responsePath = selectErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "500HttpVersionNotSupported.html");
             break;
         } default: {
             // "Set-Cookie: id=123; jaka=500; Max-Age=10; HttpOnly\r\n";
-            // "Content-Type: " + storage->getRequestData().getResponseContentType() + "\n";	// jaka
+//             "Content-Type: " + storage->getRequestData().getResponseContentType() + "\n";	// jaka
             std::cout << "_responsePath: [[" << GRN_BG << _responsePath << RES << "]]\n";
             break;
         }

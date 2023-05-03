@@ -231,14 +231,14 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, std::string::size_type
 	parseHeader(_data.getHeader());
 	setSpecificServer();
 
-	std::cout << "-------------------- _specificServer: " << _specificServer.getServerName() << std::endl;
+	std::cout << "__________________ _specificServer: " << _specificServer.getServerName() << std::endl << std::endl;
 	
 	_headerDone = true;
 	//std::cout << RED "server root path: " << getServerData().getRootDirectory() << "\n" RES;
 	if (_httpStatus == NO_STATUS || _httpStatus == OK)
-		parsePath(_data.getHttpPath());	// IF FILE NOT FOUND 404, IT COULD JUST CLOSE THE CONNECTION (return now?)
+        checkIfPathCanBeServed(_data.getHttpPath());	// IF FILE NOT FOUND 404, IT COULD JUST CLOSE THE CONNECTION (return now?)
 	else
-		parsePath(getErrorPage());
+        checkIfPathCanBeServed(getErrorPage());
 
 	if (_data.getRequestContentLength() == 0){
 		// if (_data.getRequestMethod() == "GET" && _data.getQueryString() != "")
