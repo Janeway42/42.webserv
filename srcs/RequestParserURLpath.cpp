@@ -296,7 +296,7 @@ static std::string getExtension(std::string const & originalUrlPath) {
         extension = urlPath.substr(hasExtension);
         std::cout << BLU << "File extension: "  << extension << RES << std::endl;
     } else {
-        std::cout << YEL << "There is no extension in the file" << RES << std::endl;
+        std::cout  << "There is no extension in the file" << std::endl;
     }
     return extension;
 }
@@ -575,14 +575,14 @@ void Request::checkIfPathCanBeServed(std::string  const & originalUrlPath) {
             // localhost/_cgi [ok -> internal]
             // localhost/_cgi/file.php [ko -> 404] since the _cgi is not a location (and is internal)
             if (originalUrlPath.find("/_") != std::string::npos) {
-                std::cout << YEL << "Internal directory requested, it will be server but no need to search for its"
+                std::cout << YEL << "Internal directory requested, it will be served but no need to search for its "
                                     "location on the config file" << RES << std::endl << std::endl;
                 _data.setFileExtention(getExtension(originalUrlPath));
                 URLPath_full = serverBlockDir + originalUrlPath;
             } else {
                 std::cout << RED << "As the UrlPath did not match any location block, ";
                 std::cout << "the server cannot serve any file and will return 404 NOT_FOUND" << RES << std::endl << std::endl;
-                if (getHttpStatus() == NO_STATUS) {// todo -> here I think we dont need to check this anymore
+                if (getHttpStatus() == NO_STATUS) {// todo -> here I think we don't need to check this anymore
                     setHttpStatus(NOT_FOUND);
                 }
                 _data.setURLPath(originalUrlPath);

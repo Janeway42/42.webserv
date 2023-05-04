@@ -98,8 +98,8 @@ class Request : public Parser {
 		int				    storeWordsFromFirstLine(std::string firstLine);
 		int				    storeWordsFromOtherLine(std::string otherLine);
 
-		std::string			getErrorPage();
-
+        std::string         getSpecificErrorPage(std::vector<std::string> const & errorPages, std::string const & defaultErrorPage);
+        std::string			getErrorPage();
 
 		// cleanup ------------------------
 		void    printStoredRequestData(Request &request); // Just for checking

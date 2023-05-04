@@ -21,6 +21,7 @@ ServerData::ServerData()
 	_index_file("index.html"),
 	_client_max_body_size(1024),
 	_error_page(std::vector<std::string>()),
+	_upload_directory("uploads"),
 	_listening_socket(-1){
 	std::cout << PUR << "ServerData Default constructor" << RES << std::endl;
 }
@@ -33,6 +34,7 @@ ServerData::ServerData(ServerData const & rhs)
 	_index_file(rhs._index_file),
 	_client_max_body_size(rhs._client_max_body_size),
 	_error_page(rhs._error_page),
+	_upload_directory(rhs._upload_directory),
 	_location_data_vector(rhs._location_data_vector),
 	_listening_socket(rhs._listening_socket)
 	{
@@ -48,6 +50,7 @@ ServerData::~ServerData() {
 	_index_file.clear();
 	_client_max_body_size = 0;
 	_error_page.clear();
+	_upload_directory.clear();
 	if (signalCall == true && fcntl(_listening_socket, F_GETFD) != -1)
 		close(_listening_socket);
 	std::cout << PUR << "ServerData Destructor" << RES << std::endl;
@@ -77,6 +80,10 @@ unsigned int ServerData::getClientMaxBodySize() const {
 
 std::vector<std::string> ServerData::getErrorPages() const {
 	return _error_page;
+}
+
+std::string ServerData::getUploadDirectory() const {
+    return _upload_directory;
 }
 
 std::vector<ServerLocation> & ServerData::getLocationBlocks() {
@@ -246,6 +253,22 @@ void ServerData::setErrorPages(std::string const & errorPage) {
     }
 }
 
+void ServerData::setUploadDirectory(const std::string &uploadDirectory) {
+    /* not mandatory | default: ./uploads */
+    if (not uploadDirectory.empty() && uploadDirectory != "/" && uploadDirectory != "./") {
+        std::string upload_dir = addRootDirectoryPath(_root_directory, uploadDirectory);
+        PathType type = pathType(upload_dir);
+        // doesn't contain regexp (regular expressions), wildcards or full/relative path
+        if (type == DIRECTORY) {
+            _upload_directory = upload_dir;
+        } else if (type == PATH_TYPE_ERROR) {
+            throw ParserException(CONFIG_FILE_ERROR("upload_directory", MISSING));
+        } else {
+            throw ParserException(CONFIG_FILE_ERROR("upload_directory", NOT_SUPPORTED));
+        }
+    }
+}
+
 // void ServerData::setListeningSocket() {
 // 	struct addrinfo *addr = NULL;
 // 	struct addrinfo hints = addrinfo();
@@ -293,8 +316,7 @@ void ServerData::setErrorPages(std::string const & errorPage) {
 // 	freeaddrinfo(addr);
 // }
 
-void ServerData::setExistingListeningSocket(int fd)
-{
+void ServerData::setExistingListeningSocket(int fd) {
 	_listening_socket = fd;
 }
 
