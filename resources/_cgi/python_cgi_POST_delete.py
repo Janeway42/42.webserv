@@ -14,7 +14,8 @@ form = cgi.FieldStorage()
 
 # Define the path to the folder you want to list
 rootFolder = os.getcwd()
-pathToUploads = rootFolder + '/resources/uploads/'  # TODO this path has to come from the config file??? (look pdF)
+#pathToUploads = rootFolder + '/resources/uploads/'  # TODO this path has to come from the config file??? (look pdF)
+pathToUploads = '../uploads/'  # TODO this path has to come from the config file??? (look pdF)
 
 for param in os.environ.keys():
     # print("<b>%30s</b>: %s</br>") % (param, os.environ[param])
@@ -35,7 +36,7 @@ html_template = """
 <!DOCTYPE html>
 <html>
 <head>
-    <h4><a href='cgi_index.html'> Main Cgi Page </a></h4>
+    <h4><a href='../cgi_index.html'> Main Cgi Page </a></h4>
     <title>Folder Contents</title>
 </head>
 <body>

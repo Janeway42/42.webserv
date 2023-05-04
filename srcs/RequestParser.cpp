@@ -368,7 +368,7 @@ int Request::appendLastChunkToBody2(const char *str, size_t len) {
 	//std::copy(tempVec.begin(), tempVec.end(), std::ostream_iterator<uint8_t>(std::cout));  // just to print
 
 	if (_data.getClientBytesSoFar() > getServerData().getClientMaxBodySize()) {
-		std::cout << RED "REQUEST BODY CONTENT TOO LARGE\n" RES;
+		std::cout << RED "REQUEST BODY CONTENT TOO LARGE (max allowed: " << getServerData().getClientMaxBodySize() << ")\n" RES;
 		_httpStatus = CONTENT_TOO_LARGE;
 		return (1);
 	}
