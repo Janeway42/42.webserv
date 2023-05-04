@@ -19,7 +19,7 @@ import cgi, cgitb
 # TO READ FROM STDIN, FROM PIPE
 print ("<br><br><h3>THIS IS PYTHON SCRIPT:</h3>")
 
-# time.sleep(11)
+time.sleep(11)
 # exit()
 
 # for l in sys.stdin:
@@ -36,13 +36,15 @@ for param in os.environ.keys():
         URL = os.environ[param]
         print("<p>FOUND QUERY STRING:")
         print ("<span style='background-color:cornsilk; padding:1%;'>" + URL + "</span><p>")
-    else:
-        URL="DEFAULT=default"
+    #else:
+    #    URL="DEFAULT=default"
 
 
 
 # from urllib.parse import urlparse, parse_qs # why is this not good ??
-from urlparse import urlparse, parse_qs
+#from urlparse import urlparse, parse_qs        # in python2
+from urllib.parse import urlparse, parse_qs     # in python3
+
 parsed_result = urlparse(URL)
 parse_qs(parsed_result.query)
 
@@ -57,9 +59,19 @@ print ("<span style='background-color:darkkhaki; padding:1%;'>")
 print (dict_result)
 print ("</span></p>")
 
+if 'city' in dict_result:
+    city = dict_result['city'][0]
+else:
+    city = "unknown"
+
+if 'street' in dict_result:
+    street = dict_result['street'][0]
+else:
+    street = "unknown"
+
 print ("<div style='width:fit-content; padding:5%; margin: 10% 0% 0% 10%; border:1px solid; background-color: linen; border-radius: 4px';><h1>Congratulations!</h1>")
-print ("<h3>      Your city is: <span style='background-color:MediumSeaGreen; padding:1%;'>" + dict_result['city'][0] + "</span></h3>")
-print ("<h3>    Your street is: <span style='background-color:coral; padding:1%'>" + dict_result['street'][0] + "</h3>")
+print ("<h3>      Your city is: <span style='background-color:MediumSeaGreen; padding:1%;'>" + city + "</span></h3>")
+print ("<h3>    Your street is: <span style='background-color:coral; padding:1%'>" + street + "</h3>")
 
 print("")
 
