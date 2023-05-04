@@ -242,6 +242,7 @@ void RequestData::setRequestContentLength(std::string reqContentLength)
 
 void RequestData::setResponseContentType(std::string fileExtention)
 {
+    // todo there are no other extensions that people could try to serve??????
 	if (fileExtention == ".html")
 		_responseContentType = "text/html";
 	else if (fileExtention == ".jpg")
@@ -250,9 +251,8 @@ void RequestData::setResponseContentType(std::string fileExtention)
 		_responseContentType = "image/png";
 	else if (fileExtention == ".ico")
 		_responseContentType = "image/x-con";
-	else if (fileExtention == "")			// Not sure if needed,
-		_responseContentType = "";				// in case of no suffix
-	//_responseContentType = str;
+//	else if (fileExtention == "")// Not sure if needed, -> joyce comment -> when http://localhost:8080/_folderA it was comming here and so the response body with the 404 error was nor being set, Idk if this line is needed for something else though, if not we can delete (is it text/html the default anyway? response has always to have any content type???)
+//		_responseContentType = "";// in case of no suffix
 }
 
 void RequestData::setRequestContentType(std::string str) {

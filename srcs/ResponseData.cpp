@@ -39,7 +39,6 @@ void ResponseData::createResponseHeader(HttpStatus status, std::string const & r
     // 		_responsePath = "resources/cookies/yesCookies.html"
     // }
 
-    std::cout << RED << "JOYE redirectionUrl: " << redirectionUrl << RES << std::endl;
     std::string redirection = redirectionUrl.empty() ? "" : "Location: " + redirectionUrl;
 
     _responseHeader = "HTTP/1.1 " + std::to_string(status) + " " + httpStatusToString(status) + "\r\n"
@@ -71,55 +70,53 @@ void ResponseData::createResponseHeader(HttpStatus status, std::string const & r
  * then createResponse() returns this full content, ready to be sent
  */
 void ResponseData::createResponse(struct kevent& event) {
-	std::cout << CYN <<  "Start createResponse()\n" << RES;
+	std::cout << CYN <<  "Start " << __func__ << RES;
 	Request *storage = (Request *)event.udata;
 
     _responsePath = storage->getRequestData().getURLPath_full();
 	setResponseStatus(event);
-    std::cout << RED << "_responsePath after SetResponseStatus(): " << _responsePath << "\n" << RES;
+    std::cout << BLU << "_responsePath after SetResponseStatus(): " << _responsePath << "\n" << RES;
+    std::cout << BLU << "   getURLPath:   [" << storage->getRequestData().getURLPath() << "]\n" << RES;
+    std::cout << BLU << "  getFullPath:   [" << storage->getRequestData().getURLPath_full() << "]\n" << RES;
+    std::cout << BLU << "getHttpStatus(): [" << storage->getHttpStatus() << "]\n" << RES;
+    std::cout << BLU << "response path:   [" << _responsePath << "]\n" << RES;
+    std::cout << BLU << "content type:    [" << storage->getRequestData().getResponseContentType() << "]\n" << RES;
 
     if (storage->getRedirection().empty()) {
         if (storage->getRequestData().getIsFolder() && not storage->getCgiData().getIsCgi()) {
             /* No need to loop through the locations to find the matching,  the getURLPath_full() already contains
              * the matching one. Also, no need to append the corresponding index file (checkIfPathCanBeServed() has done it) */
-            std::cout << BLU "The Path is a folder: check for autoindex on/off\n" << RES;
-            std::cout << BLU "   getURLPath: [" << storage->getRequestData().getURLPath() << "]\n" RES;
-            std::cout << BLU "  getFullPath: [" << storage->getRequestData().getURLPath_full() << "]\n" RES;
+            std::cout << BLU << "The Path is a folder: Checking for autoindex on/off:\n" << RES;
 
-            //if (storage->getRequestData().getResponseContentType().compare("text/html") == 0) { // IF FOLDER, THE CONT. TYPE SHOULD BE text.html todo use this check still?
-            if (storage->getHttpStatus() == OK) {
-                std::cout << "Setting _responsePath and _responseBody\n";
-                _responseBody = streamFile(_responsePath);
-
-                std::cout << "   getHttpStatus(): [" << storage->getHttpStatus() << "]\n" << RES;
-                std::cout << "   response path:   [" << _responsePath << "]\n" << RES;
-                std::cout << "   content type:    [" << storage->getRequestData().getResponseContentType() << "]\n" << RES;
-            } else if (storage->getHttpStatus() != OK) {
-                _responseBody = streamFile(_responsePath);
-            }
             // Handling auto index
             if (storage->getRequestData().getAutoIndex()) {
-                std::cout << BLU "AUTOINDEX ON, must call storeFolderContent()\n" << RES;
-                std::cout << BLU "     URLPathFirstPart: [" << storage->getRequestData().getURLPathFirstPart() << "]\n" << RES;
+                std::cout << BLU << "AUTOINDEX ON, must call storeFolderContent()\n" << RES;
+                std::cout << BLU << "     URLPathFirstPart: [" << storage->getRequestData().getURLPathFirstPart() << "]\n" << RES;
                 // if (storage->getRequestData().getURLPathFirstPart().empty()) {
                 // 	std::cout << BLU "first part is empty\n" << RES;
                 // 	std::string newPath = "./resources/" + storage->getRequestData().getURLPath();
                 // 	_responseBody = storeFolderContent(newPath.c_str());
-                // }
-                // else
+                // } else
+                std::cout << "Setting _responseBody\n";
                 _responseBody = storeFolderContent(storage->getRequestData().getURLPathFirstPart().c_str());
             }
+            std::cout << "AutoIndex off. Setting _responseBody\n";
+            _responseBody = streamFile(_responsePath);
         }
         // if it is not a folder (it checks first if cgi -> if not then it checks text (includes error), else image
         else {
             if (storage->getCgiData().getIsCgi() && storage->getHttpStatus() == OK) {
+                std::cout << GRN << "The path contain query -> cgi: [" << GRN_BG << _responsePath << RES << "]\n";
+                std::cout << "Setting _responseBody\n";
                 _responseBody = storage->getRequestData().getCgiBody();
             } else {
-                if (storage->getRequestData().getResponseContentType().compare("text/html") == 0) {
+                if (storage->getRequestData().getResponseContentType() == "text/html") {
                     std::cout << GRN << "The path is a file: [" << GRN_BG << _responsePath << RES << "]\n";
+                    std::cout << "Setting _responseBody\n";
                     _responseBody = streamFile(_responsePath);
-                    //_responseBody = streamFile(storage->getServerData().getRootDirectory() + "/" + _responsePath);
-                } else { // IF IMAGE, FULL RESPONSE IS CREATED IN setImage()
+                }
+                // IF IMAGE, FULL RESPONSE IS CREATED IN setImage()
+                else if (storage->getRequestData().getResponseContentType().find("image/") != std::string::npos) {
                     std::cout << GRN << "The path is an image: [" << GRN_BG << _responsePath << RES << "]\n";
                     _fullResponse = setImage(_responsePath);
                     // std::cout << BLU "_fullResponse.length(): [\n" << _fullResponse.size() << "\n" RES;
@@ -128,16 +125,30 @@ void ResponseData::createResponse(struct kevent& event) {
             }
         }
     }
+//    _responsePath after SetResponseStatus(): ./resources/error_pages/404.html
+//    getURLPath:   [/folderA]
+//    getFullPath:   [default]
+//    getHttpStatus(): [404]
+//    response path:   [./resources/error_pages/404.html]
+//    content type:    [text/html]
+//    /////
+//    _responseHeader:
+//    HTTP/1.1 404 Not Found
+//    Content-Type: text/html
+//    Content-Encoding: identity
+//    Connection: close
+//    Content-Length: 68
 
-	// set up header
+
+    // set up header
     createResponseHeader(storage->getHttpStatus(), storage->getRedirection());
 
 	_fullResponse += _responseHeader + _responseBody;
-     std::cout << "_responseHeader:\n-------------\n" RES << _responseHeader << "\n-------------" << std::endl;
-//     std::cout << "_fullResponse:\n-------------\n" RES << _fullResponse << "\n-------------" << std::endl;
+     std::cout << "-------------\n_responseHeader:\n" RES << _responseHeader << "\n-------------" << std::endl;
+//     std::cout << "-------------\n_fullResponse:\n" RES << _fullResponse << "\n-------------" << std::endl;
 }
 
-static std::string selectErrorPage(Request* storage, std::vector<std::string> const & errorPages, std::string const & defaultErrorPage) {
+static std::string getSpecificErrorPage(Request* storage, std::vector<std::string> const & errorPages, std::string const & defaultErrorPage) {
     storage->getRequestData().setFileExtention(defaultErrorPage);
     std::vector<std::string>::const_iterator it = errorPages.cbegin();
     for (; it != errorPages.cend(); ++it) {
@@ -155,43 +166,40 @@ void ResponseData::setResponseStatus(struct kevent& event)
 	std::cout << CYN << "Start setResponseStatus()\n" << RES;
 	Request *storage = (Request *)event.udata;
 
-//	std::string fileType = storage->getRequestData().getResponseContentType();	// fileType not used ?
-
     std::string defaultStatusPath = "./_server_default_status/";
     //todo add more default pages?
 	switch (storage->getHttpStatus()) {
         case 301: {
             break;
         } case 400: {
-            _responsePath = selectErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "400BadRequest.html");
+            _responsePath = getSpecificErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "400BadRequest.html");
             break;
         } case 403: {
-            _responsePath = selectErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "403Forbidden.html");
+            _responsePath = getSpecificErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "403Forbidden.html");
             break;
         } case 404: {
-            _responsePath = selectErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "404NotFound.html");
+            _responsePath = getSpecificErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "404NotFound.html");
             break;
         } case 405: {
-            _responsePath = selectErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "405MethodnotAllowed.html");
+            _responsePath = getSpecificErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "405MethodnotAllowed.html");
             break;
         } case 408: {
-            _responsePath = selectErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "408RequestTimeout.html");
+            _responsePath = getSpecificErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "408RequestTimeout.html");
             break;
 		} case 413: {
-            _responsePath = selectErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "413ContentTooLarge.html");
+            _responsePath = getSpecificErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "413ContentTooLarge.html");
             break;
         } case 500: {
-            _responsePath = selectErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "500InternarServerError.html");
+            _responsePath = getSpecificErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "500InternarServerError.html");
             break;
 		} case 504: {
-            _responsePath = selectErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "504GatewayTimeout.html");
+            _responsePath = getSpecificErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "504GatewayTimeout.html");
             break;
 		} case 505: {
-            _responsePath = selectErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "500HttpVersionNotSupported.html");
+            _responsePath = getSpecificErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "500HttpVersionNotSupported.html");
             break;
         } default: {
             // "Set-Cookie: id=123; jaka=500; Max-Age=10; HttpOnly\r\n";
-//             "Content-Type: " + storage->getRequestData().getResponseContentType() + "\n";	// jaka
             std::cout << "_responsePath: [[" << GRN_BG << _responsePath << RES << "]]\n";
             break;
         }
@@ -237,10 +245,9 @@ std::string ResponseData::streamFile(std::string file)
 
 	std::cout << GRN << "File to be streamed: " << file << RES << std::endl;
 	infile.open(file, std::fstream::in);
-	if (not infile)
-        throw ParserException(CONFIG_FILE_ERROR("File to be streamed", MISSING));
-//		throw ServerException("Error: File not be opened for reading!");   SET UP ERROR
-	while (infile)     // While there's still stuff left to read
+//	if (not infile)
+//        throw ParserException(CONFIG_FILE_ERROR("File to be streamed", MISSING));// comment by joyce -> we cant throw exceptions after main loop
+	while (infile) // While there's still stuff left to read
 	{
 		std::string strInput;
 		std::getline(infile, strInput);

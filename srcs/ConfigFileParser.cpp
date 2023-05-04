@@ -117,6 +117,10 @@ void ConfigFileParser::parseFileServerBlock(std::ifstream & configFile) {
             _server_data.setErrorPages(keyParser(lineContent, "error_page"));
             continue;
         }
+        if (lineContent.find("upload_directory") != std::string::npos) {
+            _server_data.setUploadDirectory(keyParser(lineContent, "upload_directory"));
+            continue;
+        }
         /** Checking for _cgi or location/_cgi blocks */
         if (lineContent.find("location") != std::string::npos && lineContent.find('{') != std::string::npos) {
             ServerLocation _server_location(ServerLocation(_server_data.getRootDirectory(), _server_data.getIndexFile()));

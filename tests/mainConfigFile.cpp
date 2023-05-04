@@ -46,6 +46,9 @@ int main(int ac, char **av) {
                 }
                 std::cout << std::endl;
 
+                std::string uploadDirectory = it_server->getUploadDirectory();
+                std::cout << GRN << std::left << std::setw(30) << "\"upload_directory\": " << uploadDirectory << RES << std::endl;
+
                 std::vector<ServerLocation>::const_iterator it_location;
                 for (it_location = it_server->getLocationBlocks().cbegin(); it_location != it_server->getLocationBlocks().cend(); ++it_location) {
 

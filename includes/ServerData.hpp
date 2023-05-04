@@ -21,6 +21,7 @@ class ServerData : public Parser {
         std::string _index_file;
         unsigned int _client_max_body_size;
         std::vector<std::string> _error_page;
+        std::string _upload_directory;
         /* As more than 1 location block can be added to a server block */
         std::vector<ServerLocation> _location_data_vector;
 
@@ -39,6 +40,7 @@ class ServerData : public Parser {
         std::string getIndexFile() const;
         unsigned int getClientMaxBodySize() const;
         std::vector<std::string> getErrorPages() const;
+        std::string getUploadDirectory() const;
         std::vector<ServerLocation> & getLocationBlocks();
         int getListeningSocket() const;
         struct addrinfo* getAddr() const;
@@ -50,22 +52,8 @@ class ServerData : public Parser {
         void	setIndexFile(std::string const & indexFile);
         void	setClientMaxBodySize(std::string const & bodySize);
         void	setErrorPages(std::string const & errorPage);
+        void	setUploadDirectory(std::string const & uploadDirectory);
         void	setListeningSocket();
-
 		void	setExistingListeningSocket(int fd);
-
-
-//        class ServerDataException: public std::exception {
-//            private:
-//                std::string _errorMessage;
-//            public:
-//                explicit ServerDataException(std::string const & errorMessage) throw() {
-//                    _errorMessage = "ServerData error: " + errorMessage;
-//                }
-//                virtual const char* what() const throw() {
-//                    return (_errorMessage.c_str());
-//                }
-//                virtual ~ServerDataException() throw() {}
-//        };
 };
 #endif //SERVERDATA_HPP

@@ -236,7 +236,7 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, std::string::size_type
 	_headerDone = true;
 	//std::cout << RED "server root path: " << getServerData().getRootDirectory() << "\n" RES;
 	if (_httpStatus == NO_STATUS || _httpStatus == OK)
-        checkIfPathCanBeServed(_data.getHttpPath());	// IF FILE NOT FOUND 404, IT COULD JUST CLOSE THE CONNECTION (return now?)
+        checkIfPathCanBeServed(_data.getHttpPath());// IF FILE NOT FOUND 404, IT COULD JUST CLOSE THE CONNECTION (return now?)
 	else
         checkIfPathCanBeServed(getErrorPage());
 
@@ -247,64 +247,56 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, std::string::size_type
     }
 }
 
-
 // --------------------------------------------------------------- double functions / maybe combine -------------------------------------------
 
-static std::string getSpecificErrorPage(std::vector<std::string> const & errorPages, HttpStatus status, std::string const & defaultErrorPage) {
+std::string Request::getSpecificErrorPage(std::vector<std::string> const & errorPages, std::string const & defaultErrorPage) {
+    _data.setFileExtention(defaultErrorPage);
     std::vector<std::string>::const_iterator it = errorPages.cbegin();
     for (; it != errorPages.cend(); ++it) {
-        if (it->find(std::to_string(status)) != std::string::npos) {
+        if (it->find(std::to_string(_httpStatus)) != std::string::npos) {
             // If error page is found on the config file, return it
             return *it;
         }
     }
     // Otherwise return a default config file
-    return "./resources/_server_default_status/" + defaultErrorPage;
+    return defaultErrorPage;
 }
 
 std::string Request::getErrorPage()
 {
 	std::string temp = "";
+    std::string defaultStatusPath = "./_server_default_status/";
 
 	switch (_httpStatus) {
         case 301: {
             temp = _redirection;
             break;
         } case 400: {
-            temp = getSpecificErrorPage(_specificServer.getErrorPages(), _httpStatus,
-                                            "400BadRequest.html");
+            temp = getSpecificErrorPage(_specificServer.getErrorPages(), defaultStatusPath + "400BadRequest.html");
             break;
         } case 403: {
-            temp = getSpecificErrorPage(_specificServer.getErrorPages(), _httpStatus,
-                                            "403Forbidden.html");
+            temp = getSpecificErrorPage(_specificServer.getErrorPages(), defaultStatusPath + "403Forbidden.html");
             break;
         } case 404: {
-            temp = getSpecificErrorPage(_specificServer.getErrorPages(), _httpStatus,
-                                            "404NotFound.html");
+            temp = getSpecificErrorPage(_specificServer.getErrorPages(), defaultStatusPath + "404NotFound.html");
             break;
         } case 405: {
-            temp = getSpecificErrorPage(_specificServer.getErrorPages(), _httpStatus,
-                                            "405MethodnotAllowed.html");
+            temp = getSpecificErrorPage(_specificServer.getErrorPages(), defaultStatusPath + "405MethodnotAllowed.html");
             break;
         } case 408: {
-            temp = getSpecificErrorPage(_specificServer.getErrorPages(), _httpStatus,
-                                            "408RequestTimeout.html");
+            temp = getSpecificErrorPage(_specificServer.getErrorPages(), defaultStatusPath + "408RequestTimeout.html");
             break;
         } case 500: {
-            temp = getSpecificErrorPage(_specificServer.getErrorPages(), _httpStatus,
-                                            "500InternarServerError.html");
+            temp = getSpecificErrorPage(_specificServer.getErrorPages(), defaultStatusPath + "500InternarServerError.html");
             break;
 		} case 504: {
-            temp = getSpecificErrorPage(_specificServer.getErrorPages(), _httpStatus,
-                                            "504GatewayTimeout.html");
+            temp = getSpecificErrorPage(_specificServer.getErrorPages(), defaultStatusPath + "504GatewayTimeout.html");
             break;
 		} case 505: {
-            temp = getSpecificErrorPage(_specificServer.getErrorPages(), _httpStatus,
-                                            "HTTPVersionNotSupported.html");
+            temp = getSpecificErrorPage(_specificServer.getErrorPages(), defaultStatusPath + "HTTPVersionNotSupported.html");
             break;
         } default: {
             // "Set-Cookie: id=123; jaka=500; Max-Age=10; HttpOnly\r\n";
-            // "Content-Type: " + storage->getRequestData().getResponseContentType() + "\n";	// jaka
             std::cout << "_httpStatus: [[" << GRN_BG << _httpStatus << RES << "]]\n";
             break;
         }
