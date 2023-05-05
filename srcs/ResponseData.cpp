@@ -198,7 +198,7 @@ void ResponseData::setResponseStatus(struct kevent& event)
             _responsePath = getSpecificErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "504GatewayTimeout.html");
             break;
 		} case 505: {
-            _responsePath = getSpecificErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "500HttpVersionNotSupported.html");
+            _responsePath = getSpecificErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "505HttpVersionNotSupported.html");
             break;
         } default: {
             // "Set-Cookie: id=123; jaka=500; Max-Age=10; HttpOnly\r\n";

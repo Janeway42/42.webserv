@@ -148,9 +148,6 @@ void Request::callCGI(struct kevent event) {
 	args[1] = path;
 	args[2] = NULL;
 
-	// (void)ENV;
-	// (void)fdClient;
-	//_data.setCgiBody(runExecve(env, args, event));
 	runExecve(env, args, event);
 
 	//std::cout << "Stored body from CGI: [\n" << BLU << _data.getCgiBody() << RES << "]\n";
@@ -584,6 +581,8 @@ void Request::checkIfPathCanBeServed(std::string  const & originalUrlPath) {
                                     "location on the config file" << RES << std::endl << std::endl;
                 _data.setFileExtention(getExtension(originalUrlPath));
                 URLPath_full = serverBlockDir + originalUrlPath;
+                if (originalUrlPath.find(".py") != std::string::npos)     // added jaka
+                    getCgiData().setIsCgi(true);
             } else {
                 std::cout << RED << "As the UrlPath did not match any location block, ";
                 std::cout << "the server cannot serve any file and will return 404 NOT_FOUND" << RES << std::endl << std::endl;

@@ -215,8 +215,8 @@ void WebServer::readRequest(struct kevent& event)
 			storage->appendToRequest(buffer, ret);
 			//std::cout << CYN "    returned from ATR(), _parsingDone: " << storage->getDone() << ", isCGI: " << storage->getResponseData().getIsCgi() << "\n" RES;
 
-
 			std::cout << RED << "HTTP STATUS: " << storage->getHttpStatus() << std::endl << RES;
+			std::cout << RED << "CGI STATUS: " << storage->getCgiData().getIsCgi() << std::endl << RES; // jaka09
 
 			if ((storage->getHttpStatus() != NO_STATUS && storage->getHttpStatus() != OK) || (storage->getDone() == true && storage->getCgiData().getIsCgi() == false))
 			{
