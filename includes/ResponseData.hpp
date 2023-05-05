@@ -53,6 +53,7 @@ class ResponseData: public Parser
 		void			setResponseBody(std::string file);
 		void			setResponseDone(bool val);
 		void			setBytesToClient(int val);
+		void			setResponseFull(std::string response);
 
 		// NOT USED - to be cleaned out
 		// ***************************************************************************

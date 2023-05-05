@@ -73,6 +73,8 @@ void ResponseData::createResponse(struct kevent& event) {
 	std::cout << CYN <<  "Start " << __func__ << RES;
 	Request *storage = (Request *)event.udata;
 
+	std::cout << "test\n";
+	std::cout << "fd: " << storage->getFdClient() << std::endl; 
     _responsePath = storage->getRequestData().getURLPath_full();
 	setResponseStatus(event);
     std::cout << BLU << "_responsePath after SetResponseStatus(): " << _responsePath << "\n" << RES;
@@ -304,6 +306,11 @@ void ResponseData::setResponsePath(std::string path)
 void ResponseData::setResponseDone(bool val)
 {
     _responseDone = val;
+}
+
+void ResponseData::setResponseFull(std::string response)
+{
+	_fullResponse = response;
 }
 
 // void ResponseData::setOverride(bool val)   // NOT USED anymore - to be cleanned out

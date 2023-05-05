@@ -19,7 +19,6 @@
 #include "RequestParserURLpath.hpp"
 #include "CgiData.hpp"
 
-
 	// std::string temp = path;
 	// if (path[0] == '.')
 	// 	temp = path.substr(1, std::string::npos);

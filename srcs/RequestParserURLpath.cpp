@@ -59,11 +59,16 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 
 	//	std::cerr << RED "Before execve in child\n" << RES;
 		ret = execve(args[0], args, ENV);
-		std::cerr << RED << "Error: Execve failed: " << ret << "\n" << RES;
-        // TODO: handle error if execve failed
+		// (void)args;
+		// (void)ENV;
+		// ret = -1;
+		if (ret == -1)
+		{
+			std::cerr << RED << "Error: Execve failed: " << ret << "\n" << RES;
+			sleep(31);
+		}
 	}
 	else {				// PARENT
-		//wait(NULL);
 		
 		//std::cerr << "    Start Parent\n";
 		close(_cgi.getPipeCgiOut_1());

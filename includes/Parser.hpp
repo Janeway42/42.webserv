@@ -81,6 +81,7 @@ inline const std::string httpStatusToString(HttpStatus status) {
         case HEADER_FIELDS_TOO_LARGE:       return "Header Fields Too Large";
         case INTERNAL_SERVER_ERROR:         return "Internal Server Error";
         case HTTP_VERSION_NOT_SUPPORTED:    return "HTTP Version Not Supported";
+		case GATEWAY_TIMEOUT:				return "Gateway Timeout";
         default:                            return "No Status";
     }
 }
