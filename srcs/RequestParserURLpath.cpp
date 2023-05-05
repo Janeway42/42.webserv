@@ -57,10 +57,11 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
         // Best practice to ensure the script to find correct relative paths, if needed
         chdir("./resources/_cgi/");
 
-	//	std::cerr << RED "Before execve in child\n" << RES;
 		ret = execve(args[0], args, ENV);
 		std::cerr << RED << "Error: Execve failed: " << ret << "\n" << RES;
-        // TODO: handle error if execve failed
+        // ret = -1; (void)args; (void)ENV;
+        // if (ret == -1)
+        //     throw CgiData::CgiException("failed execve()");     // TODO: handle error if execve failed
 	}
 	else {				// PARENT
 		//wait(NULL);
@@ -579,6 +580,8 @@ void Request::checkIfPathCanBeServed(std::string  const & originalUrlPath) {
                                     "location on the config file" << RES << std::endl << std::endl;
                 _data.setFileExtention(getExtension(originalUrlPath));
                 URLPath_full = serverBlockDir + originalUrlPath;
+                if (originalUrlPath.find(".py") != std::string::npos)     // added jaka
+                    getCgiData().setIsCgi(true);
             } else {
                 std::cout << RED << "As the UrlPath did not match any location block, ";
                 std::cout << "the server cannot serve any file and will return 404 NOT_FOUND" << RES << std::endl << std::endl;
