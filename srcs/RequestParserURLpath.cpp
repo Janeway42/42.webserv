@@ -57,11 +57,10 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
         // Best practice to ensure the script to find correct relative paths, if needed
         chdir("./resources/_cgi/");
 
+	//	std::cerr << RED "Before execve in child\n" << RES;
 		ret = execve(args[0], args, ENV);
 		std::cerr << RED << "Error: Execve failed: " << ret << "\n" << RES;
-        // ret = -1; (void)args; (void)ENV;
-        // if (ret == -1)
-        //     throw CgiData::CgiException("failed execve()");     // TODO: handle error if execve failed
+        // TODO: handle error if execve failed
 	}
 	else {				// PARENT
 		//wait(NULL);
@@ -144,9 +143,6 @@ void Request::callCGI(struct kevent event) {
 	args[1] = path;
 	args[2] = NULL;
 
-	// (void)ENV;
-	// (void)fdClient;
-	//_data.setCgiBody(runExecve(env, args, event));
 	runExecve(env, args, event);
 
 	//std::cout << "Stored body from CGI: [\n" << BLU << _data.getCgiBody() << RES << "]\n";
