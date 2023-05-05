@@ -24,9 +24,7 @@ class ServerData : public Parser {
         std::string _upload_directory;
         /* As more than 1 location block can be added to a server block */
         std::vector<ServerLocation> _location_data_vector;
-
         int _listening_socket;
-        struct addrinfo *_addr;
 
     public:
         ServerData();
@@ -43,7 +41,6 @@ class ServerData : public Parser {
         std::string getUploadDirectory() const;
         std::vector<ServerLocation> & getLocationBlocks();
         int getListeningSocket() const;
-        struct addrinfo* getAddr() const;
 
         /** Setters */
         void	setServerName(std::string const & serverName);

@@ -94,10 +94,6 @@ int ServerData::getListeningSocket() const {
 	return _listening_socket;
 }
 
-struct addrinfo* ServerData::getAddr() const {
-	return _addr;
-}
-
 /** #################################### Setters #################################### */
 
 static bool isIp(int ch) {
@@ -337,20 +333,14 @@ void ServerData::setListeningSocket() {
 	// CHANGED:	This was causing the Siege error.
 	// 			Apparently Siege wants the IP address, not ServerName 'localhost'
 	//			Now Siege works.
-	if (getaddrinfo("0.0.0.0", _listens_to.c_str(), &hints, &addr) != 0) {
-		//freeaddrinfo(_addr); no need?
+
+
+	if (getaddrinfo("0.0.0.0", _listens_to.c_str(), &hints, &addr) != 0)
+	{
+		freeaddrinfo(addr);
 		throw std::runtime_error("Failed getaddrinfo");
 	}
 	std::cout << "_addr in set listening socket: " << &addr << " / addr->protocol: " << addr->ai_protocol << std::endl;
-
-	// for testing memory leaks
-	// int out = getaddrinfo(_server_name.c_str(), _listens_to.c_str(), &hints, &_addr);
-	// out = 5;
-	// if (out != 0)
-	// {
-	// 	std::cout << "------------------- failed addr!!!!\n";
-	// 	throw std::runtime_error("Failed getaddrinfo");
-	// }
 
 	_listening_socket = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
 	if (_listening_socket < 0)
@@ -360,9 +350,13 @@ void ServerData::setListeningSocket() {
 	int socket_on = 1;
 	setsockopt(_listening_socket, SOL_SOCKET, SO_REUSEADDR, &socket_on, sizeof(socket_on));
 	if (bind(_listening_socket, addr->ai_addr, addr->ai_addrlen) == -1)
-		throw std::runtime_error("Failed bind (errno: " + std::to_string(errno) + ")");
-	if (listen(_listening_socket, SOMAXCONN) == -1)  // max nr of accepted connections
-		throw std::runtime_error("Failed listen");
+	{
+		freeaddrinfo(addr);
+		throw std::runtime_error("Failed bind");
+		// throw std::runtime_error("Failed bind (errno: " + std::to_string(errno) + ")");
+	}
 
 	freeaddrinfo(addr);
+	if (listen(_listening_socket, SOMAXCONN) == -1)  // max nr of accepted connections
+		throw std::runtime_error("Failed listen");
 }

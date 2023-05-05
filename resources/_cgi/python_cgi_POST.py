@@ -92,7 +92,7 @@ import os  # to access execve ENV variables
 # cgitb.enable()  # detailed error messages
 # cgitb.enable(display=0, logdir="/path/to/logdir")
 
-# time.sleep(10)
+# time.sleep(20)
 
 print("<p> ... This is Python script for POST method ...</p>")
 sys.stderr.write('START PYTHON SCRIPT ( via stderr)\n')
