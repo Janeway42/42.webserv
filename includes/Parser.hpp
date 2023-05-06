@@ -103,6 +103,16 @@ enum AllowMethods {
     NONE
 };
 
+inline const std::string allowMethodsToString(AllowMethods methods) {
+    switch (methods)
+    {
+        case GET:       return "GET";
+        case POST:      return "POST";
+        case DELETE:    return "DELETE";
+        default:        return "NONE";
+    }
+}
+
 enum DataType {// todo: Maybe not used
     STRING = 0,
     PORT,

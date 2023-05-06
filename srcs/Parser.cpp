@@ -7,7 +7,7 @@
 std::string Parser::keyParser(std::string & lineContent, std::string const & keyToFind) {
     if (not lineContent.empty() || not keyToFind.empty()) {
         if (lineContent.find(keyToFind) != std::string::npos) {
-            std::cout << GRY << lineContent << RES << std::endl;
+//            std::cout << GRY << lineContent << RES << std::endl;
             return getOneCleanValueFromKey(lineContent, keyToFind);
         }
     }
@@ -31,7 +31,6 @@ std::string Parser::getOneCleanValueFromKey(std::string & contentLine, std::stri
 }
 
 /* define if path is file(1), folder(2) or something else(3) */
-// todo: can we use it? stat
 PathType Parser::pathType(std::string const & path) {
     struct stat	buffer = {};
 

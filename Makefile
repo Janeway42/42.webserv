@@ -37,7 +37,7 @@ FLAGS = -Iincludes -Wall -Werror -Wextra -pedantic -std=c++98 -Wshadow -g3 #-fsa
 #  is issued when variables are being shadowed.
 
 # Any modify to those files will alert Makefile's rules and recompile
-INCLUDES_DEPENDENCY = ./includes/*.hpp standard_complete.conf
+INCLUDES_DEPENDENCY = ./includes/*.hpp
 
 SRC =   srcs/ConfigFileParser.cpp\
 		srcs/Parser.cpp\

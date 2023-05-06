@@ -28,7 +28,7 @@ ServerLocation::ServerLocation(std::string const & server_root_directory, std::s
     _redirection(std::string()),
     _interpreter_path(std::string()),
     useServerBlockIndexFile(false) {
-    _allow_methods.push_back(GET);
+    _allow_methods.push_back(NONE);
 	// _locationCookies = TODO to be added from the configuration file - Joyce
 //    std::cout << CYN << "ServerLocation Overloaded constructor" << RES << std::endl;
 }
@@ -137,7 +137,6 @@ void ServerLocation::setRootDirectory(std::string const & rootDirectory) {
         if (rootDirectory.at(rootDirectory.size() - 1) == '/') {
             rootDirectoryTemp = rootDirectory.substr(0, rootDirectory.size() - 1);
         }
-//        std::cout << RED << "JOYCE rootDirectoryTemp: " << rootDirectoryTemp << RES << std::endl;
         if (isLocationCgi()) {
             if (pathType(addCurrentDirPath(rootDirectoryTemp) + rootDirectoryTemp) == DIRECTORY) {
                 _root_directory = addCurrentDirPath(rootDirectoryTemp) + rootDirectoryTemp;

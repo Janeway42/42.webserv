@@ -3,7 +3,7 @@
 /** Default constructor */
 RequestData::RequestData() {
 	/* Initializing default values for the request block */
-	_reqMethod 			 = "default Method";
+	_reqMethod 			 = NONE;
 	_reqHttpPath 		 = "default Path";
     _reqHttpVersion 	 = "default Version";
     _reqHost 			 = "default Host";	// not sure if all these are needed
@@ -32,7 +32,7 @@ RequestData::RequestData() {
 /** Destructor */
 RequestData::~RequestData() {
 	/** Cleaning default values for the request block */
-	_reqMethod 		= "";
+	_reqMethod 		= NONE;
 	_reqHttpPath 	= "";
     _reqHttpVersion = "";
     _reqHost 		= "";	
@@ -46,7 +46,7 @@ int	 RequestData::getKqFd() const {
 	return _kqFd;
 }
 
-const std::string RequestData::getRequestMethod() const {
+AllowMethods RequestData::getRequestMethod() const {
 	return _reqMethod;
 }
 
@@ -138,6 +138,10 @@ std::map<std::string, std::string> RequestData::getFormData() const {	// Cannot 
 	return _formData;													// because iterator won't work
 }
 
+bool RequestData::formDataHasDelete() const {
+    return _formDataHasDelete;
+}
+
 std::vector<std::string> RequestData::getFormList() const {	// Cannot return const
 	return _formList;										// because iterator won't work
 }
@@ -154,7 +158,7 @@ void RequestData::setKqFd(int kqFd)
 	_kqFd = kqFd;
 }
 
-void RequestData::setRequestMethod(std::string reqMethod)
+void RequestData::setRequestMethod(AllowMethods reqMethod)
 {
 	_reqMethod = reqMethod;
 }
@@ -298,6 +302,10 @@ void RequestData::setCgiBody(std::string cgiBody) {
 
 void RequestData::setFormData(std::map<std::string, std::string> formData) {
 	_formData = formData;
+}
+
+void RequestData::setFormDataHasDelete(bool b) {
+    _formDataHasDelete = b;
 }
 
 void RequestData::setFormList(std::vector<std::string> formList) {

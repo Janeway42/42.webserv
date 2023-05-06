@@ -42,7 +42,7 @@ for param in os.environ.keys():
 
 
 # from urllib.parse import urlparse, parse_qs # why is this not good ??
-#from urlparse import urlparse, parse_qs        # in python2
+# from urlparse import urlparse, parse_qs        # in python2
 from urllib.parse import urlparse, parse_qs     # in python3
 
 parsed_result = urlparse(URL)

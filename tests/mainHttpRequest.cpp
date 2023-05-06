@@ -7,7 +7,7 @@ void printStoredRequestData(Request &request)
 	RequestData reqData = request.getRequestData();
 
 	// PRINT FIRST LINE HEADER
-	std::cout << "\nFIRST LINE:  [" << RED << reqData.getRequestMethod() << ", "
+	std::cout << "\nFIRST LINE:  [" << RED << allowMethodsToString(reqData.getRequestMethod()) << ", "
 										<< reqData.getHttpPath() << ", "
 										<< reqData.getHttpVersion() << RES << "]\n\n";
 	// PRINT OTHER HEADERS	

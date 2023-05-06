@@ -1,7 +1,11 @@
 Take a look:
     - if uploaded file is larger than 500kb, and if the maxbodysize is too small......
-    - add interpreter pat
+    - add interpreter path (DONE JOYCE -> need to pass to the python script??)
     - WHAT ABOUT listensToPort == 8008 ?
+    WHY POST does not come with query but GET does????
+    LOTS OF LOOPS WHEN WE CLICK ON UPLOAD or DELETE button, IS IT OK?
+    CRASHED AGAIN FOR ME (i whet all over the website, including all CGI, then I went to other server and waited, then ctrl C and it leaked)
+    CHANGE COLORS
 
 Research:
     - Setup default error page (try to change the error 404). ?????????????????????????
@@ -10,6 +14,7 @@ Research:
 ------------------------------------------------------------------------------------------------------------------------
 More important:
     CORINA:
+        - Edit cookies explanation on config file
         - Timer leak (check log file ./TimerLeak.txt)
         - manual shut down leak (check log file ./manualShutDownLeak.txt)
         - Set 405 Method Not Allowed in the request parser
@@ -35,16 +40,16 @@ More important:
         - Make the server_name accept only domain names and not ip_addresses????? since we now set 0.0.0.0??
         - DONE - Add a redirection location to the config file
         - DONE - if uri has a / at the end, then it's a directory, otherwise itd a file
-        - Accepted HTTP methods from config file are not being used, but it’s mandatory to use
-          - Set 405 Method Not Allowed IF specific location allowed methods does not match with the method received
+        - DONE - Accepted HTTP methods from config file are not being used, but it’s mandatory to use
+        - DONE - Set 405 Method Not Allowed IF specific location allowed methods does not match with the method received
         - DONE - If the server cannot server anything from an existing location (on the config file), it serves a FORBIDDEN (we tested with nginx)
 ------------------------------------------------------------------------------------------------------------------------
 Less important:
     CORINA:
     JAKA:
-        - Standardising htmls and .py/.php?
+        - DONE - Standardising htmls and .py/.php?
     JOYCE:
-        - Clean up config file (delete some keys)
+        - DONE - Clean up config file (delete some keys)
 ------------------------------------------------------------------------------------------------------------------------
 Tests:
     Try a wrong URL on the server.
@@ -67,5 +72,5 @@ Extras:
         - possibly adding a second cgi (php)
         - cgi - correct folder
     JOYCE:
-        - Add the set_cookies key to the location on the config file
+        - DONE (Corina) - Add the set_cookies key to the location on the config file
         - Another .php location is not working for the config file (no error too)

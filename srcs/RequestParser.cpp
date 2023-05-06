@@ -15,7 +15,6 @@ DELETE http://api.example.com/employee/1
 // curl --resolve whatever:8080:127.0.0.1 http://whatever:8080
 // curl --resolve testserver:8080:127.0.0.1 http://testserver:8080
 
-
 #include <unistd.h> // sleep
 #include "RequestParser.hpp"
 
@@ -31,8 +30,10 @@ Request::Request() {
     _doneParsing = false;
     _httpStatus = NO_STATUS;
     _redirection = std::string();
+    _delete_is_allowed = false;
+    _interpreter_path = "/usr/bin/python";
     _hasBody = false;
-    std::cout << GRY << "Request Constructor" << RES << std::endl;
+//    std::cout << GRY << "Request Constructor" << RES << std::endl;
 }
 
 /** Overloaded constructor */
@@ -49,13 +50,15 @@ Request::Request(int kq, int listeningSocket, int fd, std::vector<ServerData> se
 	_doneParsing = false;
     _httpStatus = NO_STATUS;
     _redirection = std::string();
+    _delete_is_allowed = false;
+    _interpreter_path = "/usr/bin/python";
 	_hasBody = false;
-    std::cout << GRY << "Request Copy Constructor" << RES << std::endl;
+//    std::cout << GRY << "Request Copy Constructor" << RES << std::endl;
 }
 
 /** Destructor */
 Request::~Request() {
-    std::cout << GRY << "Request Destructor" << RES << std::endl;
+//    std::cout << GRY << "Request Destructor" << RES << std::endl;
 }
 
 /** #################################### Methods #################################### */
@@ -124,7 +127,12 @@ int Request::storeWordsFromFirstLine(std::string firstLine) {
 		if (i == 0) {
 			if (*iter == "GET" || *iter == "POST" || *iter == "DELETE") {
 				std::cout << GRN_BG << YEL << "REQUEST METHOD: " << *iter << RES << std::endl << std::endl;
-				_data.setRequestMethod(*iter);
+                if (*iter == "GET")
+				    _data.setRequestMethod(GET);
+                if (*iter == "POST")
+                    _data.setRequestMethod(POST);
+                if (*iter == "DELETE")
+                    _data.setRequestMethod(DELETE);
 			} else {
 				std::cout << RED << "Error: This method is not recognized\n" << RES;
 				_httpStatus = METHOD_NOT_ALLOWED; 
@@ -134,7 +142,6 @@ int Request::storeWordsFromFirstLine(std::string firstLine) {
 			_data.setRequestPath(*iter);
 		else if (i == 2) {
 			if (*iter != "HTTP/1.1" && *iter != "HTTP/1.0")	{	// maybe also HTTP/1.0 needed ??
-				// TODO: SET CORRECT STATUS ERROR -> 505 HTTP Version Not Supported
 				std::cout << RED << "Error: wrong http version\n" << RES;
                 _httpStatus = HTTP_VERSION_NOT_SUPPORTED;
 			}
@@ -241,7 +248,7 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, std::string::size_type
         checkIfPathCanBeServed(getErrorPage());
 
 	if (_data.getRequestContentLength() == 0){
-		// if (_data.getRequestMethod() == "GET" && _data.getQueryString() != "")
+		// if (_data.getRequestMethod() == GET && _data.getQueryString() != "")
 		//	; //callCGI(getRequestData(), fdClient); 		// moved to chooseMethod_StartAction()
 		_doneParsing = true;
     }
@@ -333,7 +340,11 @@ void Request::appendToRequest(const char str[], size_t len) {
 			//std::cout << PUR << "size_type 'it' value: " << it << "\n" << RES;
 			it2 = chunk.find(strToFind) + strToFind.length();	// needed to find the start of body, as char*, not std::string, because body will be vector
             if (it2 != std::string::npos) {
-			    std::cout << "print start of body [" << PUR << str + it2 << "]\n" << RES;
+//			    std::cout << "print start of body [" << PUR << str + it2 << "]\n" << RES;
+                if (std::string(str + it2).find("delete=") != std::string::npos) {
+                    std::cout << "----------> Form data has \"delete=\" key on it\n" << RES;
+                    _data.setFormDataHasDelete(true);
+                }
             }
 
 			//appendLastChunkToBody(it + strToFind.length());
@@ -483,6 +494,16 @@ std::string Request::getRedirection()
     return (_redirection);
 }
 
+bool Request::deleteIsAllowed()
+{
+    return (_delete_is_allowed);
+}
+
+std::string Request::getInterpreterPath()
+{
+    return (_interpreter_path);
+}
+
 int Request::getFdClient()
 {
 	return (_clientFd);
@@ -503,4 +524,14 @@ void Request::setHttpStatus(HttpStatus val)
 void Request::setRedirection(std::string const & redirection)
 {
     _redirection = redirection;
+}
+
+void Request::setDeleteIsAllowed(bool b)
+{
+    _delete_is_allowed = b;
+}
+
+void Request::setInterpreterPath(std::string const & interpreter_path)
+{
+    _interpreter_path = interpreter_path;
 }
