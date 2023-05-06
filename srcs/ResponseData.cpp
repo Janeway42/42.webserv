@@ -151,6 +151,7 @@ void ResponseData::createResponse(struct kevent& event) {
 }
 
 static std::string getSpecificErrorPage(Request* storage, std::vector<std::string> const & errorPages, std::string const & defaultErrorPage) {
+	std::cout << "test 3\n";
     storage->getRequestData().setFileExtention(defaultErrorPage);
     std::vector<std::string>::const_iterator it = errorPages.cbegin();
     for (; it != errorPages.cend(); ++it) {
@@ -167,9 +168,12 @@ void ResponseData::setResponseStatus(struct kevent& event)
 {
 	std::cout << CYN << "Start setResponseStatus()\n" << RES;
 	Request *storage = (Request *)event.udata;
+	std::cout << "storage after: " << storage->getHttpStatus() << std::endl;
 
     std::string defaultStatusPath = "./_server_default_status/";
     //todo add more default pages?
+
+
 	switch (storage->getHttpStatus()) {
         case 301: {
             break;
@@ -192,6 +196,7 @@ void ResponseData::setResponseStatus(struct kevent& event)
             _responsePath = getSpecificErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "413ContentTooLarge.html");
             break;
         } case 500: {
+			std::cout << "test 2\n";
             _responsePath = getSpecificErrorPage(storage, storage->getServerData().getErrorPages(), defaultStatusPath + "500InternarServerError.html");
             break;
 		} case 504: {
@@ -206,6 +211,7 @@ void ResponseData::setResponseStatus(struct kevent& event)
             break;
         }
 	}
+
 }
 
 // NEW SETIMAGE
