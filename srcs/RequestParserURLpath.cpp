@@ -55,7 +55,8 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 
         // Change current working directory to the internal CGI directory
         // Best practice to ensure the script to find correct relative paths, if needed
-        chdir("./resources/_cgi/");
+        std::cout << "JOYCE: " << storage->getRequestData().getURLPath_full() << std::endl;
+        chdir("./resources/cgi/");// todo come form config file since it can be oming form different servers too
 
 	//	std::cerr << RED "Before execve in child\n" << RES;
 		ret = execve(args[0], args, ENV);
@@ -76,6 +77,8 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 		//std::cout << BLU "\n       End runExecve()\n" << RES;
 		// sleep(1);
 	}
+    std::cout << "JOYCE" << std::endl;
+
 }
 
 void Request::callCGI(struct kevent event) {
@@ -144,7 +147,7 @@ void Request::callCGI(struct kevent event) {
 //  std::string tempPath = _data.getURLPath_full();   // Changed Jaka:
     std::string tempPath = _data.getURLPathLastPart();  // must be only the script name, because the CWD is changed to CGI folder
 
-	char *path = (char *)tempPath.c_str();	//  ie: "./resources/_cgi/python_cgi_GET.py"
+	char *path = (char *)tempPath.c_str();	//  ie: "./resources/cgi/python_cgi_GET.py"
 	args[1] = path;
 	args[2] = NULL;
 
@@ -284,7 +287,7 @@ static void printPathParts(RequestData reqData) {
 }
 
 static std::string getExtension(std::string const & originalUrlPath) {
-    // Ex.: localhost:8080/favicon.ico or localhost:8080/_cgi/python_cgi_GET.py?street=test&city=test+city or localhost:8080/index.html
+    // Ex.: localhost:8080/favicon.ico or localhost:8080/cgi/python_cgi_GET.py?street=test&city=test+city or localhost:8080/index.html
     std::string urlPath = originalUrlPath;
     std::string extension = std::string();
 
@@ -304,7 +307,7 @@ static std::string getExtension(std::string const & originalUrlPath) {
 }
 
 std::string Request::parsePath_cgi(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location, std::string const & file_cgi) {
-    // localhost:8080/_cgi/python_cgi_GET.py?street=test&city=test+city
+    // localhost:8080/cgi/python_cgi_GET.py?street=test&city=test+city
 //    if (originalUrlPath.find('?') != std::string::npos) {
         std::string locationBlockUriName = location->getLocationUriName();
         std::string locationBlockRootDir = location->getRootDirectory();
@@ -327,7 +330,7 @@ std::string Request::parsePath_cgi(std::string const & originalUrlPath, std::vec
         }
 
         /* If the url is a script file, the match will be done between the extension of it, against the location uri
-         * ex: url localhost/_cgi/script.py -> the .py part will be checked against a location uri */
+         * ex: url localhost/cgi/script.py -> the .py part will be checked against a location uri */
         if (_data.getFileExtention() == locationBlockUriName) {
             std::cout << BLU << "cgi location block for [" << RES BLU_BG << originalUrlPath << RES BLU;
             std::cout << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES BLU << "]" << std::endl;
@@ -374,7 +377,7 @@ std::string Request::parsePath_dir(std::string const & originalUrlPath, std::vec
 }
 
 std::string Request::parsePath_file(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location) {
-    // Ex.: localhost:8080/favicon.ico or localhost:8080/_cgi/cgi_index.html
+    // Ex.: localhost:8080/favicon.ico or localhost:8080/cgi/cgi_index.html
     if (originalUrlPath.find('?') == std::string::npos && _data.getRequestMethod() != "POST") {
         std::string locationBlockUriName = location->getLocationUriName();
         std::string locationBlockRootDir = location->getRootDirectory();
@@ -398,7 +401,7 @@ std::string Request::parsePath_file(std::string const & originalUrlPath, std::ve
         }
 
         /* If the url is a file, the match will be done between the directory where the file is, against the location uri
-         * ex: url localhost/_cgi/cgi_index.html -> the /_cgi part will be checked against a location uri */
+         * ex: url localhost/cgi/cgi_index.html -> the /cgi part will be checked against a location uri */
         if (DirFromUrl == locationBlockUriName) {
             std::cout << BLU << "location block for [" << RES BLU_BG << originalUrlPath << RES BLU;
             std::cout << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES BLU << "]" << std::endl;
@@ -408,7 +411,7 @@ std::string Request::parsePath_file(std::string const & originalUrlPath, std::ve
         }
     }
     // Script file for POST, with no query ('?')
-    // Ex.: localhost:8080/python_POST.py or localhost:8080/_cgi/python_cgi_POST_upload.py or localhost:8080/py/cgi_delete.py
+    // Ex.: localhost:8080/python_POST.py or localhost:8080/cgi/python_cgi_POST_upload.py or localhost:8080/py/cgi_delete.py
     else if (originalUrlPath.find('?') == std::string::npos && _data.getRequestMethod() == "POST") {
         return parsePath_cgi(originalUrlPath, location, originalUrlPath.substr(originalUrlPath.find_last_of('/')));
     }
@@ -573,9 +576,8 @@ void Request::checkIfPathCanBeServed(std::string  const & originalUrlPath) {
         std::string URLPath_full = parsePath_locationMatch(originalUrlPath);
         std::cout << "⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻" << std::endl << std::endl;
         if (URLPath_full.empty()) {
-            // Ex.:
-            // localhost/_cgi [ok -> internal]
-            // localhost/_cgi/file.php [ko -> 404] since the _cgi is not a location (and is internal)
+            // Ex.: localhost/cgi [ok -> internal]
+            //      localhost/cgi/file.php [ko -> 404] since the cgi is not a location (and is internal)
             if (originalUrlPath.find("/_") != std::string::npos) {
                 std::cout << YEL << "Internal directory requested, it will be served but no need to search for its "
                                     "location on the config file" << RES << std::endl << std::endl;
@@ -600,6 +602,6 @@ void Request::checkIfPathCanBeServed(std::string  const & originalUrlPath) {
         if (getHttpStatus() == NO_STATUS) {
             checkIfPathExists(URLPath_full);
         }
-        std::cout << RED << "HTTP status after checkIfPathCanBeServed(): " << getHttpStatus() << std::endl;
+        std::cout << "HTTP status after checkIfPathCanBeServed(): " << getHttpStatus() << std::endl;
     }
 }

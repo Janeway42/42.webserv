@@ -51,7 +51,8 @@ enum HttpStatus {
     TOO_MANY_REQUESTS = 429, // The user has sent too many requests in a given amount of time ("rate limiting").
     HEADER_FIELDS_TOO_LARGE = 431, // The server is unwilling to process the request because its header fields are too large. The request may be resubmitted after reducing the size of the request header fields.
     /** Server error responses */
-    INTERNAL_SERVER_ERROR = 500, // The server has encountered a situation it does not know how to handle.
+    INTERNAL_SERVER_ERROR = 500, // The server has encountered a situation it does not know how to handle (preventing the server from handling the request entirely).
+    SERVICE_UNAVAILABLE = 503, // Indicates that the server is still functioning properly and can process the request, but has opted to return the 503 response code.
 	GATEWAY_TIMEOUT = 504,
     HTTP_VERSION_NOT_SUPPORTED = 505 // The HTTP version used in the request is not supported by the server.
 };

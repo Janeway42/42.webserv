@@ -10,13 +10,13 @@
 <body>
     <br>
     <h3>This is the file cgi_index.html</h3>
-    <p>(path ./resources/_cgi/cgi_index.html)</p>
+    <p>(path ./resources/cgi/cgi_index.html)</p>
     <hr>
     <h2>Some Requests using Cgi </h2>
     <br>
 
 <!----------------------------------------------------------------------------------------------------- METHOD GET -->
-<form action="/_cgi/python_cgi_GET.py" method="get">
+<form action="/cgi/python_cgi_GET.py" method="get">
     <fieldset style="background: #fffdf6; border: 2px solid #caaf38;">
         <legend> METHOD GET </legend>
         <label for="street">Street:</label>
@@ -28,7 +28,7 @@
 </form> <br><br><br>
 
 <!----------------------------------------------------------------------------------------------------- METHOD POST -->
-<form action="/_cgi/python_cgi_POST.py" method="post">
+<form action="/cgi/python_cgi_POST.py" method="post">
     <fieldset style="background: #f6f8ff; border: 2px solid #4238ca;">
         <legend> METHOD POST </legend>
         <label for="name">Name:</label>
@@ -41,7 +41,7 @@
 
 
 <!-------------------------------------------------------------------------------------------- METHOD POST (upload) -->
-<form action="/_cgi/python_cgi_POST_upload.py" method="post" enctype="multipart/form-data">
+<form action="/cgi/python_cgi_POST_upload.py" method="post" enctype="multipart/form-data">
     <fieldset style="background: #fff3f3; border: 2px solid #fbd58f;">
         <legend> UPLOAD FILE/IMAGE (method POST) </legend><br>
         Select file/image: <br><br>
@@ -51,7 +51,7 @@
 </form> <br><br><br>
 
 <!-------------------------------------------------------------------------------------------- METHOD GET (php cgi) -->
-<form action="/_cgi/php_cgi_simple.php" method="get">
+<form action="/cgi/php_cgi_simple.php" method="get">
     <fieldset style="background: #fffdf6; border: 2px solid #caaf38;">
         <legend> BONUS: PHP CGI - Simple </legend>
         <label for="street">Street:</label>
