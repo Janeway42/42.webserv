@@ -56,7 +56,7 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 
         // Change current working directory to the internal CGI directory
         // Best practice to ensure the script to find correct relative paths, if needed
-        std::cout << "JOYCE: " << storage->getRequestData().getURLPath_full() << std::endl;
+        //std::cout << "JOYCE: " << storage->getRequestData().getURLPath_full() << std::endl;
         //chdir("./resources/cgi/");// todo come form config file since it can be oming form different servers too
         chdir(storage->getRequestData().getURLPathFirstPart().c_str());
 
@@ -121,7 +121,9 @@ void Request::callCGI(struct kevent event) {
     std::string uploadDir = buffer;
     uploadDir.append(str, 1);
 
-	temp.push_back(uploadDir);  // todo: append the /upload folder name
+	temp.push_back(upload_path.append(uploadDir));  // todo: append the /upload folder name
+
+    std::cout << RED "UPLOAD DIR: " << uploadDir << "\n" RES;
 
 	// std::cout << "Size of vector temp: " << temp.size() << "\n";
 	// std::cout << YEL << "POST BODY: " << temp[2] << "\n" << RES;
@@ -390,9 +392,10 @@ std::string Request::parsePath_dir(std::string const & originalUrlPath, std::vec
 
 std::string Request::parsePath_file(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location) {
     // Ex.: localhost:8080/favicon.ico or localhost:8080/cgi/cgi_index.html
-    if (originalUrlPath.find('?') == std::string::npos && _data.getRequestMethod() == "GET") {
-        std::string locationBlockUriName = location->getLocationUriName();
-        std::string locationBlockRootDir = location->getRootDirectory();
+    std::string locationBlockUriName = location->getLocationUriName();
+    std::string locationBlockRootDir = location->getRootDirectory();
+    if (originalUrlPath.find('?') == std::string::npos && _data.getRequestMethod() == "GET" 
+        && locationBlockUriName != ".py" && locationBlockUriName != ".php") {
         std::string DirFromUrl = std::string();
         std::string file = originalUrlPath.substr(originalUrlPath.find_last_of('/'));
 
@@ -444,6 +447,7 @@ std::string Request::parsePath_regularCase(std::string const & originalUrlPath, 
                 without_extension = "";
             }
             std::string file = originalUrlPath.substr(lastSlash);
+            std::cout << "FILE: " << file << ",  without extention: " << without_extension << "\n";
             if (not file.empty() && (pathType(locationBlockRootDir + without_extension + file) == REG_FILE)) {
                 _data.setFileExtension(getExtension(originalUrlPath));
                 std::string URLPath_full_file = parsePath_file(originalUrlPath, location);

@@ -18,9 +18,13 @@ for param in os.environ.keys():
 form = cgi.FieldStorage()
 # sys.stderr.write('FORM IS [' + str(form) + ']\n')
 
+if 'filename' not in form or not form['filename'].value:
+	print("Error: You need to choose a file to be uploaded ")
+	exit ()
+
+
 # Get filename here
 fileItem = form['filename']
-# print('fileItem.file:', fileItem.file)
 
 # Test if the file was uploaded
 if fileItem.filename:
@@ -31,7 +35,7 @@ if fileItem.filename:
 		parent_dir = os.getcwd()
 	#	with open(parent_dir + '/resources/uploads/' + fn, 'wb') as f:  # TODO this path has to come from the config file??? (look pdF)
 		# with open('../uploads/' + fn, 'wb') as f:  # TODO this path has to come from the config file??? (look pdF)
-		with open(upload_dir, 'wb') as f:  # TODO this path has to come from the config file??? (look pdF)
+		with open(upload_dir + "/" + fn, 'wb') as f:  # TODO this path has to come from the config file??? (look pdF)
 			f.write(fileItem.file.read())
 			message = 'The file ' + fn + ' was uploaded successfully'
 	except IOError as e:
