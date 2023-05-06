@@ -508,7 +508,7 @@ void WebServer::removeFilter(struct kevent& event, int filter, std::string error
 void	WebServer::chooseMethod_StartCGI(struct kevent event, Request * storage) {
 	std::cout << CYN << "Start ChooseMethodStartCGI()\n" << RES ;
 	// if (_data.getRequestMethod() == "GET" && _data.getQueryString() != "") {
-	if (storage->getRequestData().getRequestMethod() == "GET" && storage->getRequestData().getQueryString() != "") {
+	if (storage->getRequestData().getRequestMethod() == "GET" /* && storage->getRequestData().getQueryString() != "" */) {
 		std::cout << "start GET, callCGI\n";
 		// callCGI(getRequestData(), fdClient);
 		storage->callCGI(event);
