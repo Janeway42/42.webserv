@@ -31,7 +31,7 @@ class RequestData {
         std::string				_URLPath_full;                  // ie: /kostja.se/folderA/folderB = $location.$root_directory/folderA/folderB
 		std::string				_pathFirstPart;                 // ie: /kostja.se/folderA/folderB/
 		std::string				_pathLastPart;                  // ie: /index.html  OR   /folderC/
-		std::string				_fileExtention;                 // ie: /index.html  OR   /folderC/
+		std::string				_fileExtension;                 // ie: /index.html  OR   /folderC/
 		bool					_isFolder;
 		bool					_autoIndex;
 		std::string				_queryString;
@@ -72,7 +72,7 @@ class RequestData {
 		const std::string 	getURLPath_full()const;
 		const std::string 	getURLPathFirstPart()const;	// maybe not needed
 		const std::string	getURLPathLastPart() const;	// maybe not needed
-		const std::string	getFileExtention() const;
+		const std::string	getFileExtension() const;
 		bool				getIsFolder() const;
 		bool				getAutoIndex() const;
 		const std::string	getQueryString() const;
@@ -102,7 +102,7 @@ class RequestData {
 		void	setURLPath_full(std::string path);
 		void	setPathFirstPart(std::string path);				// maybe not needed
 		void	setPathLastPart(std::string path);					// maybe not needed
-		void	setFileExtention(std::string path);
+		void	setFileExtension(std::string path);
 		void	setIsFolder(bool b);
 		void	setAutoIndex(bool b);
 		void	setQueryString(std::string path);

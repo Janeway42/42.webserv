@@ -151,7 +151,7 @@ void ResponseData::createResponse(struct kevent& event) {
 }
 
 static std::string getSpecificErrorPage(Request* storage, std::vector<std::string> const & errorPages, std::string const & defaultErrorPage) {
-    storage->getRequestData().setFileExtention(defaultErrorPage);
+    storage->getRequestData().setFileExtension(defaultErrorPage);
     std::vector<std::string>::const_iterator it = errorPages.cbegin();
     for (; it != errorPages.cend(); ++it) {
         if (it->find(std::to_string(storage->getHttpStatus())) != std::string::npos) {

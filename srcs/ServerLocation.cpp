@@ -30,7 +30,7 @@ ServerLocation::ServerLocation(std::string const & server_root_directory, std::s
     useServerBlockIndexFile(false) {
     _allow_methods.push_back(GET);
 	// _locationCookies = TODO to be added from the configuration file - Joyce
-    std::cout << CYN << "ServerLocation Overloaded constructor" << RES << std::endl;
+//    std::cout << CYN << "ServerLocation Overloaded constructor" << RES << std::endl;
 }
 
 /** Destructor */
@@ -46,7 +46,7 @@ ServerLocation::~ServerLocation() {
     _redirection.clear();
     _interpreter_path.clear();
     useServerBlockIndexFile = false;
-    std::cout << CYN << "ServerLocation Destructor" << RES << std::endl;
+//    std::cout << CYN << "ServerLocation Destructor" << RES << std::endl;
 }
 
 /** #################################### Methods #################################### */
