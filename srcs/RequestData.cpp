@@ -13,7 +13,7 @@ RequestData::RequestData() {
 	//_reqBody			 = "";		// does not need setting to "", it is now a vector
 
     _URLPath			 = "default";
-    _URLPath_full = "default";
+    _URLPath_full 		 = "default";
 	_pathFirstPart		 = "default";
 	_pathLastPart		 = "default";
 	_fileExtention		 = "";

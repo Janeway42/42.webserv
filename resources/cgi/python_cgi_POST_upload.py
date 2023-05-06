@@ -9,6 +9,12 @@ import sys  # to read from std input
 
 environ = os.environ.copy()
 
+for param in os.environ.keys():
+    if param == 'UPLOAD_DIR':
+        upload_dir = os.environ[param]
+
+
+
 form = cgi.FieldStorage()
 # sys.stderr.write('FORM IS [' + str(form) + ']\n')
 
@@ -24,7 +30,8 @@ if fileItem.filename:
 	try:
 		parent_dir = os.getcwd()
 	#	with open(parent_dir + '/resources/uploads/' + fn, 'wb') as f:  # TODO this path has to come from the config file??? (look pdF)
-		with open('../uploads/' + fn, 'wb') as f:  # TODO this path has to come from the config file??? (look pdF)
+		# with open('../uploads/' + fn, 'wb') as f:  # TODO this path has to come from the config file??? (look pdF)
+		with open(upload_dir, 'wb') as f:  # TODO this path has to come from the config file??? (look pdF)
 			f.write(fileItem.file.read())
 			message = 'The file ' + fn + ' was uploaded successfully'
 	except IOError as e:
@@ -35,7 +42,7 @@ if fileItem.filename:
 
 # Define the path to the folder you want to list
 # folder_path = parent_dir + '/resources/uploads/'  # TODO this path has to come from the config file??? (look pdF)
-folder_path = '../uploads/'  # TODO this path has to come from the config file??? (look pdF)
+# folder_path = '../uploads/'  # TODO this path has to come from the config file??? (look pdF)
 
 # Define the HTML template
 html_template = """
@@ -82,8 +89,8 @@ item_template = """
 
 # Generate the item HTML
 items_html = ""
-for item in os.listdir(folder_path):
-	item_path = os.path.join(folder_path, item)
+for item in os.listdir(upload_dir):
+	item_path = os.path.join(upload_dir, item)
 	item_html = item_template.format(item, item, item_path)
 	items_html += item_html
 

@@ -56,7 +56,8 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
         // Change current working directory to the internal CGI directory
         // Best practice to ensure the script to find correct relative paths, if needed
         std::cout << "JOYCE: " << storage->getRequestData().getURLPath_full() << std::endl;
-        chdir("./resources/cgi/");// todo come form config file since it can be oming form different servers too
+        //chdir("./resources/cgi/");// todo come form config file since it can be oming form different servers too
+        chdir(storage->getRequestData().getURLPathFirstPart().c_str());
 
 	//	std::cerr << RED "Before execve in child\n" << RES;
 		ret = execve(args[0], args, ENV);
@@ -109,7 +110,15 @@ void Request::callCGI(struct kevent event) {
 //  temp.push_back(server_name.append("defaultServerName"));// TODO add server name?
 	temp.push_back(comspec.append(""));
 	temp.push_back(info_path.append(""));           // todo: find out if info_path is mandatory and how to test it?
-//	temp.push_back(upload_path.append(_data.get));  // todo: append the /upload folder name
+
+    char buffer[PATH_MAX];
+    if (getcwd(buffer, sizeof(buffer)) == NULL)
+        std::cout << RED "Error in callCGI: getcwd() failed\n" RES;
+    std::string str = getServerData().getUploadDirectory();
+    std::string uploadDir = buffer;
+    uploadDir.append(str, 1);
+
+	temp.push_back(uploadDir);  // todo: append the /upload folder name
 
 	// std::cout << "Size of vector temp: " << temp.size() << "\n";
 	// std::cout << YEL << "POST BODY: " << temp[2] << "\n" << RES;
@@ -313,7 +322,7 @@ std::string Request::parsePath_cgi(std::string const & originalUrlPath, std::vec
         std::string locationBlockRootDir = location->getRootDirectory();
         getCgiData().setIsCgi(true);
 
-        std::cout << BLU << "'?' was found, so cgi root_directory is needed" << RES << std::endl;
+        //std::cout << BLU << "'?' was found, so cgi root_directory is needed" << RES << std::endl;
         std::cout << "Path is a script file. ";
 
         // blocks down below are just for logging
@@ -378,7 +387,7 @@ std::string Request::parsePath_dir(std::string const & originalUrlPath, std::vec
 
 std::string Request::parsePath_file(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location) {
     // Ex.: localhost:8080/favicon.ico or localhost:8080/cgi/cgi_index.html
-    if (originalUrlPath.find('?') == std::string::npos && _data.getRequestMethod() != "POST") {
+    if (originalUrlPath.find('?') == std::string::npos && _data.getRequestMethod() == "GET") {
         std::string locationBlockUriName = location->getLocationUriName();
         std::string locationBlockRootDir = location->getRootDirectory();
         std::string DirFromUrl = std::string();
@@ -412,7 +421,7 @@ std::string Request::parsePath_file(std::string const & originalUrlPath, std::ve
     }
     // Script file for POST, with no query ('?')
     // Ex.: localhost:8080/python_POST.py or localhost:8080/cgi/python_cgi_POST_upload.py or localhost:8080/py/cgi_delete.py
-    else if (originalUrlPath.find('?') == std::string::npos && _data.getRequestMethod() == "POST") {
+    else if (originalUrlPath.find('?') == std::string::npos) {
         return parsePath_cgi(originalUrlPath, location, originalUrlPath.substr(originalUrlPath.find_last_of('/')));
     }
     return std::string();
