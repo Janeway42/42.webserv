@@ -1,5 +1,3 @@
-#include <stdio.h>		// jaka temP, for printf
-
 #include "WebServer.hpp"
 
 WebServer::WebServer(std::string const & configFileName)
@@ -63,6 +61,12 @@ int WebServer::checkExistingSocket(int location, std::string port)
 
 WebServer::~WebServer()
 {
+	std::vector<ServerData>::iterator it;
+	for (it = _servers.begin(); it != _servers.end(); it++)
+	{
+		if (fcntl(it->getListeningSocket(), F_GETFD) != -1)
+			close(it->getListeningSocket());
+	}
 	close(_kq);
 	std::cout << CYN << GRY_BG << "WebServer Destructor" << RES << std::endl;
 }
@@ -76,15 +80,14 @@ void WebServer::runServer()
 	int i;
 
 	int loop1 = 0;
-	while (signalCall == false)
+	while (1)
 	{
-		std::cout << "----------------------------------------------------------------------------------------------------------------- WHILE LOOP " << loop1 << std::endl; // Corina: I need these for testing purposes
+		std::cout << "----------------------------------------------------------------------------------------------------------------- WHILE LOOP " << loop1 << std::endl;
 		int nr_events = kevent(_kq, NULL, 0, evList, MAX_EVENTS, NULL);
+		// std::cout << "nr_events: " << nr_events << std::endl;
 
-		// std::cout << "nr of events: " << nr_events << std::endl;
-
-		if (nr_events < 1)
-			throw ServerException("Failed number events");// TODO -> MAYBE 500??
+		if (nr_events < 1 ) //|| signalCall == true)
+			exitProgram(nr_events, evList);
 		else
 		{
 			for (i = 0; i < nr_events; i++)
@@ -97,7 +100,7 @@ void WebServer::runServer()
 					newClient(evList[i]);
 				else if (evList[i].filter == EVFILT_TIMER)
 				{
-					std::cout << "----------------------------------------------------------------------------------------------------------------- TIMER\n"; // Corina: I need these for testing purposes
+					std::cout << "----------------------------------------------------------------------------------------------------------------- TIMER\n";
 					handleTimeout(evList[i]);
 				}
 				else if (evList[i].filter == EVFILT_READ)
@@ -112,7 +115,8 @@ void WebServer::runServer()
 						{
 							std::cout << "EOF READ pipe " << storage->getHttpStatus() << "\n";
 							close(evList[i].ident);
-							addFilter(storage->getFdClient(), evList[i], EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, EOF READ _fd_out[0]");   //  this allows client write
+							if (addFilter(storage->getFdClient(), evList[i], EVFILT_WRITE) == 1)   //  this allows client write
+								cleanAddFilterFail(storage->getFdClient(), evList[i], "failed kevent EV_ADD, EVFILT_WRITE, EOF READ _fd_out[0]");
 						}
 						else // client
 						{
@@ -144,6 +148,21 @@ void WebServer::runServer()
 // --------------------------------------------------------- server functions 
 // --------------------------------------------------------------------------
 
+int WebServer::exitProgram(int nr_events, struct kevent evList[MAX_EVENTS])
+{
+	for(int i = 0; i < nr_events; i++)
+	{
+	 	Request *storage = (Request *)evList[i].udata;
+	 	if (storage && storage != NULL)
+	 	{
+	 		std::cout << "delete storage: " << i << std::endl;
+	 		delete storage;
+	 		storage = NULL;
+		}
+	}
+	exit(0);
+}
+
 void WebServer::handleTimeout(struct kevent &event)
 {
 	Request *storage = (Request *)event.udata;
@@ -159,8 +178,10 @@ void WebServer::handleTimeout(struct kevent &event)
 		storage->setHttpStatus(GATEWAY_TIMEOUT);
 	storage->getCgiData().closePipes();
 	if (fcntl(event.ident, F_GETFD) != -1)
-		addFilter(event.ident, event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE - handle timeout");
-
+	{
+		if (addFilter(event.ident, event, EVFILT_WRITE) == 1)
+			cleanAddFilterFail(event.ident, event, "failed kevent EV_ADD, EVFILT_WRITE - handle timeout");
+	}
 	std::cout << "HANDLE TIMEOUT " << storage->getHttpStatus() << std::endl;
 }
 
@@ -181,7 +202,8 @@ void WebServer::readRequest(struct kevent& event)
 		{
 			std::cout << "failed read in pipe _fd_out[0] from cgi\n";
 			storage->setHttpStatus(INTERNAL_SERVER_ERROR);
-			addFilter(storage->getFdClient(), event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, ret < 0 on _fd_out[0]");  //  this allows client write 
+			if (addFilter(storage->getFdClient(), event, EVFILT_WRITE) == 1)  //  this allows client write 
+				cleanAddFilterFail(storage->getFdClient(), event, "failed kevent EV_ADD, EVFILT_WRITE, ret < 0 on _fd_out[0]");
 			removeFilter(event, EVFILT_READ, "failed kevent EV_DELETE, EVFILT_READ, ret < 0 on _fd_out[0]"); // this removes the pipe fd 
 			std::cout << "sening error message back to client\n";
 		}
@@ -228,8 +250,10 @@ void WebServer::readRequest(struct kevent& event)
                 } else if (storage->getDone() == true)
 					std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
 
-				addFilter(event.ident, event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, success READ");
+				if (addFilter(event.ident, event, EVFILT_WRITE) == 1)
+					cleanAddFilterFail(event.ident, event, "failed kevent EV_ADD, EVFILT_WRITE, success READ");
 				removeFilter(event, EVFILT_READ, "failed kevent EV_DELETE EVFILT_READ - success READ");
+				// noo need to protect read 
 			}
 			else if (storage->getDone() == true && storage->getCgiData().getIsCgi() == true) {
 				std::cout << CYN "          ReadRequest: C) Done receiving the request, start CGI\n" RES;
@@ -241,13 +265,6 @@ void WebServer::readRequest(struct kevent& event)
 	//std::cout << CYN "   ReadRequest: END)\n" RES;
 }
 
-/*
-==1684==ERROR: AddressSanitizer: heap-use-after-free on address 0x61900000216c at pc 0x0001000624af bp 0x7ffeefbf51e0 sp 0x7ffeefbf51d8
-READ of size 4 at 0x61900000216c thread T0
-    #0 0x1000624ae in Request::getHttpStatus() RequestParser.cpp:494
-    #1 0x1000c2732 in WebServer::handleTimeout(kevent&) WebServer.cpp:118
-    #2 0x1000c092a in WebServer::runServer() WebServer.cpp:70
-*/
 void WebServer::sendResponse(struct kevent& event) 
 {
 	//std::cout << "Start SEND RESPONSE\n";
@@ -282,8 +299,10 @@ void WebServer::sendResponse(struct kevent& event)
 			std::cout << "    Send() response returned -1\n";
 			storage->setHttpStatus(INTERNAL_SERVER_ERROR);
 			storage->getResponseData().createResponse(event);
-			addFilter(storage->getFdClient(), event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, ret = -1 on _fd_in[1]");    //  this allows client write 
-			removeFilter(event, EVFILT_WRITE, "failed kevent, EV_DELETE, EVFILT_WRITE failure on _fd_in[1]");  // this removes the pipe fd _fd_in[1]
+			if (addFilter(storage->getFdClient(), event, EVFILT_WRITE) == 1)    //  this allows client write 
+				cleanAddFilterFail(storage->getFdClient(), event, "failed kevent EV_ADD, EVFILT_WRITE, ret = -1 on _fd_in[1]");
+			else
+				removeFilter(event, EVFILT_WRITE, "failed kevent, EV_DELETE, EVFILT_WRITE failure on _fd_in[1]");  // this removes the pipe fd _fd_in[1]
 		}
 		else // <--eval--> this also accounts for ret = write() = 0 
 		{
@@ -358,11 +377,11 @@ void WebServer::sendResponse(struct kevent& event)
 
 void WebServer::newClient(struct kevent event)
 {
-
 	struct kevent evSet;
 	struct sockaddr_storage socket_addr;
 	socklen_t socklen = sizeof(socket_addr);
 	int opt_value = 1;
+
 	int fd = accept(event.ident, (struct sockaddr *)&socket_addr, &socklen);
 	while (fd != -1)
 	{
@@ -374,52 +393,23 @@ void WebServer::newClient(struct kevent event)
         Request *storage = new Request(_kq, event.ident, fd, _servers);
 
 		EV_SET(&evSet, fd, EVFILT_READ, EV_ADD, 0, 0, storage); 
-		// int out = kevent(_kq, &evSet, 1, NULL, 0, NULL);
-		// std::cout << "kevent out: " << out <<  std::endl;
-		// out = -1;
 		if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 		{
-			std::string errorResponse = "HTTP/1.1 500 Internal Server Error\r\n"
-								        "Content-Type: text/html\r\n"
-       									"Content-Encoding: identity\r\n"
-       									"Connection: close\r\n"
-        								"Content-Length: 27\r\n"
-										"\r\n"
-										"500 Internal Server Error\r\n";
-
-			storage->getResponseData().setResponseFull(errorResponse);
-
-			EV_SET(&evSet, fd, EVFILT_WRITE, EV_ADD, 0, 0, storage); 
-			if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
-			{
-				close(fd);
-				delete(storage);
-			}
-			std::cout << "failed EV_READ new client" << std::endl;
+			// storage->setHttpStatus(INTERNAL_SERVER_ERROR);
+			// storage->getResponseData().createResponseHeader(INTERNAL_SERVER_ERROR, "");
+			// storage->getResponseData().setResponseStatus(event);
+			// std::cout << "test\n";
+			// storage->getResponseData().setResponseBody(storage->getResponseData().streamFile(storage->getResponseData().getResponsePath()));
+			// storage->getResponseData().setResponseFull(storage->getResponseData().getHeader() + storage->getResponseData().getBody());
+			protectFirstFilterAdd(storage, fd);
 			return ;
 		}
 
-		int time = 5 * 1000;     // TODO needs to be 30 for final version -----------------------------------------
+		int time = 30 * 1000;     // TODO needs to be 30 for final version -----------------------------------------
 		EV_SET(&evSet, fd, EVFILT_TIMER, EV_ADD, 0, time, storage); 
 		if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 		{
-			std::string errorResponse = "HTTP/1.1 500 Internal Server Error\r\n"
-								        "Content-Type: text/html\r\n"
-       									"Content-Encoding: identity\r\n"
-       									"Connection: close\r\n"
-        								"Content-Length: 27\r\n"
-										"\r\n"
-										"500 Internal Server Error\r\n";
-
-			storage->getResponseData().setResponseFull(errorResponse);
-
-			EV_SET(&evSet, fd, EVFILT_WRITE, EV_ADD, 0, 0, storage); 
-			if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
-			{
-				close(fd);
-				delete(storage);
-			}
-			std::cout << "failed EV_READ new client" << std::endl;
+			protectFirstFilterAdd(storage, fd);
 			return ;
 		}
 
@@ -429,12 +419,35 @@ void WebServer::newClient(struct kevent event)
 	}	
 }
 
+void WebServer::protectFirstFilterAdd(Request *storage, int fd)
+{
+	struct kevent evSet;
+
+	std::string errorResponse = "HTTP/1.1 500 Internal Server Error\r\n"
+						        "Content-Type: text/html\r\n"
+    							"Content-Encoding: identity\r\n"
+    							"Connection: close\r\n"
+    							"Content-Length: 27\r\n"
+								"\r\n"
+								"500 Internal Server Error\r\n";
+
+	storage->getResponseData().setResponseFull(errorResponse);
+
+	EV_SET(&evSet, fd, EVFILT_WRITE, EV_ADD, 0, 0, storage); 
+	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
+	{
+		close(fd);
+		delete(storage);
+	}
+	std::cout << "failed EV_READ new client" << std::endl;
+}
+
 void WebServer::closeClient(struct kevent& event)
 {
 	Request *storage;
 	storage = (Request *)event.udata;
 
-	storage->getCgiData().closePipes();  // if any pipes are still open, function cleans them out
+	storage->getCgiData().closePipes();
 	if (fcntl(event.ident, F_GETFD) != -1)
 		removeFilter(event, EVFILT_TIMER, "failed kevent EV_DELETE EVFILT_TIMER - closeClient");
 
@@ -461,21 +474,25 @@ ServerData * WebServer::getSpecificServer(int fd)
 	return NULL;
 }
 
-void WebServer::addFilter(int fd, struct kevent& event, int filter, std::string errorMessage)
+int WebServer::addFilter(int fd, struct kevent& event, int filter)
 {
 	Request *storage = (Request *)event.udata;
 
 	struct kevent evSet;
 	EV_SET(&evSet, fd, filter, EV_ADD, 0, 0, storage); 
-
-	// int out = kevent(_kq, &evSet, 1, NULL, 0, NULL);
-	// out = -1;
-	// if (out == -1)
-	// 	std::cout << errorMessage << std::endl;
-
 	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
-		std::cout << errorMessage << std::endl;
-		// throw ServerException(errorMessage);
+		return (1);
+	return (0);
+}
+
+void WebServer::cleanAddFilterFail(int fd, struct kevent& event, std::string errorMessage)
+{
+	Request *storage = (Request *)event.udata;
+
+	std::cout << errorMessage << std::endl;
+	storage->getCgiData().closePipes();
+	close(fd);
+	delete storage;
 }
 
 void WebServer::removeFilter(struct kevent& event, int filter, std::string errorMessage)
@@ -484,16 +501,8 @@ void WebServer::removeFilter(struct kevent& event, int filter, std::string error
 
 	struct kevent evSet;
 	EV_SET(&evSet, event.ident, filter, EV_DELETE, 0, 0, storage); 
-
-	// int out = kevent(_kq, &evSet, 1, NULL, 0, NULL);
-	// out = -1;
-	// if (out == -1)
-	// 	std::cout << errorMessage << std::endl;
-
 	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 		std::cout << errorMessage << std::endl;
-		// throw ServerException(errorMessage);
-		// std::cout << "event already removed: " << event.ident << " filter: " << filter << " error to be: " << errorMessage <<  std::endl;
 }
 
 void	WebServer::chooseMethod_StartCGI(struct kevent event, Request * storage) {
@@ -527,27 +536,6 @@ void	WebServer::chooseMethod_StartCGI(struct kevent event, Request * storage) {
 // --------------------------------------------------------- other functions
 // -------------------------------------------------------------------------
 
-// Function moved to ResponseData
-// std::string WebServer::streamFile(std::string file)
-// {
-// 	std::string responseNoFav;
-// 	std::fstream    infile;
-
-
-// 	infile.open(file, std::fstream::in);
-// 	if (!infile)
-// 		throw ServerException("Error: File not be opened for reading!");
-// 	while (infile)     // While there's still stuff left to read
-// 	{
-// 		std::string strInput;
-// 		std::getline(infile, strInput);
-// 		responseNoFav.append(strInput);
-// 		responseNoFav.append("\n");
-// 	}
-// 	infile.close();
-// 	return (responseNoFav);
-// }
-
 bool WebServer::isListeningSocket(int fd)
 {
 	std::vector<ServerData>::iterator it_server = _servers.begin();
@@ -557,11 +545,3 @@ bool WebServer::isListeningSocket(int fd)
 	}
 	return (false);
 }
-
-// --------------------------------------------------------- get functions
-// -----------------------------------------------------------------------
-
-// int WebServer::getKq(void)
-// {
-// 	return (_kq);
-// }

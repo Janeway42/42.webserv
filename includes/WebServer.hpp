@@ -31,14 +31,17 @@ class WebServer
 		~WebServer(void);
 
 		// main functions 
-		void runServer();
-		void readRequest(struct kevent& event);
-		void sendResponse(struct kevent& event);
-		void handleTimeout(struct kevent &event);
-		void newClient(struct kevent event);
-		void addFilter(int fd, struct kevent& event, int filter, std::string errormMsesage);
-		void removeFilter(struct kevent& event, int filter, std::string errorMessage);
-		void closeClient(struct kevent& event);
+		void	runServer();
+		void	readRequest(struct kevent& event);
+		void	sendResponse(struct kevent& event);
+		void	handleTimeout(struct kevent &event);
+		void	newClient(struct kevent event);
+		int		addFilter(int fd, struct kevent& event, int filter);
+		void	removeFilter(struct kevent& event, int filter, std::string errorMessage);
+		void	closeClient(struct kevent& event);
+		void	cleanAddFilterFail(int fd, struct kevent& event, std::string errorMessage);
+		void	protectFirstFilterAdd(Request *storage, int fd);
+		int		exitProgram(int nr_events,struct kevent evList[MAX_EVENTS]);
 		
 		// utils 
 		bool isListeningSocket(int fd);

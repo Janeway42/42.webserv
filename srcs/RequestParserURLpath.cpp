@@ -26,7 +26,8 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 	// Create pipes
 	Request *storage = (Request *)event.udata;
 
-	_cgi.createPipes(storage->getKq(), event);
+	if (_cgi.createPipes(storage->getKq(), event) == 1)
+		return ;
 	// _cgi.createPipes(_data.getKqFd(), event); // moved to Request itself
 
 	int ret = 0;
@@ -59,6 +60,7 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
         chdir("./resources/cgi/");// todo come form config file since it can be oming form different servers too
 
 	//	std::cerr << RED "Before execve in child\n" << RES;
+		// sleep(500000);
 		ret = execve(args[0], args, ENV);
 		// (void)args;
 		// (void)ENV;
@@ -66,6 +68,7 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 		if (ret == -1)
 		{
 			std::cerr << RED << "Error: Execve failed: " << ret << "\n" << RES;
+			delete storage;
 			sleep(31);
 		}
 	}
