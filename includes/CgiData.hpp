@@ -22,7 +22,7 @@ class CgiData: public Parser
 		CgiData();
 		virtual ~CgiData();
 
-		void 			createPipes(int kq, struct kevent & event);
+		int 			createPipes(int kq, struct kevent & event);
 		void 			closePipes();
 
 		// getters

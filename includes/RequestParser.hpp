@@ -23,10 +23,10 @@
 	// if (path[0] == '.')
 	// 	temp = path.substr(1, std::string::npos);
 	// std::size_t found = temp.find_last_of(".");
-	// std::string extention = temp.substr(found, std::string::npos);
+	// std::string extension = temp.substr(found, std::string::npos);
 	
 	//std::cout << GRN "Found Extension: [" << temp << "]\n" << RES;
-	//std::cout << GRN "Found Extension: [" << extention << "]\n" RES;
+	//std::cout << GRN "Found Extension: [" << extension << "]\n" RES;
 
 class Request : public Parser {
 	

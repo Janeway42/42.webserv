@@ -250,7 +250,7 @@ void Request::parseHeaderAndPath(std::string & tmpHeader, std::string::size_type
 // --------------------------------------------------------------- double functions / maybe combine -------------------------------------------
 
 std::string Request::getSpecificErrorPage(std::vector<std::string> const & errorPages, std::string const & defaultErrorPage) {
-    _data.setFileExtention(defaultErrorPage);
+    _data.setFileExtension(defaultErrorPage);
     std::vector<std::string>::const_iterator it = errorPages.cbegin();
     for (; it != errorPages.cend(); ++it) {
         if (it->find(std::to_string(_httpStatus)) != std::string::npos) {

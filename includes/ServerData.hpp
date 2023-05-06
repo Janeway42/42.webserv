@@ -22,8 +22,11 @@ class ServerData : public Parser {
         unsigned int _client_max_body_size;
         std::vector<std::string> _error_page;
         std::string _upload_directory;
+
         /* As more than 1 location block can be added to a server block */
         std::vector<ServerLocation> _location_data_vector;
+
+        bool _server_name_is_ip;
         int _listening_socket;
 
     public:

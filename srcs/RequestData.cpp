@@ -16,7 +16,7 @@ RequestData::RequestData() {
     _URLPath_full 		 = "default";
 	_pathFirstPart		 = "default";
 	_pathLastPart		 = "default";
-	_fileExtention		 = "";
+	_fileExtension		 = "";
 	_isFolder			 = false;
 	_autoIndex			 = false;
 	_queryString		 = "";
@@ -114,8 +114,8 @@ const std::string RequestData::getURLPathLastPart() const {
 	return _pathLastPart;
 }
 
-const std::string RequestData::getFileExtention() const {
-	return _fileExtention;
+const std::string RequestData::getFileExtension() const {
+	return _fileExtension;
 }
 
 bool RequestData::getIsFolder() const {
@@ -240,18 +240,18 @@ void RequestData::setRequestContentLength(std::string reqContentLength)
 	_reqContentLength = stoi(reqContentLength); // is STOI allowed ???
 }
 
-void RequestData::setResponseContentType(std::string fileExtention)
+void RequestData::setResponseContentType(std::string fileExtension)
 {
     // todo there are no other extensions that people could try to serve??????
-	if (fileExtention == ".html")
+	if (fileExtension == ".html")
 		_responseContentType = "text/html";
-	else if (fileExtention == ".jpg")
+	else if (fileExtension == ".jpg")
 		_responseContentType = "image/jpg";
-	else if (fileExtention == ".png")
+	else if (fileExtension == ".png")
 		_responseContentType = "image/png";
-	else if (fileExtention == ".ico")
+	else if (fileExtension == ".ico")
 		_responseContentType = "image/x-con";
-//	else if (fileExtention == "")// Not sure if needed, -> joyce comment -> when http://localhost:8080/_folderA it was comming here and so the response body with the 404 error was nor being set, Idk if this line is needed for something else though, if not we can delete (is it text/html the default anyway? response has always to have any content type???)
+//	else if (fileExtension == "")// Not sure if needed, -> joyce comment -> when http://localhost:8080/_folderA it was comming here and so the response body with the 404 error was nor being set, Idk if this line is needed for something else though, if not we can delete (is it text/html the default anyway? response has always to have any content type???)
 //		_responseContentType = "";// in case of no suffix
 }
 
@@ -276,8 +276,8 @@ void RequestData::setPathLastPart(std::string pathLastPart) {
 	_pathLastPart = pathLastPart;
 }
 
-void RequestData::setFileExtention(std::string fileExtention) {
-	_fileExtention = fileExtention;
+void RequestData::setFileExtension(std::string fileExtension) {
+	_fileExtension = fileExtension;
 }
 
 void RequestData::setIsFolder(bool b) {

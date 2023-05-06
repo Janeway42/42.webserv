@@ -17,7 +17,7 @@ CgiData::~CgiData(){}
 // --------------------------------------------------------- cgi functions
 // -----------------------------------------------------------------------
 
-void CgiData::createPipes(int kq, struct kevent & event)
+int CgiData::createPipes(int kq, struct kevent & event)
 {
 	pipe(_fd_in);
 	pipe(_fd_out);
@@ -31,13 +31,22 @@ void CgiData::createPipes(int kq, struct kevent & event)
 	struct kevent evSet;
 	EV_SET(&evSet, _fd_in[1], EVFILT_WRITE, EV_ADD, 0, 0, storage); 
 	if (kevent(kq, &evSet, 1, NULL, 0, NULL) == -1)
-		throw CgiException("failed kevent EV_ADD, EVFILT_WRITE _fd_in[1] in createPipes");
+	{
+		std::cout << "failed kevent EV_ADD, EVFILT_WRITE _fd_in[1] in createPipes\n";
+		storage->setHttpStatus(INTERNAL_SERVER_ERROR);
+		storage->getCgiData().setIsCgi(false);
+		return (1);
+	}
 	EV_SET(&evSet, _fd_out[0], EVFILT_READ, EV_ADD, 0, 0, storage); 
 	if (kevent(kq, &evSet, 1, NULL, 0, NULL) == -1)
-		throw CgiException("failed kevent EV_ADD, EVFILT_READ _fd_out[0] in createPipes");
+	{
+		std::cout << "failed kevent EV_ADD, EVFILT_READ _fd_out[0] in createPipes";
+		storage->setHttpStatus(INTERNAL_SERVER_ERROR);
+		storage->getCgiData().setIsCgi(false);
+		return (1);
+	}
 	_pipesDone = true;
-
-	// upon fork close in the parent _fd_in[0] && _fd_out[1]
+	return (0);
 }
 
 void CgiData::closePipes()
@@ -59,7 +68,7 @@ void CgiData::closePipes()
 // ------------------------------------------------------------------ getters
 // --------------------------------------------------------------------------
 
-bool CgiData::getIsCgi()	// added jaka
+bool CgiData::getIsCgi()
 {
 	return (_isCgi);
 }
