@@ -95,7 +95,7 @@ void Request::parseHeader(std::string header) {
 
 // TODO MAYBE WON'T BE NEEDED
 // void	storeBodyAsFile(std::string body) {
-// 	std::ofstream bodyFile("./resources/_cgi/bodyFile.txt");
+// 	std::ofstream bodyFile("./resources/cgi/bodyFile.txt");
 // 	if (bodyFile.is_open()) {
 // 		bodyFile << body;
 // 		bodyFile.close();
@@ -134,7 +134,7 @@ int Request::storeWordsFromFirstLine(std::string firstLine) {
 			_data.setRequestPath(*iter);
 		else if (i == 2) {
 			if (*iter != "HTTP/1.1" && *iter != "HTTP/1.0")	{	// maybe also HTTP/1.0 needed ??
-				// TODO: SET CORRECT STATUS ERROR
+				// TODO: SET CORRECT STATUS ERROR -> 505 HTTP Version Not Supported
 				std::cout << RED << "Error: wrong http version\n" << RES;
                 _httpStatus = HTTP_VERSION_NOT_SUPPORTED;
 			}

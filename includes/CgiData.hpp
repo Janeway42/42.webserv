@@ -12,8 +12,8 @@
 class CgiData: public Parser
 {
 	private:
-		int				_fd_in[2];  // we write to _cgi  - we write on _fd_in[1]
-		int				_fd_out[2]; // we read from _cgi - we read from _fd_out[0]
+		int				_fd_in[2];  // we write to cgi  - we write on _fd_in[1]
+		int				_fd_out[2]; // we read from cgi - we read from _fd_out[0]
 		bool			_pipesDone;
 		bool			_isCgi;
 		unsigned long	_bytesToCgi;

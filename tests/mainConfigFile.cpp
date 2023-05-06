@@ -14,7 +14,7 @@ int main(int ac, char **av) {
             ConfigFileParser configFileData(av[1]);
             std::cout << "-----------------------------------------------------------------------------------" << std::endl;
             std::cout << BLU << "Number of server block(s): " << configFileData.numberOfServerBlocks() << RES << std::endl;
-            std::cout << BLU << "Number of location + _cgi block(s): " << configFileData.numberOfLocationBlocks() << RES << std::endl;
+            std::cout << BLU << "Number of location + cgi block(s): " << configFileData.numberOfLocationBlocks() << RES << std::endl;
 
             /* begin() returns an iterator to beginning while cbegin() returns a const_iterator to beginning. */
             std::vector<ServerData>::iterator it_server;
@@ -53,7 +53,7 @@ int main(int ac, char **av) {
                 for (it_location = it_server->getLocationBlocks().cbegin(); it_location != it_server->getLocationBlocks().cend(); ++it_location) {
 
                     if (it_location->isLocationCgi()) {
-                        /************************************* _cgi location block data ************************************/
+                        /************************************* cgi location block data ************************************/
                         std::cout << std::endl << "Starting location block" << std::endl;
                         std::cout << "Is this location a CGI location: " << it_location->isLocationCgi() << std::endl;
                         std::cout << "Server block and location block index files can be used for requests that match this location: " << it_location->useServerBlockIndexFile << std::endl;

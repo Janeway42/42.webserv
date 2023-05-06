@@ -49,7 +49,7 @@ SRC =   srcs/ConfigFileParser.cpp\
 		srcs/ResponseData.cpp\
 		srcs/CgiData.cpp\
 		srcs/WebServer.cpp\
-		tests/Kqueue_main.cpp\
+		srcs/main.cpp\
 		srcs/SigHandler.cpp\
 		srcs/autoIndex.cpp
 

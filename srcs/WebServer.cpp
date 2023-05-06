@@ -84,7 +84,7 @@ void WebServer::runServer()
 		// std::cout << "nr of events: " << nr_events << std::endl;
 
 		if (nr_events < 1)
-			throw ServerException("Failed number events");
+			throw ServerException("Failed number events");// TODO -> MAYBE 500??
 		else
 		{
 			for (i = 0; i < nr_events; i++)
@@ -105,7 +105,7 @@ void WebServer::runServer()
 					std::cout << "----------------------------------------------------------------------------------------------------------------- READ\n";
 					if (evList[i].flags & EV_EOF)
 					{
-						std::cout << RED "EOF from ReadRequest, close the reading FD: " << evList[i].ident << "\n" RES;
+						std::cout << "EOF from ReadRequest, close the reading FD: " << evList[i].ident << "\n";
 						Request *storage = (Request *)evList[i].udata;
 						removeFilter(evList[i], EVFILT_READ, "failed kevent EV_EOF - EVFILT_READ");
 						if (storage->getCgiData().getIsCgi() == true) // <--eval--> this is specifically for ret = 0 && EV_EOF
@@ -179,7 +179,7 @@ void WebServer::readRequest(struct kevent& event)
 		size_t ret = read(event.ident, &buffer,  BUFFER_SIZE - 1);
 		if (ret < 0) // <--eval--> this checks for ret == -1, ret == 0 is checked in the main loop
 		{
-			std::cout << "failed read in pipe _fd_out[0] from _cgi\n";
+			std::cout << "failed read in pipe _fd_out[0] from cgi\n";
 			storage->setHttpStatus(INTERNAL_SERVER_ERROR);
 			addFilter(storage->getFdClient(), event, EVFILT_WRITE, "failed kevent EV_ADD, EVFILT_WRITE, ret < 0 on _fd_out[0]");  //  this allows client write 
 			removeFilter(event, EVFILT_READ, "failed kevent EV_DELETE, EVFILT_READ, ret < 0 on _fd_out[0]"); // this removes the pipe fd 
@@ -215,8 +215,8 @@ void WebServer::readRequest(struct kevent& event)
 			storage->appendToRequest(buffer, ret);
 			//std::cout << CYN "    returned from ATR(), _parsingDone: " << storage->getDone() << ", isCGI: " << storage->getResponseData().getIsCgi() << "\n" RES;
 
-			std::cout << RED << "HTTP STATUS: " << storage->getHttpStatus() << std::endl << RES;
-			std::cout << RED << "CGI STATUS: " << storage->getCgiData().getIsCgi() << std::endl << RES; // jaka09
+			std::cout << "HTTP STATUS: " << storage->getHttpStatus() << std::endl;
+			std::cout << "CGI STATUS: " << storage->getCgiData().getIsCgi() << std::endl; // jaka09
 
 			if ((storage->getHttpStatus() != NO_STATUS && storage->getHttpStatus() != OK) || (storage->getDone() == true && storage->getCgiData().getIsCgi() == false))
 			{
@@ -233,7 +233,7 @@ void WebServer::readRequest(struct kevent& event)
 			}
 			else if (storage->getDone() == true && storage->getCgiData().getIsCgi() == true) {
 				std::cout << CYN "          ReadRequest: C) Done receiving the request, start CGI\n" RES;
-				removeFilter(event, EVFILT_READ, "failed kevent EV_DELETE EVFILT_READ - read success - start _cgi"); // ??? jaka
+				removeFilter(event, EVFILT_READ, "failed kevent EV_DELETE EVFILT_READ - read success - start cgi"); // ??? jaka
 				chooseMethod_StartCGI(event, storage);
 			}
 		}
@@ -369,7 +369,7 @@ void WebServer::newClient(struct kevent event)
 		fcntl(fd, F_SETFL, O_NONBLOCK);
 		setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &opt_value, sizeof(opt_value));
 		if (fd == -1)
-			throw ServerException("Failed accept");
+			throw ServerException("Failed accept");// TODO -> MAYBE 500???
 
         Request *storage = new Request(_kq, event.ident, fd, _servers);
 
@@ -513,7 +513,7 @@ void	WebServer::chooseMethod_StartCGI(struct kevent event, Request * storage) {
 			std::cout << RED_BG << "ERROR 404 Not Found" << RES << std::endl;
 			// status error 404 Not Found -> Server cannot find the requested resource.
 		}
-		// _cgi or just delete the file literally? It's not with CGI: Your program should call the CGI with the file requested as first argument.
+		// cgi or just delete the file literally? It's not with CGI: Your program should call the CGI with the file requested as first argument.
 		// How to delete a file froma  direcory: https://codescracker.com/cpp/program/cpp-program-delete-file.htm#:~:text=To%20delete%20any%20file%20from,used%20to%20delete%20a%20file.
 		if (remove(storage->getRequestData().getURLPath().c_str()) != 0) {
 			std::cout << RED_BG << "ERROR 204 No Content" << RES << std::endl;
