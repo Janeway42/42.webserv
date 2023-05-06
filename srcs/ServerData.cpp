@@ -22,8 +22,9 @@ ServerData::ServerData()
 	_client_max_body_size(1024),
 	_error_page(std::vector<std::string>()),
 	_upload_directory("uploads"),
-	_listening_socket(-1){
-	std::cout << PUR << "ServerData Default constructor" << RES << std::endl;
+    _server_name_is_ip(false),
+	_listening_socket(-1) {
+//	std::cout << PUR << "ServerData Default constructor" << RES << std::endl;
 }
 
 /** Copy constructor */
@@ -36,9 +37,9 @@ ServerData::ServerData(ServerData const & rhs)
 	_error_page(rhs._error_page),
 	_upload_directory(rhs._upload_directory),
 	_location_data_vector(rhs._location_data_vector),
-	_listening_socket(rhs._listening_socket)
-	{
-	std::cout << PUR << "ServerData Copy constructor" << RES << std::endl;
+    _server_name_is_ip(rhs._server_name_is_ip),
+	_listening_socket(rhs._listening_socket) {
+//	std::cout << PUR << "ServerData Copy constructor" << RES << std::endl;
 }
 
 /** Destructor */
@@ -51,9 +52,10 @@ ServerData::~ServerData() {
 	_client_max_body_size = 0;
 	_error_page.clear();
 	_upload_directory.clear();
+    _server_name_is_ip = false;
 	if (signalCall == true && fcntl(_listening_socket, F_GETFD) != -1)
 		close(_listening_socket);
-	std::cout << PUR << "ServerData Destructor" << RES << std::endl;
+//	std::cout << PUR << "ServerData Destructor" << RES << std::endl;
 }
 
 /** #################################### Getters #################################### */
@@ -135,6 +137,9 @@ void ServerData::setServerName(std::string const & serverName) {
             int ret = inet_pton(AF_INET, serverName.c_str(), &(sockAddr.sin_addr));
             if (ret == 1) {
                 _server_name = serverName;
+                std::cout << "joyce3 _server_name_is_ip: " << _server_name_is_ip << std::endl;
+                _server_name_is_ip = true;
+                std::cout << "joyce3 _server_name_is_ip: " << _server_name_is_ip << std::endl;
             } else {
                 if (ret == -1) {
                     std::string err = "(errno: " + std::to_string(errno) + ") ";
@@ -325,22 +330,24 @@ void ServerData::setListeningSocket() {
 	hints.ai_flags = AI_PASSIVE;
 	hints.ai_socktype = SOCK_STREAM;
 
-	// std::cout  << "IP ADDRESS: " << _server_name << std::endl;
-	// std::cout  << "PORT: " << _listens_to << std::endl;
-	// hostname: is either a valid host name or a numeric host address string consisting of a dotted decimal IPv4 address or an IPv6 address.
-	// servname: is either a decimal port number or a service name listed in services(5).
-
 	// CHANGED:	This was causing the Siege error.
 	// 			Apparently Siege wants the IP address, not ServerName 'localhost'
 	//			Now Siege works.
-
-
-	if (getaddrinfo("0.0.0.0", _listens_to.c_str(), &hints, &addr) != 0)
+    std::string hostname = _server_name;
+    if (_server_name_is_ip == false) {
+        hostname = "0.0.0.0";
+    }
+	// hostname: is either a valid host name or a numeric host address string consisting of a dotted decimal IPv4 address or an IPv6 address.
+	// servname: is either a decimal port number or a service name listed in services(5).
+	if (getaddrinfo(hostname.c_str(), _listens_to.c_str(), &hints, &addr) != 0)
 	{
 		freeaddrinfo(addr);
 		throw std::runtime_error("Failed getaddrinfo");
 	}
+	std::cout << "----------" << std::endl;
 	std::cout << "_addr in set listening socket: " << &addr << " / addr->protocol: " << addr->ai_protocol << std::endl;
+	std::cout << "hostname used on getaddrinfo: " << hostname << std::endl;
+	std::cout << "----------" << std::endl;
 
 	_listening_socket = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
 	if (_listening_socket < 0)

@@ -31,8 +31,8 @@ WebServer::WebServer(std::string const & configFileName)
             	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
                		throw ServerException("Failed kevent start listening socket");
 			}
-			std::cout  << "IP ADDRESS: " << it_server->getServerName() << std::endl;
-			std::cout  << "PORT: " << it_server->getListensTo() << std::endl;
+			std::cout << "IP ADDRESS: " << it_server->getServerName() << std::endl;
+			std::cout << "PORT: " << it_server->getListensTo() << std::endl;
 			std::cout << "LISTENING SOCKET: " << it_server->getListeningSocket() << std::endl;
 			location++;
         }
