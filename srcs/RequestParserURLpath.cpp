@@ -355,7 +355,7 @@ std::string Request::parsePath_cgi(std::string const & originalUrlPath, std::vec
     return std::string();
 }
 
-std::string Request::parsePath_dir(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location) {//, std::string const & firstDirectoryFromUrlPath) {
+std::string Request::parsePath_dir(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location) {
     // Ex.: localhost:8080/test/ or localhost:8080/test/sub/
     // Obs.: A directory URI always have a / at the end (otherwise it is a file)
     if (originalUrlPath.find('?') == std::string::npos) {
@@ -370,20 +370,23 @@ std::string Request::parsePath_dir(std::string const & originalUrlPath, std::vec
             std::cout << "Path is a directory." << std::endl << RES;
 
             _data.setIsFolder(true);
+            std::cout << BLU << "location block for [" << RES BLU_BG << originalUrlPath << RES BLU;
+            std::cout << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES BLU << "]" << std::endl;
+            std::cout << BLU << "Its root_directory [" << locationBlockRootDir << "] and configuration will be used" << RES << std::endl;
+            std::cout << BLU << "JOYCE " << locationBlockRootDir + locationBlockUriName + '/' + location->getIndexFile() << RES << std::endl;
+
             // If autoindex is off, return 403 Forbidden, else return folder content
             if (pathType(locationBlockRootDir + locationBlockUriName + '/' + location->getIndexFile()) != REG_FILE) {
                 _data.setAutoIndex(location->getAutoIndex());
                 if (not location->getAutoIndex() ) {
+                    std::cout << RED << "Auto index is off and no file found on the location [";
+                    std::cout << locationBlockRootDir + locationBlockUriName << "]. Returning 403 Forbidden" << RES << std::endl;
                     setHttpStatus(FORBIDDEN);
                 }
             } else {
-                //if (pathType(locationBlockRootDir + locationBlockUriName) == DIRECTORY) {
-                std::cout << BLU << "location block for [" << RES BLU_BG << originalUrlPath << RES BLU;
-                std::cout << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES BLU << "]" << std::endl;
-                std::cout << BLU << "Its root_directory [" << locationBlockRootDir << "] and configuration will be used" << RES << std::endl;
                 _data.setFileExtension(getExtension(originalUrlPath));
-                return locationBlockRootDir + locationBlockUriName + '/' + location->getIndexFile();
             }
+            return locationBlockRootDir + locationBlockUriName + '/' + location->getIndexFile();
         }
     }
     // todo: if '?' if possible with a url containing a folder, then we need to handler query here too
@@ -447,7 +450,6 @@ std::string Request::parsePath_regularCase(std::string const & originalUrlPath, 
                 without_extension = "";
             }
             std::string file = originalUrlPath.substr(lastSlash);
-            std::cout << "FILE: " << file << ",  without extention: " << without_extension << "\n";
             if (not file.empty() && (pathType(locationBlockRootDir + without_extension + file) == REG_FILE)) {
                 _data.setFileExtension(getExtension(originalUrlPath));
                 std::string URLPath_full_file = parsePath_file(originalUrlPath, location);
@@ -596,7 +598,7 @@ void Request::checkIfPathCanBeServed(std::string  const & originalUrlPath) {
         std::string URLPath_full = parsePath_locationMatch(originalUrlPath);
         std::cout << "⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻" << std::endl << std::endl;
         if (URLPath_full.empty()) {
-            // Ex.: localhost/cgi [ok -> internal]
+            // Ex.: localhost/_server_default_status [ok -> internal]
             //      localhost/cgi/file.php [ko -> 404] since the cgi is not a location (and is internal)
             if (originalUrlPath.find("/_") != std::string::npos) {
                 std::cout << YEL << "Internal directory requested, it will be served but no need to search for its "

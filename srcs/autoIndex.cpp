@@ -4,9 +4,7 @@
 #include "../includes/Parser.hpp"
 #include "../includes/ResponseData.hpp"
 
-
 std::string appendHTMLhead(std::string path, std::string & htmlStr) {
-
 	htmlStr.append("<html>\n<head>\n<title>Index");
 	htmlStr.append(path);
 	htmlStr.append("</title>\n</head>\n");
@@ -15,7 +13,6 @@ std::string appendHTMLhead(std::string path, std::string & htmlStr) {
 	htmlStr.append("</h2><ul></span>\n");
 	return (htmlStr);
 }
-
 
 std::string removeLastFolderFromPath(std::string path) {
 	std::string parentPath;
@@ -29,7 +26,6 @@ std::string removeLastFolderFromPath(std::string path) {
 	return (parentPath);
 }
 
-
 std::string removeRootFolderNameFromPath(std::string path) {
 	size_t positionSecondSlash = path.find("/", 2);
 	//std::cout << RED << "positionSecondSlash: [" << positionSecondSlash << "]\n" << RES;
@@ -37,11 +33,10 @@ std::string removeRootFolderNameFromPath(std::string path) {
 	return pathWithoutRoot;
 }
 
-
 std::string appendHTMLbody(std::string line, std::string path, std::string & htmlStr) {
 	int	found;
-	// std::cout << BLU << "Line: [" << line << "]\n" << RES;
-	// std::cout << YEL << "Path: [" << path << "]\n" << RES;
+	 std::cout << BLU << "Line: [" << line << "]\n" << RES;
+	 std::cout << YEL << "Path: [" << path << "]\n" << RES;
 	found = line.find_first_of(" ");
 	std::string lastWord = line.substr(found + 1, std::string::npos);
 	
@@ -54,7 +49,6 @@ std::string appendHTMLbody(std::string line, std::string path, std::string & htm
 		std::string temp = removeLastFolderFromPath(path);
 		size_t positionSecondSlash = path.find("/", 2);
 		std::string rootfolder = path.substr(0, positionSecondSlash);
-		std::cout << RED  "rootfolder: [" << rootfolder<< "]\n" RES;
 		if (temp == rootfolder) {
 			//std::cout << RED "NEW PATH IS NOW THE SAME AS ROOT FOLDER: [" << temp << "], rootfolder: [" << rootfolder<< "]\n" RES;
 			temp = "../";
@@ -72,18 +66,16 @@ std::string appendHTMLbody(std::string line, std::string path, std::string & htm
 	return (htmlStr);
 }
 
-
 std::string	makeHtmlString(std::string folderContent, std::string path) {
 
 	std::string			line;
 	std::istringstream	iss(folderContent);
 	std::string			htmlStr;
 
-	appendHTMLhead(path, htmlStr);
-	while (std::getline(iss, line)) {
-		if (line[0] == 'D') {
-			//std::cout << "Is DIR  [" << line << "]\n";
-			appendHTMLbody(line, path, htmlStr);
+    appendHTMLhead(path, htmlStr);
+    while (std::getline(iss, line)) {
+        if (line[0] == 'D') {
+			appendHTMLbody(line + "/", path, htmlStr);
 		}
 		else if (line[0] == 'F') {
 			//std::cout << "Not DIR [" << line << "]\n";
@@ -95,8 +87,6 @@ std::string	makeHtmlString(std::string folderContent, std::string path) {
 	return (htmlStr);
 }
 
-
-
 std::string ResponseData::storeFolderContent(const char* path) {
 	DIR *dir;
 	struct dirent *entry;
@@ -106,7 +96,8 @@ std::string ResponseData::storeFolderContent(const char* path) {
 	dir = opendir(path);
 	if (dir == NULL) {
 		printf("Failed to open directory: %s\n", path);
-		exit(EXIT_FAILURE);
+        return std::string();// return empty string so we can continue with the 404 error set (also not exit the server)
+		//exit(EXIT_FAILURE);
 	}
 
 	std::string folders;
