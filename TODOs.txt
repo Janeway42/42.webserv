@@ -1,11 +1,9 @@
 Take a look:
     - if uploaded file is larger than 500kb, and if the maxbodysize is too small......
-    - add interpreter path + upload directory + chdir with config file
+    - add interpreter pat
     - WHAT ABOUT listensToPort == 8008 ?
 
 Research:
-    - The first server for a host:port will be the default for this host:port (that means
-      it will answer to all the requests that don’t belong to an other server). -> [DONE]
     - Setup default error page (try to change the error 404). ?????????????????????????
     - In the browser we CAN'T type anything else than localhost or ip, but on curl we CAN (curl always has port)?????? -> [DONE] 
            (YES curl always has port and use only curl --resolve to test different server names/domains)
