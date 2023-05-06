@@ -1,11 +1,9 @@
 Take a look:
     - if uploaded file is larger than 500kb, and if the maxbodysize is too small......
-    - add interpreter path + upload directory + chdir with config file
+    - add interpreter pat
     - WHAT ABOUT listensToPort == 8008 ?
 
 Research:
-    - The first server for a host:port will be the default for this host:port (that means
-      it will answer to all the requests that don’t belong to an other server). -> [DONE]
     - Setup default error page (try to change the error 404). ?????????????????????????
     - In the browser we CAN'T type anything else than localhost or ip, but on curl we CAN (curl always has port)?????? -> [DONE] 
            (YES curl always has port and use only curl --resolve to test different server names/domains)
@@ -21,7 +19,8 @@ More important:
     JAKA:
         - Setup multiple servers with different hostnames (use something like: curl --resolve example.com:80:127.0.0.1 http://example.com/) BASH TEST?? (Because it is done)
         - DONE (Corina+Joyce) - match server_name from config file with Host from request form [DONE RIGHT?]
-        - Upload some file to the server and get it back (check if just clickin gon the file/image is enough)
+        - Upload some file to the server and get it back (check if just clicking on the file/image is enough)
+        - Upload the file to the correct directory using the upload_directory getter form the config file
         - DONE (joyce) - Index file has to be served if it exists (even if autoindex is on)
         - Bonus cgi .php --> If I add a new location block called .php, the parsing of the config file stops at that location
         - DONE - Use max_body_size from the config file on the server (on the request parser)
@@ -30,8 +29,7 @@ More important:
     JOYCE:
         - DONE - http://localhost:8080/_folderA is not working check that
         - DONE - Add an upload_directory key to the config file
-        - Make a location able to accept uploaded files (it’s on the pdf). Is it saved on the root directory of the
-          location? Or there is another key that we are not aware of? ADD ANOTHER KEY
+        - DONE - Add another key to make a location able to accept uploaded files (it’s on the pdf).
 		- DONE - Our error pages have to be in the root of our directory!
         - DONE - Delete ip_address and add the option of server_name contain an ip address number or a string (domain)
         - Make the server_name accept only domain names and not ip_addresses????? since we now set 0.0.0.0??

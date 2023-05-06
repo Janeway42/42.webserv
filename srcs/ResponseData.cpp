@@ -77,6 +77,7 @@ void ResponseData::createResponse(struct kevent& event) {
 	std::cout << "fd: " << storage->getFdClient() << std::endl; 
     _responsePath = storage->getRequestData().getURLPath_full();
 	setResponseStatus(event);
+
     std::cout << BLU << "_responsePath after SetResponseStatus(): " << _responsePath << "\n" << RES;
     std::cout << BLU << "   getURLPath:   [" << storage->getRequestData().getURLPath() << "]\n" << RES;
     std::cout << BLU << "  getFullPath:   [" << storage->getRequestData().getURLPath_full() << "]\n" << RES;
@@ -88,12 +89,12 @@ void ResponseData::createResponse(struct kevent& event) {
         if (storage->getRequestData().getIsFolder() && not storage->getCgiData().getIsCgi()) {
             /* No need to loop through the locations to find the matching,  the getURLPath_full() already contains
              * the matching one. Also, no need to append the corresponding index file (checkIfPathCanBeServed() has done it) */
-            std::cout << BLU << "The Path is a folder: Checking for autoindex on/off:\n" << RES;
+            std::cout << "The Path is a folder: Checking for autoindex on/off:\n";
 
             // Handling auto index
             if (storage->getRequestData().getAutoIndex()) {
-                std::cout << BLU << "AUTOINDEX ON, must call storeFolderContent()\n" << RES;
-                std::cout << BLU << "     URLPathFirstPart: [" << storage->getRequestData().getURLPathFirstPart() << "]\n" << RES;
+                std::cout << "AUTOINDEX ON, must call storeFolderContent()\n";
+                std::cout << "     URLPathFirstPart: [" << storage->getRequestData().getURLPathFirstPart() << "]\n";
                 // if (storage->getRequestData().getURLPathFirstPart().empty()) {
                 // 	std::cout << BLU "first part is empty\n" << RES;
                 // 	std::string newPath = "./resources/" + storage->getRequestData().getURLPath();
@@ -101,9 +102,13 @@ void ResponseData::createResponse(struct kevent& event) {
                 // } else
                 std::cout << "Setting _responseBody\n";
                 _responseBody = storeFolderContent(storage->getRequestData().getURLPathFirstPart().c_str());
+                if (not _responseBody.empty()) {
+                    storage->setHttpStatus(OK);
+                }
+            } else {
+                std::cout << "AutoIndex off. Setting _responseBody\n";
+                _responseBody = streamFile(_responsePath);
             }
-            std::cout << "AutoIndex off. Setting _responseBody\n";
-            _responseBody = streamFile(_responsePath);
         }
         // if it is not a folder (it checks first if cgi -> if not then it checks text (includes error), else image
         else {
