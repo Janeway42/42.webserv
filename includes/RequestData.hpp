@@ -12,7 +12,7 @@ class RequestData {
 		int			_kqFd;
 
 		// FIRST LINE HEADER
-		std::string				_reqMethod;
+		AllowMethods			_reqMethod;
 		std::string				_reqHttpPath;
 		std::string				_reqHttpVersion;
 
@@ -36,6 +36,7 @@ class RequestData {
 		bool					_autoIndex;
 		std::string				_queryString;
 		std::string				_cgiBody;
+		bool				    _formDataHasDelete;
 		std::map<std::string, std::string>	_formData;	 // maybe not needed, maybe Vector list will be enough
 		std::vector<std::string>			_formList;
 
@@ -53,7 +54,7 @@ class RequestData {
 
 		//getters
 		int					getKqFd() const;
-		const std::string	getRequestMethod() const;
+		AllowMethods	getRequestMethod() const;
 		const std::string	getHttpPath() const;
 		const std::string	getHttpVersion() const;
 		const std::string	getHeader() const;
@@ -77,6 +78,7 @@ class RequestData {
 		bool				getAutoIndex() const;
 		const std::string	getQueryString() const;
 		const std::string	getCgiBody() const;
+		bool	            formDataHasDelete() const;
 
 		std::vector<std::string>			getFormList() const;	// maybe not needed
 		std::map<std::string, std::string>	getFormData() const;	// maybe not needed
@@ -84,7 +86,7 @@ class RequestData {
 		//setters
 		void	setKqFd(int kqFd);
 
-		void	setRequestMethod(std::string reqMethod);
+		void	setRequestMethod(AllowMethods reqMethod);
 		void	setRequestPath(std::string reqPath);
 		void	setHttpVersion(std::string reqHttpVersion);
 		void	setHeader(std::string str);
@@ -107,6 +109,7 @@ class RequestData {
 		void	setAutoIndex(bool b);
 		void	setQueryString(std::string path);
 		void	setCgiBody(std::string cgiBody);
+		void	setFormDataHasDelete(bool b);
 		void	setFormList(std::vector<std::string>);				// maybe not needed
 		void	setFormData(std::map<std::string, std::string>);	// maybe not needed
 

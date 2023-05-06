@@ -33,22 +33,24 @@ class Request : public Parser {
 	private:
 		int _kq;
 		int _listeningSocket;
-		int				_clientFd;
-		RequestData		_data;
-		ResponseData	_answer;
-		CgiData     	_cgi;
+		int _clientFd;
+		RequestData _data;
+		ResponseData _answer;
+		CgiData _cgi;
 
-		bool			_headerDone;
-		bool			_doneParsing;
-		bool 			_hasBody;
-		HttpStatus		_httpStatus;
-		std::string		_redirection;
-		ServerData  	_specificServer;
+		bool _headerDone;
+		bool _doneParsing;
+		bool _hasBody;
+		HttpStatus _httpStatus;
+		std::string _redirection;
+        bool _delete_is_allowed;
+        std::string _interpreter_path;
+		ServerData _specificServer;
 		std::vector<ServerData> _servers;
 
-		void        parseHeaderAndPath(std::string & tmpHeader, std::string::size_type it);
-		int 		appendLastChunkToBody2(const char *str, size_t len);
-		int 		appendToBody(const char *str, size_t len);
+		void parseHeaderAndPath(std::string & tmpHeader, std::string::size_type it);
+		int appendLastChunkToBody2(const char *str, size_t len);
+		int appendToBody(const char *str, size_t len);
 
 		// cleanup ---------------------------
 		// void	    chooseMethod_StartAction(struct kevent event);  // Doesn't seem to be in use anymore - to be cleaned
@@ -61,44 +63,49 @@ class Request : public Parser {
 		virtual ~Request();
 
 		// getters
-		ServerData & 	getServerData();
-		RequestData &	getRequestData();
-		ResponseData &	getResponseData();
-		CgiData &		getCgiData();
-		HttpStatus		getHttpStatus();
-		std::string		getRedirection();
-		bool			getDone();
-		int				getFdClient();
-		int				getKq();
+		ServerData & getServerData();
+		RequestData & getRequestData();
+		ResponseData & getResponseData();
+		CgiData & getCgiData();
+		HttpStatus getHttpStatus();
+		std::string getRedirection();
+        bool deleteIsAllowed();
+        std::string getInterpreterPath();
+		bool getDone();
+		int getFdClient();
+		int getKq();
 
 		// setters
-		void			setDone(bool val);
-		void			setHttpStatus(HttpStatus val);
-		void			setRedirection(std::string const & redirection);
-		void			setSpecificServer();
+		void setDone(bool val);
+		void setHttpStatus(HttpStatus val);
+		void setRedirection(std::string const & redirection);
+		void setDeleteIsAllowed(bool b);
+		void setInterpreterPath(std::string const & interpreter_path);
+		void setSpecificServer();
 
 		// methods
-		std::map<std::string, std::string>	storeFormData(std::string pq);
-		void			    parseHeader(std::string header);
-		void    		    checkIfPathCanBeServed(std::string const & originalUrlPath);
-        void                checkRedirection(std::string getRedirection);
-		std::string	        parsePath_locationMatch(std::string const & originalUrlPath);
-        std::string		    parsePath_file(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);
-        std::string     	parsePath_cgi(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location, std::string const & file_cgi);
-        std::string		    parsePath_dir(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);//, std::string const & firstDirectoryFromUrlPath);
-        std::string         parsePath_regularCase(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);
-        std::string         parsePath_root(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);
-        std::string         parsePath_edgeCase(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);//todo mayne not needed?
-		void		    	appendToRequest(const char str[], size_t len);
-		void			    storeURLPathParts(std::string const & originalUrlPath, std::string const & newUrlPath);
-		void                checkIfPathExists(std::string const & path);
-		void 			    callCGI(struct kevent event);
-		void			    runExecve(char *ENV[], char *args[], struct kevent event);
-		int				    storeWordsFromFirstLine(std::string firstLine);
-		int				    storeWordsFromOtherLine(std::string otherLine);
+		std::map<std::string, std::string> storeFormData(std::string pq);
+		void parseHeader(std::string header);
+		void checkIfPathCanBeServed(std::string const & originalUrlPath);
+        void checkRedirection(std::string getRedirection);
+        void checkMethods(std::vector<AllowMethods> const & methods);
+		std::string parsePath_locationMatch(std::string const & originalUrlPath);
+        std::string parsePath_file(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);
+        std::string parsePath_cgi(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location, std::string const & file_cgi);
+        std::string parsePath_dir(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);//, std::string const & firstDirectoryFromUrlPath);
+        std::string parsePath_regularCase(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);
+        std::string parsePath_root(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);
+//        std::string parsePath_edgeCase(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);//todo mayne not needed?
+		void appendToRequest(const char str[], size_t len);
+		void storeURLPathParts(std::string const & originalUrlPath, std::string const & newUrlPath);
+		void checkIfPathExists(std::string const & path);
+		void callCGI(struct kevent event);
+		void runExecve(char *ENV[], char *args[], struct kevent event);
+		int storeWordsFromFirstLine(std::string firstLine);
+		int storeWordsFromOtherLine(std::string otherLine);
 
-        std::string         getSpecificErrorPage(std::vector<std::string> const & errorPages, std::string const & defaultErrorPage);
-        std::string			getErrorPage();
+        std::string getSpecificErrorPage(std::vector<std::string> const & errorPages, std::string const & defaultErrorPage);
+        std::string getErrorPage();
 
 		// cleanup ------------------------
 		void    printStoredRequestData(Request &request); // Just for checking

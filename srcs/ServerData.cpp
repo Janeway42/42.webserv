@@ -137,9 +137,7 @@ void ServerData::setServerName(std::string const & serverName) {
             int ret = inet_pton(AF_INET, serverName.c_str(), &(sockAddr.sin_addr));
             if (ret == 1) {
                 _server_name = serverName;
-                std::cout << "joyce3 _server_name_is_ip: " << _server_name_is_ip << std::endl;
                 _server_name_is_ip = true;
-                std::cout << "joyce3 _server_name_is_ip: " << _server_name_is_ip << std::endl;
             } else {
                 if (ret == -1) {
                     std::string err = "(errno: " + std::to_string(errno) + ") ";

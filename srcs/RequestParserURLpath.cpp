@@ -35,11 +35,13 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 
 	retFork = fork();
 
-	if (retFork == 0) { // CHILD
-		std::cout << CYN <<  "Start CHILD execve()\n" << RES;
-		if (retFork < 0)
-			std::cout << "Error: Fork failed\n";
-	
+    if (retFork < 0)
+        std::cout << RED << "Error: Fork failed\n" << RES;
+
+    else if (retFork == 0) { // CHILD
+        std::cout << CYN << "Start CHILD execve()\n" << RES;
+        std::cout << CYN << "Interpreter Path: " << storage->getInterpreterPath() << RES << std::endl;
+
 		close(_cgi.getPipeCgiOut_0());
 		close(_cgi.getPipeCgiIn_1());
 
@@ -54,14 +56,13 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 		 	std::cout << RED "Error dup2() of PipeCgiOut_1, child\n" RES;
         close(_cgi.getPipeCgiOut_1());
 
-        // Change current working directory to the internal CGI directory
         // Best practice to ensure the script to find correct relative paths, if needed
-        //std::cout << "JOYCE: " << storage->getRequestData().getURLPath_full() << std::endl;
-        //chdir("./resources/cgi/");// todo come form config file since it can be oming form different servers too
         chdir(storage->getRequestData().getURLPathFirstPart().c_str());
 
 	//	std::cerr << RED "Before execve in child\n" << RES;
 		// sleep(500000);
+//        const_cast
+        args[0] = const_cast<char*>(storage->getInterpreterPath().c_str());
 		ret = execve(args[0], args, ENV);
 		// (void)args;
 		// (void)ENV;
@@ -81,8 +82,6 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 		//std::cout << BLU "\n       End runExecve()\n" << RES;
 		// sleep(1);
 	}
-    std::cout << "JOYCE" << std::endl;
-
 }
 
 void Request::callCGI(struct kevent event) {
@@ -105,7 +104,7 @@ void Request::callCGI(struct kevent event) {
 
 	// Declare a vector and fill it with variables, with attached =values
 	std::vector<std::string> temp;
-	temp.push_back(request_method.append(_data.getRequestMethod()));
+	temp.push_back(request_method.append(allowMethodsToString(_data.getRequestMethod())));
 	temp.push_back(content_type.append(_data.getRequestContentType()));
 	temp.push_back(content_length.append(ssContLen.str()));
 	temp.push_back(query_string.append(_data.getQueryString()));
@@ -123,7 +122,7 @@ void Request::callCGI(struct kevent event) {
 
 	temp.push_back(upload_path.append(uploadDir));  // todo: append the /upload folder name
 
-    std::cout << RED "UPLOAD DIR: " << uploadDir << "\n" RES;
+    std::cout << "UPLOAD DIR full path: " << uploadDir << "\n";
 
 	// std::cout << "Size of vector temp: " << temp.size() << "\n";
 	// std::cout << YEL << "POST BODY: " << temp[2] << "\n" << RES;
@@ -150,13 +149,12 @@ void Request::callCGI(struct kevent event) {
 	}
 
 	// char *args[3];
-	// args[0] = (char *)"/usr/bin/php";   // Make sure the path is correct on Mac/Linux
+	// args[0] = (char *)"/usr/bin/php";   // todo Make sure the path is correct on Mac/Linux -> It comes form the config so its the user jogs
 	// args[1] = (char *)"./jaka_cgi/_somePhp.php"; // MUST BE WITH A DOT !!
 	// args[2] = NULL;
 
 	char *args[3];
-    	args[0] = (char *)"/usr/local/bin/python3";
-//	args[0] = (char *)"/usr/bin/python";    // TODO: add from config file -> /bin/bash -c python or /usr/bin/env python
+//    	args[0] = (char *)"/usr/local/bin/python3";
 
 //  std::string tempPath = _data.getURLPath_full();   // Changed Jaka:
     std::string tempPath = _data.getURLPathLastPart();  // must be only the script name, because the CWD is changed to CGI folder
@@ -218,23 +216,12 @@ void Request::storeURLPathParts(std::string const & originalUrlPath, std::string
     std::cout << CYN << "Start storeURLPathParts(). URLPath_full: [" << URLPath_full << "]\n" << RES;
     std::string::size_type posLastSlash = URLPath_full.find_last_of('/');// todo: can a / be inserted as a POST data? ex: city: ams/erdam. Then this would not work
 
-    // todo joyce -> I will keep those line commented ouy for now but I Think we wont need them
-//    std::string urlPath = originalUrlPath;
-//    std::string urlPath_full = URLPath_full;
-//    std::string::size_type lastPart = std::string::npos;
-
     // If there is query '?' string, store it
     std::string::size_type positionQuestionMark = originalUrlPath.find_first_of('?');
 	if (positionQuestionMark != std::string::npos) {
-        // todo joyce -> I will keep those line commented ouy for now but I Think we wont need them
-//        urlPath = originalUrlPath.substr(0, positionQuestionMark);
-//        urlPath_full = URLPath_full.substr(0, positionQuestionMark);
-//        std::string::size_type lastSlash = originalUrlPath.find_last_of('/');
-//        lastPart = positionQuestionMark - lastSlash;
-
         // Skip the '?' in the path and store the Query string
         std::string	queryString = originalUrlPath.substr(positionQuestionMark + 1);
-        if (_data.getRequestMethod() == "GET") {
+        if (_data.getRequestMethod() == GET) {
             _data.setQueryString(queryString);
             std::cout << "queryString:                   [" << GRN_BG << _data.getQueryString() << RES << "]" << std::endl;
             // _data.setBody(queryString);  // too early todo JAKA is it needed here?
@@ -326,6 +313,7 @@ std::string Request::parsePath_cgi(std::string const & originalUrlPath, std::vec
         std::string locationBlockUriName = location->getLocationUriName();
         std::string locationBlockRootDir = location->getRootDirectory();
         getCgiData().setIsCgi(true);
+        setInterpreterPath(location->getInterpreterPath());
 
         //std::cout << BLU << "'?' was found, so cgi root_directory is needed" << RES << std::endl;
         std::cout << "Path is a script file. ";
@@ -335,11 +323,11 @@ std::string Request::parsePath_cgi(std::string const & originalUrlPath, std::vec
             std::cout << "Deleting file name from it so the extension can be matched against the location block uri extension name. Extension: ";
             std::cout << GRN_BG << _data.getFileExtension() << RES << std::endl;
         }
-        if (_data.getRequestMethod() == "GET") {
+        if (_data.getRequestMethod() == GET) {
             std::cout << GRN << "There is GET Form data" << RES << std::endl;
-        } else if (_data.getRequestMethod() == "POST") {
+        } else if (_data.getRequestMethod() == POST) {
             std::cout << GRN << "There is POST Form data" << RES << std::endl;
-        } else if (_data.getRequestMethod() == "DELETE") {
+        } else if (_data.getRequestMethod() == DELETE) {
             std::cout << GRN << "There is DELETE Form data" << RES << std::endl;
         }
 
@@ -373,7 +361,6 @@ std::string Request::parsePath_dir(std::string const & originalUrlPath, std::vec
             std::cout << BLU << "location block for [" << RES BLU_BG << originalUrlPath << RES BLU;
             std::cout << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES BLU << "]" << std::endl;
             std::cout << BLU << "Its root_directory [" << locationBlockRootDir << "] and configuration will be used" << RES << std::endl;
-            std::cout << BLU << "JOYCE " << locationBlockRootDir + locationBlockUriName + '/' + location->getIndexFile() << RES << std::endl;
 
             // If autoindex is off, return 403 Forbidden, else return folder content
             if (pathType(locationBlockRootDir + locationBlockUriName + '/' + location->getIndexFile()) != REG_FILE) {
@@ -397,7 +384,7 @@ std::string Request::parsePath_file(std::string const & originalUrlPath, std::ve
     // Ex.: localhost:8080/favicon.ico or localhost:8080/cgi/cgi_index.html
     std::string locationBlockUriName = location->getLocationUriName();
     std::string locationBlockRootDir = location->getRootDirectory();
-    if (originalUrlPath.find('?') == std::string::npos && _data.getRequestMethod() == "GET" 
+    if (originalUrlPath.find('?') == std::string::npos && _data.getRequestMethod() == GET
         && locationBlockUriName != ".py" && locationBlockUriName != ".php") {
         std::string DirFromUrl = std::string();
         std::string file = originalUrlPath.substr(originalUrlPath.find_last_of('/'));
@@ -552,12 +539,34 @@ void Request::checkRedirection(std::string getRedirection) {
     }
 }
 
+void Request::checkMethods(std::vector<AllowMethods> const & methods) {
+    std::vector<AllowMethods>::const_iterator config_file_method;
+    std::cout << GRY << "Method allowed from the config file: " << RES;
+    bool methodsMatched = false;
+    for (config_file_method = methods.cbegin(); config_file_method != methods.cend(); ++config_file_method) {
+        std::cout << GRY << allowMethodsToString(*config_file_method) << " " << RES;
+        if (*config_file_method == DELETE) {
+            setDeleteIsAllowed(true);
+        }
+        if (_data.getRequestMethod() == *config_file_method) {
+            methodsMatched = true;
+        }
+    }
+    if (not methodsMatched) {
+        setHttpStatus(METHOD_NOT_ALLOWED);
+        std::cout << std::endl << RED << "Location does not accept the Method - 405 Method not allowed will be returned"
+            << RES << std::endl;
+    } else {
+        std::cout << std::endl << GRN << "Location accepts the ";
+        std::cout << allowMethodsToString(_data.getRequestMethod()) << " method, continuing..." << RES << std::endl;
+    }
+}
+
 std::string Request::parsePath_locationMatch(std::string const & originalUrlPath) {
     std::string URLPath_full = std::string();
 
     std::vector<ServerLocation>::const_iterator location = getServerData().getLocationBlocks().cbegin();
     for (; location != getServerData().getLocationBlocks().cend(); ++location) {
-        // TODO -> Set 405 Method Not Allowed IF specific location allowed methods does not match with the method received
         std::string locationBlockUriName = location->getLocationUriName();
         std::string locationBlockRootDir = location->getRootDirectory();
         std::cout << "⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻" << std::endl;
@@ -569,11 +578,10 @@ std::string Request::parsePath_locationMatch(std::string const & originalUrlPath
         } else if (originalUrlPath[0] == '/') {
             URLPath_full = parsePath_regularCase(originalUrlPath, location);
         }
-//        else if (originalUrlPath[0] != '/') {
-//            URLPath_full = parsePath_edgeCase(originalUrlPath, location);
-//        }
         if (not URLPath_full.empty() || getHttpStatus() == FORBIDDEN) {
-            checkRedirection(location->getRedirection());// TODO CHECK IF REDIRECTION IS WORKING and change name to Check
+            std::cout << "Method from the request: " << allowMethodsToString(_data.getRequestMethod()) << std::endl;
+            checkMethods(location->getAllowMethods());
+            checkRedirection(location->getRedirection());
             break;
         }
 
@@ -616,7 +624,7 @@ void Request::checkIfPathCanBeServed(std::string  const & originalUrlPath) {
             }
         }
         _data.setResponseContentType(_data.getFileExtension());
-        storeURLPathParts(originalUrlPath, URLPath_full);// TODO: do that only if _data.getRequestMethod() != "POST" ?????
+        storeURLPathParts(originalUrlPath, URLPath_full);// TODO: do that only if _data.getRequestMethod() != POST ?????
 
         printPathParts(_data);
         if (getHttpStatus() == NO_STATUS) {

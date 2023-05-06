@@ -17,12 +17,12 @@ ResponseData::ResponseData(void) {
 	_bytesToClient = 0;
 	_responseDone = false;
 	// _errorOverride = false;
-    std::cout << GRY_BG << "ResponseData Default Constructor" << RES << std::endl;
+//    std::cout << GRY_BG << "ResponseData Default Constructor" << RES << std::endl;
 }
 
 /** Destructor */
 ResponseData::~ResponseData(void) {
-    std::cout << GRY_BG << "ResponseData Destructor" << RES << std::endl;
+//    std::cout << GRY_BG << "ResponseData Destructor" << RES << std::endl;
 }
 
 /** #################################### Methods #################################### */
@@ -70,11 +70,18 @@ void ResponseData::createResponseHeader(HttpStatus status, std::string const & r
  * then createResponse() returns this full content, ready to be sent
  */
 void ResponseData::createResponse(struct kevent& event) {
-	std::cout << CYN <<  "Start " << __func__ << RES;
+	std::cout << CYN <<  "Start " << __func__ << RES << std::endl;
 	Request *storage = (Request *)event.udata;
 
-	std::cout << "test\n";
-	std::cout << "fd: " << storage->getFdClient() << std::endl; 
+	std::cout << "fd: " << storage->getFdClient() << std::endl;
+
+    // If the Form data tht came form the body contained a "delete=" key, and the current request is POST or DELETE
+    // we can return 405 Method Not Allowed
+    if (storage->getRequestData().formDataHasDelete() && not storage->deleteIsAllowed()) {//} || storage->getRequestData().getRequestMethod() == POST)) {
+        std::cout << RED << "Location does not accept the Method - 405 Method not allowed will be returned" << RES << std::endl;
+        storage->setHttpStatus(METHOD_NOT_ALLOWED);
+    }
+
     _responsePath = storage->getRequestData().getURLPath_full();
 	setResponseStatus(event);
 
@@ -132,20 +139,6 @@ void ResponseData::createResponse(struct kevent& event) {
             }
         }
     }
-//    _responsePath after SetResponseStatus(): ./resources/error_pages/404.html
-//    getURLPath:   [/folderA]
-//    getFullPath:   [default]
-//    getHttpStatus(): [404]
-//    response path:   [./resources/error_pages/404.html]
-//    content type:    [text/html]
-//    /////
-//    _responseHeader:
-//    HTTP/1.1 404 Not Found
-//    Content-Type: text/html
-//    Content-Encoding: identity
-//    Connection: close
-//    Content-Length: 68
-
 
     // set up header
     createResponseHeader(storage->getHttpStatus(), storage->getRedirection());

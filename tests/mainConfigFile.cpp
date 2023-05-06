@@ -69,6 +69,29 @@ int main(int ac, char **av) {
 
                         std::string cgiLocationIndexFile = it_location->getIndexFile();
                         std::cout << GRN << std::left << std::setw(30) << "\"index_file\": " << cgiLocationIndexFile << RES << std::endl;
+
+                        std::vector<AllowMethods> locationAllowMethods = it_location->getAllowMethods();
+                        std::cout << GRN << std::left << std::setw(30) << "\"allow_methods\": ";
+                        std::vector<AllowMethods>::const_iterator i;
+                        for (i = locationAllowMethods.cbegin(); i != locationAllowMethods.cend(); i++) {
+                            switch (i.operator*()) {
+                                case GET:
+                                    std::cout << "GET";
+                                    break;
+                                case POST:
+                                    std::cout << "POST";
+                                    break;
+                                case DELETE:
+                                    std::cout << "DELETE";
+                                    break;
+                                default:
+                                    std::cout << "NONE";
+                                    break;
+                            }
+                            std::cout << " ";
+                        }
+                        std::cout << RES << std::endl;
+
                     } else {
                         /*************************************** location block data **************************************/
                         std::cout << std::endl << "Starting location block " << std::endl;
@@ -96,6 +119,7 @@ int main(int ac, char **av) {
                                     std::cout << "DELETE";
                                     break;
                                 default:
+                                    std::cout << "NONE";
                                     break;
                             }
                             std::cout << " ";
