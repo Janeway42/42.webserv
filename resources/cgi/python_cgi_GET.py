@@ -22,8 +22,6 @@ print ("<br><br><h3>THIS IS PYTHON SCRIPT:</h3>")
 # time.sleep(11000)
 # exit()
 
-# for l in sys.stdin:
-# 	print (l)
 
 for param in os.environ.keys():
     # print ("<b>%30s</b>: %s</br>") % (param, os.environ[param])

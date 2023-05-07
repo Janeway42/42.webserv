@@ -42,7 +42,7 @@ RES='\033[0m'
 ### SETTINGS #################################################################
 PASSWORD="..."													# local sudo password, to run /usr/local/opt/nginx/bin/nginx -g "daemon off;" (this method is bad, but for now brew is not working)
 # PathMyWebServer="/Users/jmb/Desktop/projects/webserv03may00"		# path to ./webserv executable  HOME
-PathMyWebServer="/Users/jmurovec/Desktop/projects/webserv04may00/"		# path to ./webserv executable  CODAM
+PathMyWebServer="/Users/jmurovec/Desktop/projects/webserv07may00/"		# path to ./webserv executable  CODAM
 PathMyWebServerPublicFolder="$PathMyWebServer/resources/"			# path to html content of the webserv 
 # PathNginxPublicFolder="/usr/local/var/www/resources/"					# the above folder will be copied to this nginx folder  HOME
 PathNginxPublicFolder="/Users/jmurovec/.brew/var/www/resources/"		# the above folder will be copied to this nginx folder	CODAM

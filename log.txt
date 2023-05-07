@@ -1,0 +1,480 @@
+----------
+_addr in set listening socket: 0x7ffee5ceb2b0 / addr->protocol: 6
+hostname used on getaddrinfo: 0.0.0.0
+----------
+IP ADDRESS: localhost
+PORT: 8080
+LISTENING SOCKET: 4
+IP ADDRESS: testserver
+PORT: 8080
+LISTENING SOCKET: 4
+----------
+_addr in set listening socket: 0x7ffee5ceb2b0 / addr->protocol: 6
+hostname used on getaddrinfo: 0.0.0.0
+----------
+IP ADDRESS: localhost
+PORT: 4243
+LISTENING SOCKET: 5
+----------
+_addr in set listening socket: 0x7ffee5ceb2b0 / addr->protocol: 6
+hostname used on getaddrinfo: 0.0.0.0
+----------
+IP ADDRESS: testserver
+PORT: 8081
+LISTENING SOCKET: 6
+[36m[47mWebServer Overloaded Constructor[0m
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 0
+size server inside run loop: 4
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 7
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 1
+size server inside run loop: 4
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 7
+[34mSTORED HEADER: 
+GET / HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+__________________ _specificServer: localhost
+
+originalUrlPath:               [[42m/[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting checkIfPathCanBeServed() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir[0m]
+[33mThe url path [/] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[33mThe url path [/] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[33mThe url path [/] did not match the current location block [/texts] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mlocation block for [[0m[44m/[0m[34m] exists on config file as [[0m[44m/[0m[34m]
+[34mIts root_directory [./resources] and configuration will be used[0m
+Method from the request: GET
+[37mMethod allowed from the config file: [0m[37mGET [0m[37mPOST [0m[37mDELETE [0m
+[32mLocation accepts the GET method, continuing...[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[36mStart storeURLPathParts(). URLPath_full: [./resources/index.html]
+[0m
+URL Path:        [[35m/[0m]
+Full URI Path:   [[35m./resources/index.html[0m]
+Path first part: [[35m./resources/[0m]
+Path LAST part:  [[35mindex.html[0m]
+File extension:  [[35m[0m]
+Form Data:    [33m(not present)
+[0m
+[36mStart CheckIfPathExists(), URLPath_full [./resources/index.html] 
+[0m[32mPath [0m./resources/index.html[32m exists[0m
+
+HTTP status after checkIfPathCanBeServed(): 200
+[33mFound header ending /r/n, maybe there is body
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: [text/html]
+[0mHTTP STATUS: 200
+CGI STATUS: 0
+[33mstorage->getHttpStatus(): 200
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 2
+size server inside run loop: 4
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart createResponse[0m
+fd: 7
+[36mStart setResponseStatus()
+[0m_responsePath: [[[42m./resources/index.html[0m]]
+[34m_responsePath after SetResponseStatus(): ./resources/index.html
+[0m[34m   getURLPath:   [/]
+[0m[34m  getFullPath:   [./resources/index.html]
+[0m[34mgetHttpStatus(): [200]
+[0m[34mresponse path:   [./resources/index.html]
+[0m[34mcontent type:    [text/html]
+[0mThe Path is a folder: Checking for autoindex on/off:
+AutoIndex off. Setting _responseBody
+[32mFile to be streamed: ./resources/index.html[0m
+[34mStreamed: temp turned off by jaka[0m
+-------------
+_responseHeader:
+[0mHTTP/1.1 200 OK
+Content-Type: text/html
+Content-Encoding: identity
+Connection: close
+Content-Length: 1362
+
+
+
+-------------
+[36mSENDING CHUNK, response length before send: 1477[0m
+[36mSEND return - sucessfully sent: 1477[0m
+[36mALL SENT, CLOSE CLIENT[0m
+fd that will be closed: 7
+original request: /
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 3
+size server inside run loop: 4
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 7
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 4
+size server inside run loop: 4
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 7
+[34mSTORED HEADER: 
+GET / HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+__________________ _specificServer: localhost
+
+originalUrlPath:               [[42m/[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting checkIfPathCanBeServed() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir[0m]
+[33mThe url path [/] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[33mThe url path [/] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[33mThe url path [/] did not match the current location block [/texts] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mlocation block for [[0m[44m/[0m[34m] exists on config file as [[0m[44m/[0m[34m]
+[34mIts root_directory [./resources] and configuration will be used[0m
+Method from the request: GET
+[37mMethod allowed from the config file: [0m[37mGET [0m[37mPOST [0m[37mDELETE [0m
+[32mLocation accepts the GET method, continuing...[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[36mStart storeURLPathParts(). URLPath_full: [./resources/index.html]
+[0m
+URL Path:        [[35m/[0m]
+Full URI Path:   [[35m./resources/index.html[0m]
+Path first part: [[35m./resources/[0m]
+Path LAST part:  [[35mindex.html[0m]
+File extension:  [[35m[0m]
+Form Data:    [33m(not present)
+[0m
+[36mStart CheckIfPathExists(), URLPath_full [./resources/index.html] 
+[0m[32mPath [0m./resources/index.html[32m exists[0m
+
+HTTP status after checkIfPathCanBeServed(): 200
+[33mFound header ending /r/n, maybe there is body
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: [text/html]
+[0mHTTP STATUS: 200
+CGI STATUS: 0
+[33mstorage->getHttpStatus(): 200
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 5
+size server inside run loop: 4
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart createResponse[0m
+fd: 7
+[36mStart setResponseStatus()
+[0m_responsePath: [[[42m./resources/index.html[0m]]
+[34m_responsePath after SetResponseStatus(): ./resources/index.html
+[0m[34m   getURLPath:   [/]
+[0m[34m  getFullPath:   [./resources/index.html]
+[0m[34mgetHttpStatus(): [200]
+[0m[34mresponse path:   [./resources/index.html]
+[0m[34mcontent type:    [text/html]
+[0mThe Path is a folder: Checking for autoindex on/off:
+AutoIndex off. Setting _responseBody
+[32mFile to be streamed: ./resources/index.html[0m
+[34mStreamed: temp turned off by jaka[0m
+-------------
+_responseHeader:
+[0mHTTP/1.1 200 OK
+Content-Type: text/html
+Content-Encoding: identity
+Connection: close
+Content-Length: 1362
+
+
+
+-------------
+[36mSENDING CHUNK, response length before send: 1477[0m
+[36mSEND return - sucessfully sent: 1477[0m
+[36mALL SENT, CLOSE CLIENT[0m
+fd that will be closed: 7
+original request: /
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 6
+size server inside run loop: 4
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 7
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 7
+size server inside run loop: 4
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 7
+[34mSTORED HEADER: 
+GET / HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+__________________ _specificServer: localhost
+
+originalUrlPath:               [[42m/[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting checkIfPathCanBeServed() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir[0m]
+[33mThe url path [/] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[33mThe url path [/] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[33mThe url path [/] did not match the current location block [/texts] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mlocation block for [[0m[44m/[0m[34m] exists on config file as [[0m[44m/[0m[34m]
+[34mIts root_directory [./resources] and configuration will be used[0m
+Method from the request: GET
+[37mMethod allowed from the config file: [0m[37mGET [0m[37mPOST [0m[37mDELETE [0m
+[32mLocation accepts the GET method, continuing...[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[36mStart storeURLPathParts(). URLPath_full: [./resources/index.html]
+[0m
+URL Path:        [[35m/[0m]
+Full URI Path:   [[35m./resources/index.html[0m]
+Path first part: [[35m./resources/[0m]
+Path LAST part:  [[35mindex.html[0m]
+File extension:  [[35m[0m]
+Form Data:    [33m(not present)
+[0m
+[36mStart CheckIfPathExists(), URLPath_full [./resources/index.html] 
+[0m[32mPath [0m./resources/index.html[32m exists[0m
+
+HTTP status after checkIfPathCanBeServed(): 200
+[33mFound header ending /r/n, maybe there is body
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: [text/html]
+[0mHTTP STATUS: 200
+CGI STATUS: 0
+[33mstorage->getHttpStatus(): 200
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 8
+size server inside run loop: 4
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart createResponse[0m
+fd: 7
+[36mStart setResponseStatus()
+[0m_responsePath: [[[42m./resources/index.html[0m]]
+[34m_responsePath after SetResponseStatus(): ./resources/index.html
+[0m[34m   getURLPath:   [/]
+[0m[34m  getFullPath:   [./resources/index.html]
+[0m[34mgetHttpStatus(): [200]
+[0m[34mresponse path:   [./resources/index.html]
+[0m[34mcontent type:    [text/html]
+[0mThe Path is a folder: Checking for autoindex on/off:
+AutoIndex off. Setting _responseBody
+[32mFile to be streamed: ./resources/index.html[0m
+[34mStreamed: temp turned off by jaka[0m
+-------------
+_responseHeader:
+[0mHTTP/1.1 200 OK
+Content-Type: text/html
+Content-Encoding: identity
+Connection: close
+Content-Length: 1362
+
+
+
+-------------
+[36mSENDING CHUNK, response length before send: 1477[0m
+[36mSEND return - sucessfully sent: 1477[0m
+[36mALL SENT, CLOSE CLIENT[0m
+fd that will be closed: 7
+original request: /
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 9
+size server inside run loop: 4
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 7
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 10
+size server inside run loop: 4
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 7
+[34mSTORED HEADER: 
+GET / HTTP/1.1
+Host: localhost:8080
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+__________________ _specificServer: localhost
+
+originalUrlPath:               [[42m/[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting checkIfPathCanBeServed() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir[0m]
+[33mThe url path [/] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[33mThe url path [/] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[33mThe url path [/] did not match the current location block [/texts] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mlocation block for [[0m[44m/[0m[34m] exists on config file as [[0m[44m/[0m[34m]
+[34mIts root_directory [./resources] and configuration will be used[0m
+Method from the request: GET
+[37mMethod allowed from the config file: [0m[37mGET [0m[37mPOST [0m[37mDELETE [0m
+[32mLocation accepts the GET method, continuing...[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[36mStart storeURLPathParts(). URLPath_full: [./resources/index.html]
+[0m
+URL Path:        [[35m/[0m]
+Full URI Path:   [[35m./resources/index.html[0m]
+Path first part: [[35m./resources/[0m]
+Path LAST part:  [[35mindex.html[0m]
+File extension:  [[35m[0m]
+Form Data:    [33m(not present)
+[0m
+[36mStart CheckIfPathExists(), URLPath_full [./resources/index.html] 
+[0m[32mPath [0m./resources/index.html[32m exists[0m
+
+HTTP status after checkIfPathCanBeServed(): 200
+[33mFound header ending /r/n, maybe there is body
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: [text/html]
+[0mHTTP STATUS: 200
+CGI STATUS: 0
+[33mstorage->getHttpStatus(): 200
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 11
+size server inside run loop: 4
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart createResponse[0m
+fd: 7
+[36mStart setResponseStatus()
+[0m_responsePath: [[[42m./resources/index.html[0m]]
+[34m_responsePath after SetResponseStatus(): ./resources/index.html
+[0m[34m   getURLPath:   [/]
+[0m[34m  getFullPath:   [./resources/index.html]
+[0m[34mgetHttpStatus(): [200]
+[0m[34mresponse path:   [./resources/index.html]
+[0m[34mcontent type:    [text/html]
+[0mThe Path is a folder: Checking for autoindex on/off:
+AutoIndex off. Setting _responseBody
+[32mFile to be streamed: ./resources/index.html[0m
+[34mStreamed: temp turned off by jaka[0m
+-------------
+_responseHeader:
+[0mHTTP/1.1 200 OK
+Content-Type: text/html
+Content-Encoding: identity
+Connection: close
+Content-Length: 1362
+
+
+
+-------------
+[36mSENDING CHUNK, response length before send: 1477[0m
+[36mSEND return - sucessfully sent: 1477[0m
+[36mALL SENT, CLOSE CLIENT[0m
+fd that will be closed: 7
+original request: /
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 12
+Process:         webserv [5899]
+Path:            /Volumes/VOLUME/*/webserv
+Load Address:    0x109f14000
+Identifier:      webserv
+Version:         ???
+Code Type:       X86-64
+Parent Process:  ??? [1]
+
+Date/Time:       2023-05-07 12:33:14.328 +0200
+Launch Time:     2023-05-07 12:33:12.552 +0200
+OS Version:      Mac OS X 10.14.6 (18G9323)
+Report Version:  7
+Analysis Tool:   /Applications/Xcode.app/Contents/Developer/usr/bin/leaks
+Analysis Tool Version:  Xcode 11.3.1 (11C505)
+----
+
+leaks Report Version: 4.0
+Process 5899: 262 nodes malloced for 39 KB
+Process 5899: 0 leaks for 0 total leaked bytes.
+
+
+============= manual shut down =============

@@ -37,10 +37,7 @@ for param in os.environ.keys():
                 os.remove(os.path.join(pathUploadsDir, form["delete"].value))
 
 
-
-
 # Define the HTML template
-
 html_template = """
 <!DOCTYPE html>
 <html>
@@ -98,86 +95,3 @@ html = html_template.format(items_html)
 
 # Output the HTML page
 print(html)
-
-
-
-
-
-
-
-
-
-
-
-
-### OLD OLD #########################
-# # Define the HTML template
-# html_template = """
-# <!DOCTYPE html>
-# <html>
-# <head>
-#     <h4><a href='../cgi_index.html'> Main Cgi Page </a></h4>
-#     <title>Folder Contents</title>
-# </head>
-# <body>
-# 	<h3>This is the file python_cgi_POST_delete.py</h3>
-#     <p>(path ./resources/cgi/python_cgi_POST_delete.py)</p>
-#     <hr>
-#     <h2>File deleted:</h2>
-#     <br>
-#     <fieldset style="background: #fff3f3; border: 2px solid #ff0000;">
-#         <ul>
-#             <a href=''> {} </a>
-#         </ul>
-#     </fieldset>
-# </body>
-# </html>
-# """
-
-# # # Define the HTML template
-# # html_template = """
-# # <!DOCTYPE html>
-# # <html>
-# # <head>
-# # 	<title>Folder Contents</title>
-# # </head>
-# # <body>
-# # 	<h4><a href='../index.html'> Main Page </a></h4>
-# # 	<h4><a href='cgi_index.html'> Back </a></h4>
-# # 	<h1>Upload Folder Content:</h1>
-# # 	<ul>
-# # 		{}
-# # 	</ul>
-# # </body>
-# # </html>
-# # """
-
-# # # Define the item HTML template
-# # item_template = """
-# # <li>
-# # 	{}
-# # 	<form method="post" action="python_cgi_delete.py">
-# # 		<input type="hidden" name="delete" value="{}">
-# # 		<input type="submit" value="Delete">
-# # 	</form>
-# # </li>
-# # """
-
-# # # Generate the item HTML
-# # items_html = ""
-# # for item in os.listdir(pathToUploads):
-# #     item_path = os.path.join(pathToUploads, item)
-# #     item_html = item_template.format(item, item_path)
-# #     items_html += item_html
-
-# # Generate the full HTML page
-# html = html_template.format(formData)
-# # html = html_template.format(items_html)
-
-# # Set the content type to HTML
-# print("Content-type:text/html\r\n\r\n")
-
-# # Output the HTML page
-# print(html)
-
-# # print("<br>Form data from url: <b>%30s</b>") % (formData)

@@ -106,6 +106,8 @@ void WebServer::runServer()
 				else if (evList[i].filter == EVFILT_READ)
 				{
 					std::cout << "----------------------------------------------------------------------------------------------------------------- READ\n";
+					std::cout << "fd: " << evList[i].ident<< "\n";
+
 					if (evList[i].flags & EV_EOF)
 					{
 						std::cout << "EOF from ReadRequest, close the reading FD: " << evList[i].ident << "\n";
