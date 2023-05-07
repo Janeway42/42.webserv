@@ -168,15 +168,18 @@ void ServerData::setListensTo(std::string const & port) {
 	/* not mandatory | default 80 */
 	if (not port.empty()) {
 		try {
-			unsigned short const & listensToPort = std::strtol(port.c_str(), nullptr, 10);
-            // todo:: add 65536 as acceptable? then change form short to int?
-            //  WHAT ABOUT listensToPort == 8008 ?
-			if (listensToPort == 4242 || listensToPort == 4243 || listensToPort == 8080 || listensToPort < 49152) {
-				/* No need to check port < 65536 since port is an unsigned short already */
+			const int & portInt = std::stoi(port, nullptr, 10);
+            std::cout << portInt << std::endl;
+            std::cout << USHRT_MAX << std::endl;
+            if (portInt < 0 || portInt >= USHRT_MAX) {
+                throw std::out_of_range("Port is out of range");
+            }
+//			if (listensToPort >= 0) {
+				/* No need to check port => 65536 since port is an unsigned short already */
 				_listens_to = port;
-			} else {
-				throw ParserException(CONFIG_FILE_ERROR("listens_to", NOT_SUPPORTED));
-			}
+//			} else {
+//				throw ParserException(CONFIG_FILE_ERROR("listens_to", NOT_SUPPORTED));
+//			}
 		} catch (...) {
 			throw ParserException(CONFIG_FILE_ERROR("listens_to", NOT_SUPPORTED));
 		}
@@ -333,6 +336,7 @@ void ServerData::setListeningSocket() {
 	//			Now Siege works.
     std::string hostname = _server_name;
     if (_server_name_is_ip == false) {
+        // 0.0.0.0 it's an address used to refer to all IP addresses on the same machine
         hostname = "0.0.0.0";
     }
 	// hostname: is either a valid host name or a numeric host address string consisting of a dotted decimal IPv4 address or an IPv6 address.

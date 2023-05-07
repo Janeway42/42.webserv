@@ -265,8 +265,7 @@ std::string ResponseData::streamFile(std::string file)
 	}
 	infile.close();
 
-	std::cout << "Streamed: " << responseNoFav << std::endl;
-	std::cout << BLU << "Streamed: temp turned off by jaka" <<  RES << std::endl;
+//	std::cout << "Streamed: " << responseNoFav << std::endl;
 	return (responseNoFav);
 }
 
