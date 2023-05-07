@@ -139,7 +139,13 @@ void ResponseData::createResponse(struct kevent& event) {
             }
         }
     }
-
+    if (_responseBody.empty() && storage->getHttpStatus() != NO_STATUS) {
+        storage->setHttpStatus(INTERNAL_SERVER_ERROR);
+        setResponseStatus(event);
+        std::cout << "CHECK IF STRING WAS EMPTY, responspath: "  << _responsePath << "\n";
+        _responseBody = streamFile(_responsePath);
+        // _responseBody = "ERORR";
+    }
     // set up header
     createResponseHeader(storage->getHttpStatus(), storage->getRedirection());
 
@@ -214,6 +220,8 @@ std::string ResponseData::setImage(std::string imagePath) {
 	std::fstream imageFile;		// Stream image and store it into a string
 	std::string content;
 	imageFile.open(imagePath);
+    if (not imageFile)
+        return ("");
 
 	content.assign(std::istreambuf_iterator<char>(imageFile), std::istreambuf_iterator<char>());
 	content += "\r\n";
@@ -245,7 +253,8 @@ std::string ResponseData::streamFile(std::string file)
 
 	std::cout << GRN << "File to be streamed: " << file << RES << std::endl;
 	infile.open(file, std::fstream::in);
-//	if (not infile)
+	if (not infile)
+        return ("");
 //        throw ParserException(CONFIG_FILE_ERROR("File to be streamed", MISSING));// comment by joyce -> we cant throw exceptions after main loop
 	while (infile) // While there's still stuff left to read
 	{
@@ -256,7 +265,7 @@ std::string ResponseData::streamFile(std::string file)
 	}
 	infile.close();
 
-	//std::cout << "Streamed: " << responseNoFav << std::endl;
+	std::cout << "Streamed: " << responseNoFav << std::endl;
 	std::cout << BLU << "Streamed: temp turned off by jaka" <<  RES << std::endl;
 	return (responseNoFav);
 }
