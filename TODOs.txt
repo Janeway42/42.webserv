@@ -19,10 +19,10 @@ More important:
         - Bonus cgi .php --> If I add a new location block called .php, the parsing of the config file stops at that location
         - if uploaded file is larger than 500kb, and if the maxbodysize is too small......
     JOYCE:
-        - WHAT ABOUT listensToPort == 8008, Starting from 1024, take a look
+        - DONE - WHAT ABOUT listensToPort == 8008, Starting from 1024, take a look -> I THINK WE CAN LET THEM PU ANY PORT IN A RANGE OF SHORT
         CHANGE COLORS
         - Add more config files examples (mandatory by the pdf)
-        - Another .php location is not working for the config file (no error too)
+        - DONE - Another .php location is not working for the config file -> DONE TEST WITH BIGGER .php
 ------------------------------------------------------------------------------------------------------------------------
 Tests:
     CORINA:
