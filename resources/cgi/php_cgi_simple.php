@@ -5,5 +5,6 @@
 
 // Print a message to the client
 echo "Hello from Webserver PHP CGI!\n";
+sleep(0.1);
 ?>
 

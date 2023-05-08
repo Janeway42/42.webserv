@@ -108,23 +108,13 @@ function testURLpath_justFirstHeaderLine {
 
 
 ### TEST URLs ############################################################################
-# #               URL-PATH EXISTING                        OUTPUT FILENAME
-testURLpath "localhost:$PORT"                            "localhost:$PORT"
-testURLpath "localhost:$PORT/"                           "localhost:$PORT"
-testURLpath "localhost:$PORT/index.html"                 "localhost:index.html"
-testURLpath "localhost:$PORT/texts/index_texts.html"     "localhost:texts:index_texts.html"
-testURLpath "localhost:$PORT/texts/one_sentence.html"    "localhost:texts:one_sentence.html"
-testURLpath "localhost:$PORT/texts/one_page.html"        "localhost:texts:one_page.html"
-testURLpath "localhost:$PORT/texts/bible.html"           "localhost:texts:bible.html"
-# #               URL-PATH NOT EXISTING                  OUTPUT FILENAME
-testURLpath_justFirstHeaderLine "localhost:$PORT/XXX.html"                 "localhost:XXX.html"
-testURLpath_justFirstHeaderLine "localhost:$PORT/XXX/index_texts.html"     "localhost:XXX:index_texts.html"
 
-# #               URL-PATH EXISTS< BUT NO index.html    					 OUTPUT FILENAME
-testURLpath_justFirstHeaderLine "localhost:$PORT/_folderA/"                 "localhost:_folderA:"
+# # CGI UPLOAD
+# curl -i -F 'filename=@/Users/jmurovec/Desktop/text_small.txt' http://localhost:8080/cgi/python_cgi_POST_upload.py	# -i prints the response header
+# curl    -F 'filename=@/Users/jmurovec/Desktop/text_small.txt' http://localhost:8080/cgi/python_cgi_POST_upload.py > $curlNginxOutput/cgi_POST_upload ;	sleep 0.1
+curl  -s  -F 'filename=@/Users/jmurovec/Desktop/text_small.txt' http://localhost:8080/cgi/python_cgi_POST_upload.py # > ./curlWebservOutput/cgi_POST_upload ;	sleep 0.1
 
-# #               URL-PATH EXISTS< BUT NO SLASH AT END    					 OUTPUT FILENAME
-testURLpath_justFirstHeaderLine "localhost:$PORT/_folderA"                 "localhost:_folderA "
+echo -e "\r" >> $curlNginxOutput/cgi_POST_upload ;	sleep 0.1
 
 # # # # IMAGES
 # testURLpath "localhost:$PORT/images/index_images.html"   "localhost:images:index_images.html"
@@ -209,30 +199,13 @@ function testURLpath_justFirstHeaderLine {
 }
 
 ### TEST URLs ############################################################################
-# #               URL-PATH EXISTING                        OUTPUT FILENAME
-echo -en "${BLU}\nPATH IS EXISTING:\n${RES}"
-testURLpath "localhost:$PORT"                            "localhost:$PORT"
-testURLpath "localhost:$PORT/"                           "localhost:$PORT"
-testURLpath "localhost:$PORT/index.html"                 "localhost:index.html"
-testURLpath "localhost:$PORT/texts/index_texts.html"     "localhost:texts:index_texts.html"
-testURLpath "localhost:$PORT/texts/one_sentence.html"    "localhost:texts:one_sentence.html"
-testURLpath "localhost:$PORT/texts/one_page.html"        "localhost:texts:one_page.html"
-testURLpath "localhost:$PORT/texts/bible.html"           "localhost:texts:bible.html"
 
-# #               URL-PATH NOT EXISTING                  					OUTPUT FILENAME
-echo -en "${BLU}\nFILE PATH NOT EXISTING (return 404 Not Found)\n${RES}"
-testURLpath_justFirstHeaderLine "localhost:$PORT/XXX.html"                 "localhost:XXX.html"
-testURLpath_justFirstHeaderLine "localhost:$PORT/XXX/index_texts.html"     "localhost:XXX:index_texts.html"
+# # CGI UPLOAD
+# curl -i -F 'filename=@/Users/jmurovec/Desktop/text_small.txt' http://localhost:8080/cgi/python_cgi_POST_upload.py	# -i prints the response header
+# curl    -F 'filename=@/Users/jmurovec/Desktop/text_small.txt' http://localhost:8080/cgi/python_cgi_POST_upload.py #> $curlNginxOutput/cgi_POST_upload ;	sleep 0.1
+curl  -s  -F 'filename=@/Users/jmurovec/Desktop/text_small.txt' http://localhost:8080/cgi/python_cgi_POST_upload.py # > ./curlNginxOutput/cgi_POST_upload ;	sleep 0.1
 
-# #               URL-PATH EXISTS< BUT NO index.html    					 OUTPUT FILENAME
-echo -en "${BLU}\nFOLDER PATH EXISTS, BUT NO INDEX FILE (return 403 Forbidden):\n${RES}"
-testURLpath_justFirstHeaderLine "localhost:$PORT/_folderA/"                 "localhost:_folderA:"
 
-# #               URL-PATH EXISTS< BUT NO SLASH AND NO INDEX FILE			 OUTPUT FILENAME
-echo -en "${BLU}\nFOLDER PATH EXISTS, BUT NO SLASH AT END (treat as file, return 301 Moved Permanently):\n${RES}"
-echo -en "${BLU}       (should first return 301 with new location with slash, then 403)\n${RES}"
-echo -en "${BLU}       (curl with option -L --location will output all subsequent request, but tester only looks at the first line of the first request)\n${RES}"
-testURLpath_justFirstHeaderLine "localhost:$PORT/_folderA"                 "localhost:_folderA "
 
 # # # # IMAGES
 # testURLpath "localhost:$PORT/images/index_images.html"   "localhost:images:index_images.html"

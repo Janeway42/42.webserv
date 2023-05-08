@@ -17,6 +17,8 @@ DELETE http://api.example.com/employee/1
 // curl --resolve testserver:8080:127.0.0.1 http://testserver:8080
 // curl --resolve test:8080:127.0.0.1 http://test:8080
 
+// curl -i -F 'filename=@/Users/jmurovec/Desktop/text_small.txt' http://localhost:8080/cgi/python_cgi_POST_upload.py
+
 #include <unistd.h> // sleep
 #include "RequestParser.hpp"
 
