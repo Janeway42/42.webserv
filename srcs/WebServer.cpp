@@ -5,8 +5,6 @@ WebServer::WebServer(std::string const & configFileName)
     try {
         ConfigFileParser configFileData = ConfigFileParser(configFileName);
         _servers = configFileData.servers;
-//        std::cout  << "Server blocks quantity: " << configFileData.numberOfServerBlocks() << std::endl;
-//        std::cout  << "Location block quantity: " << configFileData.numberOfLocationBlocks() << std::endl;
 
         // ----------- create kq structure --------------------------
         struct kevent evSet;
@@ -16,44 +14,50 @@ WebServer::WebServer(std::string const & configFileName)
 
         // ----------- loop to create all listening sockets ---------
         std::vector<ServerData>::iterator it_server;
-        //std::cout << "before vector loop ---------------\n";
 		int location = 0;
         for (it_server = _servers.begin(); it_server != _servers.end(); ++it_server)
         {
-			int tempSocket = -1;
-			tempSocket = checkExistingSocket(location, it_server->getListensTo());
-			if (tempSocket != -1)
-				it_server->setExistingListeningSocket(tempSocket);	// socket already on kq, no need to add it again			
-			else 
-			{
+			// int tempSocket = -1;
+			// tempSocket = checkExistingSocket(location, it_server->getListensTo(), it_server->getHost());
+			// if (tempSocket != -1)
+			// 	it_server->setExistingListeningSocket(tempSocket);	// socket already on kq, no need to add it again			
+			// else 
+			// {
 			   	it_server->setListeningSocket();
             	EV_SET(&evSet, it_server->getListeningSocket(), EVFILT_READ, EV_ADD | EV_CLEAR, NOTE_WRITE, 0, NULL);
             	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
                		throw ServerException("Failed kevent start listening socket");
-			}
-			std::cout << "IP ADDRESS: " << it_server->getServerName() << std::endl;
+			// }
+			std::cout << "SERVER NAME: " << it_server->getServerName() << std::endl;
+			std::cout << "HOST: " << it_server->getHost() << std::endl;
 			std::cout << "PORT: " << it_server->getListensTo() << std::endl;
 			std::cout << "LISTENING SOCKET: " << it_server->getListeningSocket() << std::endl;
+			std::cout << "--------------------------------------------------------\n";
 			location++;
         }
         std::cout << CYN << GRY_BG << "WebServer Overloaded Constructor" << RES << std::endl;
     } catch (std::exception const & e) {
-//        std::cout << RED << "Error: " << e.what() << RES <<std::endl;
         throw ServerException(std::string("Failed to initialise webserv: ") + e.what());
     }
 }
 
-int WebServer::checkExistingSocket(int location, std::string port)
+int WebServer::checkExistingSocket(int location, std::string port, std::string host)
 {
 	std::vector<ServerData>::iterator it_server;
 	int i = 0;
 
 	if (location > 0)
 	{
-		for (it_server = _servers.begin(); i != location && it_server != _servers.end(); ++it_server)
+		for (it_server = _servers.begin(); it_server != _servers.end(); ++it_server)
 		{
-			if (it_server->getListensTo() == port)
-				return (it_server->getListeningSocket());
+			if (i != location)
+			{
+				if (it_server->getListensTo() == port)
+				{
+					if (it_server->getHost() == host)
+						return (it_server->getListeningSocket());
+				}
+			}
 		}
 	}
 	return (-1);
@@ -84,9 +88,8 @@ void WebServer::runServer()
 	{
 		std::cout << "----------------------------------------------------------------------------------------------------------------- WHILE LOOP " << loop1 << std::endl;
 		int nr_events = kevent(_kq, NULL, 0, evList, MAX_EVENTS, NULL);
-		// std::cout << "nr_events: " << nr_events << std::endl;
 
-		if (nr_events < 1 ) //|| signalCall == true)
+		if (nr_events < 1 || signalCall == true)
 			exitProgram(nr_events, evList);
 		else
 		{
@@ -106,7 +109,6 @@ void WebServer::runServer()
 				else if (evList[i].filter == EVFILT_READ)
 				{
 					std::cout << "----------------------------------------------------------------------------------------------------------------- READ\n";
-					std::cout << "fd: " << evList[i].ident<< "\n";
 
 					if (evList[i].flags & EV_EOF)
 					{
@@ -157,7 +159,6 @@ int WebServer::exitProgram(int nr_events, struct kevent evList[MAX_EVENTS])
 	 	Request *storage = (Request *)evList[i].udata;
 	 	if (storage && storage != NULL)
 	 	{
-	 		std::cout << "delete storage: " << i << std::endl;
 	 		delete storage;
 	 		storage = NULL;
 		}
@@ -170,7 +171,6 @@ void WebServer::handleTimeout(struct kevent &event)
 	Request *storage = (Request *)event.udata;
 
 	std::cout << "Unable to process, it takes too long - TIMER\n";
-
 	if (storage->getDone() == false)
 	{
 		storage->setHttpStatus(REQUEST_TIMEOUT);
@@ -189,8 +189,6 @@ void WebServer::handleTimeout(struct kevent &event)
 
 void WebServer::readRequest(struct kevent& event)
 {
-	//std::cout << "Start READ REQUEST\n";
-
 	char buffer[BUFFER_SIZE];
 	std::memset(&buffer, '\0', BUFFER_SIZE);
 	Request* storage = (Request*)event.udata;
@@ -215,7 +213,6 @@ void WebServer::readRequest(struct kevent& event)
 			{
 				std::string tempStr = storage->getRequestData().getCgiBody();
 				tempStr.append(buffer, ret);
-				//std::cout << "BODY FROM CGI [\n" << CYN << tempStr << RES "]\n";		// jaka
 				storage->getRequestData().setCgiBody(tempStr);
 			}
 		}
@@ -225,7 +222,6 @@ void WebServer::readRequest(struct kevent& event)
 	else if ((int)event.ident == storage->getFdClient())
 	{
 		int ret = recv(event.ident, &buffer, BUFFER_SIZE - 1, 0);
-		//std::cout << "    recv: " << ret << "\n";
 
 		if (ret <= 0) // <--eval--> kq will NEVER send a READ event if there is nothing to receive thus ret == 0 will never happen  
 		{
@@ -244,7 +240,6 @@ void WebServer::readRequest(struct kevent& event)
 
 			if ((storage->getHttpStatus() != NO_STATUS && storage->getHttpStatus() != OK) || (storage->getDone() == true && storage->getCgiData().getIsCgi() == false))
 			{
-//				std::cout << CYN "           ReadRequest: B)\n" RES;
                 std::cout << YEL << "storage->getHttpStatus(): " << storage->getHttpStatus() << "\n" << RES;
                 if (storage->getHttpStatus() != NO_STATUS && storage->getHttpStatus() != OK) {
                     std::cout << YEL << "storage->getCgiData().getIsCgi(): " << storage->getCgiData().getIsCgi() << "\n" << RES;
@@ -255,7 +250,6 @@ void WebServer::readRequest(struct kevent& event)
 				if (addFilter(event.ident, event, EVFILT_WRITE) == 1)
 					cleanAddFilterFail(event.ident, event, "failed kevent EV_ADD, EVFILT_WRITE, success READ");
 				removeFilter(event, EVFILT_READ, "failed kevent EV_DELETE EVFILT_READ - success READ");
-				// noo need to protect read 
 			}
 			else if (storage->getDone() == true && storage->getCgiData().getIsCgi() == true) {
 				std::cout << CYN "          ReadRequest: C) Done receiving the request, start CGI\n" RES;
@@ -264,37 +258,25 @@ void WebServer::readRequest(struct kevent& event)
 			}
 		}
 	}
-	//std::cout << CYN "   ReadRequest: END)\n" RES;
 }
 
 void WebServer::sendResponse(struct kevent& event) 
 {
-	//std::cout << "Start SEND RESPONSE\n";
-
 	Request *storage = (Request*)event.udata;
-	// std::string buffer;
 	std::vector<uint8_t> & tmpBody = storage->getRequestData().getBody();
-	const char* buffer;	// the reqBody is now stored as vector, must go to write() as char*
+	const char* buffer;
 
 	// 	PIPE EVENT - _fd_in[1] - we WRITE to CGI
 	// --------------------------------------------------------------
 	if ((int)event.ident == (storage->getCgiData()).getPipeCgiIn_1())
 	{
 		std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CGI ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
-        //buffer = storage->getResponseData().getResponseBody();
-		// Jaka: Set buffer string to the point, from where previous chunk of body was sent
-		//std::cout << "       getBody().length() " << storage->getRequestData().getBody().size() << "\n";
-		//std::cout << "                getBody() [ temp disabled by jaka ]\n";
-		// std::cout << "                getBody() [" << BLU << storage->getRequestData().getBody() << RES "]\n";
 
 		std::vector<uint8_t>::iterator startPoint = tmpBody.begin() + storage->getCgiData().getBytesToCgi();
 		std::vector<uint8_t>::iterator endPoint   = tmpBody.end();
-		//std::vector<uint8_t> bodyChunk(startPoint, endPoint);
-		// buffer = reinterpret_cast<const char *>(bodyChunk.data());
 		buffer = reinterpret_cast<const char *>(&(*startPoint));	
 
 		ssize_t ret = write(storage->getCgiData().getPipeCgiIn_1(), buffer, static_cast<std::size_t>(endPoint - startPoint));
-		//std::cout << "        Returned write: " << ret << "\n";
 
 		if (ret == -1) // <--eval--> this checks for ret == -1
 		{
@@ -335,17 +317,10 @@ void WebServer::sendResponse(struct kevent& event)
 		{
 			storage->getResponseData().createResponse(event);
 			storage->getResponseData().setResponseDone(true);
-
-//			std::cout << "full response: \n";
-//			std::cout << storage->getResponseData().getFullResponse() << std::endl;
-			// std::cout << "----------- FULL RESPONSE: -----------------------\n" << storage->getResponseData().getFullResponse() << std::endl;
 		}
 
 		std::string content = storage->getResponseData().getFullResponse();
-		//std::cout << GRN << "Full Response size: " RES << content.size() << RES << std::endl;
-		//std::cout << GRN << "Full Response Content:\n[\n" RES << content<< GRN "]\n" RES << std::endl;
 		unsigned long myRet = 0;
-
 		std::cout << CYN << "SENDING CHUNK, response length before send: " << content.size() << RES << "\n";
 		myRet = send(event.ident, content.c_str(), content.size(), 0);
 		std::cout << CYN << "SEND return - sucessfully sent: " << myRet << RES << "\n";
@@ -367,8 +342,6 @@ void WebServer::sendResponse(struct kevent& event)
 			{
 				storage->getResponseData().increaseSentSoFar(myRet);
 				storage->getResponseData().eraseSentChunkFromFullResponse(myRet);
-				//std::cout << CYN << "             Sent chunk: " << myRet << ",  sentSoFar " << storage->getResponseData().getSentSoFar() << "\n" << RES;
-				//std::cout << CYN << "  remaining contentSize: " << content.size() << "\n" << RES;
 			}
 		}
 	}
@@ -387,22 +360,19 @@ void WebServer::newClient(struct kevent event)
 	int fd = accept(event.ident, (struct sockaddr *)&socket_addr, &socklen);
 	while (fd != -1)
 	{
-		fcntl(fd, F_SETFL, O_NONBLOCK);
-		setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &opt_value, sizeof(opt_value));
-		if (fd == -1)
-			throw ServerException("Failed accept");// TODO -> MAYBE 500???
+		int failFcntl = fcntl(fd, F_SETFL, O_NONBLOCK);
+		int failSet = setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &opt_value, sizeof(opt_value));
 
         Request *storage = new Request(_kq, event.ident, fd, _servers);
 
+		if (failFcntl == - 1 || failSet == -1)
+		{
+			protectFirstFilterAdd(storage, fd);
+			return ;
+		}
 		EV_SET(&evSet, fd, EVFILT_READ, EV_ADD, 0, 0, storage); 
 		if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 		{
-			// storage->setHttpStatus(INTERNAL_SERVER_ERROR);
-			// storage->getResponseData().createResponseHeader(INTERNAL_SERVER_ERROR, "");
-			// storage->getResponseData().setResponseStatus(event);
-			// std::cout << "test\n";
-			// storage->getResponseData().setResponseBody(storage->getResponseData().streamFile(storage->getResponseData().getResponsePath()));
-			// storage->getResponseData().setResponseFull(storage->getResponseData().getHeader() + storage->getResponseData().getBody());
 			protectFirstFilterAdd(storage, fd);
 			return ;
 		}
@@ -509,26 +479,20 @@ void WebServer::removeFilter(struct kevent& event, int filter, std::string error
 
 void	WebServer::chooseMethod_StartCGI(struct kevent event, Request * storage) {
 	std::cout << CYN << "Start ChooseMethodStartCGI()\n" << RES ;
-	// if (_data.getRequestMethod() == GET && _data.getQueryString() != "") {
-	if (storage->getRequestData().getRequestMethod() == GET /* && storage->getRequestData().getQueryString() != "" */) {
+	if (storage->getRequestData().getRequestMethod() == GET) {
 		std::cout << "start GET, callCGI\n";
-		// callCGI(getRequestData(), fdClient);
 		storage->callCGI(event);
 	}
 	if (storage->getRequestData().getRequestMethod() == POST)
 			storage->callCGI(event);
 	if (storage->getRequestData().getRequestMethod() == DELETE) {// TODO JOYCE I DONT KNOW HOW BUT I REMEMBER IT COMING HERE ONCE
 		std::cout << GRN_BG << "DELETE METHOD" << RES << std::endl;
-		/* DELETE deletes a resource (specified in URI) */
 		if (storage->pathType(storage->getRequestData().getURLPath()) != REG_FILE) {
 			std::cout << RED_BG << "ERROR 404 Not Found" << RES << std::endl;
 		}
-		// cgi or just delete the file literally? It's not with CGI: Your program should call the CGI with the file requested as first argument.
-		// How to delete a file froma  direcory: https://codescracker.com/cpp/program/cpp-program-delete-file.htm#:~:text=To%20delete%20any%20file%20from,used%20to%20delete%20a%20file.
 		if (remove(storage->getRequestData().getURLPath().c_str()) != 0) {
 			std::cout << RED_BG << "ERROR 204 No Content" << RES << std::endl;
 		}
-		// _doneParsing = true;    //
 	}
 }
 

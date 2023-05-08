@@ -13,7 +13,9 @@ DELETE http://api.example.com/employee/1
 
 // curl --resolve localhost:4243:127.0.0.1 http://localhost:4243
 // curl --resolve whatever:8080:127.0.0.1 http://whatever:8080
+// curl --resolve whatever:8080:0.0.0.0 http://whatever:8080
 // curl --resolve testserver:8080:127.0.0.1 http://testserver:8080
+// curl --resolve test:8080:127.0.0.1 http://test:8080
 
 #include <unistd.h> // sleep
 #include "RequestParser.hpp"
@@ -141,10 +143,18 @@ int Request::storeWordsFromOtherLine(std::string otherLine) {
 				iter++;
 				_data.setRequestAccept(*iter);
 			}
+			// else if (*iter == "Host:") {
+			// 	iter++;
+			// 	std::string temp = (*iter).substr(0, (*iter).find(":"));
+			// 	_data.setRequestHost(temp);
+			// }
+
 			else if (*iter == "Host:") {
 				iter++;
 				std::string temp = (*iter).substr(0, (*iter).find(":"));
-				_data.setRequestHost(temp);
+				_data.setRequestServerName(temp);
+				std::string temp1 = (*iter).substr((*iter).find(":") + 1);
+				_data.setRequestPort(temp1);
 			}
 			else if (*iter == "Content-Length:") {
 				iter++;
@@ -174,7 +184,7 @@ void Request::setSpecificServer()
 	{
 		if (_listeningSocket == it->getListeningSocket())
 		{
-			if(getRequestData().getRequestHost() == it->getServerName())
+			if(getRequestData().getRequestServerName() == it->getServerName())
 			{
 				_specificServer = *it;
 				return ;
@@ -389,7 +399,8 @@ void Request::printStoredRequestData(Request &request) {
 										<< reqData.getHttpVersion() << RES "]\n";
 	// PRINT OTHER HEADERS	
 	std::cout << "HEADER FIELDS:\n" BLU;
-	std::cout << "Host:           [" << reqData.getRequestHost() << "]\n";
+	std::cout << "Host:           [" << reqData.getRequestPort() << "]\n";
+	std::cout << "Server Name     [" << reqData.getRequestServerName() << "]\n";
 	std::cout << "Accept:         [" << reqData.getRequestAccept() << "]\n";
 	std::cout << "Content-Length: [" << reqData.getRequestContentLength() << "]\n";
 	std::cout << "Content-Type:   [" << reqData.getResponseContentType() << "]\n" RES;

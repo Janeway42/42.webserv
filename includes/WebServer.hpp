@@ -46,7 +46,7 @@ class WebServer
 		// utils 
 		bool isListeningSocket(int fd);
 		ServerData * getSpecificServer(int fd);
-		int		checkExistingSocket(int location, std::string port);
+		int		checkExistingSocket(int location, std::string port, std::string host);
 
 		void	chooseMethod_StartCGI(struct kevent event, Request* storage); 	// added Jaka
 

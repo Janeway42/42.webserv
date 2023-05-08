@@ -22,7 +22,9 @@ class RequestData {
 		size_t					_clientBytesSoFar;	
 		std::string				_reqTemp;				
 
-		std::string				_reqHost;
+		std::string				_reqServerName;
+		std::string				_reqPort;
+
 		std::string				_reqAccept;
 		int						_reqContentLength;
 		std::string				_requestContentType;
@@ -38,12 +40,8 @@ class RequestData {
 		std::string				_queryString;
 		std::string				_cgiBody;
 		bool				    _formDataHasDelete;
-		std::map<std::string, std::string>	_formData;	 // maybe not needed, maybe Vector list will be enough
+		std::map<std::string, std::string>	_formData;
 		std::vector<std::string>			_formList;
-
-
-		// cleanup ------------------------
-		// std::string 			_reqBody;	
 
 	public:
 		RequestData();
@@ -62,7 +60,9 @@ class RequestData {
 		size_t				getClientBytesSoFar() const;
 		std::vector<uint8_t> & getBody();
 
-		const std::string	getRequestHost() const;
+		const std::string	getRequestServerName() const;
+		const std::string	getRequestPort() const;
+
 		const std::string	getRequestAccept() const;
 		const std::string	getRequestContentType() const;
 		const std::string	getResponseContentType() const;
@@ -93,9 +93,10 @@ class RequestData {
 		void	setHeader(std::string str);
 		void	setBody(std::vector<uint8_t> & str);
 		void	setTemp(std::string str);
-		void	setClientBytesSoFar(size_t ret);
-		
-		void	setRequestHost(std::string reqHost);
+		void	setClientBytesSoFar(size_t ret);		
+		void	setRequestServerName(std::string reqHost);
+		void	setRequestPort(std::string reqHost);
+
 		void	setRequestAccept(std::string reqAccept);
 		void	setRequestContentLength(std::string reqAccept);
 		void	setRequestContentType(std::string reqAccept);
@@ -113,12 +114,6 @@ class RequestData {
 		void	setFormDataHasDelete(bool b);
 		void	setFormList(std::vector<std::string>);				// maybe not needed
 		void	setFormData(std::map<std::string, std::string>);	// maybe not needed
-
-		// cleanup ------------------------
-		// const std::string getBody() const;
-		// void setBody(std::string str);
-
-
 
 };
 

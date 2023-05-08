@@ -6,11 +6,11 @@ RequestData::RequestData() {
 	_reqMethod 			 = NONE;
 	_reqHttpPath 		 = "default Path";
     _reqHttpVersion 	 = "default Version";
-    _reqHost 			 = "default Host";	// not sure if all these are needed
+	_reqServerName		= "default Name";
+	_reqPort			= "";
 	_reqHeader			 = "";
     _reqContentLength	 = 0;
 	_clientBytesSoFar	 = 0;
-	//_reqBody			 = "";		// does not need setting to "", it is now a vector
 
     _URLPath			 = "default";
     _URLPath_full 		 = "default";
@@ -23,10 +23,7 @@ RequestData::RequestData() {
 	_cgiBody			 = "";
 
 	_responseContentType 	= "text/html";
-
 	_reqCookie			= "";
-//	_formList			   = NULL;	// ???
-//	_formData			   = NULL;	// ???
 }
 
 /** Destructor */
@@ -35,10 +32,9 @@ RequestData::~RequestData() {
 	_reqMethod 		= NONE;
 	_reqHttpPath 	= "";
     _reqHttpVersion = "";
-    _reqHost 		= "";
+	_reqServerName = "";
+	_reqPort = "";
 	_reqCookie		= "";
-	// _next = nullptr;
-    // todo finish unsetting?
 }
 
 /** ########################################################################## */
@@ -63,9 +59,6 @@ const std::string RequestData::getHeader() const {
 	return _reqHeader;
 }
 
-// const std::string RequestData::getBody() const {
-// 	return _reqBody;
-// }
 std::vector<uint8_t> & RequestData::getBody() {
 	return _reqBody;
 }
@@ -78,8 +71,12 @@ size_t RequestData::getClientBytesSoFar() const {
 	return _clientBytesSoFar;
 }
 
-const std::string RequestData::getRequestHost() const {
-	return _reqHost;
+const std::string RequestData::getRequestServerName() const {
+	return _reqServerName;
+}
+
+const std::string RequestData::getRequestPort() const {
+	return _reqPort;
 }
 
 const std::string RequestData::getRequestAccept() const {
@@ -164,22 +161,16 @@ void RequestData::setRequestMethod(AllowMethods reqMethod)
 	_reqMethod = reqMethod;
 }
 
-
-
-// added jaka: to remove slashes at the end of path. Just leave 1 slash.
-// It was causing a problem with autoindex structure
 std::string remove_trailing_slashes(std:: string str) {
     std::string::reverse_iterator rit;
     for (rit = str.rbegin(); rit != str.rend(); rit++) {
         if (*rit != '/') {
-            //str.erase(rit.base(), str.end());
             break ;
         }
     }
     return (str);
 }
 
-// added jaka
 std::string remove_multiple_slashes(std::string str) {
     for (std::string::iterator it = str.begin(); it != str.end();) {
         if (*it == '/') {
@@ -198,7 +189,6 @@ void RequestData::setRequestPath(std::string reqPath)
 {
 	_reqHttpPath = remove_trailing_slashes(reqPath);
 	_reqHttpPath = remove_multiple_slashes(_reqHttpPath);
-	// std::cout << RED "AFTER REMOVED SLASHES: [" << _reqHttpPath << RES "]\n"; 
 }
 
 void RequestData::setHttpVersion(std::string reqHttpVersion)
@@ -206,10 +196,6 @@ void RequestData::setHttpVersion(std::string reqHttpVersion)
 	_reqHttpVersion = reqHttpVersion;
 }
 
-// void RequestData::setBody(std::string reqBody)
-// {
-// 	_reqBody = reqBody;
-// }
 void RequestData::setBody(std::vector<uint8_t> & reqBody)
 {
 	_reqBody = reqBody;
@@ -230,10 +216,17 @@ void RequestData::setHeader(std::string reqHeader)
 	_reqHeader = reqHeader;
 }
 
-void RequestData::setRequestHost(std::string reqHost)
+void RequestData::setRequestServerName(std::string reqServerName)
 {
-	_reqHost = reqHost;
+	_reqServerName = reqServerName;
 }
+
+void RequestData::setRequestPort(std::string reqPort)
+{
+	_reqPort = reqPort;
+}
+
+
 
 void RequestData::setRequestAccept(std::string reqAccept)
 {
@@ -242,7 +235,7 @@ void RequestData::setRequestAccept(std::string reqAccept)
 
 void RequestData::setRequestContentLength(std::string reqContentLength)
 {
-	_reqContentLength = stoi(reqContentLength); // is STOI allowed ???
+	_reqContentLength = stoi(reqContentLength);
 }
 
 void RequestData::setResponseContentType(std::string fileExtension)
