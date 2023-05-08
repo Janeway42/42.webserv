@@ -12,7 +12,9 @@ import sys # to read from std input
 
 for param in os.environ.keys():
     if param == 'UPLOAD_DIR':
-        pathUploadsDir = os.environ[param]
+        uploadDir_AbsPath = os.environ[param]
+    # if param == 'INFO_PATH':
+    #     uploadDirname = os.environ[param]
 
 
 form = cgi.FieldStorage()
@@ -20,32 +22,44 @@ form = cgi.FieldStorage()
 # Define the path to the folder you want to list
 rootFolder = os.getcwd()
 #pathToUploads = rootFolder + '/resources/uploads/'  # TODO this path has to come from the config file??? (look pdF)
-# pathUploadsDir = '../uploads/'  # TODO this path has to come from the config file??? (look pdF)
+# uploadDir_AbsPath = '../uploads/'  # TODO this path has to come from the config file??? (look pdF)
 
 for param in os.environ.keys():
     # print("<b>%30s</b>: %s</br>") % (param, os.environ[param])
     # sys.stderr.write(param + ':  ')
     # sys.stderr.write(os.environ[param] + '\n')
-    if param == 'REQUEST_METHOD':
-        URL = os.environ[param]
+	if param == 'REQUEST_METHOD':
+		URL = os.environ[param]
         # If it is a POST request, we can get the form from the url
-        if URL == "POST":
+		if URL == "POST":
             # print("<p>FOUND METHOD: " + URL + "<br>")
             # If the form has a delete key on it, we can get the string after this key, which is the file to be deleted
-            if form["delete"] is not None:
-                formData = form["delete"].value
-                os.remove(os.path.join(pathUploadsDir, form["delete"].value))
-
+			if form["delete"] is not None:
+				formData = form["delete"].value
+				try:
+					os.remove(os.path.join(uploadDir_AbsPath, form["delete"].value))
+				except FileNotFoundError:
+					message = 'Error: file not found.'
 
 # Define the HTML template
 html_template = """
 <!DOCTYPE html>
 <html>
 <head>
-	<h4><a href='../cgi_index.html'> Main Cgi Page </a></h4>
 	<title>Uploaded Files</title>
+	<style>
+		.button-container {{
+			display: flex;
+		}}
+  		.button-container a {{
+			color: black;
+			text-decoration: none;
+		text
+		}}
+	</style>
 </head>
 <body>
+	<h4><a href='../cgi_index.html'> Main Cgi Page </a></h4>
 	<h3>This is the file python_cgi_POST_upload.py</h3>
 	<p>(path  ./resources/cgi/python_cgi_POST_upload.py)</p>
 	<hr>
@@ -54,7 +68,7 @@ html_template = """
 	<fieldset style="background: #fff3f3; border: 2px solid #fbd58f;">
 		<legend> DELETE FILE/IMAGE (method POST) </legend>
 		<ul>
-			<a href=''> {} </a>
+			{}
 		</ul>
 	</fieldset>
 </body>
@@ -67,10 +81,13 @@ html_template = """
 # TODO The uploads folder must come from config file
 item_template = """
 <form action="python_cgi_POST_delete.py" method="post">
-	<a href="../uploads/{}" download>{}</a>
-	<br>
-	<input type="hidden" name="delete" value="{}">
-	<input type="submit" value="Delete">
+	<mark><b>{}</b></mark>
+	<div class="button-container">
+		<button> <a href="../uploads/{}">  View </a> </button> 
+		<button> <a href="../uploads/{}" download> Download </a> </button>
+		<input type="hidden" name="delete" value="{}">
+		<input type="submit" value="Delete">
+	</div>
 </form>
 <br>
 """
@@ -82,9 +99,10 @@ item_template = """
 
 # Generate the item HTML
 items_html = ""
-for item in os.listdir(pathUploadsDir):
-	item_path = os.path.join(pathUploadsDir, item)
-	item_html = item_template.format(item, item, item_path)
+for item in os.listdir(uploadDir_AbsPath):
+	item_path = os.path.join(uploadDir_AbsPath, item)
+#	item_html = item_template.format(item, uploadDir_AbsPath, item, uploadDir_AbsPath, item, item_path)
+	item_html = item_template.format(item, item, item, item_path)
 	items_html += item_html
 
 # Generate the full HTML page
