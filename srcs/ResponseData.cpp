@@ -25,29 +25,49 @@ ResponseData::~ResponseData(void) {
 //    std::cout << GRY_BG << "ResponseData Destructor" << RES << std::endl;
 }
 
-/** #################################### Methods #################################### */
+void ResponseData::createResponseHeader(struct kevent& event) {
 
-void ResponseData::createResponseHeader(HttpStatus status, std::string const & redirectionUrl) {
+	Request *storage = (Request *)event.udata;
 
-    // For cookies
-    // if (responsePath is in the setCookies folder)  // function getLocation().getCookies() to be written
-    // 	header.append("Cookies: " + storage->getServerData().getLocationCookies + "\r\n");  // find the location bloc and it's cookies
-    // if (storage->getRequestData().getRequestCookies() != "")
-    // {createResponseHeader(
-    // 	header.append("Cookies: " + storage->getRequestData().getRequestCookies() + "\r\n");
-    // 	if (storage->getRequestData().getURLPath() == "resources/cookies/noCookies.html")
-    // 		_responsePath = "resources/cookies/yesCookies.html"
-    // }
+    std::string redirection = storage->getRedirection().empty() ? "" : "Location: " + storage->getRedirection();
+	std::string cookiesHeader = "";
 
-    std::string redirection = redirectionUrl.empty() ? "" : "Location: " + redirectionUrl;
+	std::cout << "cookies in _data: " << storage->getRequestData().getRequestCookie() << " -------------------------------------------!!!!!!!!!!!!!!!!!!!!!!"<< std::endl;
 
-    _responseHeader = "HTTP/1.1 " + std::to_string(status) + " " + httpStatusToString(status) + "\r\n"
-        "Content-Type: text/html\r\n"//TODO WE CONT HAVE MORE CONTENT TYPES?
-        "Content-Encoding: identity\r\n"// Corina - added it because firefox complained that it was missing - not sure if we keep because firefox still complains even with it. We leave it for now.
-        "Connection: close\r\n"
+	if (storage->getRequestData().getRequestCookie() != "")
+		cookiesHeader = "Set-Cookie: " + storage->getRequestData().getRequestCookie() + "\r\n";
+
+	_responseHeader = "HTTP/1.1 " + std::to_string(storage->getHttpStatus()) + " " + httpStatusToString(storage->getHttpStatus()) + "\r\n"
+        "Content-Type: text/html\r\n"
+        "Content-Encoding: identity\r\n"
+        "Connection: close\r\n" + cookiesHeader + 
         "Content-Length: " + std::to_string(_responseBody.length()) + "\r\n"
         + redirection + "\r\n\r\n";
 }
+
+/** #################################### Methods #################################### */
+
+// void ResponseData::createResponseHeader(HttpStatus status, std::string const & redirectionUrl) {
+
+//     // For cookies
+//     // if (responsePath is in the setCookies folder)  // function getLocation().getCookies() to be written
+//     // 	header.append("Cookies: " + storage->getServerData().getLocationCookies + "\r\n");  // find the location bloc and it's cookies
+//     // if (storage->getRequestData().getRequestCookies() != "")
+//     // {createResponseHeader(
+//     // 	header.append("Cookies: " + storage->getRequestData().getRequestCookies() + "\r\n");
+//     // 	if (storage->getRequestData().getURLPath() == "resources/cookies/noCookies.html")
+//     // 		_responsePath = "resources/cookies/yesCookies.html"
+//     // }
+
+//     std::string redirection = redirectionUrl.empty() ? "" : "Location: " + redirectionUrl;
+
+//     _responseHeader = "HTTP/1.1 " + std::to_string(status) + " " + httpStatusToString(status) + "\r\n"
+//         "Content-Type: text/html\r\n"//TODO WE CONT HAVE MORE CONTENT TYPES?
+//         "Content-Encoding: identity\r\n"// Corina - added it because firefox complained that it was missing - not sure if we keep because firefox still complains even with it. We leave it for now.
+//         "Connection: close\r\n"
+//         "Content-Length: " + std::to_string(_responseBody.length()) + "\r\n"
+//         + redirection + "\r\n\r\n";
+// }
 
 /* If the path from the URL is:
  * - Directory:
@@ -146,8 +166,10 @@ void ResponseData::createResponse(struct kevent& event) {
         _responseBody = streamFile(_responsePath);
         // _responseBody = "ERORR";
     }
-    // set up header
-    createResponseHeader(storage->getHttpStatus(), storage->getRedirection());
+
+	// set up header
+    // createResponseHeader(storage->getHttpStatus(), storage->getRedirection());
+	createResponseHeader(event);
 
 	_fullResponse += _responseHeader + _responseBody;
      std::cout << "-------------\n_responseHeader:\n" RES << _responseHeader << "\n-------------" << std::endl;

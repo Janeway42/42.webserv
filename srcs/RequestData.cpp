@@ -24,7 +24,7 @@ RequestData::RequestData() {
 
 	_responseContentType 	= "text/html";
 
-	_reqCookies			= "";
+	_reqCookie			= "";
 //	_formList			   = NULL;	// ???
 //	_formData			   = NULL;	// ???
 }
@@ -35,7 +35,8 @@ RequestData::~RequestData() {
 	_reqMethod 		= NONE;
 	_reqHttpPath 	= "";
     _reqHttpVersion = "";
-    _reqHost 		= "";	
+    _reqHost 		= "";
+	_reqCookie		= "";
 	// _next = nullptr;
     // todo finish unsetting?
 }
@@ -146,8 +147,8 @@ std::vector<std::string> RequestData::getFormList() const {	// Cannot return con
 	return _formList;										// because iterator won't work
 }
 
-const std::string RequestData::getRequestCookies() const {
-	return _reqCookies;
+const std::string RequestData::getRequestCookie() const {
+	return _reqCookie;
 }
 
 /** ########################################################################## */
@@ -310,4 +311,8 @@ void RequestData::setFormDataHasDelete(bool b) {
 
 void RequestData::setFormList(std::vector<std::string> formList) {
 	_formList = formList;
+}
+
+void RequestData::setRequestCookie(std::string reqCookie){
+	_reqCookie = reqCookie;
 }

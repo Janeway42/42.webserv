@@ -150,6 +150,10 @@ int Request::storeWordsFromOtherLine(std::string otherLine) {
 				iter++;
 				_data.setRequestContentLength(*iter);
 			}
+			else if (*iter == "Cookie:"){
+				iter++;
+				_data.setRequestCookie(*iter);
+			}
 			else if ((*iter).substr(0, 13) == "Content-Type:") {
 				iter++;		
 				if ((*iter).find("multipart") == std::string::npos)	

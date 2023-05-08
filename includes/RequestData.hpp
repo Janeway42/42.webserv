@@ -15,6 +15,7 @@ class RequestData {
 		AllowMethods			_reqMethod;
 		std::string				_reqHttpPath;
 		std::string				_reqHttpVersion;
+		std::string				_reqCookie;
 
 		std::string 			_reqHeader;
 		std::vector<uint8_t>	_reqBody;
@@ -40,7 +41,6 @@ class RequestData {
 		std::map<std::string, std::string>	_formData;	 // maybe not needed, maybe Vector list will be enough
 		std::vector<std::string>			_formList;
 
-		std::string _reqCookies;
 
 		// cleanup ------------------------
 		// std::string 			_reqBody;	
@@ -54,7 +54,7 @@ class RequestData {
 
 		//getters
 		int					getKqFd() const;
-		AllowMethods	getRequestMethod() const;
+		AllowMethods		getRequestMethod() const;
 		const std::string	getHttpPath() const;
 		const std::string	getHttpVersion() const;
 		const std::string	getHeader() const;
@@ -67,7 +67,7 @@ class RequestData {
 		const std::string	getRequestContentType() const;
 		const std::string	getResponseContentType() const;
 		size_t				getRequestContentLength() const;
-		const std::string	getRequestCookies() const;
+		const std::string	getRequestCookie() const;
 
 		const std::string 	getURLPath()const;
 		const std::string 	getURLPath_full()const;
@@ -89,6 +89,7 @@ class RequestData {
 		void	setRequestMethod(AllowMethods reqMethod);
 		void	setRequestPath(std::string reqPath);
 		void	setHttpVersion(std::string reqHttpVersion);
+		void	setRequestCookie(std::string reqCookie);
 		void	setHeader(std::string str);
 		void	setBody(std::vector<uint8_t> & str);
 		void	setTemp(std::string str);

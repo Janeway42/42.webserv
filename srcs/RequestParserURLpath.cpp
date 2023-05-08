@@ -581,6 +581,9 @@ std::string Request::parsePath_locationMatch(std::string const & originalUrlPath
         }
         if (not URLPath_full.empty() || getHttpStatus() == FORBIDDEN) {
             std::cout << "Method from the request: " << allowMethodsToString(_data.getRequestMethod()) << std::endl;
+			if (location->getLocationCookie() != "")
+				_data.setRequestCookie(location->getLocationCookie());
+            std::cout << "Cookies from the location: " << allowMethodsToString(_data.getRequestMethod()) << std::endl;
             checkMethods(location->getAllowMethods());
             checkRedirection(location->getRedirection());
             break;

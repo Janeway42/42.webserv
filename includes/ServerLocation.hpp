@@ -23,7 +23,7 @@ class ServerLocation : public Parser {
         std::string _redirection;
         std::string _interpreter_path;
         std::string _script_extension;
-		std::string _locationCookies;  // to be added from the config file - Joyce
+		std::string _locationCookie;
 
     public:
 //        ServerLocation() {    std::cout << BLU << "CREATING DEFAULT ServerLocation " << RES << std::endl;}
@@ -45,7 +45,7 @@ class ServerLocation : public Parser {
         bool getAutoIndex() const;
         std::string getRedirection() const;
         std::string getInterpreterPath() const;
-		std::string getLocationCookies() const;
+		std::string getLocationCookie() const;
 
         /** Setters */
         void setLocationAsCgi(bool isCgi);
@@ -56,5 +56,6 @@ class ServerLocation : public Parser {
         void setAutoIndex(std::string const & autoIndex);
         void setRedirection(std::string const & redirection);
         void setInterpreterPath(std::string const & interpreterPath);
+		void setLocationCookie(std::string const & cookie);
 };
 #endif //SERVERLOCATION_HPP
