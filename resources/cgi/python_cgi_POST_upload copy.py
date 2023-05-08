@@ -11,9 +11,7 @@ environ = os.environ.copy()
 
 for param in os.environ.keys():
     if param == 'UPLOAD_DIR':
-        uploadDir_AbsPath = os.environ[param]
-    # if param == 'INFO_PATH':
-    #     uploadDirname = os.environ[param]
+        upload_dir = os.environ[param]
 
 
 
@@ -37,7 +35,7 @@ if fileItem.filename:
 		parent_dir = os.getcwd()
 	#	with open(parent_dir + '/resources/uploads/' + fn, 'wb') as f:  # TODO this path has to come from the config file??? (look pdF)
 		# with open('../uploads/' + fn, 'wb') as f:  # TODO this path has to come from the config file??? (look pdF)
-		with open(uploadDir_AbsPath + "/" + fn, 'wb') as f:  # TODO this path has to come from the config file??? (look pdF)
+		with open(upload_dir + "/" + fn, 'wb') as f:  # TODO this path has to come from the config file??? (look pdF)
 			f.write(fileItem.file.read())
 			message = 'The file ' + fn + ' was uploaded successfully'
 	except IOError as e:
@@ -56,16 +54,6 @@ html_template = """
 <html>
 <head>
 	<title>Uploaded Files</title>
-	<style>
-		.button-container {{
-			display: flex;
-		}}
-  		.button-container a {{
-			color: black;
-			text-decoration: none;
-		text
-		}}
-	</style>
 </head>
 <body>
 	<h4><a href='../cgi_index.html'> Main Cgi Page </a></h4>
@@ -90,13 +78,12 @@ html_template = """
 # TODO The uploads folder must come from config file
 item_template = """
 <form action="python_cgi_POST_delete.py" method="post">
-	<mark><b>{}</b></mark>
-	<div class="button-container">
-		<button> <a href="../uploads/{}">  View </a> </button> 
-		<button> <a href="../uploads/{}" download> Download </a> </button>
-		<input type="hidden" name="delete" value="{}">
-		<input type="submit" value="Delete">
-	</div>
+	{}
+	<button> <a href="../uploads/{}">  View </a> </button> 
+	<button> <a href="../uploads/{}" download>  Download </a> </button>
+	<br>
+	<input type="hidden" name="delete" value="{}">
+	<input type="submit" value="Delete">
 </form>
 <br>
 """
@@ -108,9 +95,8 @@ item_template = """
 
 # Generate the item HTML
 items_html = ""
-for item in os.listdir(uploadDir_AbsPath):
-	item_path = os.path.join(uploadDir_AbsPath, item)
-#	item_html = item_template.format(item, uploadDir_AbsPath, item, uploadDir_AbsPath, item, item_path)
+for item in os.listdir(upload_dir):
+	item_path = os.path.join(upload_dir, item)
 	item_html = item_template.format(item, item, item, item_path)
 	items_html += item_html
 

@@ -111,7 +111,7 @@ void Request::callCGI(struct kevent event) {
 	temp.push_back(server_name.append(getServerData().getServerName()));
 //  temp.push_back(server_name.append("defaultServerName"));// TODO add server name?
 	temp.push_back(comspec.append(""));
-	temp.push_back(info_path.append(""));           // todo: find out if info_path is mandatory and how to test it?
+	// temp.push_back(info_path.append(getServerData().g  ));           // todo: find out if info_path is mandatory and how to test it?
 
     char buffer[PATH_MAX];
     if (getcwd(buffer, sizeof(buffer)) == NULL)
