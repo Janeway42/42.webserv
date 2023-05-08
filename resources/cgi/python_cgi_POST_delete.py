@@ -61,7 +61,6 @@ html_template = """
 <body>
 	<h4><a href='../cgi_index.html'> Main Cgi Page </a></h4>
 	<h3>This is the file python_cgi_POST_upload.py</h3>
-	<p>(path  ./resources/cgi/python_cgi_POST_upload.py)</p>
 	<hr>
 	<h2>Uploaded Files:</h2>
 	<br>

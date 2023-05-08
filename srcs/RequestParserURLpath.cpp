@@ -111,7 +111,7 @@ void Request::callCGI(struct kevent event) {
 	temp.push_back(server_name.append(getServerData().getServerName()));
 //  temp.push_back(server_name.append("defaultServerName"));// TODO add server name?
 	temp.push_back(comspec.append(""));
-	// temp.push_back(info_path.append(getServerData().g  ));           // todo: find out if info_path is mandatory and how to test it?
+//	temp.push_back(info_path.append(getServerData().getUploadDirectoryName()));           // todo: find out if info_path is mandatory and how to test it?
 
     char buffer[PATH_MAX];
     if (getcwd(buffer, sizeof(buffer)) == NULL)
@@ -122,7 +122,8 @@ void Request::callCGI(struct kevent event) {
 
 	temp.push_back(upload_path.append(uploadDir));  // todo: append the /upload folder name
 
-    std::cout << "UPLOAD DIR full path: " << uploadDir << "\n";
+    //std::cout << "UPLOAD DIR full path: " << uploadDir << "\n";
+    //std::cout << "UPLOAD DIR just name: [" << getServerData().getUploadDirectoryName() << "\n";
 
 	// std::cout << "Size of vector temp: " << temp.size() << "\n";
 	// std::cout << YEL << "POST BODY: " << temp[2] << "\n" << RES;
