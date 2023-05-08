@@ -185,6 +185,10 @@ void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile, Server
             _server_location.setRedirection(keyParser(lineContent, "redirection"));
             continue;
         }
+		if (lineContent.find("set_cookies") != std::string::npos) {
+            _server_location.setLocationCookie(lineContent);
+            continue;
+        }
     }
 }
 

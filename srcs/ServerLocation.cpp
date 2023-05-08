@@ -29,7 +29,7 @@ ServerLocation::ServerLocation(std::string const & server_root_directory, std::s
     _interpreter_path(std::string()),
     useServerBlockIndexFile(false) {
     _allow_methods.push_back(NONE);
-	// _locationCookies = TODO to be added from the configuration file - Joyce
+	_locationCookie = "";
 //    std::cout << CYN << "ServerLocation Overloaded constructor" << RES << std::endl;
 }
 
@@ -46,6 +46,7 @@ ServerLocation::~ServerLocation() {
     _redirection.clear();
     _interpreter_path.clear();
     useServerBlockIndexFile = false;
+	_locationCookie.clear();
 //    std::cout << CYN << "ServerLocation Destructor" << RES << std::endl;
 }
 
@@ -89,8 +90,8 @@ std::string ServerLocation::getInterpreterPath() const {
     return _interpreter_path;
 }
 
-std::string ServerLocation::getLocationCookies() const {
-	return _locationCookies;
+std::string ServerLocation::getLocationCookie() const {
+	return _locationCookie;
  }
 /** #################################### Setters #################################### */
 
@@ -251,4 +252,16 @@ void ServerLocation::setInterpreterPath(std::string const & interpreterPath) {
             throw ParserException(CONFIG_FILE_ERROR("interpreter_path", MANDATORY));
         }
     }
+}
+
+void ServerLocation::setLocationCookie(std::string const & cookie)
+{
+	std::cout << "linecontent: " << cookie << std::endl;
+	if (not cookie.empty()){
+		if (cookie.find("cookie=") != std::string::npos)
+		{
+			std::string temp = cookie.substr(cookie.find("cookie="));
+			_locationCookie = temp;
+		}
+	}
 }

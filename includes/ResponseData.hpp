@@ -9,6 +9,9 @@
 
 #include "Parser.hpp"
 
+#define NOCOOKIE "/cookies/noCookies.html"
+#define YESCOOKIE "/cookies/yesCookies.html"
+
 class ResponseData: public Parser
 {
 	private:
@@ -31,7 +34,8 @@ class ResponseData: public Parser
         // Methods
         void			createResponse(struct kevent& event);
         void    		setResponseStatus(struct kevent& event);
-        void			createResponseHeader(HttpStatus status, std::string const & redirectionUrl);
+        // void			createResponseHeader(HttpStatus status, std::string const & redirectionUrl);
+		void			createResponseHeader(struct kevent& event);
         std::string		streamFile(std::string file);
         std::string 	setImage(std::string imagePath);
         void			increaseSentSoFar(size_t bytesSent);
