@@ -10,10 +10,10 @@ import sys  # to read from std input
 environ = os.environ.copy()
 
 for param in os.environ.keys():
-    if param == 'UPLOAD_DIR':
-        uploadDir_AbsPath = os.environ[param]
-    # if param == 'INFO_PATH':
-    #     uploadDirname = os.environ[param]
+	if param == 'UPLOAD_DIR':
+		uploadDir_AbsPath = os.environ[param]
+	# if param == 'INFO_PATH':
+	#     uploadDirname = os.environ[param]
 
 
 
@@ -21,7 +21,7 @@ form = cgi.FieldStorage()
 # sys.stderr.write('FORM IS [' + str(form) + ']\n')
 
 if 'filename' not in form or not form['filename'].value:
-	print("Error: You need to choose a file to be uploaded ")
+	print("Error: You need to choose a file to be uploaded")
 	exit ()
 
 
@@ -121,3 +121,8 @@ html = html_template.format(items_html)
 
 # Output the HTML page
 print(html)
+
+
+
+
+

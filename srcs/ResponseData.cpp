@@ -143,11 +143,12 @@ void ResponseData::createResponse(struct kevent& event) {
                 std::cout << GRN << "The path contain query -> cgi: [" << GRN_BG << _responsePath << RES << "]\n";
                 std::cout << "Setting _responseBody\n";
                 _responseBody = storage->getRequestData().getCgiBody();
+                   std::cout << "Setting cgi _responseBody: [" << _responseBody << "]\n";
             } else {
                 if (storage->getRequestData().getResponseContentType() == "text/html") {
                     std::cout << GRN << "The path is a file: [" << GRN_BG << _responsePath << RES << "]\n";
-                    std::cout << "Setting _responseBody\n";
                     _responseBody = streamFile(_responsePath);
+                    // std::cout << "Setting _responseBody: [" << _responseBody << "]\n";
                 }
                 // IF IMAGE, FULL RESPONSE IS CREATED IN setImage()
                 else if (storage->getRequestData().getResponseContentType().find("image/") != std::string::npos) {
