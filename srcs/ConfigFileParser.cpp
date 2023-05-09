@@ -98,6 +98,8 @@ void ConfigFileParser::parseFileServerBlock(std::ifstream & configFile) {
             continue;
         }
         if (lineContent.find("listens_to") != std::string::npos) {
+			if (_server_data.getListensTo() != "")
+				throw ParserException(CONFIG_FILE_ERROR("Too many ports in one server block", MANDATORY));
             _server_data.setListensTo(keyParser(lineContent, "listens_to"));
             continue;
         }
