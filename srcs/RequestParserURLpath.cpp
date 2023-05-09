@@ -7,10 +7,6 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <filesystem> // temp, to test current directory
-
-// #include <sys/types.h>
-#include <sys/wait.h>	// for wait() on Linux
-
 #include "Parser.hpp"
 #include "RequestParser.hpp"
 
@@ -23,19 +19,15 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 	//std::cout << BLU << "START runExeve\n" << RES;
 	(void)event;
 
-	// Create pipes
 	Request *storage = (Request *)event.udata;
 
 	if (_cgi.createPipes(storage->getKq(), event) == 1)
 		return ;
-	// _cgi.createPipes(_data.getKqFd(), event); // moved to Request itself
 
 	int ret = 0;
 	pid_t		retFork;
 
-	// retFork = fork();
-	retFork = -1;
-
+	retFork = fork();
     if (retFork < 0)
         std::cout << RED << "Error: Fork failed\n" << RES;
 
