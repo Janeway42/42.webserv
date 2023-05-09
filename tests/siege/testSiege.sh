@@ -8,6 +8,8 @@ YEL='\033[33m'
 BLU='\033[34m'
 RES='\033[0m'
 
+mkdir outputFiles
+rm -f ./outputFiles/webservOutput.txt
 outputOut="./outputFiles/stdOut.txt"
 outputErr="./outputFiles/stdErr.txt"
 portNr="8080"
@@ -54,6 +56,5 @@ siege -b -c200 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outp
 
 pkill -f webserv
 cat ./outputFiles/stdErr.txt | grep Availability 1>&2
-rm -f ./outputFiles/webservOutput.txt
 
 echo -e "\n$GRE TEST SIEGE FINISHED, CHECK THE OUTPUT RESULTS IN 'tests/siege/outputFiles/stdOut.txt' $RES\n" 1>&2

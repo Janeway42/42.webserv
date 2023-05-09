@@ -33,7 +33,8 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 	int ret = 0;
 	pid_t		retFork;
 
-	retFork = fork();
+	// retFork = fork();
+	retFork = -1;
 
     if (retFork < 0)
         std::cout << RED << "Error: Fork failed\n" << RES;
