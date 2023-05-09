@@ -170,7 +170,9 @@ void ServerLocation::setIndexFile(std::string const & indexFile) {
     /* not mandatory | default: index_file */
     /* cgi -> not mandatory | default: stays in the same html page */
     if (not indexFile.empty()) {
-        std::string index_file = addRootDirectoryPath(_root_directory, _location_uri_name.substr(1) + "/" + indexFile);
+        bool location_is_root = _location_uri_name == "/";
+        std::string add_slash = location_is_root ? "" : "/";
+        std::string index_file = addRootDirectoryPath(_root_directory, _location_uri_name.substr(1) + add_slash + indexFile);
         // doesn't contain regexp (regular expressions), wildcards or full/relative path
         if (indexFile.find('/') == std::string::npos) {
             if (pathType(index_file) == REG_FILE) {

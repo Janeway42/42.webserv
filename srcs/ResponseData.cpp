@@ -159,13 +159,12 @@ void ResponseData::createResponse(struct kevent& event) {
                 }
             }
         }
-    }
-    if (_responseBody.empty() && storage->getHttpStatus() != NO_STATUS) {
-        storage->setHttpStatus(INTERNAL_SERVER_ERROR);
-        setResponseStatus(event);
-        std::cout << "CHECK IF STRING WAS EMPTY, responspath: "  << _responsePath << "\n";
-        _responseBody = streamFile(_responsePath);
-        // _responseBody = "ERORR";
+        if (_responseBody.empty() && storage->getHttpStatus() != NO_STATUS) {
+            storage->setHttpStatus(INTERNAL_SERVER_ERROR);
+            setResponseStatus(event);
+            std::cout << "CHECK IF STRING WAS EMPTY, responspath: "  << _responsePath << "\n";
+            _responseBody = streamFile(_responsePath);
+        }
     }
 
 	// set up header

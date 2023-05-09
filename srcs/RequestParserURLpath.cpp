@@ -320,7 +320,7 @@ std::string Request::parsePath_dir(std::string const & originalUrlPath, std::vec
             std::cout << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES BLU << "]" << std::endl;
             std::cout << BLU << "Its root_directory [" << locationBlockRootDir << "] and configuration will be used" << RES << std::endl;
 
-            // If autoindex is off, return 403 Forbidden, else return folder content
+            // If autoindex is off and no index file, return 403 Forbidden, else return folder content
             if (pathType(locationBlockRootDir + locationBlockUriName + '/' + location->getIndexFile()) != REG_FILE) {
                 _data.setAutoIndex(location->getAutoIndex());
                 if (not location->getAutoIndex() ) {
@@ -444,17 +444,24 @@ std::string Request::parsePath_root(std::string const & originalUrlPath, std::ve
      * If it finds the file, it will be served to the client as the response to the request. If it doesn't find
      * the file, nginx will return a "404 Not Found" error to the client (at the end of checkIfPathCanBeServed()) */
     if (originalUrlPath == locationBlockUriName) {
+        std::cout << "Path is a directory." << std::endl << RES;
+        _data.setIsFolder(true);
         std::cout << BLU << "location block for [" << RES BLU_BG << originalUrlPath << RES BLU;
         std::cout << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES BLU << "]" << std::endl;
         std::cout << BLU << "Its root_directory [" << locationBlockRootDir << "] and configuration will be used" << RES << std::endl;
-        _data.setIsFolder(true);
-        _data.setAutoIndex(location->getAutoIndex());
-        // If autoindex is off, return 403 Forbidden, else return folder content
-        if (not location->getAutoIndex() && pathType(locationBlockRootDir + '/' + location->getIndexFile()) != REG_FILE) {
-            setHttpStatus(FORBIDDEN);
+
+        // If autoindex is off and no index file, return 403 Forbidden, else return folder content
+        if (pathType(locationBlockRootDir + locationBlockUriName + '/' + location->getIndexFile()) != REG_FILE) {
+            _data.setAutoIndex(location->getAutoIndex());
+            if (not location->getAutoIndex() ) {
+                std::cout << RED << "Auto index is off and no file found on the location [";
+                std::cout << locationBlockRootDir + locationBlockUriName << "]. Returning 403 Forbidden" << RES << std::endl;
+                setHttpStatus(FORBIDDEN);
+            }
         } else {
-            return locationBlockRootDir + '/' + location->getIndexFile();
+            _data.setFileExtension(getExtension(originalUrlPath));
         }
+        return locationBlockRootDir + locationBlockUriName + location->getIndexFile();
     }
     return std::string();
 }
