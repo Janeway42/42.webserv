@@ -45,7 +45,7 @@ class ServerData : public Parser {
         unsigned int getClientMaxBodySize() const;
         std::vector<std::string> getErrorPages() const;
         std::string getUploadDirectory() const;
-        std::string getUploadDirectoryName() const;     // added Jaka
+        std::string getUploadDirectoryName() const;
         std::vector<ServerLocation> & getLocationBlocks();
         int getListeningSocket() const;
 

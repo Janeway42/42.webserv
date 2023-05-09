@@ -26,6 +26,9 @@ int main(int ac, char **av) {
                 std::string serverName = it_server->getServerName();
                 std::cout << GRN << std::left << std::setw(30) << "\"server_name\": " << serverName << RES << std::endl;
 
+                std::string host = it_server->getHost();
+                std::cout << GRN << std::left << std::setw(30) << "\"host\": " << host << RES << std::endl;
+
                 std::string listensTo = it_server->getListensTo();
                 std::cout << GRN << std::left << std::setw(30) << "\"listens_to\": " << listensTo << RES << std::endl;
 
@@ -48,6 +51,9 @@ int main(int ac, char **av) {
 
                 std::string uploadDirectory = it_server->getUploadDirectory();
                 std::cout << GRN << std::left << std::setw(30) << "\"upload_directory\": " << uploadDirectory << RES << std::endl;
+
+                std::string uploadDirectoryName = it_server->getUploadDirectoryName();
+                std::cout << GRN << std::left << std::setw(30) << "\"upload_directory (name)\": " << uploadDirectoryName << RES << std::endl;
 
                 std::vector<ServerLocation>::const_iterator it_location;
                 for (it_location = it_server->getLocationBlocks().cbegin(); it_location != it_server->getLocationBlocks().cend(); ++it_location) {
@@ -134,6 +140,9 @@ int main(int ac, char **av) {
 
                         std::string redirection = it_location->getRedirection();
                         std::cout << GRN << std::left << std::setw(30) << "\"redirection\": " << redirection << RES << std::endl;
+
+                        std::string cookies = it_location->getLocationCookie();
+                        std::cout << GRN << std::left << std::setw(30) << "\"set_cookies\": " << cookies << RES << std::endl;
                     }
                 }
             }

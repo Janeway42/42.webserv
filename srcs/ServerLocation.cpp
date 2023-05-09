@@ -1,21 +1,5 @@
 #include "ServerLocation.hpp"
 
-/** Default constructor */
-//ServerLocation::ServerLocation()// todo private???
-//    /** Initializing default values for the location block */
-//    : _is_location_cgi(false),
-//    _location_uri_name(std::string()),
-//    _location_cgi_extension(std::string()),
-//    _root_directory(std::string()),
-//    _allow_methods(),
-//    _index_file(std::string()),
-//    _auto_index(false),
-//    _redirection(std::string()),
-//    _interpreter_path(std::string()),
-//    useServerBlockIndexFile(false) {
-//    std::cout << CYN << "ServerLocation Default constructor" << RES << std::endl;
-//}
-
 /** Overloaded constructor */
 ServerLocation::ServerLocation(std::string const & server_root_directory, std::string const & server_index_file)
     /** Initializing default values for the location block */
@@ -27,9 +11,9 @@ ServerLocation::ServerLocation(std::string const & server_root_directory, std::s
     _auto_index(false),
     _redirection(std::string()),
     _interpreter_path(std::string()),
+    _locationCookie(std::string()),
     useServerBlockIndexFile(false) {
     _allow_methods.push_back(NONE);
-	_locationCookie = "";
 //    std::cout << CYN << "ServerLocation Overloaded constructor" << RES << std::endl;
 }
 
@@ -45,8 +29,8 @@ ServerLocation::~ServerLocation() {
     _auto_index = false;
     _redirection.clear();
     _interpreter_path.clear();
+    _locationCookie.clear();
     useServerBlockIndexFile = false;
-	_locationCookie.clear();
 //    std::cout << CYN << "ServerLocation Destructor" << RES << std::endl;
 }
 
@@ -93,6 +77,7 @@ std::string ServerLocation::getInterpreterPath() const {
 std::string ServerLocation::getLocationCookie() const {
 	return _locationCookie;
  }
+
 /** #################################### Setters #################################### */
 
 void ServerLocation::setLocationAsCgi(bool isCgi) {
@@ -153,21 +138,6 @@ void ServerLocation::setRootDirectory(std::string const & rootDirectory) {
             }
         }
     }
-    // If it is an empty location block or just a / or ./ (that is not a cgi one): default is $server.$root_directory/$uri_path
-//    else {//} if (rootDirectory == "/" || rootDirectory == "./") {
-//        // If it's a cgi script location, the default is $server.$root_directory (which is already set on constructor)
-//        if (not isLocationCgi()) {
-//            std::string locationRootDir = _root_directory;
-//            if (pathType(locationRootDir) != PATH_TYPE_ERROR) {
-//                _root_directory = locationRootDir;
-//            } else {
-//                throw ParserException(CONFIG_FILE_ERROR("root_directory", NOT_SUPPORTED));
-//            }
-//        }
-//    }
-//    else {
-//        throw ParserException(CONFIG_FILE_ERROR("root_directory", MANDATORY));
-//    }
 }
 
 void ServerLocation::setAllowMethods(std::string const & allowMethods) {
@@ -200,7 +170,9 @@ void ServerLocation::setIndexFile(std::string const & indexFile) {
     /* not mandatory | default: index_file */
     /* cgi -> not mandatory | default: stays in the same html page */
     if (not indexFile.empty()) {
-        std::string index_file = addRootDirectoryPath(_root_directory, _location_uri_name.substr(1) + "/" + indexFile);
+        bool location_is_root = _location_uri_name == "/";
+        std::string add_slash = location_is_root ? "" : "/";
+        std::string index_file = addRootDirectoryPath(_root_directory, _location_uri_name.substr(1) + add_slash + indexFile);
         // doesn't contain regexp (regular expressions), wildcards or full/relative path
         if (indexFile.find('/') == std::string::npos) {
             if (pathType(index_file) == REG_FILE) {
@@ -254,13 +226,15 @@ void ServerLocation::setInterpreterPath(std::string const & interpreterPath) {
     }
 }
 
-void ServerLocation::setLocationCookie(std::string const & cookie)
-{
-	if (not cookie.empty()){
-		if (cookie.find("cookie=") != std::string::npos)
-		{
-			std::string temp = cookie.substr(cookie.find("cookie="));
-			_locationCookie = temp;
-		}
+void ServerLocation::setLocationCookie(std::string const & cookie) {
+    /* not mandatory | default: no cookies */
+	if (not cookie.empty()) {
+		if (cookie.find("cookie=") != std::string::npos) {
+			std::string cookie_value = cookie.substr(cookie.find("cookie="));
+            std::string cookie_no_final_semicolon = cookie_value.substr(0, cookie_value.size() - 1);
+            _locationCookie = cookie_no_final_semicolon;
+		} else {
+            throw ParserException(CONFIG_FILE_ERROR("set_cookies", NOT_SUPPORTED));
+        }
 	}
 }

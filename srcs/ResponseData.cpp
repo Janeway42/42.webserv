@@ -159,13 +159,12 @@ void ResponseData::createResponse(struct kevent& event) {
                 }
             }
         }
-    }
-    if (_responseBody.empty() && storage->getHttpStatus() != NO_STATUS) {
-        storage->setHttpStatus(INTERNAL_SERVER_ERROR);
-        setResponseStatus(event);
-        std::cout << "CHECK IF STRING WAS EMPTY, responspath: "  << _responsePath << "\n";
-        _responseBody = streamFile(_responsePath);
-        // _responseBody = "ERORR";
+        if (_responseBody.empty() && storage->getHttpStatus() != NO_STATUS) {
+            storage->setHttpStatus(INTERNAL_SERVER_ERROR);
+            setResponseStatus(event);
+            std::cout << "CHECK IF STRING WAS EMPTY, responspath: "  << _responsePath << "\n";
+            _responseBody = streamFile(_responsePath);
+        }
     }
 
 	// set up header
@@ -178,9 +177,11 @@ void ResponseData::createResponse(struct kevent& event) {
 }
 
 static std::string getSpecificErrorPage(Request* storage, std::vector<std::string> const & errorPages, std::string const & defaultErrorPage) {
+
     storage->getRequestData().setFileExtension(defaultErrorPage);
     std::vector<std::string>::const_iterator it = errorPages.cbegin();
     for (; it != errorPages.cend(); ++it) {
+             std::cout << "errorPages:\n" RES << *it << "\n-------------" << std::endl;
         if (it->find(std::to_string(storage->getHttpStatus())) != std::string::npos) {
             // If error page is found on the config file, return it
             return *it;
