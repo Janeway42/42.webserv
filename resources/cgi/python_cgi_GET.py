@@ -14,7 +14,7 @@ import os   # TO ACCESS execve ENV variables
 import time
 import sys	# to read from std input
 import cgi, cgitb
-# cgitb.enable()	# detailed errors msgs
+cgitb.enable()	# detailed errors msgs
 
 # TO READ FROM STDIN, FROM PIPE
 print ("<br><br><h3>THIS IS PYTHON SCRIPT:</h3>")
