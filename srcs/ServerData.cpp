@@ -95,6 +95,10 @@ std::string ServerData::getUploadDirectory() const {
     return _upload_directory;
 }
 
+std::string ServerData::getUploadDirectoryName() const {	// added Jaka
+    return _upload_directoryName;
+}
+
 std::vector<ServerLocation> & ServerData::getLocationBlocks() {
 	return _location_data_vector;
 }
@@ -302,6 +306,7 @@ void ServerData::setUploadDirectory(const std::string &uploadDirectory) {
         // doesn't contain regexp (regular expressions), wildcards or full/relative path
         if (type == DIRECTORY) {
             _upload_directory = upload_dir;
+			_upload_directoryName = uploadDirectory;	// added jaka
         } else if (type == PATH_TYPE_ERROR) {
             throw ParserException(CONFIG_FILE_ERROR("upload_directory", MISSING));
         } else {

@@ -51,18 +51,22 @@ int CgiData::createPipes(int kq, struct kevent & event)
 
 void CgiData::closePipes()
 {
-	if (fcntl(_fd_in[0], F_GETFD) != -1){
+	if (fcntl(_fd_in[0], F_GETFD) != -1) {
 		std::cout << "pipe: _fd_in[0]; " <<  fcntl(_fd_in[0], F_GETFD) << std::endl;
-		close(_fd_in[0]);}
-	if (fcntl(_fd_in[1], F_GETFD) != -1){
+		close(_fd_in[0]);
+	}
+	if (fcntl(_fd_in[1], F_GETFD) != -1) {
 		std::cout << "pipe: _fd_in[1]; " <<  fcntl(_fd_in[1], F_GETFD) << std::endl;
-		close(_fd_in[1]);}
-	if (fcntl(_fd_out[0], F_GETFD) != -1){
+		close(_fd_in[1]);
+	}
+	if (fcntl(_fd_out[0], F_GETFD) != -1) {
 		std::cout << "pipe: _fd_out[0]; " <<  fcntl(_fd_out[0], F_GETFD) << std::endl;
-		close(_fd_out[0]);}
-	if (fcntl(_fd_out[1], F_GETFD) != -1){
+		close(_fd_out[0]);
+	}
+	if (fcntl(_fd_out[1], F_GETFD) != -1) {
 		std::cout << "pipe: _fd_out[1]; " <<  fcntl(_fd_out[1], F_GETFD) << std::endl;
-		close(_fd_out[1]);}
+		close(_fd_out[1]);
+	}
 }
 
 // ------------------------------------------------------------------ getters

@@ -23,6 +23,7 @@ class ServerData : public Parser {
         unsigned int _client_max_body_size;
         std::vector<std::string> _error_page;
         std::string _upload_directory;
+        std::string _upload_directoryName;
 
         /* As more than 1 location block can be added to a server block */
         std::vector<ServerLocation> _location_data_vector;
@@ -44,6 +45,7 @@ class ServerData : public Parser {
         unsigned int getClientMaxBodySize() const;
         std::vector<std::string> getErrorPages() const;
         std::string getUploadDirectory() const;
+        std::string getUploadDirectoryName() const;     // added Jaka
         std::vector<ServerLocation> & getLocationBlocks();
         int getListeningSocket() const;
 
