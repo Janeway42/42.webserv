@@ -101,6 +101,10 @@ void ConfigFileParser::parseFileServerBlock(std::ifstream & configFile) {
             _server_data.setListensTo(keyParser(lineContent, "listens_to"));
             continue;
         }
+        if (lineContent.find("host") != std::string::npos) {
+            _server_data.setHost(keyParser(lineContent, "host"));
+            continue;
+        }
         if (lineContent.find("root_directory") != std::string::npos) {
             _server_data.setRootDirectory(keyParser(lineContent, "root_directory"));
             continue;

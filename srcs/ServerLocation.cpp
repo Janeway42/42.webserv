@@ -256,7 +256,6 @@ void ServerLocation::setInterpreterPath(std::string const & interpreterPath) {
 
 void ServerLocation::setLocationCookie(std::string const & cookie)
 {
-	std::cout << "linecontent: " << cookie << std::endl;
 	if (not cookie.empty()){
 		if (cookie.find("cookie=") != std::string::npos)
 		{

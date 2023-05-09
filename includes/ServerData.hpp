@@ -16,6 +16,7 @@
 class ServerData : public Parser {
     private:
         std::string _server_name;
+		std::string _host;
         std::string _listens_to;
         std::string _root_directory;
         std::string _index_file;
@@ -36,6 +37,7 @@ class ServerData : public Parser {
 
         /** Getters */
         std::string getServerName() const;
+		std::string getHost() const;
         std::string getListensTo() const;
         std::string getRootDirectory() const;
         std::string getIndexFile() const;
@@ -47,6 +49,7 @@ class ServerData : public Parser {
 
         /** Setters */
         void	setServerName(std::string const & serverName);
+		void	setHost(std::string const & host);
         void	setListensTo(std::string const & port);
         void	setRootDirectory(std::string const & rootDirectory);
         void	setIndexFile(std::string const & indexFile);

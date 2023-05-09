@@ -37,6 +37,8 @@ class Request : public Parser {
 		RequestData _data;
 		ResponseData _answer;
 		CgiData _cgi;
+		ServerData _specificServer;
+		std::vector<ServerData> _servers;
 
 		bool _headerDone;
 		bool _doneParsing;
@@ -45,8 +47,6 @@ class Request : public Parser {
 		std::string _redirection;
         bool _delete_is_allowed;
         std::string _interpreter_path;
-		ServerData _specificServer;
-		std::vector<ServerData> _servers;
 
 		void parseHeaderAndPath(std::string & tmpHeader, std::string::size_type it);
 		int appendLastChunkToBody2(const char *str, size_t len);

@@ -16,9 +16,10 @@ std::string Parser::keyParser(std::string & lineContent, std::string const & key
 
 std::string Parser::getOneCleanValueFromKey(std::string & contentLine, std::string const & key) {
     std::string content = contentLine.substr(contentLine.find(key) + key.size());
+
     if (not content.empty()) {
         size_t i = 0;
-        for (; content.at(i) == ' '; i++) {}
+        for (; content.at(i) == ' ' || content.at(i) == '\t'; i++) {}
         std::string trimmed_content = content.substr(i);
         if (trimmed_content.find(';') != std::string::npos) {
             return trimmed_content.substr(0, trimmed_content.size() - 1);
