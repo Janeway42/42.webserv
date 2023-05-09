@@ -17,17 +17,17 @@ WebServer::WebServer(std::string const & configFileName)
 		int location = 0;
         for (it_server = _servers.begin(); it_server != _servers.end(); ++it_server)
         {
-			// int tempSocket = -1;
-			// tempSocket = checkExistingSocket(location, it_server->getListensTo(), it_server->getHost());
-			// if (tempSocket != -1)
-			// 	it_server->setExistingListeningSocket(tempSocket);	// socket already on kq, no need to add it again			
-			// else 
-			// {
+			int tempSocket = -1;
+			tempSocket = checkExistingSocket(location, it_server->getListensTo(), it_server->getHost());
+			if (tempSocket != -1)
+				it_server->setExistingListeningSocket(tempSocket);	// socket already on kq, no need to add it again			
+			else 
+			{
 			   	it_server->setListeningSocket();
             	EV_SET(&evSet, it_server->getListeningSocket(), EVFILT_READ, EV_ADD | EV_CLEAR, NOTE_WRITE, 0, NULL);
             	if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
                		throw ServerException("Failed kevent start listening socket");
-			// }
+			}
 			std::cout << "SERVER NAME: " << it_server->getServerName() << std::endl;
 			std::cout << "HOST: " << it_server->getHost() << std::endl;
 			std::cout << "PORT: " << it_server->getListensTo() << std::endl;
@@ -364,6 +364,8 @@ void WebServer::newClient(struct kevent event)
 		int failSet = setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &opt_value, sizeof(opt_value));
 
         Request *storage = new Request(_kq, event.ident, fd, _servers);
+		std::cout << "newclient UPLOAD FOLDER NAME: [" << storage->getServerData().getUploadDirectory() << "]\n";
+    	std::cout << "newclient  UPLOAD FOLDER NAME: [" << storage->getServerData().getUploadDirectoryName() << "]\n";
 
 		if (failFcntl == - 1 || failSet == -1)
 		{

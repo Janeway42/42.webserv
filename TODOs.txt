@@ -13,10 +13,8 @@ More important:
         - manual shut down leak (check log file ./manualShutDownLeak.txt)
             CRASHED AGAIN FOR ME (i whet all over the website, including all CGI, then I went to other server and waited, then ctrl C and it leaked)
     JAKA:
-        - Setup multiple servers with different hostnames (use something like: curl --resolve example.com:80:127.0.0.1 http://example.com/) BASH TEST?? (Because it is done)
+        - If cookie arrives, give some response in the cgi as a proof
         - Need the name of the uploads folder (not abs path), to insert in python scripts
-        - Bonus cgi .php --> If I add a new location block called .php, the parsing of the config file stops at that location
-        - if uploaded file is larger than 500kb, and if the maxbodysize is too small......
         - DONE Upload some file to the server and get it back (check if just clicking on the file/image is enough) -=
         - DONE Download the file, --> FILE NOT FIND
     JOYCE:

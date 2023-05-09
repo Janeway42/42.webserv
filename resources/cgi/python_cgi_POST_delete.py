@@ -5,7 +5,8 @@ import cgitb
 import cgi
 import os
 import sys # to read from std input
-# cgitb.enable()
+cgitb.enable()	# detailed errors msgs
+
 
 # GET, POST, PUT and DELETE (there are others) are a part of the HTTP standard.
 # HTML only defines the use of POST and GET for forms.

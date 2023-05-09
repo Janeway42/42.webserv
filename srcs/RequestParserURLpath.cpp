@@ -102,9 +102,11 @@ void Request::callCGI(struct kevent event) {
 	temp.push_back(content_length.append(ssContLen.str()));
 	temp.push_back(query_string.append(_data.getQueryString()));
 	temp.push_back(server_name.append(getServerData().getServerName()));
-//  temp.push_back(server_name.append("defaultServerName"));// TODO add server name?
 	temp.push_back(comspec.append(""));
-//	temp.push_back(info_path.append(getServerData().getUploadDirectoryName()));           // todo: find out if info_path is mandatory and how to test it?
+	temp.push_back(info_path.append(getServerData().getUploadDirectoryName())); // UPLOAD-FOLDER NAME
+
+    std::cout << "UPLOAD FOLDER NAME: [" << getServerData().getUploadDirectory() << "]\n";
+    std::cout << "UPLOAD FOLDER NAME: [" << getServerData().getUploadDirectoryName() << "]\n";
 
     char buffer[PATH_MAX];
     if (getcwd(buffer, sizeof(buffer)) == NULL)
@@ -113,17 +115,7 @@ void Request::callCGI(struct kevent event) {
     std::string uploadDir = buffer;
     uploadDir.append(str, 1);
 
-	temp.push_back(upload_path.append(uploadDir));  // todo: append the /upload folder name
-
-    //std::cout << "UPLOAD DIR full path: " << uploadDir << "\n";
-    //std::cout << "UPLOAD DIR just name: [" << getServerData().getUploadDirectoryName() << "\n";
-
-	// std::cout << "Size of vector temp: " << temp.size() << "\n";
-	// std::cout << YEL << "POST BODY: " << temp[2] << "\n" << RES;
-	// BY HERE, THE HUGE BODY IS STORED OK
-
-	// Make a char** array and copy all content of the above vector
-	//std::cout << GRN " ...... TEMP SIZE:  " << temp.size() << " \n" << RES "\n";
+	temp.push_back(upload_path.append(uploadDir));
 
 	char **env = new char*[temp.size() + 1];
 
@@ -133,8 +125,6 @@ void Request::callCGI(struct kevent event) {
 		strcpy(env[i], temp[i].c_str());
 	}
 	env[i] = nullptr;
-	//std::cout << YEL << "POST BODY ENV : " << env[2] << "\n" << RES;
-	// BY HERE, THE HUGE BODY IS STORED OK
 
 	// Just for printing
 	std::cout << GRN "STORED ENV:\n" RES;
@@ -142,15 +132,7 @@ void Request::callCGI(struct kevent event) {
 	  std::cout << "    " << i+1 << " " << env[i] << std::endl;
 	}
 
-	// char *args[3];
-	// args[0] = (char *)"/usr/bin/php";   // todo Make sure the path is correct on Mac/Linux -> It comes form the config so its the user jogs
-	// args[1] = (char *)"./jaka_cgi/_somePhp.php"; // MUST BE WITH A DOT !!
-	// args[2] = NULL;
-
 	char *args[3];
-//    	args[0] = (char *)"/usr/local/bin/python3";
-
-//  std::string tempPath = _data.getURLPath_full();   // Changed Jaka:
     std::string tempPath = _data.getURLPathLastPart();  // must be only the script name, because the CWD is changed to CGI folder
 
 	char *path = (char *)tempPath.c_str();	//  ie: "./resources/cgi/python_cgi_GET.py"
@@ -160,21 +142,18 @@ void Request::callCGI(struct kevent event) {
 	runExecve(env, args, event);
 
 	//std::cout << "Stored body from CGI: [\n" << BLU << _data.getCgiBody() << RES << "]\n";
-
 	// Cleanup
 	for (size_t j = 0; j < temp.size(); j++) {
 		delete env[j];
 	}
 	delete[] env;
 	//std::cout << BLU "\n       End callCGI()\n" << RES;
-
 }
 
 ////////////////////////////////////////////////////////////////
 
 /* 	Split string at '&' and store each line into vector<>
 	Then split each line in vector into map<> key:value */
-// std::map<std::string, std::string> Request::storeFormData(std::string &queryString)
 std::map<std::string, std::string> Request::storeFormData(std::string queryString)
 {
 	std::cout << CYN << "Start store form data()\n" << RES;
@@ -197,10 +176,9 @@ std::map<std::string, std::string> Request::storeFormData(std::string queryStrin
 	std::vector<std::string>::iterator	it;
 
 	for (it = formList.begin(); it != formList.end(); it++) {
-		std::stringstream iss2(*it);								// maybe change name, or reuse the above variable
+		std::stringstream iss2(*it);
 		std::getline(iss2, key, '=') >> val;
 		formDataMap[key] = val;
-		//std::cout << YEL << "  ... vector [" << *it << "]\n" << RES;
 	}
 	_data.setFormData(formDataMap);
 	return (formDataMap);
@@ -258,7 +236,6 @@ void Request::checkIfPathExists(std::string const & URLPath_full) {
 static void printPathParts(RequestData reqData) {
 	std::cout << std::endl;
 	std::cout << "URL Path:        [" << PUR << reqData.getURLPath() << RES << "]\n";
-//	std::cout << "HTTP Path:       [" << PUR << reqData.getHttpPath() << RES << "]\n";  // todo, this is the same as getURLPath(), can be deleted from .hpp
 	std::cout << "Full URI Path:   [" << PUR << reqData.getURLPath_full() << RES << "]\n";
 	std::cout << "Path first part: [" << PUR << reqData.getURLPathFirstPart() << RES << "]\n";
 	std::cout << "Path LAST part:  [" << PUR << reqData.getURLPathLastPart() << RES << "]\n";

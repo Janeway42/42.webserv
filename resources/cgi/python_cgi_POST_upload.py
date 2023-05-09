@@ -5,7 +5,8 @@ import cgitb
 import cgi
 import os
 import sys  # to read from std input
-# cgitb.enable()
+cgitb.enable()	# detailed errors msgs
+
 
 environ = os.environ.copy()
 

@@ -6,9 +6,8 @@ import time
 import sys  # to read from std input
 import os  # to access execve ENV variables
 
-# cgitb.enable()  # detailed error messages
+cgitb.enable()	# detailed errors msgs
 # cgitb.enable(display=0, logdir="/path/to/logdir")
-
 # time.sleep(20)
 
 print("<p> ... This is Python script for POST method ...</p>")
