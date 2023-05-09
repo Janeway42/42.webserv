@@ -11,9 +11,7 @@
 
 /** Overloaded constructor */
 ConfigFileParser::ConfigFileParser(std::string const & configFileName)
-    : //_server_data(ServerData()),
-      //_server_location(ServerLocation(_server_data.getRootDirectory(), _server_data.getIndexFile())),
-      _server_block_counter(0),
+    : _server_block_counter(0),
       _location_block_counter(0) {
 //    std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Config File ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
 //    std::cout << BLU << "ConfigFileParser Overloaded constructor" << RES << std::endl;
@@ -67,12 +65,8 @@ void ConfigFileParser::handleFile(std::string const & configFileName) {
                 continue;
             }
         }
-//        if (servers.empty()) {
-//            throw ParserException(CONFIG_FILE_ERROR("Configuration File", MISSING));
-//        }
     } else {
-        std::cerr << "Not able to open the configuration file" << std::endl;// TODO: throw exception
-        return ;
+        throw ParserException(CONFIG_FILE_ERROR("Not able to open the configuration file. A config file", MANDATORY));
     }
     configFile.close();
 }
@@ -98,8 +92,6 @@ void ConfigFileParser::parseFileServerBlock(std::ifstream & configFile) {
             continue;
         }
         if (lineContent.find("listens_to") != std::string::npos) {
-			if (_server_data.getListensTo() != "")
-				throw ParserException(CONFIG_FILE_ERROR("Too many ports in one server block", MANDATORY));
             _server_data.setListensTo(keyParser(lineContent, "listens_to"));
             continue;
         }

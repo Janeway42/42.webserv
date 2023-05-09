@@ -16,13 +16,14 @@
 ServerData::ServerData()
 	/** Initializing default values for the server block */
 	: _server_name(""),//127.0.0.1
-	_host(""),
+	_host("0.0.0.0"),
 	_listens_to(""),
 	_root_directory(_server_name),
 	_index_file("index.html"),
 	_client_max_body_size(1024),
 	_error_page(std::vector<std::string>()),
 	_upload_directory("uploads"),
+    _upload_directoryName("uploads"),
     _server_name_is_ip(false),
 	_listening_socket(-1) {
 //	std::cout << PUR << "ServerData Default constructor" << RES << std::endl;
@@ -38,6 +39,7 @@ ServerData::ServerData(ServerData const & rhs)
 	_client_max_body_size(rhs._client_max_body_size),
 	_error_page(rhs._error_page),
 	_upload_directory(rhs._upload_directory),
+    _upload_directoryName(rhs._upload_directoryName),
 	_location_data_vector(rhs._location_data_vector),
     _server_name_is_ip(rhs._server_name_is_ip),
 	_listening_socket(rhs._listening_socket) {
@@ -55,6 +57,7 @@ ServerData::~ServerData() {
 	_client_max_body_size = 0;
 	_error_page.clear();
 	_upload_directory.clear();
+    _upload_directoryName.clear();
     _server_name_is_ip = false;
 	if (signalCall == true && fcntl(_listening_socket, F_GETFD) != -1)
 		close(_listening_socket);
@@ -95,7 +98,7 @@ std::string ServerData::getUploadDirectory() const {
     return _upload_directory;
 }
 
-std::string ServerData::getUploadDirectoryName() const {	// added Jaka
+std::string ServerData::getUploadDirectoryName() const {
     return _upload_directoryName;
 }
 
@@ -131,7 +134,7 @@ static bool isIp(int ch) {
  * Obs.: We don't have right's permission to /etc :/
  */
 void ServerData::setServerName(std::string const & serverName) {
-    /* not mandatory | default: localhost (127.0.0.1)*/
+    /* not mandatory | default: localhost (127.0.0.1) */
 	if (not serverName.empty()) {
         struct sockaddr_in sockAddr = {};
         /* The inet_pton() converts a format address (char*) to network format in network byte order (sin_addr)
@@ -164,6 +167,38 @@ void ServerData::setServerName(std::string const & serverName) {
 	}
 }
 
+void ServerData::setHost(std::string const & host) {
+    /* not mandatory | default 0.0.0.0 */
+    if (not host.empty()) {
+        std::string temp = host;
+        int blocks = 0;
+        int dots = 0;
+        while (temp != "")
+        {
+            size_t out = temp.find(".");
+            if (out != std::string::npos)
+                dots++;
+            std::string tempBlock = temp.substr(0, out);
+            try{
+                int blockNr = stoi(tempBlock);
+                if (blockNr < 0 || blockNr > 255)
+                    throw ParserException(CONFIG_FILE_ERROR("host", NOT_SUPPORTED));
+            }
+            catch (...)	{
+                throw ParserException(CONFIG_FILE_ERROR("host", NOT_SUPPORTED));
+            }
+            blocks++;
+            if (out != std::string::npos)
+                temp = temp.substr(out + 1);
+            else
+                temp = "";
+        }
+        if (dots != 3 || blocks != 4)
+            throw ParserException(CONFIG_FILE_ERROR("host", NOT_SUPPORTED));
+        _host = host;
+    }
+}
+
 /* Available ports:
  * - Port 80 (standard): a well-known system ports (they are assigned and controlled by IANA).
  *   Obs.: Ports under 1024 need to be run as root (so we can't have access to it).
@@ -178,54 +213,17 @@ void ServerData::setServerName(std::string const & serverName) {
 void ServerData::setListensTo(std::string const & port) {
 	/* not mandatory | default 8080 */
 	if (not port.empty()) {
-		try {
-			const int & portInt = std::stoi(port, nullptr, 10);
-            // std::cout << portInt << std::endl;
-            // std::cout << USHRT_MAX << std::endl;
-            if (portInt < 0 || portInt >= USHRT_MAX) {
-                throw std::out_of_range("Port is out of range");
+        for (std::string::const_iterator it = port.begin(); it != port.end(); it++) {
+            if (*it < '0' || *it > '9') {
+                throw ParserException(CONFIG_FILE_ERROR("Too many ports in one server block. listens_to", NOT_SUPPORTED));
             }
-//			if (listensToPort >= 0) {
-				/* No need to check port => 65536 since port is an unsigned short already */
-				_listens_to = port;
-//			} else {
-//				throw ParserException(CONFIG_FILE_ERROR("listens_to", NOT_SUPPORTED));
-//			}
-		} catch (...) {
-			throw ParserException(CONFIG_FILE_ERROR("listens_to", NOT_SUPPORTED));
-		}
-	}
-}
-
-void ServerData::setHost(std::string const & host) {
-	/* mandatory | default 0.0.0.0 */
-	if (not host.empty()) {
-		std::string temp = host;
-		int blocks = 0;
-		int dots = 0;
-		while (temp != "")
-		{
-			size_t out = temp.find(".");
-			if (out != std::string::npos)
-				dots++;
-			std::string tempBlock = temp.substr(0, out);
-			try{
-				int blockNr = stoi(tempBlock);
-				if (blockNr < 0 || blockNr > 255)
-					throw ParserException(CONFIG_FILE_ERROR("host", NOT_SUPPORTED));
-			}
-			catch (...)	{
-				throw ParserException(CONFIG_FILE_ERROR("host", NOT_SUPPORTED));
-			}
-			blocks++;
-			if (out != std::string::npos)
-				temp = temp.substr(out + 1);
-			else 
-				temp = "";
-		}
-		if (dots != 3 || blocks != 4)
-			throw ParserException(CONFIG_FILE_ERROR("host", NOT_SUPPORTED));
-		_host = host;
+        }
+        const int & portInt = std::stoi(port, nullptr, 10);
+        if (portInt < 0 || portInt >= USHRT_MAX) {
+            throw ParserException(CONFIG_FILE_ERROR("Port is out of range. listens_to", NOT_SUPPORTED));
+        }
+        /* No need to check port => 65536 since port is an unsigned short already */
+        _listens_to = port;
 	}
 }
 
@@ -306,7 +304,7 @@ void ServerData::setUploadDirectory(const std::string &uploadDirectory) {
         // doesn't contain regexp (regular expressions), wildcards or full/relative path
         if (type == DIRECTORY) {
             _upload_directory = upload_dir;
-			_upload_directoryName = uploadDirectory;	// added jaka
+			_upload_directoryName = uploadDirectory;
         } else if (type == PATH_TYPE_ERROR) {
             throw ParserException(CONFIG_FILE_ERROR("upload_directory", MISSING));
         } else {
@@ -385,7 +383,7 @@ void ServerData::setListeningSocket() {
     // }
 	// hostname: is either a valid host name or a numeric host address string consisting of a dotted decimal IPv4 address or an IPv6 address.
 	// servname: is either a decimal port number or a service name listed in services(5).
-	std::cout << "====================\n host: " << _host << std::endl;
+	std::cout << "====================\nhost: " << _host << std::endl;
 	std::cout << "listens to: " << _listens_to << std::endl;
 
 

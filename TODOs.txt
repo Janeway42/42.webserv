@@ -11,14 +11,13 @@ More important:
     CORINA:
         - Edit cookies explanation on config file
         - manual shut down leak (check log file ./manualShutDownLeak.txt)
-            CRASHED AGAIN FOR ME (i whet all over the website, including all CGI, then I went to other server and waited, then ctrl C and it leaked)
+            CRASHED AGAIN FOR ME (I went all over the website, including all CGI, then I went to other server and waited, then ctrl C and it leaked)
     JAKA:
         - If cookie arrives, give some response in the cgi as a proof
         - Need the name of the uploads folder (not abs path), to insert in python scripts
         - DONE Upload some file to the server and get it back (check if just clicking on the file/image is enough) -=
         - DONE Download the file, --> FILE NOT FIND
     JOYCE:
-        - DONE - WHAT ABOUT listensToPort == 8008, Starting from 1024, take a look -> I THINK WE CAN LET THEM PU ANY PORT IN A RANGE OF SHORT
         CHANGE COLORS
         - Add more config files examples (mandatory by the pdf)
         - DONE - Another .php location is not working for the config file -> DONE TEST WITH BIGGER .php

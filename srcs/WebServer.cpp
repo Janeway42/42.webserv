@@ -364,9 +364,6 @@ void WebServer::newClient(struct kevent event)
 		int failSet = setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &opt_value, sizeof(opt_value));
 
         Request *storage = new Request(_kq, event.ident, fd, _servers);
-		std::cout << "newclient UPLOAD FOLDER NAME: [" << storage->getServerData().getUploadDirectory() << "]\n";
-    	std::cout << "newclient  UPLOAD FOLDER NAME: [" << storage->getServerData().getUploadDirectoryName() << "]\n";
-
 		if (failFcntl == - 1 || failSet == -1)
 		{
 			protectFirstFilterAdd(storage, fd);
