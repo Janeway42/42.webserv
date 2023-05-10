@@ -2,8 +2,6 @@
 #include "ResponseData.hpp"
 #include "RequestData.hpp"
 
-#include <string.h> // jaka, temp, can be removed
-
 /** Default constructor */
 ResponseData::ResponseData(void) {
 	_status = "";
@@ -39,9 +37,7 @@ void ResponseData::createResponseHeader(struct kevent& event) {
 
 	_responseHeader = "HTTP/1.1 " + std::to_string(storage->getHttpStatus()) + " " + httpStatusToString(storage->getHttpStatus()) + "\r\n"
         // "Content-Type: text/html\r\n"
-
         "Content-Type: " + storage->getRequestData().getResponseContentType() + "\r\n"
-
         "Content-Encoding: identity\r\n"
         "Connection: close\r\n" + cookiesHeader + 
         "Content-Length: " + std::to_string(_responseBody.length()) + "\r\n"
@@ -109,8 +105,8 @@ void ResponseData::createResponse(struct kevent& event) {
 	setResponseStatus(event);
 
     std::cout << BLU << "_responsePath after SetResponseStatus(): " << _responsePath << "\n" << RES;
-    std::cout << BLU << "   getURLPath:   [" << storage->getRequestData().getURLPath() << "]\n" << RES;
-    std::cout << BLU << "  getFullPath:   [" << storage->getRequestData().getURLPath_full() << "]\n" << RES;
+    std::cout << BLU << "getURLPath:      [" << storage->getRequestData().getURLPath() << "]\n" << RES;
+    std::cout << BLU << "getFullPath:     [" << storage->getRequestData().getURLPath_full() << "]\n" << RES;
     std::cout << BLU << "getHttpStatus(): [" << storage->getHttpStatus() << "]\n" << RES;
     std::cout << BLU << "response path:   [" << _responsePath << "]\n" << RES;
     std::cout << BLU << "content type:    [" << storage->getRequestData().getResponseContentType() << "]\n" << RES;
@@ -143,7 +139,7 @@ void ResponseData::createResponse(struct kevent& event) {
         // if it is not a folder (it checks first if cgi -> if not then it checks text (includes error), else image
         else {
             if (storage->getCgiData().getIsCgi() && storage->getHttpStatus() == OK) {
-                std::cout << GRN << "The path contain query -> cgi: [" << GRN_BG << _responsePath << RES << "]\n";
+                std::cout << GRN << "The path contains query -> cgi: [" << GRN_BG << _responsePath << RES << "]\n";
                 std::cout << "Setting _responseBody\n";
                 _responseBody = storage->getRequestData().getCgiBody();
                 //   std::cout << "Setting cgi _responseBody: [" << _responseBody << "]\n";
@@ -169,14 +165,10 @@ void ResponseData::createResponse(struct kevent& event) {
             _responseBody = streamFile(_responsePath);
         }
     }
-
 	// set up header
-    // createResponseHeader(storage->getHttpStatus(), storage->getRedirection());
 	createResponseHeader(event);
-
 	_fullResponse += _responseHeader + _responseBody;
      std::cout << "-------------\n_responseHeader:\n" RES << _responseHeader << "\n-------------" << std::endl;
-//     std::cout << "-------------\n_fullResponse:\n" RES << _fullResponse << "\n-------------" << std::endl;
 }
 
 static std::string getSpecificErrorPage(Request* storage, std::vector<std::string> const & errorPages, std::string const & defaultErrorPage) {
@@ -239,8 +231,7 @@ void ResponseData::setResponseStatus(struct kevent& event)
 	}
 }
 
-// NEW SETIMAGE
-// void ResponseData::setImage(struct kevent& event, std::string imagePath) {
+
 std::string ResponseData::setImage(std::string imagePath) {
 	//std::cout << RED "Start SetImage()\n" RES;
 
@@ -291,12 +282,10 @@ std::string ResponseData::streamFile(std::string file)
 		responseNoFav.append("\n");
 	}
 	infile.close();
-
 //	std::cout << "Streamed: " << responseNoFav << std::endl;
 	return (responseNoFav);
 }
 
-// added JAKA, to erase the sent chunk from the remaining response content
 std::string&	ResponseData::eraseSentChunkFromFullResponse(unsigned long retBytes) {
 	return (_fullResponse.erase(0, retBytes));
 }
