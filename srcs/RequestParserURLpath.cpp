@@ -272,8 +272,6 @@ std::string Request::parsePath_cgi(std::string const & originalUrlPath, std::vec
     setInterpreterPath(location->getInterpreterPath());
     getCgiData().setIsCgi(true);
 
-    std::cout << "Path is a script file. ";
-
     // blocks down below are just for logging
     if (not _data.getFileExtension().empty()) {
         std::cout << "Deleting file name from it so the extension can be matched against the location block uri extension name. Extension: ";
@@ -298,18 +296,17 @@ std::string Request::parsePath_cgi(std::string const & originalUrlPath, std::vec
     return std::string();
 }
 
-std::string Request::parsePath_dir(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location) {
+std::string Request::parsePath_dir(std::string const & originalUrlPath, std::string const & firstDirectoryFromUrlPath, std::vector<ServerLocation>::const_iterator & location) {
     // Ex.: localhost:8080/test/ or localhost:8080/test/sub/
     // Obs.: A directory URI always have a / at the end (otherwise it is a file)
     if (originalUrlPath.find('?') == std::string::npos) {
+        std::cout << BLU << "No '?' found and originalUrlPath has no GET-Form data" << RES << std::endl;
         std::string locationBlockUriName = location->getLocationUriName();
         std::string locationBlockRootDir = location->getRootDirectory();
 
-        std::cout << BLU << "No '?' found and originalUrlPath has no GET-Form data" << RES << std::endl;
-
-        // Here we are matching the whole path with the whole locationBlockUriName + / (since it comes without it
-        // from the config file)
-        if (originalUrlPath == (locationBlockUriName + '/')) {
+        // Here we are matching the first directory of the URI with the locationBlockUriName + / (since it comes
+        // without it from the config file)
+        if (firstDirectoryFromUrlPath == (locationBlockUriName + '/')) {
             std::cout << "Path is a directory." << std::endl << RES;
 
             _data.setIsFolder(true);
@@ -318,17 +315,20 @@ std::string Request::parsePath_dir(std::string const & originalUrlPath, std::vec
             std::cout << BLU << "Its root_directory [" << locationBlockRootDir << "] and configuration will be used" << RES << std::endl;
 
             // If autoindex is off and no index file, return 403 Forbidden, else return folder content
-            if (pathType(locationBlockRootDir + locationBlockUriName + '/' + location->getIndexFile()) != REG_FILE) {
+            if (pathType(locationBlockRootDir + originalUrlPath + location->getIndexFile()) != REG_FILE) {
                 _data.setAutoIndex(location->getAutoIndex());
-                if (not location->getAutoIndex() ) {
-                    std::cout << RED << "Auto index is off and no file found on the location [";
-                    std::cout << locationBlockRootDir + locationBlockUriName << "]. Returning 403 Forbidden" << RES << std::endl;
+                if (not location->getAutoIndex()) {
+                    std::cout << GRY << "Auto index is off and no index file found on the location [";
+                    std::cout << locationBlockRootDir + originalUrlPath << "]. Returning 403 Forbidden" << RES << std::endl;
                     setHttpStatus(FORBIDDEN);
+                } else {
+                    std::cout << GRY << "Auto index is on and no index file found on the location [";
+                    std::cout << locationBlockRootDir + originalUrlPath << "]. Folder content will be served" << RES << std::endl;
                 }
             } else {
-                _data.setFileExtension(getExtension(originalUrlPath));
+                _data.setFileExtension(getExtension(location->getIndexFile()));
             }
-            return locationBlockRootDir + locationBlockUriName + '/' + location->getIndexFile();
+            return locationBlockRootDir + originalUrlPath + location->getIndexFile();
         }
     }
     return std::string();
@@ -340,38 +340,39 @@ std::string Request::parsePath_file(std::string const & originalUrlPath, std::ve
     std::string locationBlockRootDir = location->getRootDirectory();
     if (originalUrlPath.find('?') == std::string::npos && _data.getRequestMethod() == GET
         && locationBlockUriName != ".py" && locationBlockUriName != ".php") {
-        std::string DirFromUrl = std::string();
-        std::string file = originalUrlPath.substr(originalUrlPath.find_last_of('/'));
 
         std::cout << BLU << "No '?' found, so no cgi root_directory needed" << RES << std::endl;
         std::cout << "Path is a file. ";
 
-        // If there is only one / then it has to keep it, otherwise DirFromUrl can be without it
-        std::string::size_type positionLastSlash = originalUrlPath.find_last_of('/');
-        if (positionLastSlash == 0) {
-            positionLastSlash += 1;
+        std::string firstDirectoryFromUrlPath = std::string();
+        std::string::size_type secondSlash = originalUrlPath.find_first_of('/', 1);
+        if (secondSlash != std::string::npos) {
+            firstDirectoryFromUrlPath = originalUrlPath.substr(0, secondSlash + 1);
+        } else {
+            // If there is only one / then it has to keep it and tricky it to match the / location block (if it exists)
+            firstDirectoryFromUrlPath = "//";
         }
-        DirFromUrl = originalUrlPath.substr(0, positionLastSlash);
 
         // The if block down below is just for logging
-        if (not DirFromUrl.empty()) {
+        if (not firstDirectoryFromUrlPath.empty()) {
             std::cout << "Deleting file from it so it can be matched against the location block uri name. Path: ";
-            std::cout << GRN_BG << DirFromUrl << RES << std::endl;
+            std::cout << GRN_BG << firstDirectoryFromUrlPath << RES << std::endl;
         }
 
         /* If the url is a file, the match will be done between the directory where the file is, against the location uri
          * ex: url localhost/cgi/cgi_index.html -> the /cgi part will be checked against a location uri */
-        if (DirFromUrl == locationBlockUriName) {
+        if (firstDirectoryFromUrlPath == (locationBlockUriName + '/')) {
             std::cout << BLU << "location block for [" << RES BLU_BG << originalUrlPath << RES BLU;
             std::cout << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES BLU << "]" << std::endl;
             std::cout << BLU << "Its root_directory [" << locationBlockRootDir << "] and configuration will be used" << RES << std::endl;
 
-            return locationBlockRootDir + locationBlockUriName + file;
+            return locationBlockRootDir + originalUrlPath;
         }
     }
     // Script file for POST, with no query ('?')
     // Ex.: localhost:8080/python_POST.py or localhost:8080/cgi/python_cgi_POST_upload.py or localhost:8080/py/cgi_delete.py
     else if (originalUrlPath.find('?') == std::string::npos) {
+        std::cout << "Path is a script file. ";
         return parsePath_cgi(originalUrlPath, location, originalUrlPath.substr(originalUrlPath.find_last_of('/')));
     }
     return std::string();
@@ -386,12 +387,12 @@ std::string Request::parsePath_regularCase(std::string const & originalUrlPath, 
 
         // -------------------------------------------------------------------------------------------------- FILE
         if (lastSlash != std::string::npos) {
-            std::string without_extension = locationBlockUriName;
-            if (locationBlockUriName == ".py" || locationBlockUriName == ".php") {
-                without_extension = "";
+            std::string scriptFile = originalUrlPath.substr(lastSlash);
+            if (not scriptFile.empty() &&
+                (scriptFile.find(".py") == std::string::npos || scriptFile.find(".py") == std::string::npos)) {
+                scriptFile = "";
             }
-            std::string file = originalUrlPath.substr(lastSlash);
-            if (not file.empty() && (pathType(locationBlockRootDir + without_extension + file) == REG_FILE)) {
+            if (pathType(locationBlockRootDir + (scriptFile == "" ? originalUrlPath : scriptFile)) == REG_FILE) {
                 _data.setFileExtension(getExtension(originalUrlPath));
                 std::string URLPath_full_file = parsePath_file(originalUrlPath, location);
                 if (not URLPath_full_file.empty()) {
@@ -412,19 +413,18 @@ std::string Request::parsePath_regularCase(std::string const & originalUrlPath, 
             }
         }
         // -------------------------------------------------------------------------------------------------- DIRECTORY
-//        this is in case we want to match the first directory of the url path to the location
-//        std::string firstDirectoryFromUrlPath;
-//        if (lastSlash > 0) {
-//            // If lastSlash is not zero, then we are dealing with subdirectories (i.e.: /dir/dir1/ex/), which means
-//            // we want to match the first directory from the path to the first directory of locationBlockRootDir
-//            // E.g.: path /dir/dir1/ will be /dir/ and will have to match $location.root_directory/dir
-//            std::string::size_type secondSlash = originalUrlPath.find_first_of('/', 1);
-//            if (secondSlash != std::string::npos) {
-//                firstDirectoryFromUrlPath = originalUrlPath.substr(0, secondSlash);
-//            }
-//        }
         if (originalUrlPath.at(originalUrlPath.size() - 1) == '/') {
-            std::string URLPath_full_dir = parsePath_dir(originalUrlPath, location);
+            std::string firstDirectoryFromUrlPath;
+            if (lastSlash > 0) {
+                // If lastSlash is not zero, then we are dealing with subdirectories (i.e.: /dir/dir1/ex/), which means
+                // we want to match the first directory from the path to the first directory of locationBlockRootDir
+                // E.g.: path /dir/dir1/ will be /dir/ and will have to match $location.root_directory/dir location name
+                std::string::size_type secondSlash = originalUrlPath.find_first_of('/', 1);
+                if (secondSlash != std::string::npos) {
+                    firstDirectoryFromUrlPath = originalUrlPath.substr(0, secondSlash + 1);
+                }
+            }
+            std::string URLPath_full_dir = parsePath_dir(originalUrlPath, firstDirectoryFromUrlPath, location);
             if (not URLPath_full_dir.empty()) {
                 return URLPath_full_dir;
             }

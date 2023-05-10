@@ -3,22 +3,15 @@ Take a look:
         - In the configuration, try to setup the same port multiple times. It should not work.
         - Launch multiple servers at the same time with different configurations but with common ports.
             Does it work? If it does, ask why the server should work if one of the configurations isn't functional. Keep going.
-
-Research:
-    - Setup default error page (try to change the error 404). ?????????????????????????
 ------------------------------------------------------------------------------------------------------------------------
 More important:
     CORINA:
-        - Edit cookies explanation on config file
         - manual shut down leak (check log file ./manualShutDownLeak.txt)
             CRASHED AGAIN FOR ME (I went all over the website, including all CGI, then I went to other server and waited, then ctrl C and it leaked)
     JAKA:
         - Finish tester
         - If cookie arrives, give some response in the cgi as a proof
-        - Need the name of the uploads folder (not abs path), to insert in python scripts
-        - DONE Upload some file to the server and get it back (check if just clicking on the file/image is enough) -=
         - DONE Download the file, --> FILE NOT FIND
     JOYCE:
-        - make uri with subfolders to work
-        - Codam tester
+        - Run Codam tester just to know what will happen
         - CHANGE COLORS

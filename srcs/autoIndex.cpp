@@ -35,8 +35,8 @@ std::string removeRootFolderNameFromPath(std::string path) {
 
 std::string appendHTMLbody(std::string line, std::string path, std::string & htmlStr) {
 	int	found;
-	 std::cout << BLU << "Line: [" << line << "]\n" << RES;
-	 std::cout << YEL << "Path: [" << path << "]\n" << RES;
+//	 std::cout << BLU << "Line: [" << line << "]\n" << RES;
+//	 std::cout << YEL << "Path: [" << path << "]\n" << RES;
 	found = line.find_first_of(" ");
 	std::string lastWord = line.substr(found + 1, std::string::npos);
 	
