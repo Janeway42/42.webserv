@@ -38,7 +38,10 @@ void ResponseData::createResponseHeader(struct kevent& event) {
 		cookiesHeader = "Set-Cookie: " + storage->getRequestData().getRequestCookie() + "\r\n";
 
 	_responseHeader = "HTTP/1.1 " + std::to_string(storage->getHttpStatus()) + " " + httpStatusToString(storage->getHttpStatus()) + "\r\n"
-        "Content-Type: text/html\r\n"
+        // "Content-Type: text/html\r\n"
+
+        "Content-Type: " + storage->getRequestData().getResponseContentType() + "\r\n"
+
         "Content-Encoding: identity\r\n"
         "Connection: close\r\n" + cookiesHeader + 
         "Content-Length: " + std::to_string(_responseBody.length()) + "\r\n"
@@ -145,7 +148,7 @@ void ResponseData::createResponse(struct kevent& event) {
                 _responseBody = storage->getRequestData().getCgiBody();
                 //   std::cout << "Setting cgi _responseBody: [" << _responseBody << "]\n";
             } else {
-                if (storage->getRequestData().getResponseContentType() == "text/html") {
+                if (storage->getRequestData().getResponseContentType() == "text/html" || storage->getRequestData().getResponseContentType() == "application/pdf") {
                     std::cout << GRN << "The path is a file: [" << GRN_BG << _responsePath << RES << "]\n";
                     _responseBody = streamFile(_responsePath);
                     // std::cout << "Setting _responseBody: [" << _responseBody << "]\n";
@@ -193,8 +196,8 @@ static std::string getSpecificErrorPage(Request* storage, std::vector<std::strin
 
 void ResponseData::setResponseStatus(struct kevent& event)
 {
-	std::cout << CYN << "Start setResponseStatus()\n" << RES;
 	Request *storage = (Request *)event.udata;
+	std::cout << CYN << "Start setResponseStatus(), current: "<< storage->getHttpStatus() << "\n" << RES;
 
     std::string defaultStatusPath = "./_server_default_status/";
     //todo add more default pages?

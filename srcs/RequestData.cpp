@@ -251,6 +251,8 @@ void RequestData::setResponseContentType(std::string fileExtension)
 		_responseContentType = "image/png";
 	else if (fileExtension == ".ico")
 		_responseContentType = "image/x-con";
+	else if (fileExtension == ".pdf")
+		_responseContentType = "application/pdf";
 //	else if (fileExtension == "")// Not sure if needed, -> joyce comment -> when http://localhost:8080/_folderA it was comming here and so the response body with the 404 error was nor being set, Idk if this line is needed for something else though, if not we can delete (is it text/html the default anyway? response has always to have any content type???)
 //		_responseContentType = "";// in case of no suffix
 }
