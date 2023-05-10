@@ -245,6 +245,8 @@ void RequestData::setResponseContentType(std::string fileExtension)
 		_responseContentType = "text/html";
 	else if (fileExtension == ".jpg")
 		_responseContentType = "image/jpg";
+	else if (fileExtension == ".jpeg")
+		_responseContentType = "image/jpeg";
 	else if (fileExtension == ".png")
 		_responseContentType = "image/png";
 	else if (fileExtension == ".ico")
