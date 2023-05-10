@@ -92,7 +92,7 @@ class Request : public Parser {
 		std::string parsePath_locationMatch(std::string const & originalUrlPath);
         std::string parsePath_file(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);
         std::string parsePath_cgi(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location, std::string const & file_cgi);
-        std::string parsePath_dir(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);//, std::string const & firstDirectoryFromUrlPath);
+        std::string parsePath_dir(std::string const & originalUrlPath, std::string const & firstDirectoryFromUrlPath, std::vector<ServerLocation>::const_iterator & location);//, std::string const & firstDirectoryFromUrlPath);
         std::string parsePath_regularCase(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);
         std::string parsePath_root(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);
 //        std::string parsePath_edgeCase(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);//todo mayne not needed?
