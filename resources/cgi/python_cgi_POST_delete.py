@@ -14,8 +14,8 @@ cgitb.enable()	# detailed errors msgs
 for param in os.environ.keys():
     if param == 'UPLOAD_DIR':
         uploadDir_AbsPath = os.environ[param]
-    # if param == 'INFO_PATH':
-    #     uploadDirname = os.environ[param]
+    if param == 'INFO_PATH':
+        uploadDirName = os.environ[param]
 
 
 form = cgi.FieldStorage()
@@ -83,8 +83,8 @@ item_template = """
 <form action="python_cgi_POST_delete.py" method="post">
 	<mark><b>{}</b></mark>
 	<div class="button-container">
-		<button> <a href="../uploads/{}">  View </a> </button> 
-		<button> <a href="../uploads/{}" download> Download </a> </button>
+		<button> <a href="../{}/{}">  View </a> </button> 
+		<button> <a href="../{}/{}" download> Download </a> </button>
 		<input type="hidden" name="delete" value="{}">
 		<input type="submit" value="Delete">
 	</div>
@@ -101,8 +101,8 @@ item_template = """
 items_html = ""
 for item in os.listdir(uploadDir_AbsPath):
 	item_path = os.path.join(uploadDir_AbsPath, item)
-#	item_html = item_template.format(item, uploadDir_AbsPath, item, uploadDir_AbsPath, item, item_path)
-	item_html = item_template.format(item, item, item, item_path)
+	item_html = item_template.format(item, uploadDir_AbsPath, item, uploadDir_AbsPath, item, item_path)
+	# item_html = item_template.format(item, item, item, item_path)
 	items_html += item_html
 
 # Generate the full HTML page

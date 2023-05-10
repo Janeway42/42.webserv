@@ -103,9 +103,6 @@ void Request::callCGI(struct kevent event) {
 	temp.push_back(comspec.append(""));
 	temp.push_back(info_path.append(getServerData().getUploadDirectoryName()));
 
-    std::cout << "UPLOAD FOLDER NAME: [" << getServerData().getUploadDirectory()<< "]\n";
-    std::cout << "UPLOAD FOLDER NAME: [" << getServerData().getUploadDirectoryName() << "]\n";
-
     char buffer[PATH_MAX];
     if (getcwd(buffer, sizeof(buffer)) == NULL)
         std::cout << RED "Error in callCGI: getcwd() failed\n" RES;
