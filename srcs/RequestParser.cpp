@@ -19,6 +19,8 @@ DELETE http://api.example.com/employee/1
 
 // curl -i -F 'filename=@/Users/jmurovec/Desktop/text_small.txt' http://localhost:8080/cgi/python_cgi_POST_upload.py
 
+// random filename Z5z=k b0JaL9px!u8I]2'N[3Q6@vF.4f7qn~X$^j(s1l{T,y]+eK%=^_ .jpg
+
 #include <unistd.h> // sleep
 #include "RequestParser.hpp"
 
@@ -202,7 +204,6 @@ void Request::setSpecificServer()
 		}
 	}
 }
-
 
 /* TODO
  * - What if method is GET (normaly without body) AND content-length is not zero ???

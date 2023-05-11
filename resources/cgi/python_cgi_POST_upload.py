@@ -4,8 +4,9 @@ import time
 import cgitb
 import cgi
 import os
-import sys  # to read from std input
-cgitb.enable()	# detailed errors msgs
+import sys  		# to read from std input
+import urllib.parse	# to encode spec. chars in filename
+cgitb.enable()		# detailed errors msgs
 
 
 environ = os.environ.copy()
@@ -16,8 +17,9 @@ for param in os.environ.keys():
 	if param == 'INFO_PATH':
 	    uploadDirName = os.environ[param]
 
-sys.stderr.write('----------------------------------From python uploads: ')
+sys.stderr.write('!!! From python uploads: ')
 sys.stderr.write(uploadDirName)
+sys.stderr.write('\n')
 
 
 form = cgi.FieldStorage()
@@ -30,6 +32,11 @@ if 'filename' not in form or not form['filename'].value:
 
 # Get filename here
 fileItem = form['filename']
+# fileItem
+
+sys.stderr.write('!!! fileItem: ')
+sys.stderr.write(fileItem.filename)
+sys.stderr.write('\n')
 
 # Test if the file was uploaded
 if fileItem.filename:
@@ -111,6 +118,10 @@ item_template = """
 # Generate the item HTML
 items_html = ""
 for item in os.listdir(uploadDir_AbsPath):
+	# encodedItem = urllib.parse.quote(item)
+	# sys.stderr.write('!!! encoded item: ')
+	# sys.stderr.write(encodedItem)
+	# sys.stderr.write('\n')
 	item_path = os.path.join(uploadDir_AbsPath, item)
 	item_html = item_template.format(item, uploadDirName, item, uploadDirName, item, item_path)
 	# item_html = item_template.format(item, item, item, item_path)

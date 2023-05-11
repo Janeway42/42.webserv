@@ -6,8 +6,8 @@ RequestData::RequestData() {
 	_reqMethod 			 = NONE;
 	_reqHttpPath 		 = "default Path";
     _reqHttpVersion 	 = "default Version";
-	_reqServerName		= "default Name";
-	_reqPort			= "";
+	_reqServerName		 = "default Name";
+	_reqPort			 = "";
 	_reqHeader			 = "";
     _reqContentLength	 = 0;
 	_clientBytesSoFar	 = 0;
@@ -22,8 +22,8 @@ RequestData::RequestData() {
 	_queryString		 = "";
 	_cgiBody			 = "";
 
-	_responseContentType 	= "text/html";
-	_reqCookie			= "";
+	_responseContentType = "text/html";
+	_reqCookie			 = "";
 }
 
 /** Destructor */
@@ -32,8 +32,8 @@ RequestData::~RequestData() {
 	_reqMethod 		= NONE;
 	_reqHttpPath 	= "";
     _reqHttpVersion = "";
-	_reqServerName = "";
-	_reqPort = "";
+	_reqServerName  = "";
+	_reqPort        = "";
 	_reqCookie		= "";
 }
 
@@ -185,10 +185,47 @@ std::string remove_multiple_slashes(std::string str) {
 }
 
 
-void RequestData::setRequestPath(std::string reqPath)
-{
+// FOR DECODING URL
+static int hexCharToInt(char hexChar) {
+    if (hexChar >= '0' && hexChar <= '9') {
+        return hexChar - '0';
+    } else if (hexChar >= 'A' && hexChar <= 'F') {
+        return hexChar - 'A' + 10;
+    } else if (hexChar >= 'a' && hexChar <= 'f') {
+        return hexChar - 'a' + 10;
+    }
+    return -1;  // Invalid hex character
+}
+
+static std::string decodeURL(std::string encodedUrl) {
+    std::string decodedUrl;
+
+    size_t len = encodedUrl.length();
+    size_t i = 0;
+    while (i < len) {
+        if (encodedUrl[i] == '%' && i + 2 < len) {
+            char hex[3] = { encodedUrl[i + 1], encodedUrl[i + 2], '\0' };
+            int digit1 = hexCharToInt(hex[0]);
+            int digit2 = hexCharToInt(hex[1]);
+            if (digit1 != -1 && digit2 != -1) {	// Check the hexadecimal digits
+                i += 2;
+                int charCode = (digit1 << 4) + digit2;
+                decodedUrl += static_cast<char>(charCode);
+            } else {
+                decodedUrl += encodedUrl[i];
+            }
+        } else {
+            decodedUrl += encodedUrl[i];
+        }
+        ++i;
+    }
+    return decodedUrl;
+}
+
+void RequestData::setRequestPath(std::string reqPath) {
 	_reqHttpPath = remove_trailing_slashes(reqPath);
 	_reqHttpPath = remove_multiple_slashes(_reqHttpPath);
+	_reqHttpPath = decodeURL(_reqHttpPath);
 }
 
 void RequestData::setHttpVersion(std::string reqHttpVersion)
