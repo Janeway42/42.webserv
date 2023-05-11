@@ -10,18 +10,16 @@
 ######################################## nginx
 
 import sys
-import os   # TO ACCESS execve ENV variables
 import time
-import sys	# to read from std input
 import cgi, cgitb
-cgitb.enable()	# detailed errors msgs
+import os           # to access execve ENV variables
+import sys	        # to read from std input
+cgitb.enable()	    # detailed errors msgs
 
-# TO READ FROM STDIN, FROM PIPE
+
 print ("<br><br><h3>THIS IS PYTHON SCRIPT:</h3>")
-
 # time.sleep(11000)
 # exit()
-
 
 for param in os.environ.keys():
     # print ("<b>%30s</b>: %s</br>") % (param, os.environ[param])
@@ -34,6 +32,11 @@ for param in os.environ.keys():
         URL = os.environ[param]
         print("<p>FOUND QUERY STRING:")
         print ("<span style='background-color:cornsilk; padding:1%;'>" + URL + "</span><p>")
+    if param == 'COOKIE':
+        cookie = os.environ[param]
+        index = cookie.find("true")
+        print("<p>FOUND COOKIE")
+        print ("<span style='background-color:cornsilk; padding:1%;'>" + cookie + "</span><p>")
     #else:
     #    URL="DEFAULT=default"
 
@@ -67,10 +70,12 @@ if 'street' in dict_result:
 else:
     street = "unknown"
 
-print ("<div style='width:fit-content; padding:5%; margin: 10% 0% 0% 10%; border:1px solid; background-color: linen; border-radius: 4px';><h1>Congratulations!</h1>")
+if index != -1:
+    print ("<div style='background-color: #f4d03f; width:20%; margin:3% 0 0 10%; padding:2% 2% 2% 2%'>" + "<h3>COOKIE IS HERE</h3></div>")
+
+print ("<div style='width:fit-content; padding:5%; margin: 3% 0% 0% 10%; border:1px solid; background-color: linen; border-radius: 4px';><h1>Congratulations!</h1>")
 print ("<h3>      Your city is: <span style='background-color:MediumSeaGreen; padding:1%;'>" + city + "</span></h3>")
 print ("<h3>    Your street is: <span style='background-color:coral; padding:1%'>" + street + "</h3>")
-
 print("")
 
 form = cgi.FieldStorage()

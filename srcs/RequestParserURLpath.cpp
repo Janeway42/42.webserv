@@ -88,6 +88,7 @@ void Request::callCGI(struct kevent event) {
 	std::string comspec			= "COMSPEC=";
 	std::string info_path		= "INFO_PATH=";
 	std::string upload_path		= "UPLOAD_DIR=";
+	std::string cookie		    = "COOKIE=";
 
 	// Convert length to string
 	std::stringstream ssContLen;
@@ -102,6 +103,9 @@ void Request::callCGI(struct kevent event) {
 	temp.push_back(server_name.append(getServerData().getServerName()));
 	temp.push_back(comspec.append(""));
 	temp.push_back(info_path.append(getServerData().getUploadDirectoryName()));
+	temp.push_back(cookie.append(_data.getRequestCookie()));
+
+    std::cout << "COOKIE: " << cookie << "\n";
 
     char buffer[PATH_MAX];
     if (getcwd(buffer, sizeof(buffer)) == NULL)

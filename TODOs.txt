@@ -13,6 +13,7 @@ More important:
         - manual shut down leak (check log file ./manualShutDownLeak.txt)
             CRASHED AGAIN FOR ME (I went all over the website, including all CGI, then I went to other server and waited, then ctrl C and it leaked)
     JAKA:
+        - Is it necessary at exit to set all variables to empty in destructors?
         - Finish tester
         - If cookie arrives, give some response in the cgi as a proof
         - Need the name of the uploads folder (not abs path), to insert in python scripts
