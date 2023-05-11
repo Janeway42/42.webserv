@@ -3,16 +3,18 @@ Take a look:
         - In the configuration, try to setup the same port multiple times. It should not work.
         - Launch multiple servers at the same time with different configurations but with common ports.
             Does it work? If it does, ask why the server should work if one of the configurations isn't functional. Keep going.
+        - What happens if you dont have a form on your page, but you directly write ?city=aaa in the URL?
+            It serves the location by regex it seems, 200. We are returning 404 is that ok?
 ------------------------------------------------------------------------------------------------------------------------
 More important:
     CORINA:
         - manual shut down leak (check log file ./manualShutDownLeak.txt)
             CRASHED AGAIN FOR ME (I went all over the website, including all CGI, then I went to other server and waited, then ctrl C and it leaked)
     JAKA:
+        - When deleteing a file on cgi, Then clicking to download another file, it comes with the full path which causes the request to fail on our server
         - Is it necessary at exit to set all variables to empty in destructors?
         - Finish tester
         - If cookie arrives, give some response in the cgi as a proof
         - DONE Download the file, --> FILE NOT FIND
     JOYCE:
         - Run Codam tester just to know what will happen
-        - CHANGE COLORS

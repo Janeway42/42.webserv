@@ -35,7 +35,7 @@ WebServer::WebServer(std::string const & configFileName)
 			std::cout << "--------------------------------------------------------\n";
 			location++;
         }
-        std::cout << CYN << GRY_BG << "WebServer Overloaded Constructor" << RES << std::endl;
+        std::cout << CYN << "WebServer Overloaded Constructor" << RES << std::endl;
     } catch (std::exception const & e) {
         throw ServerException(std::string("Failed to initialise webserv: ") + e.what());
     }
@@ -72,7 +72,7 @@ WebServer::~WebServer()
 			close(it->getListeningSocket());
 	}
 	close(_kq);
-	std::cout << CYN << GRY_BG << "WebServer Destructor" << RES << std::endl;
+	std::cout << CYN << "WebServer Destructor" << RES << std::endl;
 }
 
 // --------------------------------------------------------- server main loop
@@ -86,7 +86,7 @@ void WebServer::runServer()
 	int loop1 = 0;
 	while (1)
 	{
-		std::cout << "----------------------------------------------------------------------------------------------------------------- WHILE LOOP " << loop1 << std::endl;
+		std::cout << GRY << "----------------------------------------------------------------------------------------------------------------- WHILE LOOP " << loop1 << RES << std::endl;
 		int nr_events = kevent(_kq, NULL, 0, evList, MAX_EVENTS, NULL);
 
 		if (nr_events < 1 || signalCall == true)
@@ -103,12 +103,12 @@ void WebServer::runServer()
 					newClient(evList[i]);
 				else if (evList[i].filter == EVFILT_TIMER)
 				{
-					std::cout << "----------------------------------------------------------------------------------------------------------------- TIMER\n";
+					std::cout << GRY << "----------------------------------------------------------------------------------------------------------------- TIMER" << RES << std::endl;
 					handleTimeout(evList[i]);
 				}
 				else if (evList[i].filter == EVFILT_READ)
 				{
-					std::cout << "----------------------------------------------------------------------------------------------------------------- READ\n";
+					std::cout << GRY << "----------------------------------------------------------------------------------------------------------------- READ" << RES << std::endl;
 
 					if (evList[i].flags & EV_EOF)
 					{
@@ -133,7 +133,7 @@ void WebServer::runServer()
 				}
 				else if (evList[i].filter == EVFILT_WRITE)
 				{
-					std::cout << "----------------------------------------------------------------------------------------------------------------- WRITE\n";
+					std::cout << GRY << "----------------------------------------------------------------------------------------------------------------- WRITE" << RES << std::endl;
 					if (evList[i].flags & EV_EOF)
 					{
 						removeFilter(evList[i], EVFILT_WRITE, "failed kevent EV_EOF - EVFILT_WRITE");
@@ -240,12 +240,12 @@ void WebServer::readRequest(struct kevent& event)
 
 			if ((storage->getHttpStatus() != NO_STATUS && storage->getHttpStatus() != OK) || (storage->getDone() == true && storage->getCgiData().getIsCgi() == false))
 			{
-                std::cout << YEL << "storage->getHttpStatus(): " << storage->getHttpStatus() << "\n" << RES;
+//                std::cout << YEL << "storage->getHttpStatus(): " << storage->getHttpStatus() << "\n" << RES;
                 if (storage->getHttpStatus() != NO_STATUS && storage->getHttpStatus() != OK) {
                     std::cout << YEL << "storage->getCgiData().getIsCgi(): " << storage->getCgiData().getIsCgi() << "\n" << RES;
                     std::cout << RED << "error parsing - sending response - failure, error " << storage->getHttpStatus()  << "\n" << RES;
                 } else if (storage->getDone() == true)
-					std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
+					std::cout << GRN << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << RES << std::endl;
 
 				if (addFilter(event.ident, event, EVFILT_WRITE) == 1)
 					cleanAddFilterFail(event.ident, event, "failed kevent EV_ADD, EVFILT_WRITE, success READ");
@@ -426,7 +426,7 @@ void WebServer::closeClient(struct kevent& event)
 	std::cout << "original request: " << storage->getRequestData().getHttpPath() << std::endl;
 
 	close(event.ident);
-	std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << std::endl;
+	std::cout << PUR << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻" << RES << std::endl;
     delete(storage);
 }
 
@@ -435,7 +435,7 @@ void WebServer::closeClient(struct kevent& event)
 
 ServerData * WebServer::getSpecificServer(int fd)
 {
-	std::cout << "size server inside run loop: " << _servers.size() << std::endl;
+//	std::cout << "size server inside run loop: " << _servers.size() << std::endl;
 
 	std::vector<ServerData>::iterator it_server = _servers.begin();
 	for (; it_server != _servers.end(); ++it_server) {
@@ -485,12 +485,12 @@ void	WebServer::chooseMethod_StartCGI(struct kevent event, Request * storage) {
 	if (storage->getRequestData().getRequestMethod() == POST)
 			storage->callCGI(event);
 	if (storage->getRequestData().getRequestMethod() == DELETE) {// TODO JOYCE I DONT KNOW HOW BUT I REMEMBER IT COMING HERE ONCE
-		std::cout << GRN_BG << "DELETE METHOD" << RES << std::endl;
+		std::cout << GRN << "DELETE METHOD" << RES << std::endl;
 		if (storage->pathType(storage->getRequestData().getURLPath()) != REG_FILE) {
-			std::cout << RED_BG << "ERROR 404 Not Found" << RES << std::endl;
+			std::cout << RED << "ERROR 404 Not Found" << RES << std::endl;
 		}
 		if (remove(storage->getRequestData().getURLPath().c_str()) != 0) {
-			std::cout << RED_BG << "ERROR 204 No Content" << RES << std::endl;
+			std::cout << RED << "ERROR 204 No Content" << RES << std::endl;
 		}
 	}
 }

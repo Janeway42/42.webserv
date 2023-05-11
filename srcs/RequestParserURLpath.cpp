@@ -10,11 +10,6 @@
 #include "Parser.hpp"
 #include "RequestParser.hpp"
 
-/*
-	TODO What happens if you dont have a form on your page, but you directly write ?city=aaa in the URL?
-	In this case, no action file is specified ???
-*/
-
 void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 	//std::cout << BLU << "START runExeve\n" << RES;
 	(void)event;
@@ -194,7 +189,7 @@ void Request::storeURLPathParts(std::string const & originalUrlPath, std::string
         std::string	queryString = originalUrlPath.substr(positionQuestionMark + 1);
         if (_data.getRequestMethod() == GET) {
             _data.setQueryString(queryString);
-            std::cout << "queryString:                   [" << GRN_BG << _data.getQueryString() << RES << "]" << std::endl;
+            std::cout << "queryString:                   [" << GRN << _data.getQueryString() << RES << "]" << std::endl;
             // _data.setBody(queryString);  // too early todo JAKA is it needed here?
         }
         storeFormData(queryString);	// maybe not needed (the whole vector and map) if the cgi script can handle the whole queryString todo JAKA is it needed?
@@ -279,7 +274,7 @@ std::string Request::parsePath_cgi(std::string const & originalUrlPath, std::vec
     // blocks down below are just for logging
     if (not _data.getFileExtension().empty()) {
         std::cout << "Deleting file name from it so the extension can be matched against the location block uri extension name. Extension: ";
-        std::cout << GRN_BG << _data.getFileExtension() << RES << std::endl;
+        std::cout << GRN << _data.getFileExtension() << RES << std::endl;
     }
     if (_data.getRequestMethod() == GET) {
         std::cout << GRN << "There is GET Form data" << RES << std::endl;
@@ -292,8 +287,8 @@ std::string Request::parsePath_cgi(std::string const & originalUrlPath, std::vec
     /* If the url is a script file, the match will be done between the extension of it, against the location uri
      * ex: url localhost/cgi/script.py -> the .py part will be checked against a location uri */
     if (_data.getFileExtension() == locationBlockUriName) {
-        std::cout << BLU << "cgi location block for [" << RES BLU_BG << originalUrlPath << RES BLU;
-        std::cout << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES BLU << "]" << std::endl;
+        std::cout << BLU << "cgi location block for [" << RES BLU_BG << originalUrlPath << RES;
+        std::cout << BLU << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES << "]" << std::endl;
         std::cout << BLU << "Its root_directory [" << locationBlockRootDir << "] and configuration will be used" << RES << std::endl;
         return locationBlockRootDir + file_cgi;
     }
@@ -314,8 +309,8 @@ std::string Request::parsePath_dir(std::string const & originalUrlPath, std::str
             std::cout << "Path is a directory." << std::endl << RES;
 
             _data.setIsFolder(true);
-            std::cout << BLU << "location block for [" << RES BLU_BG << originalUrlPath << RES BLU;
-            std::cout << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES BLU << "]" << std::endl;
+            std::cout << BLU << "location block for [" << RES BLU_BG << originalUrlPath << RES;
+            std::cout << BLU << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES << "]" << std::endl;
             std::cout << BLU << "Its root_directory [" << locationBlockRootDir << "] and configuration will be used" << RES << std::endl;
 
             // If autoindex is off and no index file, return 403 Forbidden, else return folder content
@@ -360,14 +355,14 @@ std::string Request::parsePath_file(std::string const & originalUrlPath, std::ve
         // The if block down below is just for logging
         if (not firstDirectoryFromUrlPath.empty()) {
             std::cout << "Deleting file from it so it can be matched against the location block uri name. Path: ";
-            std::cout << GRN_BG << firstDirectoryFromUrlPath << RES << std::endl;
+            std::cout << firstDirectoryFromUrlPath << std::endl;
         }
 
         /* If the url is a file, the match will be done between the directory where the file is, against the location uri
          * ex: url localhost/cgi/cgi_index.html -> the /cgi part will be checked against a location uri */
         if (firstDirectoryFromUrlPath == (locationBlockUriName + '/')) {
-            std::cout << BLU << "location block for [" << RES BLU_BG << originalUrlPath << RES BLU;
-            std::cout << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES BLU << "]" << std::endl;
+            std::cout << BLU << "location block for [" << RES BLU_BG << originalUrlPath << RES;
+            std::cout << BLU << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES << "]" << std::endl;
             std::cout << BLU << "Its root_directory [" << locationBlockRootDir << "] and configuration will be used" << RES << std::endl;
 
             return locationBlockRootDir + originalUrlPath;
@@ -447,8 +442,8 @@ std::string Request::parsePath_root(std::string const & originalUrlPath, std::ve
     if (originalUrlPath == locationBlockUriName) {
         std::cout << "Path is a directory." << std::endl << RES;
         _data.setIsFolder(true);
-        std::cout << BLU << "location block for [" << RES BLU_BG << originalUrlPath << RES BLU;
-        std::cout << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES BLU << "]" << std::endl;
+        std::cout << BLU << "location block for [" << RES BLU_BG << originalUrlPath << RES;
+        std::cout << BLU << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES << "]" << std::endl;
         std::cout << BLU << "Its root_directory [" << locationBlockRootDir << "] and configuration will be used" << RES << std::endl;
 
         // If autoindex is off and no index file, return 403 Forbidden, else return folder content
@@ -508,8 +503,8 @@ std::string Request::parsePath_locationMatch(std::string const & originalUrlPath
         std::string locationBlockUriName = location->getLocationUriName();
         std::string locationBlockRootDir = location->getRootDirectory();
         std::cout << "⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻" << std::endl;
-        std::cout << "locationBlockUriName:            [" << GRN_BG << locationBlockUriName << RES << "]" << std::endl;
-        std::cout << "locationBlockRootDir:            [" << GRN_BG << locationBlockRootDir << RES << "]" << std::endl;
+        std::cout << "locationBlockUriName:            [" << PUR << locationBlockUriName << RES << "]" << std::endl;
+        std::cout << "locationBlockRootDir:            [" << PUR << locationBlockRootDir << RES << "]" << std::endl;
 
         if (originalUrlPath.size() == 1) {// was: originalUrlPath == "/"
             URLPath_full = parsePath_root(originalUrlPath, location);
@@ -529,7 +524,7 @@ std::string Request::parsePath_locationMatch(std::string const & originalUrlPath
 
         std::cout << YEL << "The url path [" << originalUrlPath << "] did not match the current location block [";
         std::cout << locationBlockUriName << "] from the config file. ";
-        std::cout << "Checking the next locationBlockUriName" << RES << std::endl;
+        std::cout << "\nChecking the next locationBlockUriName" << RES << std::endl;
     }
     return URLPath_full;
 }
@@ -538,8 +533,8 @@ std::string Request::parsePath_locationMatch(std::string const & originalUrlPath
 void Request::checkIfPathCanBeServed(std::string  const & originalUrlPath) {
     std::string serverBlockDir = getServerData().getRootDirectory();
 
-    std::cout << "originalUrlPath:               [" << GRN_BG << originalUrlPath << RES << "]" << std::endl;
-    std::cout << "server block root directory:   [" << GRN_BG << getServerData().getRootDirectory() << RES << "]" << std::endl;
+    std::cout << "originalUrlPath:               [" << PUR << originalUrlPath << RES << "]" << std::endl;
+    std::cout << "server block root directory:   [" << PUR << getServerData().getRootDirectory() << RES << "]" << std::endl;
     std::cout << std::endl << GRN << "Starting checkIfPathCanBeServed() and searching for the correct location block on the config file:" << RES;
     std::cout << std::endl << std::endl;
 

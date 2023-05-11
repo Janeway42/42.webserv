@@ -105,7 +105,7 @@ int Request::storeWordsFromFirstLine(std::string firstLine) {
 	for (int i = 0; iter < arr.end(); iter++, i++) {
 		if (i == 0) {
 			if (*iter == "GET" || *iter == "POST" || *iter == "DELETE") {
-				std::cout << GRN_BG << YEL << "REQUEST METHOD: " << *iter << RES << std::endl << std::endl;
+				std::cout << GRN << "REQUEST METHOD: " << *iter << RES << std::endl << std::endl;
                 if (*iter == "GET")
 				    _data.setRequestMethod(GET);
                 if (*iter == "POST")
@@ -282,7 +282,7 @@ std::string Request::getErrorPage()
             break;
         } default: {
             // "Set-Cookie: id=123; jaka=500; Max-Age=10; HttpOnly\r\n";
-            std::cout << "_httpStatus: [[" << GRN_BG << _httpStatus << RES << "]]\n";
+            std::cout << "_httpStatus: [[" << GRN << _httpStatus << RES << "]]\n";
             break;
         }
 	}
