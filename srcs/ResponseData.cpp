@@ -104,12 +104,12 @@ void ResponseData::createResponse(struct kevent& event) {
     _responsePath = storage->getRequestData().getURLPath_full();
 	setResponseStatus(event);
 
-    std::cout << BLU << "_responsePath after SetResponseStatus(): " << _responsePath << "\n" << RES;
-    std::cout << BLU << "getURLPath:      [" << storage->getRequestData().getURLPath() << "]\n" << RES;
-    std::cout << BLU << "getFullPath:     [" << storage->getRequestData().getURLPath_full() << "]\n" << RES;
-    std::cout << BLU << "getHttpStatus(): [" << storage->getHttpStatus() << "]\n" << RES;
-    std::cout << BLU << "response path:   [" << _responsePath << "]\n" << RES;
-    std::cout << BLU << "content type:    [" << storage->getRequestData().getResponseContentType() << "]\n" << RES;
+    std::cout << BLU << "_responsePath after SetResponseStatus(): " << _responsePath << "]" << RES << std::endl;
+    std::cout << BLU << "getURLPath:      [" << storage->getRequestData().getURLPath() << "]" << RES << std::endl;
+    std::cout << BLU << "getFullPath:     [" << storage->getRequestData().getURLPath_full() << "]" << RES << std::endl;
+    std::cout << BLU << "getHttpStatus(): [" << storage->getHttpStatus() << "]" << RES << std::endl;
+    std::cout << BLU << "response path:   [" << _responsePath << "]" << RES << std::endl;
+    std::cout << BLU << "content type:    [" << storage->getRequestData().getResponseContentType() << "]" << RES << std::endl;
 
     if (storage->getRedirection().empty()) {
         if (storage->getRequestData().getIsFolder() && not storage->getCgiData().getIsCgi()) {
@@ -120,7 +120,7 @@ void ResponseData::createResponse(struct kevent& event) {
             // Handling auto index
             if (storage->getRequestData().getAutoIndex()) {
                 std::cout << "AUTOINDEX ON, must call storeFolderContent()\n";
-                std::cout << "     URLPathFirstPart: [" << storage->getRequestData().getURLPathFirstPart() << "]\n";
+                std::cout << "     URLPathFirstPart: [" << storage->getRequestData().getURLPathFirstPart() << "]" << std::endl;
                 // if (storage->getRequestData().getURLPathFirstPart().empty()) {
                 // 	std::cout << BLU "first part is empty\n" << RES;
                 // 	std::string newPath = "./resources/" + storage->getRequestData().getURLPath();
@@ -139,19 +139,19 @@ void ResponseData::createResponse(struct kevent& event) {
         // if it is not a folder (it checks first if cgi -> if not then it checks text (includes error), else image
         else {
             if (storage->getCgiData().getIsCgi() && storage->getHttpStatus() == OK) {
-                std::cout << GRN << "The path contains query -> cgi: [" << GRN_BG << _responsePath << RES << "]\n";
+                std::cout << GRN << "The path contains query -> cgi: [" << GRN << _responsePath << "]" << RES << std::endl;
                 std::cout << "Setting _responseBody\n";
                 _responseBody = storage->getRequestData().getCgiBody();
                 //   std::cout << "Setting cgi _responseBody: [" << _responseBody << "]\n";
             } else {
                 if (storage->getRequestData().getResponseContentType() == "text/html" || storage->getRequestData().getResponseContentType() == "application/pdf") {
-                    std::cout << GRN << "The path is a file: [" << GRN_BG << _responsePath << RES << "]\n";
+                    std::cout << GRN << "The path is a file: [" << GRN << _responsePath << "]" << RES << std::endl;
                     _responseBody = streamFile(_responsePath);
                     // std::cout << "Setting _responseBody: [" << _responseBody << "]\n";
                 }
                 // IF IMAGE, FULL RESPONSE IS CREATED IN setImage()
                 else if (storage->getRequestData().getResponseContentType().find("image/") != std::string::npos) {
-                    std::cout << GRN << "The path is an image: [" << GRN_BG << _responsePath << RES << "]\n";
+                    std::cout << GRN << "The path is an image: [" << GRN << _responsePath << "]" << RES << std::endl;
                     _fullResponse = setImage(_responsePath);
                     // std::cout << BLU "_fullResponse.length(): [\n" << _fullResponse.size() << "\n" RES;
                     return;
@@ -225,7 +225,7 @@ void ResponseData::setResponseStatus(struct kevent& event)
             break;
         } default: {
             // "Set-Cookie: id=123; jaka=500; Max-Age=10; HttpOnly\r\n";
-            std::cout << "_responsePath: [[" << GRN_BG << _responsePath << RES << "]]\n";
+            std::cout << "_responsePath: [[" << GRN << _responsePath << RES << "]]\n";
             break;
         }
 	}
