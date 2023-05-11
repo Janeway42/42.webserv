@@ -223,12 +223,9 @@ static std::string decodeURL(std::string encodedUrl) {
 }
 
 void RequestData::setRequestPath(std::string reqPath) {
-	std::cout << "ENCODED URL:" << reqPath << "\n";
 	_reqHttpPath = remove_trailing_slashes(reqPath);
 	_reqHttpPath = remove_multiple_slashes(_reqHttpPath);
-
 	_reqHttpPath = decodeURL(_reqHttpPath);
-	std::cout << "DECODED URL:" << _reqHttpPath << "\n";
 }
 
 void RequestData::setHttpVersion(std::string reqHttpVersion)
