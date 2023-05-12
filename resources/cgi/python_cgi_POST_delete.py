@@ -101,7 +101,7 @@ item_template = """
 items_html = ""
 for item in os.listdir(uploadDir_AbsPath):
 	item_path = os.path.join(uploadDir_AbsPath, item)
-	item_html = item_template.format(item, uploadDir_AbsPath, item, uploadDir_AbsPath, item, item_path)
+	item_html = item_template.format(item, uploadDirName, item, uploadDirName, item, item_path)
 	# item_html = item_template.format(item, item, item, item_path)
 	items_html += item_html
 
