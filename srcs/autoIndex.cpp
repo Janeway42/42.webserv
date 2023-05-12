@@ -74,11 +74,12 @@ std::string	makeHtmlString(std::string folderContent, std::string path) {
 
     appendHTMLhead(path, htmlStr);
     while (std::getline(iss, line)) {
+		if (iss.fail())
+			return (std::string());
         if (line[0] == 'D') {
 			appendHTMLbody(line + "/", path, htmlStr);
 		}
 		else if (line[0] == 'F') {
-			//std::cout << "Not DIR [" << line << "]\n";
 			htmlStr = appendHTMLbody(line, path, htmlStr);
 		}
 	}

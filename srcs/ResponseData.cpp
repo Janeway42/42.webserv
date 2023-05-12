@@ -264,27 +264,51 @@ std::string ResponseData::setImage(std::string imagePath) {
 	return (headerBlock);	// Both header and image content
 }
 
-std::string ResponseData::streamFile(std::string file)
-{
+// std::string ResponseData::streamFileOLD(std::string file) {
+// 	std::string responseNoFav;
+// 	std::fstream    infile;
+
+// 	std::cout << GRN << "File to be streamed: " << file << RES << std::endl;
+// 	infile.open(file, std::fstream::in);
+// 	if (not infile)
+//         return ("");
+// 	while (infile) // While there's still stuff left to read
+// 	{
+// 		std::string strInput;
+// 		std::getline(infile, strInput);
+//         if (not infile)
+//             return ("");
+// 		responseNoFav.append(strInput);
+// 		responseNoFav.append("\n");
+// 	}
+// 	infile.close();
+// //	std::cout << "Streamed: " << responseNoFav << std::endl;
+// 	return (responseNoFav);
+// }
+
+std::string ResponseData::streamFile(std::string file) {
 	std::string responseNoFav;
 	std::fstream    infile;
-
 	std::cout << GRN << "File to be streamed: " << file << RES << std::endl;
 	infile.open(file, std::fstream::in);
-	if (not infile)
-        return ("");
-//        throw ParserException(CONFIG_FILE_ERROR("File to be streamed", MISSING));// comment by joyce -> we cant throw exceptions after main loop
-	while (infile) // While there's still stuff left to read
-	{
-		std::string strInput;
-		std::getline(infile, strInput);
-		responseNoFav.append(strInput);
-		responseNoFav.append("\n");
-	}
-	infile.close();
-//	std::cout << "Streamed: " << responseNoFav << std::endl;
-	return (responseNoFav);
+	if (infile.is_open()) {
+	    while (infile) // While there's still stuff left to read
+	    {
+            std::string strInput;
+            std::getline(infile, strInput);
+            responseNoFav.append(strInput);
+            responseNoFav.append("\n");
+	    }
+        //	std::cout << "Streamed: " << responseNoFav << std::endl;
+	    infile.close();
+	    return (responseNoFav);
+    }
+    return std::string();
 }
+
+
+
+
 
 std::string&	ResponseData::eraseSentChunkFromFullResponse(unsigned long retBytes) {
 	return (_fullResponse.erase(0, retBytes));

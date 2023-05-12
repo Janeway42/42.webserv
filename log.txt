@@ -1,47 +1,34 @@
-8080
-65535
-8080
-65535
-4243
-65535
-8081
-65535
-----------
-_addr in set listening socket: 0x7ffee8af7260 / addr->protocol: 6
+====================
+host: 0.0.0.0
+listens to: 8080
+_addr in set listening socket: 0x7ffee0fbf260 / addr->protocol: 6
 hostname used on getaddrinfo: 0.0.0.0
-----------
-IP ADDRESS: localhost
+SERVER NAME: localhost
+HOST: 0.0.0.0
 PORT: 8080
 LISTENING SOCKET: 4
-IP ADDRESS: testserver
-PORT: 8080
-LISTENING SOCKET: 4
-----------
-_addr in set listening socket: 0x7ffee8af7260 / addr->protocol: 6
+--------------------------------------------------------
+====================
+host: 0.0.0.0
+listens to: 8081
+_addr in set listening socket: 0x7ffee0fbf260 / addr->protocol: 6
 hostname used on getaddrinfo: 0.0.0.0
-----------
-IP ADDRESS: localhost
-PORT: 4243
-LISTENING SOCKET: 5
-----------
-_addr in set listening socket: 0x7ffee8af7260 / addr->protocol: 6
-hostname used on getaddrinfo: 0.0.0.0
-----------
-IP ADDRESS: testserver
+SERVER NAME: testserver
+HOST: 0.0.0.0
 PORT: 8081
-LISTENING SOCKET: 6
+LISTENING SOCKET: 5
+--------------------------------------------------------
 [36m[47mWebServer Overloaded Constructor[0m
 ----------------------------------------------------------------------------------------------------------------- WHILE LOOP 0
-size server inside run loop: 4
+size server inside run loop: 2
 ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-fd new client: 7
+fd new client: 6
 
 ----------------------------------------------------------------------------------------------------------------- WHILE LOOP 1
-size server inside run loop: 4
+size server inside run loop: 2
 ----------------------------------------------------------------------------------------------------------------- READ
-fd: 7
 [35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 7
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 6
 [34mSTORED HEADER: 
 GET / HTTP/1.1
 Host: localhost:8081
@@ -75,10 +62,10 @@ locationBlockRootDir:            [[42m./resources[0m]
 ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
 locationBlockUriName:            [[42m/[0m]
 locationBlockRootDir:            [[42m./resources[0m]
-[34mlocation block for [[0m[44m/[0m[34m] exists on config file as [[0m[44m/[0m[34m]
+Path is a directory.
+[0m[34mlocation block for [[0m[44m/[0m[34m] exists on config file as [[0m[44m/[0m[34m]
 [34mIts root_directory [./resources] and configuration will be used[0m
 Method from the request: GET
-Cookies from the location: GET
 [37mMethod allowed from the config file: [0m[37mGET [0m[37mPOST [0m[37mDELETE [0m
 [32mLocation accepts the GET method, continuing...[0m
 ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
@@ -93,1993 +80,8 @@ File extension:  [[35m[0m]
 Form Data:    [33m(not present)
 [0m
 [36mStart CheckIfPathExists(), URLPath_full [./resources/index.html] 
-[0m[32mPath [0m./resources/index.html[32m exists[0m
-
-HTTP status after checkIfPathCanBeServed(): 200
-[33mFound header ending /r/n, maybe there is body
-[0m[32m_doneparsing == true
-[0m[33mThere is no body
-[0m[34mcontent type: [text/html]
-[0mHTTP STATUS: 200
-CGI STATUS: 0
-[33mstorage->getHttpStatus(): 200
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 2
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ WRITE
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[36mStart createResponse[0m
-fd: 7
-[36mStart setResponseStatus()
-[0m_responsePath: [[[42m./resources/index.html[0m]]
-[34m_responsePath after SetResponseStatus(): ./resources/index.html
-[0m[34m   getURLPath:   [/]
-[0m[34m  getFullPath:   [./resources/index.html]
-[0m[34mgetHttpStatus(): [200]
-[0m[34mresponse path:   [./resources/index.html]
-[0m[34mcontent type:    [text/html]
-[0mThe Path is a folder: Checking for autoindex on/off:
-AUTOINDEX ON, must call storeFolderContent()
-     URLPathFirstPart: [./resources/]
-Setting _responseBody
-[34mLine: [D ./]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D ../]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D cgi/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D cookiesSet/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D error_pages/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D folderA/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D icons/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D images/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D localhost/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D location_random_dir/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D server_root/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D texts/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D uploads/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [F 400.html]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [F cgi_index.html]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [F favicon.ico]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [F index.html]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [F sanitizer_error.txt]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [F sanitizer_error_getHttpStatus.txt]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [F test.html]
-[0m[33mPath: [./resources/]
-[0mcookies in _data:  -------------------------------------------!!!!!!!!!!!!!!!!!!!!!!
--------------
-_responseHeader:
-[0mHTTP/1.1 200 OK
-Content-Type: text/html
-Content-Encoding: identity
-Connection: close
-Content-Length: 1186
-
-
-
--------------
-[36mSENDING CHUNK, response length before send: 1301[0m
-[36mSEND return - sucessfully sent: 1301[0m
-[36mALL SENT, CLOSE CLIENT[0m
-fd that will be closed: 7
-original request: /
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 3
-size server inside run loop: 4
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-fd new client: 7
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 4
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ READ
-fd: 7
-[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 7
-[34mSTORED HEADER: 
-GET / HTTP/1.1
-Host: localhost:8081
-User-Agent: curl/7.54.0
-Accept: */*
-[0m[42m[33mREQUEST METHOD: GET[0m
-
-__________________ _specificServer: testserver
-
-originalUrlPath:               [[42m/[0m]
-server block root directory:   [[42m./resources[0m]
-
-[32mStarting checkIfPathCanBeServed() and searching for the correct location block on the config file:[0m
-
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/subfolder[0m]
-locationBlockRootDir:            [[42m./resources/location_random_dir[0m]
-[33mThe url path [/] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m.py[0m]
-locationBlockRootDir:            [[42m./resources/cgi[0m]
-[33mThe url path [/] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/cgi[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/texts[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/] did not match the current location block [/texts] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[34mlocation block for [[0m[44m/[0m[34m] exists on config file as [[0m[44m/[0m[34m]
-[34mIts root_directory [./resources] and configuration will be used[0m
-Method from the request: GET
-Cookies from the location: GET
-[37mMethod allowed from the config file: [0m[37mGET [0m[37mPOST [0m[37mDELETE [0m
-[32mLocation accepts the GET method, continuing...[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-
-[36mStart storeURLPathParts(). URLPath_full: [./resources/index.html]
-[0m
-URL Path:        [[35m/[0m]
-Full URI Path:   [[35m./resources/index.html[0m]
-Path first part: [[35m./resources/[0m]
-Path LAST part:  [[35mindex.html[0m]
-File extension:  [[35m[0m]
-Form Data:    [33m(not present)
-[0m
-[36mStart CheckIfPathExists(), URLPath_full [./resources/index.html] 
-[0m[32mPath [0m./resources/index.html[32m exists[0m
-
-HTTP status after checkIfPathCanBeServed(): 200
-[33mFound header ending /r/n, maybe there is body
-[0m[32m_doneparsing == true
-[0m[33mThere is no body
-[0m[34mcontent type: [text/html]
-[0mHTTP STATUS: 200
-CGI STATUS: 0
-[33mstorage->getHttpStatus(): 200
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 5
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ WRITE
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[36mStart createResponse[0m
-fd: 7
-[36mStart setResponseStatus()
-[0m_responsePath: [[[42m./resources/index.html[0m]]
-[34m_responsePath after SetResponseStatus(): ./resources/index.html
-[0m[34m   getURLPath:   [/]
-[0m[34m  getFullPath:   [./resources/index.html]
-[0m[34mgetHttpStatus(): [200]
-[0m[34mresponse path:   [./resources/index.html]
-[0m[34mcontent type:    [text/html]
-[0mThe Path is a folder: Checking for autoindex on/off:
-AUTOINDEX ON, must call storeFolderContent()
-     URLPathFirstPart: [./resources/]
-Setting _responseBody
-[34mLine: [D ./]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D ../]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D cgi/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D cookiesSet/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D error_pages/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D folderA/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D icons/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D images/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D localhost/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D location_random_dir/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D server_root/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D texts/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D uploads/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [F 400.html]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [F cgi_index.html]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [F favicon.ico]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [F index.html]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [F sanitizer_error.txt]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [F sanitizer_error_getHttpStatus.txt]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [F test.html]
-[0m[33mPath: [./resources/]
-[0mcookies in _data:  -------------------------------------------!!!!!!!!!!!!!!!!!!!!!!
--------------
-_responseHeader:
-[0mHTTP/1.1 200 OK
-Content-Type: text/html
-Content-Encoding: identity
-Connection: close
-Content-Length: 1186
-
-
-
--------------
-[36mSENDING CHUNK, response length before send: 1301[0m
-[36mSEND return - sucessfully sent: 1301[0m
-[36mALL SENT, CLOSE CLIENT[0m
-fd that will be closed: 7
-original request: /
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 6
-size server inside run loop: 4
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-fd new client: 7
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 7
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ READ
-fd: 7
-[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 7
-[34mSTORED HEADER: 
-GET / HTTP/1.1
-Host: localhost:8081
-User-Agent: curl/7.54.0
-Accept: */*
-[0m[42m[33mREQUEST METHOD: GET[0m
-
-__________________ _specificServer: testserver
-
-originalUrlPath:               [[42m/[0m]
-server block root directory:   [[42m./resources[0m]
-
-[32mStarting checkIfPathCanBeServed() and searching for the correct location block on the config file:[0m
-
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/subfolder[0m]
-locationBlockRootDir:            [[42m./resources/location_random_dir[0m]
-[33mThe url path [/] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m.py[0m]
-locationBlockRootDir:            [[42m./resources/cgi[0m]
-[33mThe url path [/] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/cgi[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/texts[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/] did not match the current location block [/texts] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[34mlocation block for [[0m[44m/[0m[34m] exists on config file as [[0m[44m/[0m[34m]
-[34mIts root_directory [./resources] and configuration will be used[0m
-Method from the request: GET
-Cookies from the location: GET
-[37mMethod allowed from the config file: [0m[37mGET [0m[37mPOST [0m[37mDELETE [0m
-[32mLocation accepts the GET method, continuing...[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-
-[36mStart storeURLPathParts(). URLPath_full: [./resources/index.html]
-[0m
-URL Path:        [[35m/[0m]
-Full URI Path:   [[35m./resources/index.html[0m]
-Path first part: [[35m./resources/[0m]
-Path LAST part:  [[35mindex.html[0m]
-File extension:  [[35m[0m]
-Form Data:    [33m(not present)
-[0m
-[36mStart CheckIfPathExists(), URLPath_full [./resources/index.html] 
-[0m[32mPath [0m./resources/index.html[32m exists[0m
-
-HTTP status after checkIfPathCanBeServed(): 200
-[33mFound header ending /r/n, maybe there is body
-[0m[32m_doneparsing == true
-[0m[33mThere is no body
-[0m[34mcontent type: [text/html]
-[0mHTTP STATUS: 200
-CGI STATUS: 0
-[33mstorage->getHttpStatus(): 200
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 8
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ WRITE
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[36mStart createResponse[0m
-fd: 7
-[36mStart setResponseStatus()
-[0m_responsePath: [[[42m./resources/index.html[0m]]
-[34m_responsePath after SetResponseStatus(): ./resources/index.html
-[0m[34m   getURLPath:   [/]
-[0m[34m  getFullPath:   [./resources/index.html]
-[0m[34mgetHttpStatus(): [200]
-[0m[34mresponse path:   [./resources/index.html]
-[0m[34mcontent type:    [text/html]
-[0mThe Path is a folder: Checking for autoindex on/off:
-AUTOINDEX ON, must call storeFolderContent()
-     URLPathFirstPart: [./resources/]
-Setting _responseBody
-[34mLine: [D ./]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D ../]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D cgi/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D cookiesSet/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D error_pages/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D folderA/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D icons/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D images/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D localhost/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D location_random_dir/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D server_root/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D texts/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D uploads/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [F 400.html]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [F cgi_index.html]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [F favicon.ico]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [F index.html]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [F sanitizer_error.txt]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [F sanitizer_error_getHttpStatus.txt]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [F test.html]
-[0m[33mPath: [./resources/]
-[0mcookies in _data:  -------------------------------------------!!!!!!!!!!!!!!!!!!!!!!
--------------
-_responseHeader:
-[0mHTTP/1.1 200 OK
-Content-Type: text/html
-Content-Encoding: identity
-Connection: close
-Content-Length: 1186
-
-
-
--------------
-[36mSENDING CHUNK, response length before send: 1301[0m
-[36mSEND return - sucessfully sent: 1301[0m
-[36mALL SENT, CLOSE CLIENT[0m
-fd that will be closed: 7
-original request: /
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 9
-size server inside run loop: 4
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-fd new client: 7
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 10
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ READ
-fd: 7
-[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 7
-[34mSTORED HEADER: 
-GET / HTTP/1.1
-Host: localhost:8081
-User-Agent: curl/7.54.0
-Accept: */*
-[0m[42m[33mREQUEST METHOD: GET[0m
-
-__________________ _specificServer: testserver
-
-originalUrlPath:               [[42m/[0m]
-server block root directory:   [[42m./resources[0m]
-
-[32mStarting checkIfPathCanBeServed() and searching for the correct location block on the config file:[0m
-
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/subfolder[0m]
-locationBlockRootDir:            [[42m./resources/location_random_dir[0m]
-[33mThe url path [/] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m.py[0m]
-locationBlockRootDir:            [[42m./resources/cgi[0m]
-[33mThe url path [/] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/cgi[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/texts[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/] did not match the current location block [/texts] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[34mlocation block for [[0m[44m/[0m[34m] exists on config file as [[0m[44m/[0m[34m]
-[34mIts root_directory [./resources] and configuration will be used[0m
-Method from the request: GET
-Cookies from the location: GET
-[37mMethod allowed from the config file: [0m[37mGET [0m[37mPOST [0m[37mDELETE [0m
-[32mLocation accepts the GET method, continuing...[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-
-[36mStart storeURLPathParts(). URLPath_full: [./resources/index.html]
-[0m
-URL Path:        [[35m/[0m]
-Full URI Path:   [[35m./resources/index.html[0m]
-Path first part: [[35m./resources/[0m]
-Path LAST part:  [[35mindex.html[0m]
-File extension:  [[35m[0m]
-Form Data:    [33m(not present)
-[0m
-[36mStart CheckIfPathExists(), URLPath_full [./resources/index.html] 
-[0m[32mPath [0m./resources/index.html[32m exists[0m
-
-HTTP status after checkIfPathCanBeServed(): 200
-[33mFound header ending /r/n, maybe there is body
-[0m[32m_doneparsing == true
-[0m[33mThere is no body
-[0m[34mcontent type: [text/html]
-[0mHTTP STATUS: 200
-CGI STATUS: 0
-[33mstorage->getHttpStatus(): 200
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 11
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ WRITE
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[36mStart createResponse[0m
-fd: 7
-[36mStart setResponseStatus()
-[0m_responsePath: [[[42m./resources/index.html[0m]]
-[34m_responsePath after SetResponseStatus(): ./resources/index.html
-[0m[34m   getURLPath:   [/]
-[0m[34m  getFullPath:   [./resources/index.html]
-[0m[34mgetHttpStatus(): [200]
-[0m[34mresponse path:   [./resources/index.html]
-[0m[34mcontent type:    [text/html]
-[0mThe Path is a folder: Checking for autoindex on/off:
-AUTOINDEX ON, must call storeFolderContent()
-     URLPathFirstPart: [./resources/]
-Setting _responseBody
-[34mLine: [D ./]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D ../]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D cgi/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D cookiesSet/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D error_pages/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D folderA/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D icons/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D images/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D localhost/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D location_random_dir/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D server_root/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D texts/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [D uploads/]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [F 400.html]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [F cgi_index.html]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [F favicon.ico]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [F index.html]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [F sanitizer_error.txt]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [F sanitizer_error_getHttpStatus.txt]
-[0m[33mPath: [./resources/]
-[0m[34mLine: [F test.html]
-[0m[33mPath: [./resources/]
-[0mcookies in _data:  -------------------------------------------!!!!!!!!!!!!!!!!!!!!!!
--------------
-_responseHeader:
-[0mHTTP/1.1 200 OK
-Content-Type: text/html
-Content-Encoding: identity
-Connection: close
-Content-Length: 1186
-
-
-
--------------
-[36mSENDING CHUNK, response length before send: 1301[0m
-[36mSEND return - sucessfully sent: 1301[0m
-[36mALL SENT, CLOSE CLIENT[0m
-fd that will be closed: 7
-original request: /
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 12
-size server inside run loop: 4
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-fd new client: 7
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 13
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ READ
-fd: 7
-[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 7
-[34mSTORED HEADER: 
-GET /index.html HTTP/1.1
-Host: localhost:8081
-User-Agent: curl/7.54.0
-Accept: */*
-[0m[42m[33mREQUEST METHOD: GET[0m
-
-__________________ _specificServer: testserver
-
-originalUrlPath:               [[42m/index.html[0m]
-server block root directory:   [[42m./resources[0m]
-
-[32mStarting checkIfPathCanBeServed() and searching for the correct location block on the config file:[0m
-
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/subfolder[0m]
-locationBlockRootDir:            [[42m./resources/location_random_dir[0m]
-[34mFile extension: .html[0m
-[34mNo '?' found, so no cgi root_directory needed[0m
-Path is a file. Deleting file from it so it can be matched against the location block uri name. Path: [42m/[0m
-[33mThe url path [/index.html] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m.py[0m]
-locationBlockRootDir:            [[42m./resources/cgi[0m]
-[33mThe url path [/index.html] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/cgi[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/index.html] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/texts[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/index.html] did not match the current location block [/texts] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[34mFile extension: .html[0m
-[34mNo '?' found, so no cgi root_directory needed[0m
-Path is a file. Deleting file from it so it can be matched against the location block uri name. Path: [42m/[0m
-[34mlocation block for [[0m[44m/index.html[0m[34m] exists on config file as [[0m[44m/[0m[34m]
-[34mIts root_directory [./resources] and configuration will be used[0m
-Method from the request: GET
-Cookies from the location: GET
-[37mMethod allowed from the config file: [0m[37mGET [0m[37mPOST [0m[37mDELETE [0m
-[32mLocation accepts the GET method, continuing...[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-
-[36mStart storeURLPathParts(). URLPath_full: [./resources//index.html]
-[0m
-URL Path:        [[35m/index.html[0m]
-Full URI Path:   [[35m./resources//index.html[0m]
-Path first part: [[35m./resources//[0m]
-Path LAST part:  [[35mindex.html[0m]
-File extension:  [[35m.html[0m]
-Form Data:    [33m(not present)
-[0m
-[36mStart CheckIfPathExists(), URLPath_full [./resources//index.html] 
-[0m[32mPath [0m./resources//index.html[32m exists[0m
-
-HTTP status after checkIfPathCanBeServed(): 200
-[33mFound header ending /r/n, maybe there is body
-[0m[32m_doneparsing == true
-[0m[33mThere is no body
-[0m[34mcontent type: [text/html]
-[0mHTTP STATUS: 200
-CGI STATUS: 0
-[33mstorage->getHttpStatus(): 200
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 14
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ WRITE
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[36mStart createResponse[0m
-fd: 7
-[36mStart setResponseStatus()
-[0m_responsePath: [[[42m./resources//index.html[0m]]
-[34m_responsePath after SetResponseStatus(): ./resources//index.html
-[0m[34m   getURLPath:   [/index.html]
-[0m[34m  getFullPath:   [./resources//index.html]
-[0m[34mgetHttpStatus(): [200]
-[0m[34mresponse path:   [./resources//index.html]
-[0m[34mcontent type:    [text/html]
-[0m[32mThe path is a file: [[42m./resources//index.html[0m]
-Setting _responseBody
-[32mFile to be streamed: ./resources//index.html[0m
-cookies in _data:  -------------------------------------------!!!!!!!!!!!!!!!!!!!!!!
--------------
-_responseHeader:
-[0mHTTP/1.1 200 OK
-Content-Type: text/html
-Content-Encoding: identity
-Connection: close
-Content-Length: 1233
-
-
-
--------------
-[36mSENDING CHUNK, response length before send: 1348[0m
-[36mSEND return - sucessfully sent: 1348[0m
-[36mALL SENT, CLOSE CLIENT[0m
-fd that will be closed: 7
-original request: /index.html
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 15
-size server inside run loop: 4
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-fd new client: 7
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 16
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ READ
-fd: 7
-[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 7
-[34mSTORED HEADER: 
-GET /index.html HTTP/1.1
-Host: localhost:8081
-User-Agent: curl/7.54.0
-Accept: */*
-[0m[42m[33mREQUEST METHOD: GET[0m
-
-__________________ _specificServer: testserver
-
-originalUrlPath:               [[42m/index.html[0m]
-server block root directory:   [[42m./resources[0m]
-
-[32mStarting checkIfPathCanBeServed() and searching for the correct location block on the config file:[0m
-
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/subfolder[0m]
-locationBlockRootDir:            [[42m./resources/location_random_dir[0m]
-[34mFile extension: .html[0m
-[34mNo '?' found, so no cgi root_directory needed[0m
-Path is a file. Deleting file from it so it can be matched against the location block uri name. Path: [42m/[0m
-[33mThe url path [/index.html] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m.py[0m]
-locationBlockRootDir:            [[42m./resources/cgi[0m]
-[33mThe url path [/index.html] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/cgi[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/index.html] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/texts[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/index.html] did not match the current location block [/texts] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[34mFile extension: .html[0m
-[34mNo '?' found, so no cgi root_directory needed[0m
-Path is a file. Deleting file from it so it can be matched against the location block uri name. Path: [42m/[0m
-[34mlocation block for [[0m[44m/index.html[0m[34m] exists on config file as [[0m[44m/[0m[34m]
-[34mIts root_directory [./resources] and configuration will be used[0m
-Method from the request: GET
-Cookies from the location: GET
-[37mMethod allowed from the config file: [0m[37mGET [0m[37mPOST [0m[37mDELETE [0m
-[32mLocation accepts the GET method, continuing...[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-
-[36mStart storeURLPathParts(). URLPath_full: [./resources//index.html]
-[0m
-URL Path:        [[35m/index.html[0m]
-Full URI Path:   [[35m./resources//index.html[0m]
-Path first part: [[35m./resources//[0m]
-Path LAST part:  [[35mindex.html[0m]
-File extension:  [[35m.html[0m]
-Form Data:    [33m(not present)
-[0m
-[36mStart CheckIfPathExists(), URLPath_full [./resources//index.html] 
-[0m[32mPath [0m./resources//index.html[32m exists[0m
-
-HTTP status after checkIfPathCanBeServed(): 200
-[33mFound header ending /r/n, maybe there is body
-[0m[32m_doneparsing == true
-[0m[33mThere is no body
-[0m[34mcontent type: [text/html]
-[0mHTTP STATUS: 200
-CGI STATUS: 0
-[33mstorage->getHttpStatus(): 200
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 17
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ WRITE
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[36mStart createResponse[0m
-fd: 7
-[36mStart setResponseStatus()
-[0m_responsePath: [[[42m./resources//index.html[0m]]
-[34m_responsePath after SetResponseStatus(): ./resources//index.html
-[0m[34m   getURLPath:   [/index.html]
-[0m[34m  getFullPath:   [./resources//index.html]
-[0m[34mgetHttpStatus(): [200]
-[0m[34mresponse path:   [./resources//index.html]
-[0m[34mcontent type:    [text/html]
-[0m[32mThe path is a file: [[42m./resources//index.html[0m]
-Setting _responseBody
-[32mFile to be streamed: ./resources//index.html[0m
-cookies in _data:  -------------------------------------------!!!!!!!!!!!!!!!!!!!!!!
--------------
-_responseHeader:
-[0mHTTP/1.1 200 OK
-Content-Type: text/html
-Content-Encoding: identity
-Connection: close
-Content-Length: 1233
-
-
-
--------------
-[36mSENDING CHUNK, response length before send: 1348[0m
-[36mSEND return - sucessfully sent: 1348[0m
-[36mALL SENT, CLOSE CLIENT[0m
-fd that will be closed: 7
-original request: /index.html
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 18
-size server inside run loop: 4
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-fd new client: 7
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 19
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ READ
-fd: 7
-[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 7
-[34mSTORED HEADER: 
-GET /texts/index_texts.html HTTP/1.1
-Host: localhost:8081
-User-Agent: curl/7.54.0
-Accept: */*
-[0m[42m[33mREQUEST METHOD: GET[0m
-
-__________________ _specificServer: testserver
-
-originalUrlPath:               [[42m/texts/index_texts.html[0m]
-server block root directory:   [[42m./resources[0m]
-
-[32mStarting checkIfPathCanBeServed() and searching for the correct location block on the config file:[0m
-
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/subfolder[0m]
-locationBlockRootDir:            [[42m./resources/location_random_dir[0m]
-[33mThe url path [/texts/index_texts.html] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m.py[0m]
-locationBlockRootDir:            [[42m./resources/cgi[0m]
-[33mThe url path [/texts/index_texts.html] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/cgi[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/texts/index_texts.html] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/texts[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[34mFile extension: .html[0m
-[34mNo '?' found, so no cgi root_directory needed[0m
-Path is a file. Deleting file from it so it can be matched against the location block uri name. Path: [42m/texts[0m
-[34mlocation block for [[0m[44m/texts/index_texts.html[0m[34m] exists on config file as [[0m[44m/texts[0m[34m]
-[34mIts root_directory [./resources] and configuration will be used[0m
-Method from the request: GET
-Cookies from the location: GET
-[37mMethod allowed from the config file: [0m[37mGET [0m[37mPOST [0m[37mDELETE [0m
-[32mLocation accepts the GET method, continuing...[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-
-[36mStart storeURLPathParts(). URLPath_full: [./resources/texts/index_texts.html]
-[0m
-URL Path:        [[35m/texts/index_texts.html[0m]
-Full URI Path:   [[35m./resources/texts/index_texts.html[0m]
-Path first part: [[35m./resources/texts/[0m]
-Path LAST part:  [[35mindex_texts.html[0m]
-File extension:  [[35m.html[0m]
-Form Data:    [33m(not present)
-[0m
-[36mStart CheckIfPathExists(), URLPath_full [./resources/texts/index_texts.html] 
-[0m[32mPath [0m./resources/texts/index_texts.html[32m exists[0m
-
-HTTP status after checkIfPathCanBeServed(): 200
-[33mFound header ending /r/n, maybe there is body
-[0m[32m_doneparsing == true
-[0m[33mThere is no body
-[0m[34mcontent type: [text/html]
-[0mHTTP STATUS: 200
-CGI STATUS: 0
-[33mstorage->getHttpStatus(): 200
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 20
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ WRITE
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[36mStart createResponse[0m
-fd: 7
-[36mStart setResponseStatus()
-[0m_responsePath: [[[42m./resources/texts/index_texts.html[0m]]
-[34m_responsePath after SetResponseStatus(): ./resources/texts/index_texts.html
-[0m[34m   getURLPath:   [/texts/index_texts.html]
-[0m[34m  getFullPath:   [./resources/texts/index_texts.html]
-[0m[34mgetHttpStatus(): [200]
-[0m[34mresponse path:   [./resources/texts/index_texts.html]
-[0m[34mcontent type:    [text/html]
-[0m[32mThe path is a file: [[42m./resources/texts/index_texts.html[0m]
-Setting _responseBody
-[32mFile to be streamed: ./resources/texts/index_texts.html[0m
-cookies in _data:  -------------------------------------------!!!!!!!!!!!!!!!!!!!!!!
--------------
-_responseHeader:
-[0mHTTP/1.1 200 OK
-Content-Type: text/html
-Content-Encoding: identity
-Connection: close
-Content-Length: 868
-
-
-
--------------
-[36mSENDING CHUNK, response length before send: 982[0m
-[36mSEND return - sucessfully sent: 982[0m
-[36mALL SENT, CLOSE CLIENT[0m
-fd that will be closed: 7
-original request: /texts/index_texts.html
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 21
-size server inside run loop: 4
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-fd new client: 7
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 22
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ READ
-fd: 7
-[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 7
-[34mSTORED HEADER: 
-GET /texts/index_texts.html HTTP/1.1
-Host: localhost:8081
-User-Agent: curl/7.54.0
-Accept: */*
-[0m[42m[33mREQUEST METHOD: GET[0m
-
-__________________ _specificServer: testserver
-
-originalUrlPath:               [[42m/texts/index_texts.html[0m]
-server block root directory:   [[42m./resources[0m]
-
-[32mStarting checkIfPathCanBeServed() and searching for the correct location block on the config file:[0m
-
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/subfolder[0m]
-locationBlockRootDir:            [[42m./resources/location_random_dir[0m]
-[33mThe url path [/texts/index_texts.html] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m.py[0m]
-locationBlockRootDir:            [[42m./resources/cgi[0m]
-[33mThe url path [/texts/index_texts.html] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/cgi[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/texts/index_texts.html] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/texts[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[34mFile extension: .html[0m
-[34mNo '?' found, so no cgi root_directory needed[0m
-Path is a file. Deleting file from it so it can be matched against the location block uri name. Path: [42m/texts[0m
-[34mlocation block for [[0m[44m/texts/index_texts.html[0m[34m] exists on config file as [[0m[44m/texts[0m[34m]
-[34mIts root_directory [./resources] and configuration will be used[0m
-Method from the request: GET
-Cookies from the location: GET
-[37mMethod allowed from the config file: [0m[37mGET [0m[37mPOST [0m[37mDELETE [0m
-[32mLocation accepts the GET method, continuing...[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-
-[36mStart storeURLPathParts(). URLPath_full: [./resources/texts/index_texts.html]
-[0m
-URL Path:        [[35m/texts/index_texts.html[0m]
-Full URI Path:   [[35m./resources/texts/index_texts.html[0m]
-Path first part: [[35m./resources/texts/[0m]
-Path LAST part:  [[35mindex_texts.html[0m]
-File extension:  [[35m.html[0m]
-Form Data:    [33m(not present)
-[0m
-[36mStart CheckIfPathExists(), URLPath_full [./resources/texts/index_texts.html] 
-[0m[32mPath [0m./resources/texts/index_texts.html[32m exists[0m
-
-HTTP status after checkIfPathCanBeServed(): 200
-[33mFound header ending /r/n, maybe there is body
-[0m[32m_doneparsing == true
-[0m[33mThere is no body
-[0m[34mcontent type: [text/html]
-[0mHTTP STATUS: 200
-CGI STATUS: 0
-[33mstorage->getHttpStatus(): 200
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 23
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ WRITE
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[36mStart createResponse[0m
-fd: 7
-[36mStart setResponseStatus()
-[0m_responsePath: [[[42m./resources/texts/index_texts.html[0m]]
-[34m_responsePath after SetResponseStatus(): ./resources/texts/index_texts.html
-[0m[34m   getURLPath:   [/texts/index_texts.html]
-[0m[34m  getFullPath:   [./resources/texts/index_texts.html]
-[0m[34mgetHttpStatus(): [200]
-[0m[34mresponse path:   [./resources/texts/index_texts.html]
-[0m[34mcontent type:    [text/html]
-[0m[32mThe path is a file: [[42m./resources/texts/index_texts.html[0m]
-Setting _responseBody
-[32mFile to be streamed: ./resources/texts/index_texts.html[0m
-cookies in _data:  -------------------------------------------!!!!!!!!!!!!!!!!!!!!!!
--------------
-_responseHeader:
-[0mHTTP/1.1 200 OK
-Content-Type: text/html
-Content-Encoding: identity
-Connection: close
-Content-Length: 868
-
-
-
--------------
-[36mSENDING CHUNK, response length before send: 982[0m
-[36mSEND return - sucessfully sent: 982[0m
-[36mALL SENT, CLOSE CLIENT[0m
-fd that will be closed: 7
-original request: /texts/index_texts.html
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 24
-size server inside run loop: 4
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-fd new client: 7
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 25
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ READ
-fd: 7
-[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 7
-[34mSTORED HEADER: 
-GET /texts/one_sentence.html HTTP/1.1
-Host: localhost:8081
-User-Agent: curl/7.54.0
-Accept: */*
-[0m[42m[33mREQUEST METHOD: GET[0m
-
-__________________ _specificServer: testserver
-
-originalUrlPath:               [[42m/texts/one_sentence.html[0m]
-server block root directory:   [[42m./resources[0m]
-
-[32mStarting checkIfPathCanBeServed() and searching for the correct location block on the config file:[0m
-
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/subfolder[0m]
-locationBlockRootDir:            [[42m./resources/location_random_dir[0m]
-[33mThe url path [/texts/one_sentence.html] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m.py[0m]
-locationBlockRootDir:            [[42m./resources/cgi[0m]
-[33mThe url path [/texts/one_sentence.html] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/cgi[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/texts/one_sentence.html] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/texts[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[34mFile extension: .html[0m
-[34mNo '?' found, so no cgi root_directory needed[0m
-Path is a file. Deleting file from it so it can be matched against the location block uri name. Path: [42m/texts[0m
-[34mlocation block for [[0m[44m/texts/one_sentence.html[0m[34m] exists on config file as [[0m[44m/texts[0m[34m]
-[34mIts root_directory [./resources] and configuration will be used[0m
-Method from the request: GET
-Cookies from the location: GET
-[37mMethod allowed from the config file: [0m[37mGET [0m[37mPOST [0m[37mDELETE [0m
-[32mLocation accepts the GET method, continuing...[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-
-[36mStart storeURLPathParts(). URLPath_full: [./resources/texts/one_sentence.html]
-[0m
-URL Path:        [[35m/texts/one_sentence.html[0m]
-Full URI Path:   [[35m./resources/texts/one_sentence.html[0m]
-Path first part: [[35m./resources/texts/[0m]
-Path LAST part:  [[35mone_sentence.html[0m]
-File extension:  [[35m.html[0m]
-Form Data:    [33m(not present)
-[0m
-[36mStart CheckIfPathExists(), URLPath_full [./resources/texts/one_sentence.html] 
-[0m[32mPath [0m./resources/texts/one_sentence.html[32m exists[0m
-
-HTTP status after checkIfPathCanBeServed(): 200
-[33mFound header ending /r/n, maybe there is body
-[0m[32m_doneparsing == true
-[0m[33mThere is no body
-[0m[34mcontent type: [text/html]
-[0mHTTP STATUS: 200
-CGI STATUS: 0
-[33mstorage->getHttpStatus(): 200
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 26
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ WRITE
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[36mStart createResponse[0m
-fd: 7
-[36mStart setResponseStatus()
-[0m_responsePath: [[[42m./resources/texts/one_sentence.html[0m]]
-[34m_responsePath after SetResponseStatus(): ./resources/texts/one_sentence.html
-[0m[34m   getURLPath:   [/texts/one_sentence.html]
-[0m[34m  getFullPath:   [./resources/texts/one_sentence.html]
-[0m[34mgetHttpStatus(): [200]
-[0m[34mresponse path:   [./resources/texts/one_sentence.html]
-[0m[34mcontent type:    [text/html]
-[0m[32mThe path is a file: [[42m./resources/texts/one_sentence.html[0m]
-Setting _responseBody
-[32mFile to be streamed: ./resources/texts/one_sentence.html[0m
-cookies in _data:  -------------------------------------------!!!!!!!!!!!!!!!!!!!!!!
--------------
-_responseHeader:
-[0mHTTP/1.1 200 OK
-Content-Type: text/html
-Content-Encoding: identity
-Connection: close
-Content-Length: 141
-
-
-
--------------
-[36mSENDING CHUNK, response length before send: 255[0m
-[36mSEND return - sucessfully sent: 255[0m
-[36mALL SENT, CLOSE CLIENT[0m
-fd that will be closed: 7
-original request: /texts/one_sentence.html
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 27
-size server inside run loop: 4
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-fd new client: 7
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 28
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ READ
-fd: 7
-[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 7
-[34mSTORED HEADER: 
-GET /texts/one_sentence.html HTTP/1.1
-Host: localhost:8081
-User-Agent: curl/7.54.0
-Accept: */*
-[0m[42m[33mREQUEST METHOD: GET[0m
-
-__________________ _specificServer: testserver
-
-originalUrlPath:               [[42m/texts/one_sentence.html[0m]
-server block root directory:   [[42m./resources[0m]
-
-[32mStarting checkIfPathCanBeServed() and searching for the correct location block on the config file:[0m
-
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/subfolder[0m]
-locationBlockRootDir:            [[42m./resources/location_random_dir[0m]
-[33mThe url path [/texts/one_sentence.html] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m.py[0m]
-locationBlockRootDir:            [[42m./resources/cgi[0m]
-[33mThe url path [/texts/one_sentence.html] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/cgi[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/texts/one_sentence.html] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/texts[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[34mFile extension: .html[0m
-[34mNo '?' found, so no cgi root_directory needed[0m
-Path is a file. Deleting file from it so it can be matched against the location block uri name. Path: [42m/texts[0m
-[34mlocation block for [[0m[44m/texts/one_sentence.html[0m[34m] exists on config file as [[0m[44m/texts[0m[34m]
-[34mIts root_directory [./resources] and configuration will be used[0m
-Method from the request: GET
-Cookies from the location: GET
-[37mMethod allowed from the config file: [0m[37mGET [0m[37mPOST [0m[37mDELETE [0m
-[32mLocation accepts the GET method, continuing...[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-
-[36mStart storeURLPathParts(). URLPath_full: [./resources/texts/one_sentence.html]
-[0m
-URL Path:        [[35m/texts/one_sentence.html[0m]
-Full URI Path:   [[35m./resources/texts/one_sentence.html[0m]
-Path first part: [[35m./resources/texts/[0m]
-Path LAST part:  [[35mone_sentence.html[0m]
-File extension:  [[35m.html[0m]
-Form Data:    [33m(not present)
-[0m
-[36mStart CheckIfPathExists(), URLPath_full [./resources/texts/one_sentence.html] 
-[0m[32mPath [0m./resources/texts/one_sentence.html[32m exists[0m
-
-HTTP status after checkIfPathCanBeServed(): 200
-[33mFound header ending /r/n, maybe there is body
-[0m[32m_doneparsing == true
-[0m[33mThere is no body
-[0m[34mcontent type: [text/html]
-[0mHTTP STATUS: 200
-CGI STATUS: 0
-[33mstorage->getHttpStatus(): 200
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 29
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ WRITE
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[36mStart createResponse[0m
-fd: 7
-[36mStart setResponseStatus()
-[0m_responsePath: [[[42m./resources/texts/one_sentence.html[0m]]
-[34m_responsePath after SetResponseStatus(): ./resources/texts/one_sentence.html
-[0m[34m   getURLPath:   [/texts/one_sentence.html]
-[0m[34m  getFullPath:   [./resources/texts/one_sentence.html]
-[0m[34mgetHttpStatus(): [200]
-[0m[34mresponse path:   [./resources/texts/one_sentence.html]
-[0m[34mcontent type:    [text/html]
-[0m[32mThe path is a file: [[42m./resources/texts/one_sentence.html[0m]
-Setting _responseBody
-[32mFile to be streamed: ./resources/texts/one_sentence.html[0m
-cookies in _data:  -------------------------------------------!!!!!!!!!!!!!!!!!!!!!!
--------------
-_responseHeader:
-[0mHTTP/1.1 200 OK
-Content-Type: text/html
-Content-Encoding: identity
-Connection: close
-Content-Length: 141
-
-
-
--------------
-[36mSENDING CHUNK, response length before send: 255[0m
-[36mSEND return - sucessfully sent: 255[0m
-[36mALL SENT, CLOSE CLIENT[0m
-fd that will be closed: 7
-original request: /texts/one_sentence.html
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 30
-size server inside run loop: 4
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-fd new client: 7
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 31
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ READ
-fd: 7
-[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 7
-[34mSTORED HEADER: 
-GET /texts/one_page.html HTTP/1.1
-Host: localhost:8081
-User-Agent: curl/7.54.0
-Accept: */*
-[0m[42m[33mREQUEST METHOD: GET[0m
-
-__________________ _specificServer: testserver
-
-originalUrlPath:               [[42m/texts/one_page.html[0m]
-server block root directory:   [[42m./resources[0m]
-
-[32mStarting checkIfPathCanBeServed() and searching for the correct location block on the config file:[0m
-
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/subfolder[0m]
-locationBlockRootDir:            [[42m./resources/location_random_dir[0m]
-[33mThe url path [/texts/one_page.html] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m.py[0m]
-locationBlockRootDir:            [[42m./resources/cgi[0m]
-[33mThe url path [/texts/one_page.html] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/cgi[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/texts/one_page.html] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/texts[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[34mFile extension: .html[0m
-[34mNo '?' found, so no cgi root_directory needed[0m
-Path is a file. Deleting file from it so it can be matched against the location block uri name. Path: [42m/texts[0m
-[34mlocation block for [[0m[44m/texts/one_page.html[0m[34m] exists on config file as [[0m[44m/texts[0m[34m]
-[34mIts root_directory [./resources] and configuration will be used[0m
-Method from the request: GET
-Cookies from the location: GET
-[37mMethod allowed from the config file: [0m[37mGET [0m[37mPOST [0m[37mDELETE [0m
-[32mLocation accepts the GET method, continuing...[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-
-[36mStart storeURLPathParts(). URLPath_full: [./resources/texts/one_page.html]
-[0m
-URL Path:        [[35m/texts/one_page.html[0m]
-Full URI Path:   [[35m./resources/texts/one_page.html[0m]
-Path first part: [[35m./resources/texts/[0m]
-Path LAST part:  [[35mone_page.html[0m]
-File extension:  [[35m.html[0m]
-Form Data:    [33m(not present)
-[0m
-[36mStart CheckIfPathExists(), URLPath_full [./resources/texts/one_page.html] 
-[0m[32mPath [0m./resources/texts/one_page.html[32m exists[0m
-
-HTTP status after checkIfPathCanBeServed(): 200
-[33mFound header ending /r/n, maybe there is body
-[0m[32m_doneparsing == true
-[0m[33mThere is no body
-[0m[34mcontent type: [text/html]
-[0mHTTP STATUS: 200
-CGI STATUS: 0
-[33mstorage->getHttpStatus(): 200
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 32
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ WRITE
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[36mStart createResponse[0m
-fd: 7
-[36mStart setResponseStatus()
-[0m_responsePath: [[[42m./resources/texts/one_page.html[0m]]
-[34m_responsePath after SetResponseStatus(): ./resources/texts/one_page.html
-[0m[34m   getURLPath:   [/texts/one_page.html]
-[0m[34m  getFullPath:   [./resources/texts/one_page.html]
-[0m[34mgetHttpStatus(): [200]
-[0m[34mresponse path:   [./resources/texts/one_page.html]
-[0m[34mcontent type:    [text/html]
-[0m[32mThe path is a file: [[42m./resources/texts/one_page.html[0m]
-Setting _responseBody
-[32mFile to be streamed: ./resources/texts/one_page.html[0m
-cookies in _data:  -------------------------------------------!!!!!!!!!!!!!!!!!!!!!!
--------------
-_responseHeader:
-[0mHTTP/1.1 200 OK
-Content-Type: text/html
-Content-Encoding: identity
-Connection: close
-Content-Length: 3152
-
-
-
--------------
-[36mSENDING CHUNK, response length before send: 3267[0m
-[36mSEND return - sucessfully sent: 3267[0m
-[36mALL SENT, CLOSE CLIENT[0m
-fd that will be closed: 7
-original request: /texts/one_page.html
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 33
-size server inside run loop: 4
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-fd new client: 7
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 34
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ READ
-fd: 7
-[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 7
-[34mSTORED HEADER: 
-GET /texts/one_page.html HTTP/1.1
-Host: localhost:8081
-User-Agent: curl/7.54.0
-Accept: */*
-[0m[42m[33mREQUEST METHOD: GET[0m
-
-__________________ _specificServer: testserver
-
-originalUrlPath:               [[42m/texts/one_page.html[0m]
-server block root directory:   [[42m./resources[0m]
-
-[32mStarting checkIfPathCanBeServed() and searching for the correct location block on the config file:[0m
-
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/subfolder[0m]
-locationBlockRootDir:            [[42m./resources/location_random_dir[0m]
-[33mThe url path [/texts/one_page.html] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m.py[0m]
-locationBlockRootDir:            [[42m./resources/cgi[0m]
-[33mThe url path [/texts/one_page.html] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/cgi[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/texts/one_page.html] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/texts[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[34mFile extension: .html[0m
-[34mNo '?' found, so no cgi root_directory needed[0m
-Path is a file. Deleting file from it so it can be matched against the location block uri name. Path: [42m/texts[0m
-[34mlocation block for [[0m[44m/texts/one_page.html[0m[34m] exists on config file as [[0m[44m/texts[0m[34m]
-[34mIts root_directory [./resources] and configuration will be used[0m
-Method from the request: GET
-Cookies from the location: GET
-[37mMethod allowed from the config file: [0m[37mGET [0m[37mPOST [0m[37mDELETE [0m
-[32mLocation accepts the GET method, continuing...[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-
-[36mStart storeURLPathParts(). URLPath_full: [./resources/texts/one_page.html]
-[0m
-URL Path:        [[35m/texts/one_page.html[0m]
-Full URI Path:   [[35m./resources/texts/one_page.html[0m]
-Path first part: [[35m./resources/texts/[0m]
-Path LAST part:  [[35mone_page.html[0m]
-File extension:  [[35m.html[0m]
-Form Data:    [33m(not present)
-[0m
-[36mStart CheckIfPathExists(), URLPath_full [./resources/texts/one_page.html] 
-[0m[32mPath [0m./resources/texts/one_page.html[32m exists[0m
-
-HTTP status after checkIfPathCanBeServed(): 200
-[33mFound header ending /r/n, maybe there is body
-[0m[32m_doneparsing == true
-[0m[33mThere is no body
-[0m[34mcontent type: [text/html]
-[0mHTTP STATUS: 200
-CGI STATUS: 0
-[33mstorage->getHttpStatus(): 200
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 35
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ WRITE
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[36mStart createResponse[0m
-fd: 7
-[36mStart setResponseStatus()
-[0m_responsePath: [[[42m./resources/texts/one_page.html[0m]]
-[34m_responsePath after SetResponseStatus(): ./resources/texts/one_page.html
-[0m[34m   getURLPath:   [/texts/one_page.html]
-[0m[34m  getFullPath:   [./resources/texts/one_page.html]
-[0m[34mgetHttpStatus(): [200]
-[0m[34mresponse path:   [./resources/texts/one_page.html]
-[0m[34mcontent type:    [text/html]
-[0m[32mThe path is a file: [[42m./resources/texts/one_page.html[0m]
-Setting _responseBody
-[32mFile to be streamed: ./resources/texts/one_page.html[0m
-cookies in _data:  -------------------------------------------!!!!!!!!!!!!!!!!!!!!!!
--------------
-_responseHeader:
-[0mHTTP/1.1 200 OK
-Content-Type: text/html
-Content-Encoding: identity
-Connection: close
-Content-Length: 3152
-
-
-
--------------
-[36mSENDING CHUNK, response length before send: 3267[0m
-[36mSEND return - sucessfully sent: 3267[0m
-[36mALL SENT, CLOSE CLIENT[0m
-fd that will be closed: 7
-original request: /texts/one_page.html
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 36
-size server inside run loop: 4
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-fd new client: 7
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 37
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ READ
-fd: 7
-[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 7
-[34mSTORED HEADER: 
-GET /texts/bible.html HTTP/1.1
-Host: localhost:8081
-User-Agent: curl/7.54.0
-Accept: */*
-[0m[42m[33mREQUEST METHOD: GET[0m
-
-__________________ _specificServer: testserver
-
-originalUrlPath:               [[42m/texts/bible.html[0m]
-server block root directory:   [[42m./resources[0m]
-
-[32mStarting checkIfPathCanBeServed() and searching for the correct location block on the config file:[0m
-
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/subfolder[0m]
-locationBlockRootDir:            [[42m./resources/location_random_dir[0m]
-[33mThe url path [/texts/bible.html] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m.py[0m]
-locationBlockRootDir:            [[42m./resources/cgi[0m]
-[33mThe url path [/texts/bible.html] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/cgi[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/texts/bible.html] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/texts[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[34mFile extension: .html[0m
-[34mNo '?' found, so no cgi root_directory needed[0m
-Path is a file. Deleting file from it so it can be matched against the location block uri name. Path: [42m/texts[0m
-[34mlocation block for [[0m[44m/texts/bible.html[0m[34m] exists on config file as [[0m[44m/texts[0m[34m]
-[34mIts root_directory [./resources] and configuration will be used[0m
-Method from the request: GET
-Cookies from the location: GET
-[37mMethod allowed from the config file: [0m[37mGET [0m[37mPOST [0m[37mDELETE [0m
-[32mLocation accepts the GET method, continuing...[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-
-[36mStart storeURLPathParts(). URLPath_full: [./resources/texts/bible.html]
-[0m
-URL Path:        [[35m/texts/bible.html[0m]
-Full URI Path:   [[35m./resources/texts/bible.html[0m]
-Path first part: [[35m./resources/texts/[0m]
-Path LAST part:  [[35mbible.html[0m]
-File extension:  [[35m.html[0m]
-Form Data:    [33m(not present)
-[0m
-[36mStart CheckIfPathExists(), URLPath_full [./resources/texts/bible.html] 
-[0m[32mPath [0m./resources/texts/bible.html[32m exists[0m
-
-HTTP status after checkIfPathCanBeServed(): 200
-[33mFound header ending /r/n, maybe there is body
-[0m[32m_doneparsing == true
-[0m[33mThere is no body
-[0m[34mcontent type: [text/html]
-[0mHTTP STATUS: 200
-CGI STATUS: 0
-[33mstorage->getHttpStatus(): 200
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 38
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ WRITE
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[36mStart createResponse[0m
-fd: 7
-[36mStart setResponseStatus()
-[0m_responsePath: [[[42m./resources/texts/bible.html[0m]]
-[34m_responsePath after SetResponseStatus(): ./resources/texts/bible.html
-[0m[34m   getURLPath:   [/texts/bible.html]
-[0m[34m  getFullPath:   [./resources/texts/bible.html]
-[0m[34mgetHttpStatus(): [200]
-[0m[34mresponse path:   [./resources/texts/bible.html]
-[0m[34mcontent type:    [text/html]
-[0m[32mThe path is a file: [[42m./resources/texts/bible.html[0m]
-Setting _responseBody
-[32mFile to be streamed: ./resources/texts/bible.html[0m
-cookies in _data:  -------------------------------------------!!!!!!!!!!!!!!!!!!!!!!
--------------
-_responseHeader:
-[0mHTTP/1.1 200 OK
-Content-Type: text/html
-Content-Encoding: identity
-Connection: close
-Content-Length: 4332607
-
-
-
--------------
-[36mSENDING CHUNK, response length before send: 4332725[0m
-[36mSEND return - sucessfully sent: 261676[0m
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 39
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ WRITE
-fd that will be closed: 7
-original request: /texts/bible.html
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 40
-size server inside run loop: 4
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-fd new client: 7
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 41
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ READ
-fd: 7
-[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 7
-[34mSTORED HEADER: 
-GET /texts/bible.html HTTP/1.1
-Host: localhost:8081
-User-Agent: curl/7.54.0
-Accept: */*
-[0m[42m[33mREQUEST METHOD: GET[0m
-
-__________________ _specificServer: testserver
-
-originalUrlPath:               [[42m/texts/bible.html[0m]
-server block root directory:   [[42m./resources[0m]
-
-[32mStarting checkIfPathCanBeServed() and searching for the correct location block on the config file:[0m
-
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/subfolder[0m]
-locationBlockRootDir:            [[42m./resources/location_random_dir[0m]
-[33mThe url path [/texts/bible.html] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m.py[0m]
-locationBlockRootDir:            [[42m./resources/cgi[0m]
-[33mThe url path [/texts/bible.html] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/cgi[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/texts/bible.html] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/texts[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[34mFile extension: .html[0m
-[34mNo '?' found, so no cgi root_directory needed[0m
-Path is a file. Deleting file from it so it can be matched against the location block uri name. Path: [42m/texts[0m
-[34mlocation block for [[0m[44m/texts/bible.html[0m[34m] exists on config file as [[0m[44m/texts[0m[34m]
-[34mIts root_directory [./resources] and configuration will be used[0m
-Method from the request: GET
-Cookies from the location: GET
-[37mMethod allowed from the config file: [0m[37mGET [0m[37mPOST [0m[37mDELETE [0m
-[32mLocation accepts the GET method, continuing...[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-
-[36mStart storeURLPathParts(). URLPath_full: [./resources/texts/bible.html]
-[0m
-URL Path:        [[35m/texts/bible.html[0m]
-Full URI Path:   [[35m./resources/texts/bible.html[0m]
-Path first part: [[35m./resources/texts/[0m]
-Path LAST part:  [[35mbible.html[0m]
-File extension:  [[35m.html[0m]
-Form Data:    [33m(not present)
-[0m
-[36mStart CheckIfPathExists(), URLPath_full [./resources/texts/bible.html] 
-[0m[32mPath [0m./resources/texts/bible.html[32m exists[0m
-
-HTTP status after checkIfPathCanBeServed(): 200
-[33mFound header ending /r/n, maybe there is body
-[0m[32m_doneparsing == true
-[0m[33mThere is no body
-[0m[34mcontent type: [text/html]
-[0mHTTP STATUS: 200
-CGI STATUS: 0
-[33mstorage->getHttpStatus(): 200
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Done parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 42
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ WRITE
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[36mStart createResponse[0m
-fd: 7
-[36mStart setResponseStatus()
-[0m_responsePath: [[[42m./resources/texts/bible.html[0m]]
-[34m_responsePath after SetResponseStatus(): ./resources/texts/bible.html
-[0m[34m   getURLPath:   [/texts/bible.html]
-[0m[34m  getFullPath:   [./resources/texts/bible.html]
-[0m[34mgetHttpStatus(): [200]
-[0m[34mresponse path:   [./resources/texts/bible.html]
-[0m[34mcontent type:    [text/html]
-[0m[32mThe path is a file: [[42m./resources/texts/bible.html[0m]
-Setting _responseBody
-[32mFile to be streamed: ./resources/texts/bible.html[0m
-cookies in _data:  -------------------------------------------!!!!!!!!!!!!!!!!!!!!!!
--------------
-_responseHeader:
-[0mHTTP/1.1 200 OK
-Content-Type: text/html
-Content-Encoding: identity
-Connection: close
-Content-Length: 4332607
-
-
-
--------------
-[36mSENDING CHUNK, response length before send: 4332725[0m
-[36mSEND return - sucessfully sent: 621240[0m
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 43
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ WRITE
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[36mSENDING CHUNK, response length before send: 3711485[0m
-[36mSEND return - sucessfully sent: 850304[0m
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 44
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ WRITE
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[36mSENDING CHUNK, response length before send: 2861181[0m
-[36mSEND return - sucessfully sent: 572868[0m
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 45
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ WRITE
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[36mSENDING CHUNK, response length before send: 2288313[0m
-[36mSEND return - sucessfully sent: 605740[0m
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 46
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ WRITE
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[36mSENDING CHUNK, response length before send: 1682573[0m
-[36mSEND return - sucessfully sent: 466476[0m
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 47
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ WRITE
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[36mSENDING CHUNK, response length before send: 1216097[0m
-[36mSEND return - sucessfully sent: 1039812[0m
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 48
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ WRITE
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[36mSENDING CHUNK, response length before send: 176285[0m
-[36mSEND return - sucessfully sent: 32664[0m
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 49
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ WRITE
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[36mSENDING CHUNK, response length before send: 143621[0m
-[36mSEND return - sucessfully sent: 143621[0m
-[36mALL SENT, CLOSE CLIENT[0m
-fd that will be closed: 7
-original request: /texts/bible.html
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 50
-size server inside run loop: 4
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-fd new client: 7
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 51
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ READ
-fd: 7
-[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 7
-[34mSTORED HEADER: 
-GET /XXX.html HTTP/1.1
-Host: localhost:8081
-User-Agent: curl/7.54.0
-Accept: */*
-[0m[42m[33mREQUEST METHOD: GET[0m
-
-__________________ _specificServer: testserver
-
-originalUrlPath:               [[42m/XXX.html[0m]
-server block root directory:   [[42m./resources[0m]
-
-[32mStarting checkIfPathCanBeServed() and searching for the correct location block on the config file:[0m
-
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/subfolder[0m]
-locationBlockRootDir:            [[42m./resources/location_random_dir[0m]
-[33mThe url path [/XXX.html] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m.py[0m]
-locationBlockRootDir:            [[42m./resources/cgi[0m]
-[33mThe url path [/XXX.html] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/cgi[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/XXX.html] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/texts[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/XXX.html] did not match the current location block [/texts] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/XXX.html] did not match the current location block [/] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/images[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/XXX.html] did not match the current location block [/images] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/nonExistent[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/XXX.html] did not match the current location block [/nonExistent] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/_folderA[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/XXX.html] did not match the current location block [/_folderA] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-
-[31mAs the UrlPath did not match any location block, the server cannot serve any file and will return 404 NOT_FOUND[0m
-
-[33mFound header ending /r/n, maybe there is body
-[0m[32m_doneparsing == true
-[0m[33mThere is no body
-[0m[34mcontent type: [text/html]
-[0mHTTP STATUS: 404
-CGI STATUS: 0
-[33mstorage->getHttpStatus(): 404
-[0m[33mstorage->getCgiData().getIsCgi(): 0
-[0m[31merror parsing - sending response - failure, error 404
-[0m
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 52
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ WRITE
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[36mStart createResponse[0m
-fd: 7
-[36mStart setResponseStatus()
-[0m[34m_responsePath after SetResponseStatus(): ./resources/error_pages/404.html
-[0m[34m   getURLPath:   [/XXX.html]
-[0m[34m  getFullPath:   [default]
-[0m[34mgetHttpStatus(): [404]
-[0m[34mresponse path:   [./resources/error_pages/404.html]
-[0m[34mcontent type:    [text/html]
-[0m[32mThe path is a file: [[42m./resources/error_pages/404.html[0m]
-Setting _responseBody
-[32mFile to be streamed: ./resources/error_pages/404.html[0m
-cookies in _data:  -------------------------------------------!!!!!!!!!!!!!!!!!!!!!!
--------------
-_responseHeader:
-[0mHTTP/1.1 404 Not Found
-Content-Type: text/html
-Content-Encoding: identity
-Connection: close
-Content-Length: 78
-
-
-
--------------
-[36mSENDING CHUNK, response length before send: 198[0m
-[36mSEND return - sucessfully sent: 198[0m
-[36mALL SENT, CLOSE CLIENT[0m
-fd that will be closed: 7
-original request: /XXX.html
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 53
-size server inside run loop: 4
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-fd new client: 7
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 54
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ READ
-fd: 7
-[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 7
-[34mSTORED HEADER: 
-GET /XXX/index_texts.html HTTP/1.1
-Host: localhost:8081
-User-Agent: curl/7.54.0
-Accept: */*
-[0m[42m[33mREQUEST METHOD: GET[0m
-
-__________________ _specificServer: testserver
-
-originalUrlPath:               [[42m/XXX/index_texts.html[0m]
-server block root directory:   [[42m./resources[0m]
-
-[32mStarting checkIfPathCanBeServed() and searching for the correct location block on the config file:[0m
-
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/subfolder[0m]
-locationBlockRootDir:            [[42m./resources/location_random_dir[0m]
-[33mThe url path [/XXX/index_texts.html] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m.py[0m]
-locationBlockRootDir:            [[42m./resources/cgi[0m]
-[33mThe url path [/XXX/index_texts.html] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/cgi[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/XXX/index_texts.html] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/texts[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[34mFile extension: .html[0m
-[34mNo '?' found, so no cgi root_directory needed[0m
-Path is a file. Deleting file from it so it can be matched against the location block uri name. Path: [42m/XXX[0m
-[33mThe url path [/XXX/index_texts.html] did not match the current location block [/texts] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/XXX/index_texts.html] did not match the current location block [/] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/images[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/XXX/index_texts.html] did not match the current location block [/images] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/nonExistent[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/XXX/index_texts.html] did not match the current location block [/nonExistent] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/_folderA[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/XXX/index_texts.html] did not match the current location block [/_folderA] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-
-[31mAs the UrlPath did not match any location block, the server cannot serve any file and will return 404 NOT_FOUND[0m
-
-[33mFound header ending /r/n, maybe there is body
-[0m[32m_doneparsing == true
-[0m[33mThere is no body
-[0m[34mcontent type: [text/html]
-[0mHTTP STATUS: 404
-CGI STATUS: 0
-[33mstorage->getHttpStatus(): 404
-[0m[33mstorage->getCgiData().getIsCgi(): 0
-[0m[31merror parsing - sending response - failure, error 404
-[0m
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 55
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ WRITE
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-[36mStart createResponse[0m
-fd: 7
-[36mStart setResponseStatus()
-[0m[34m_responsePath after SetResponseStatus(): ./resources/error_pages/404.html
-[0m[34m   getURLPath:   [/XXX/index_texts.html]
-[0m[34m  getFullPath:   [default]
-[0m[34mgetHttpStatus(): [404]
-[0m[34mresponse path:   [./resources/error_pages/404.html]
-[0m[34mcontent type:    [text/html]
-[0m[32mThe path is a file: [[42m./resources/error_pages/404.html[0m]
-Setting _responseBody
-[32mFile to be streamed: ./resources/error_pages/404.html[0m
-cookies in _data:  -------------------------------------------!!!!!!!!!!!!!!!!!!!!!!
--------------
-_responseHeader:
-[0mHTTP/1.1 404 Not Found
-Content-Type: text/html
-Content-Encoding: identity
-Connection: close
-Content-Length: 78
-
-
-
--------------
-[36mSENDING CHUNK, response length before send: 198[0m
-[36mSEND return - sucessfully sent: 198[0m
-[36mALL SENT, CLOSE CLIENT[0m
-fd that will be closed: 7
-original request: /XXX/index_texts.html
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 56
-size server inside run loop: 4
-⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
-fd new client: 7
-
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 57
-size server inside run loop: 4
------------------------------------------------------------------------------------------------------------------ READ
-fd: 7
-[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
-[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 7
-[34mSTORED HEADER: 
-GET /_folderA HTTP/1.1
-Host: localhost:8081
-User-Agent: curl/7.54.0
-Accept: */*
-[0m[42m[33mREQUEST METHOD: GET[0m
-
-__________________ _specificServer: testserver
-
-originalUrlPath:               [[42m/_folderA[0m]
-server block root directory:   [[42m./resources[0m]
-
-[32mStarting checkIfPathCanBeServed() and searching for the correct location block on the config file:[0m
-
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/subfolder[0m]
-locationBlockRootDir:            [[42m./resources/location_random_dir[0m]
-[33mThe url path [/_folderA] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m.py[0m]
-locationBlockRootDir:            [[42m./resources/cgi[0m]
-[33mThe url path [/_folderA] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/cgi[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/_folderA] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/texts[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/_folderA] did not match the current location block [/texts] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/_folderA] did not match the current location block [/] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/images[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/_folderA] did not match the current location block [/images] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/nonExistent[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/_folderA] did not match the current location block [/nonExistent] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-locationBlockUriName:            [[42m/_folderA[0m]
-locationBlockRootDir:            [[42m./resources[0m]
-[33mThe url path [/_folderA] did not match the current location block [/_folderA] from the config file. Checking the next locationBlockUriName[0m
-⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
-
-[33mInternal directory requested, it will be served but no need to search for its location on the config file[0m
-
-There is no extension in the file
-[36mStart storeURLPathParts(). URLPath_full: [./resources/_folderA]
-[0m
-URL Path:        [[35m/_folderA[0m]
-Full URI Path:   [[35m./resources/_folderA[0m]
-Path first part: [[35m./resources/[0m]
-Path LAST part:  [[35m_folderA[0m]
-File extension:  [[35m[0m]
-Form Data:    [33m(not present)
-[0m
-[36mStart CheckIfPathExists(), URLPath_full [./resources/_folderA] 
 [0m[31m
-Error: file [[0m./resources/_folderA[31m] was not found. Returning 404 NOT FOUND[0m
+Error: file [[0m./resources/index.html[31m] was not found. Returning 404 NOT FOUND[0m
 
 HTTP status after checkIfPathCanBeServed(): 404
 [33mFound header ending /r/n, maybe there is body
@@ -2092,21 +94,962 @@ CGI STATUS: 0
 [0m[33mstorage->getCgiData().getIsCgi(): 0
 [0m[31merror parsing - sending response - failure, error 404
 [0m
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 58
-size server inside run loop: 4
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 2
+size server inside run loop: 2
 ----------------------------------------------------------------------------------------------------------------- WRITE
 ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
 [36mStart createResponse[0m
-fd: 7
-[36mStart setResponseStatus()
-[0m[34m_responsePath after SetResponseStatus(): ./resources/error_pages/404.html
-[0m[34m   getURLPath:   [/_folderA]
-[0m[34m  getFullPath:   [./resources/_folderA]
+fd: 6
+[36mStart setResponseStatus(), current: 404
+[0merrorPages:
+[0m./resources/error_pages/404.html
+-------------
+[34m_responsePath after SetResponseStatus(): ./resources/error_pages/404.html
+[0m[34mgetURLPath:      [/]
+[0m[34mgetFullPath:     [./resources/index.html]
+[0m[34mgetHttpStatus(): [404]
+[0m[34mresponse path:   [./resources/error_pages/404.html]
+[0m[34mcontent type:    [text/html]
+[0mThe Path is a folder: Checking for autoindex on/off:
+AUTOINDEX ON, must call storeFolderContent()
+     URLPathFirstPart: [./resources/]
+Setting _responseBody
+cookies in _data:  -------------------------------------------!!!!!!!!!!!!!!!!!!!!!!
+-------------
+_responseHeader:
+[0mHTTP/1.1 200 OK
+Content-Type: text/html
+Content-Encoding: identity
+Connection: close
+Content-Length: 1192
+
+
+
+-------------
+[36mSENDING CHUNK, response length before send: 1307[0m
+[36mSEND return - sucessfully sent: 1307[0m
+[36mALL SENT, CLOSE CLIENT[0m
+fd that will be closed: 6
+original request: /
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 3
+size server inside run loop: 2
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 6
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 4
+size server inside run loop: 2
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 6
+[34mSTORED HEADER: 
+GET / HTTP/1.1
+Host: localhost:8081
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+__________________ _specificServer: testserver
+
+originalUrlPath:               [[42m/[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting checkIfPathCanBeServed() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir[0m]
+[33mThe url path [/] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[33mThe url path [/] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[33mThe url path [/] did not match the current location block [/texts] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+Path is a directory.
+[0m[34mlocation block for [[0m[44m/[0m[34m] exists on config file as [[0m[44m/[0m[34m]
+[34mIts root_directory [./resources] and configuration will be used[0m
+Method from the request: GET
+[37mMethod allowed from the config file: [0m[37mGET [0m[37mPOST [0m[37mDELETE [0m
+[32mLocation accepts the GET method, continuing...[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[36mStart storeURLPathParts(). URLPath_full: [./resources/index.html]
+[0m
+URL Path:        [[35m/[0m]
+Full URI Path:   [[35m./resources/index.html[0m]
+Path first part: [[35m./resources/[0m]
+Path LAST part:  [[35mindex.html[0m]
+File extension:  [[35m[0m]
+Form Data:    [33m(not present)
+[0m
+[36mStart CheckIfPathExists(), URLPath_full [./resources/index.html] 
+[0m[31m
+Error: file [[0m./resources/index.html[31m] was not found. Returning 404 NOT FOUND[0m
+
+HTTP status after checkIfPathCanBeServed(): 404
+[33mFound header ending /r/n, maybe there is body
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: [text/html]
+[0mHTTP STATUS: 404
+CGI STATUS: 0
+[33mstorage->getHttpStatus(): 404
+[0m[33mstorage->getCgiData().getIsCgi(): 0
+[0m[31merror parsing - sending response - failure, error 404
+[0m
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 5
+size server inside run loop: 2
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart createResponse[0m
+fd: 6
+[36mStart setResponseStatus(), current: 404
+[0merrorPages:
+[0m./resources/error_pages/404.html
+-------------
+[34m_responsePath after SetResponseStatus(): ./resources/error_pages/404.html
+[0m[34mgetURLPath:      [/]
+[0m[34mgetFullPath:     [./resources/index.html]
+[0m[34mgetHttpStatus(): [404]
+[0m[34mresponse path:   [./resources/error_pages/404.html]
+[0m[34mcontent type:    [text/html]
+[0mThe Path is a folder: Checking for autoindex on/off:
+AUTOINDEX ON, must call storeFolderContent()
+     URLPathFirstPart: [./resources/]
+Setting _responseBody
+cookies in _data:  -------------------------------------------!!!!!!!!!!!!!!!!!!!!!!
+-------------
+_responseHeader:
+[0mHTTP/1.1 200 OK
+Content-Type: text/html
+Content-Encoding: identity
+Connection: close
+Content-Length: 1192
+
+
+
+-------------
+[36mSENDING CHUNK, response length before send: 1307[0m
+[36mSEND return - sucessfully sent: 1307[0m
+[36mALL SENT, CLOSE CLIENT[0m
+fd that will be closed: 6
+original request: /
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 6
+size server inside run loop: 2
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 6
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 7
+size server inside run loop: 2
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 6
+[34mSTORED HEADER: 
+GET / HTTP/1.1
+Host: localhost:8081
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+__________________ _specificServer: testserver
+
+originalUrlPath:               [[42m/[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting checkIfPathCanBeServed() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir[0m]
+[33mThe url path [/] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[33mThe url path [/] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[33mThe url path [/] did not match the current location block [/texts] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+Path is a directory.
+[0m[34mlocation block for [[0m[44m/[0m[34m] exists on config file as [[0m[44m/[0m[34m]
+[34mIts root_directory [./resources] and configuration will be used[0m
+Method from the request: GET
+[37mMethod allowed from the config file: [0m[37mGET [0m[37mPOST [0m[37mDELETE [0m
+[32mLocation accepts the GET method, continuing...[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[36mStart storeURLPathParts(). URLPath_full: [./resources/index.html]
+[0m
+URL Path:        [[35m/[0m]
+Full URI Path:   [[35m./resources/index.html[0m]
+Path first part: [[35m./resources/[0m]
+Path LAST part:  [[35mindex.html[0m]
+File extension:  [[35m[0m]
+Form Data:    [33m(not present)
+[0m
+[36mStart CheckIfPathExists(), URLPath_full [./resources/index.html] 
+[0m[31m
+Error: file [[0m./resources/index.html[31m] was not found. Returning 404 NOT FOUND[0m
+
+HTTP status after checkIfPathCanBeServed(): 404
+[33mFound header ending /r/n, maybe there is body
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: [text/html]
+[0mHTTP STATUS: 404
+CGI STATUS: 0
+[33mstorage->getHttpStatus(): 404
+[0m[33mstorage->getCgiData().getIsCgi(): 0
+[0m[31merror parsing - sending response - failure, error 404
+[0m
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 8
+size server inside run loop: 2
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart createResponse[0m
+fd: 6
+[36mStart setResponseStatus(), current: 404
+[0merrorPages:
+[0m./resources/error_pages/404.html
+-------------
+[34m_responsePath after SetResponseStatus(): ./resources/error_pages/404.html
+[0m[34mgetURLPath:      [/]
+[0m[34mgetFullPath:     [./resources/index.html]
+[0m[34mgetHttpStatus(): [404]
+[0m[34mresponse path:   [./resources/error_pages/404.html]
+[0m[34mcontent type:    [text/html]
+[0mThe Path is a folder: Checking for autoindex on/off:
+AUTOINDEX ON, must call storeFolderContent()
+     URLPathFirstPart: [./resources/]
+Setting _responseBody
+cookies in _data:  -------------------------------------------!!!!!!!!!!!!!!!!!!!!!!
+-------------
+_responseHeader:
+[0mHTTP/1.1 200 OK
+Content-Type: text/html
+Content-Encoding: identity
+Connection: close
+Content-Length: 1192
+
+
+
+-------------
+[36mSENDING CHUNK, response length before send: 1307[0m
+[36mSEND return - sucessfully sent: 1307[0m
+[36mALL SENT, CLOSE CLIENT[0m
+fd that will be closed: 6
+original request: /
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 9
+size server inside run loop: 2
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 6
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 10
+size server inside run loop: 2
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 6
+[34mSTORED HEADER: 
+GET / HTTP/1.1
+Host: localhost:8081
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+__________________ _specificServer: testserver
+
+originalUrlPath:               [[42m/[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting checkIfPathCanBeServed() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir[0m]
+[33mThe url path [/] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[33mThe url path [/] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[33mThe url path [/] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[33mThe url path [/] did not match the current location block [/texts] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+Path is a directory.
+[0m[34mlocation block for [[0m[44m/[0m[34m] exists on config file as [[0m[44m/[0m[34m]
+[34mIts root_directory [./resources] and configuration will be used[0m
+Method from the request: GET
+[37mMethod allowed from the config file: [0m[37mGET [0m[37mPOST [0m[37mDELETE [0m
+[32mLocation accepts the GET method, continuing...[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[36mStart storeURLPathParts(). URLPath_full: [./resources/index.html]
+[0m
+URL Path:        [[35m/[0m]
+Full URI Path:   [[35m./resources/index.html[0m]
+Path first part: [[35m./resources/[0m]
+Path LAST part:  [[35mindex.html[0m]
+File extension:  [[35m[0m]
+Form Data:    [33m(not present)
+[0m
+[36mStart CheckIfPathExists(), URLPath_full [./resources/index.html] 
+[0m[31m
+Error: file [[0m./resources/index.html[31m] was not found. Returning 404 NOT FOUND[0m
+
+HTTP status after checkIfPathCanBeServed(): 404
+[33mFound header ending /r/n, maybe there is body
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: [text/html]
+[0mHTTP STATUS: 404
+CGI STATUS: 0
+[33mstorage->getHttpStatus(): 404
+[0m[33mstorage->getCgiData().getIsCgi(): 0
+[0m[31merror parsing - sending response - failure, error 404
+[0m
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 11
+size server inside run loop: 2
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart createResponse[0m
+fd: 6
+[36mStart setResponseStatus(), current: 404
+[0merrorPages:
+[0m./resources/error_pages/404.html
+-------------
+[34m_responsePath after SetResponseStatus(): ./resources/error_pages/404.html
+[0m[34mgetURLPath:      [/]
+[0m[34mgetFullPath:     [./resources/index.html]
+[0m[34mgetHttpStatus(): [404]
+[0m[34mresponse path:   [./resources/error_pages/404.html]
+[0m[34mcontent type:    [text/html]
+[0mThe Path is a folder: Checking for autoindex on/off:
+AUTOINDEX ON, must call storeFolderContent()
+     URLPathFirstPart: [./resources/]
+Setting _responseBody
+cookies in _data:  -------------------------------------------!!!!!!!!!!!!!!!!!!!!!!
+-------------
+_responseHeader:
+[0mHTTP/1.1 200 OK
+Content-Type: text/html
+Content-Encoding: identity
+Connection: close
+Content-Length: 1192
+
+
+
+-------------
+[36mSENDING CHUNK, response length before send: 1307[0m
+[36mSEND return - sucessfully sent: 1307[0m
+[36mALL SENT, CLOSE CLIENT[0m
+fd that will be closed: 6
+original request: /
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 12
+size server inside run loop: 2
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 6
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 13
+size server inside run loop: 2
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 6
+[34mSTORED HEADER: 
+GET /texts/ HTTP/1.1
+Host: localhost:8081
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+__________________ _specificServer: testserver
+
+originalUrlPath:               [[42m/texts/[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting checkIfPathCanBeServed() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/texts/] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/texts/] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/texts/] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+Path is a directory.
+[0m[34mlocation block for [[0m[44m/texts/[0m[34m] exists on config file as [[0m[44m/texts[0m[34m]
+[34mIts root_directory [./resources] and configuration will be used[0m
+[37mAuto index is on and no index file found on the location [./resources/texts/]. Folder content will be served[0m
+Method from the request: GET
+[37mMethod allowed from the config file: [0m[37mGET [0m[37mPOST [0m[37mDELETE [0m
+[32mLocation accepts the GET method, continuing...[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[36mStart storeURLPathParts(). URLPath_full: [./resources/texts/index.html]
+[0m
+URL Path:        [[35m/texts/[0m]
+Full URI Path:   [[35m./resources/texts/index.html[0m]
+Path first part: [[35m./resources/texts/[0m]
+Path LAST part:  [[35mindex.html[0m]
+File extension:  [[35m[0m]
+Form Data:    [33m(not present)
+[0m
+[36mStart CheckIfPathExists(), URLPath_full [./resources/texts/index.html] 
+[0m[31m
+Error: file [[0m./resources/texts/index.html[31m] was not found. Returning 404 NOT FOUND[0m
+
+HTTP status after checkIfPathCanBeServed(): 404
+[33mFound header ending /r/n, maybe there is body
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: [text/html]
+[0mHTTP STATUS: 404
+CGI STATUS: 0
+[33mstorage->getHttpStatus(): 404
+[0m[33mstorage->getCgiData().getIsCgi(): 0
+[0m[31merror parsing - sending response - failure, error 404
+[0m
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 14
+size server inside run loop: 2
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart createResponse[0m
+fd: 6
+[36mStart setResponseStatus(), current: 404
+[0merrorPages:
+[0m./resources/error_pages/404.html
+-------------
+[34m_responsePath after SetResponseStatus(): ./resources/error_pages/404.html
+[0m[34mgetURLPath:      [/texts/]
+[0m[34mgetFullPath:     [./resources/texts/index.html]
+[0m[34mgetHttpStatus(): [404]
+[0m[34mresponse path:   [./resources/error_pages/404.html]
+[0m[34mcontent type:    [text/html]
+[0mThe Path is a folder: Checking for autoindex on/off:
+AUTOINDEX ON, must call storeFolderContent()
+     URLPathFirstPart: [./resources/texts/]
+Setting _responseBody
+cookies in _data:  -------------------------------------------!!!!!!!!!!!!!!!!!!!!!!
+-------------
+_responseHeader:
+[0mHTTP/1.1 200 OK
+Content-Type: text/html
+Content-Encoding: identity
+Connection: close
+Content-Length: 616
+
+
+
+-------------
+[36mSENDING CHUNK, response length before send: 730[0m
+[36mSEND return - sucessfully sent: 730[0m
+[36mALL SENT, CLOSE CLIENT[0m
+fd that will be closed: 6
+original request: /texts/
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 15
+size server inside run loop: 2
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 6
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 16
+size server inside run loop: 2
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 6
+[34mSTORED HEADER: 
+GET /texts/ HTTP/1.1
+Host: localhost:8081
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+__________________ _specificServer: testserver
+
+originalUrlPath:               [[42m/texts/[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting checkIfPathCanBeServed() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/texts/] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/texts/] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/texts/] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+Path is a directory.
+[0m[34mlocation block for [[0m[44m/texts/[0m[34m] exists on config file as [[0m[44m/texts[0m[34m]
+[34mIts root_directory [./resources] and configuration will be used[0m
+[37mAuto index is on and no index file found on the location [./resources/texts/]. Folder content will be served[0m
+Method from the request: GET
+[37mMethod allowed from the config file: [0m[37mGET [0m[37mPOST [0m[37mDELETE [0m
+[32mLocation accepts the GET method, continuing...[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[36mStart storeURLPathParts(). URLPath_full: [./resources/texts/index.html]
+[0m
+URL Path:        [[35m/texts/[0m]
+Full URI Path:   [[35m./resources/texts/index.html[0m]
+Path first part: [[35m./resources/texts/[0m]
+Path LAST part:  [[35mindex.html[0m]
+File extension:  [[35m[0m]
+Form Data:    [33m(not present)
+[0m
+[36mStart CheckIfPathExists(), URLPath_full [./resources/texts/index.html] 
+[0m[31m
+Error: file [[0m./resources/texts/index.html[31m] was not found. Returning 404 NOT FOUND[0m
+
+HTTP status after checkIfPathCanBeServed(): 404
+[33mFound header ending /r/n, maybe there is body
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: [text/html]
+[0mHTTP STATUS: 404
+CGI STATUS: 0
+[33mstorage->getHttpStatus(): 404
+[0m[33mstorage->getCgiData().getIsCgi(): 0
+[0m[31merror parsing - sending response - failure, error 404
+[0m
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 17
+size server inside run loop: 2
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart createResponse[0m
+fd: 6
+[36mStart setResponseStatus(), current: 404
+[0merrorPages:
+[0m./resources/error_pages/404.html
+-------------
+[34m_responsePath after SetResponseStatus(): ./resources/error_pages/404.html
+[0m[34mgetURLPath:      [/texts/]
+[0m[34mgetFullPath:     [./resources/texts/index.html]
+[0m[34mgetHttpStatus(): [404]
+[0m[34mresponse path:   [./resources/error_pages/404.html]
+[0m[34mcontent type:    [text/html]
+[0mThe Path is a folder: Checking for autoindex on/off:
+AUTOINDEX ON, must call storeFolderContent()
+     URLPathFirstPart: [./resources/texts/]
+Setting _responseBody
+cookies in _data:  -------------------------------------------!!!!!!!!!!!!!!!!!!!!!!
+-------------
+_responseHeader:
+[0mHTTP/1.1 200 OK
+Content-Type: text/html
+Content-Encoding: identity
+Connection: close
+Content-Length: 616
+
+
+
+-------------
+[36mSENDING CHUNK, response length before send: 730[0m
+[36mSEND return - sucessfully sent: 730[0m
+[36mALL SENT, CLOSE CLIENT[0m
+fd that will be closed: 6
+original request: /texts/
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 18
+size server inside run loop: 2
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 6
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 19
+size server inside run loop: 2
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 6
+[34mSTORED HEADER: 
+GET /images/ HTTP/1.1
+Host: localhost:8081
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+__________________ _specificServer: testserver
+
+originalUrlPath:               [[42m/images/[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting checkIfPathCanBeServed() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/images/] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/images/] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/images/] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/images/] did not match the current location block [/texts] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/images/] did not match the current location block [/] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/images[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+Path is a directory.
+[0m[34mlocation block for [[0m[44m/images/[0m[34m] exists on config file as [[0m[44m/images[0m[34m]
+[34mIts root_directory [./resources] and configuration will be used[0m
+[37mAuto index is on and no index file found on the location [./resources/images/]. Folder content will be served[0m
+Method from the request: GET
+[37mMethod allowed from the config file: [0m[37mGET [0m
+[32mLocation accepts the GET method, continuing...[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[36mStart storeURLPathParts(). URLPath_full: [./resources/images/index.html]
+[0m
+URL Path:        [[35m/images/[0m]
+Full URI Path:   [[35m./resources/images/index.html[0m]
+Path first part: [[35m./resources/images/[0m]
+Path LAST part:  [[35mindex.html[0m]
+File extension:  [[35m[0m]
+Form Data:    [33m(not present)
+[0m
+[36mStart CheckIfPathExists(), URLPath_full [./resources/images/index.html] 
+[0m[31m
+Error: file [[0m./resources/images/index.html[31m] was not found. Returning 404 NOT FOUND[0m
+
+HTTP status after checkIfPathCanBeServed(): 404
+[33mFound header ending /r/n, maybe there is body
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: [text/html]
+[0mHTTP STATUS: 404
+CGI STATUS: 0
+[33mstorage->getHttpStatus(): 404
+[0m[33mstorage->getCgiData().getIsCgi(): 0
+[0m[31merror parsing - sending response - failure, error 404
+[0m
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 20
+size server inside run loop: 2
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart createResponse[0m
+fd: 6
+[36mStart setResponseStatus(), current: 404
+[0merrorPages:
+[0m./resources/error_pages/404.html
+-------------
+[34m_responsePath after SetResponseStatus(): ./resources/error_pages/404.html
+[0m[34mgetURLPath:      [/images/]
+[0m[34mgetFullPath:     [./resources/images/index.html]
+[0m[34mgetHttpStatus(): [404]
+[0m[34mresponse path:   [./resources/error_pages/404.html]
+[0m[34mcontent type:    [text/html]
+[0mThe Path is a folder: Checking for autoindex on/off:
+AUTOINDEX ON, must call storeFolderContent()
+     URLPathFirstPart: [./resources/images/]
+Setting _responseBody
+cookies in _data:  -------------------------------------------!!!!!!!!!!!!!!!!!!!!!!
+-------------
+_responseHeader:
+[0mHTTP/1.1 200 OK
+Content-Type: text/html
+Content-Encoding: identity
+Connection: close
+Content-Length: 1146
+
+
+
+-------------
+[36mSENDING CHUNK, response length before send: 1261[0m
+[36mSEND return - sucessfully sent: 1261[0m
+[36mALL SENT, CLOSE CLIENT[0m
+fd that will be closed: 6
+original request: /images/
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 21
+size server inside run loop: 2
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 6
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 22
+size server inside run loop: 2
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 6
+[34mSTORED HEADER: 
+GET /images/ HTTP/1.1
+Host: localhost:8081
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+__________________ _specificServer: testserver
+
+originalUrlPath:               [[42m/images/[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting checkIfPathCanBeServed() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/images/] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/images/] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/images/] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/images/] did not match the current location block [/texts] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/images/] did not match the current location block [/] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/images[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+Path is a directory.
+[0m[34mlocation block for [[0m[44m/images/[0m[34m] exists on config file as [[0m[44m/images[0m[34m]
+[34mIts root_directory [./resources] and configuration will be used[0m
+[37mAuto index is on and no index file found on the location [./resources/images/]. Folder content will be served[0m
+Method from the request: GET
+[37mMethod allowed from the config file: [0m[37mGET [0m
+[32mLocation accepts the GET method, continuing...[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[36mStart storeURLPathParts(). URLPath_full: [./resources/images/index.html]
+[0m
+URL Path:        [[35m/images/[0m]
+Full URI Path:   [[35m./resources/images/index.html[0m]
+Path first part: [[35m./resources/images/[0m]
+Path LAST part:  [[35mindex.html[0m]
+File extension:  [[35m[0m]
+Form Data:    [33m(not present)
+[0m
+[36mStart CheckIfPathExists(), URLPath_full [./resources/images/index.html] 
+[0m[31m
+Error: file [[0m./resources/images/index.html[31m] was not found. Returning 404 NOT FOUND[0m
+
+HTTP status after checkIfPathCanBeServed(): 404
+[33mFound header ending /r/n, maybe there is body
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: [text/html]
+[0mHTTP STATUS: 404
+CGI STATUS: 0
+[33mstorage->getHttpStatus(): 404
+[0m[33mstorage->getCgiData().getIsCgi(): 0
+[0m[31merror parsing - sending response - failure, error 404
+[0m
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 23
+size server inside run loop: 2
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart createResponse[0m
+fd: 6
+[36mStart setResponseStatus(), current: 404
+[0merrorPages:
+[0m./resources/error_pages/404.html
+-------------
+[34m_responsePath after SetResponseStatus(): ./resources/error_pages/404.html
+[0m[34mgetURLPath:      [/images/]
+[0m[34mgetFullPath:     [./resources/images/index.html]
+[0m[34mgetHttpStatus(): [404]
+[0m[34mresponse path:   [./resources/error_pages/404.html]
+[0m[34mcontent type:    [text/html]
+[0mThe Path is a folder: Checking for autoindex on/off:
+AUTOINDEX ON, must call storeFolderContent()
+     URLPathFirstPart: [./resources/images/]
+Setting _responseBody
+cookies in _data:  -------------------------------------------!!!!!!!!!!!!!!!!!!!!!!
+-------------
+_responseHeader:
+[0mHTTP/1.1 200 OK
+Content-Type: text/html
+Content-Encoding: identity
+Connection: close
+Content-Length: 1146
+
+
+
+-------------
+[36mSENDING CHUNK, response length before send: 1261[0m
+[36mSEND return - sucessfully sent: 1261[0m
+[36mALL SENT, CLOSE CLIENT[0m
+fd that will be closed: 6
+original request: /images/
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 24
+size server inside run loop: 2
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 6
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 25
+size server inside run loop: 2
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 6
+[34mSTORED HEADER: 
+GET /error_pages/ HTTP/1.1
+Host: localhost:8081
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+__________________ _specificServer: testserver
+
+originalUrlPath:               [[42m/error_pages/[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting checkIfPathCanBeServed() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/error_pages/] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/error_pages/] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/error_pages/] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/error_pages/] did not match the current location block [/texts] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/error_pages/] did not match the current location block [/] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/images[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/error_pages/] did not match the current location block [/images] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/nonExistent[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/error_pages/] did not match the current location block [/nonExistent] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/folderA[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/error_pages/] did not match the current location block [/folderA] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[31mAs the UrlPath did not match any location block, the server cannot serve any file and will return 404 NOT_FOUND[0m
+
+[33mFound header ending /r/n, maybe there is body
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: [text/html]
+[0mHTTP STATUS: 404
+CGI STATUS: 0
+[33mstorage->getHttpStatus(): 404
+[0m[33mstorage->getCgiData().getIsCgi(): 0
+[0m[31merror parsing - sending response - failure, error 404
+[0m
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 26
+size server inside run loop: 2
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart createResponse[0m
+fd: 6
+[36mStart setResponseStatus(), current: 404
+[0merrorPages:
+[0m./resources/error_pages/404.html
+-------------
+[34m_responsePath after SetResponseStatus(): ./resources/error_pages/404.html
+[0m[34mgetURLPath:      [/error_pages/]
+[0m[34mgetFullPath:     [default]
 [0m[34mgetHttpStatus(): [404]
 [0m[34mresponse path:   [./resources/error_pages/404.html]
 [0m[34mcontent type:    [text/html]
 [0m[32mThe path is a file: [[42m./resources/error_pages/404.html[0m]
-Setting _responseBody
 [32mFile to be streamed: ./resources/error_pages/404.html[0m
 cookies in _data:  -------------------------------------------!!!!!!!!!!!!!!!!!!!!!!
 -------------
@@ -2123,8 +1066,123 @@ Content-Length: 78
 [36mSENDING CHUNK, response length before send: 198[0m
 [36mSEND return - sucessfully sent: 198[0m
 [36mALL SENT, CLOSE CLIENT[0m
-fd that will be closed: 7
-original request: /_folderA
+fd that will be closed: 6
+original request: /error_pages/
 ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
 
------------------------------------------------------------------------------------------------------------------ WHILE LOOP 59
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 27
+size server inside run loop: 2
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻[32m New client connection[0m ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 6
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 28
+size server inside run loop: 2
+----------------------------------------------------------------------------------------------------------------- READ
+[35mStart appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+[0m⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 6
+[34mSTORED HEADER: 
+GET /error_pages/ HTTP/1.1
+Host: localhost:8081
+User-Agent: curl/7.54.0
+Accept: */*
+[0m[42m[33mREQUEST METHOD: GET[0m
+
+__________________ _specificServer: testserver
+
+originalUrlPath:               [[42m/error_pages/[0m]
+server block root directory:   [[42m./resources[0m]
+
+[32mStarting checkIfPathCanBeServed() and searching for the correct location block on the config file:[0m
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/subfolder[0m]
+locationBlockRootDir:            [[42m./resources/location_random_dir[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/error_pages/] did not match the current location block [/subfolder] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m.py[0m]
+locationBlockRootDir:            [[42m./resources/cgi[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/error_pages/] did not match the current location block [.py] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/cgi[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/error_pages/] did not match the current location block [/cgi] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/texts[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/error_pages/] did not match the current location block [/texts] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/error_pages/] did not match the current location block [/] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/images[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/error_pages/] did not match the current location block [/images] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/nonExistent[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/error_pages/] did not match the current location block [/nonExistent] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [[42m/folderA[0m]
+locationBlockRootDir:            [[42m./resources[0m]
+[34mNo '?' found and originalUrlPath has no GET-Form data[0m
+[33mThe url path [/error_pages/] did not match the current location block [/folderA] from the config file. Checking the next locationBlockUriName[0m
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+[31mAs the UrlPath did not match any location block, the server cannot serve any file and will return 404 NOT_FOUND[0m
+
+[33mFound header ending /r/n, maybe there is body
+[0m[32m_doneparsing == true
+[0m[33mThere is no body
+[0m[34mcontent type: [text/html]
+[0mHTTP STATUS: 404
+CGI STATUS: 0
+[33mstorage->getHttpStatus(): 404
+[0m[33mstorage->getCgiData().getIsCgi(): 0
+[0m[31merror parsing - sending response - failure, error 404
+[0m
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 29
+size server inside run loop: 2
+----------------------------------------------------------------------------------------------------------------- WRITE
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+[36mStart createResponse[0m
+fd: 6
+[36mStart setResponseStatus(), current: 404
+[0merrorPages:
+[0m./resources/error_pages/404.html
+-------------
+[34m_responsePath after SetResponseStatus(): ./resources/error_pages/404.html
+[0m[34mgetURLPath:      [/error_pages/]
+[0m[34mgetFullPath:     [default]
+[0m[34mgetHttpStatus(): [404]
+[0m[34mresponse path:   [./resources/error_pages/404.html]
+[0m[34mcontent type:    [text/html]
+[0m[32mThe path is a file: [[42m./resources/error_pages/404.html[0m]
+[32mFile to be streamed: ./resources/error_pages/404.html[0m
+cookies in _data:  -------------------------------------------!!!!!!!!!!!!!!!!!!!!!!
+-------------
+_responseHeader:
+[0mHTTP/1.1 404 Not Found
+Content-Type: text/html
+Content-Encoding: identity
+Connection: close
+Content-Length: 78
+
+
+
+-------------
+[36mSENDING CHUNK, response length before send: 198[0m
+[36mSEND return - sucessfully sent: 198[0m
+[36mALL SENT, CLOSE CLIENT[0m
+fd that will be closed: 6
+original request: /error_pages/
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 30

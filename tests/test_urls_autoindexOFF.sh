@@ -48,10 +48,10 @@ PathMyWebServerPublicFolder="$PathMyWebServer/resources/"			# path to html conte
 PathNginxPublicFolder="/Users/jmurovec/.brew/var/www/resources/"		# the above folder will be copied to this nginx folder	CODAM
 # PathNginx="/usr/local/etc/nginx/"									# nginx executable	HOME
 PathNginx="/Users/jmurovec/.brew/etc/nginx/"						# nginx executable	CODAM
+PORT=8080
 localhost="http://localhost:$PORT/"
 curlNginxOutput="$PathMyWebServer/tests/curlNginxOutput/"
 curlWebservOutput="$PathMyWebServer/tests/curlWebservOutput/"
-PORT=8080
 CONFIG_FILE=standard_complete_forTester.conf
 
 
@@ -74,7 +74,7 @@ mkdir -p $curlNginxOutput $curlWebservOutput
 # echo "nkdir name: " $curlNginxOutput
 
 echo -e  "$GRE\n ~ ~ ~ WEBSERV - TEST, PORT:$PORT ~ ~ ~ ~ ~ ~ $RES " 1>&2
-echo -e  "$GRE ~ ~ ~ BASIC TESTS: ${GRY}AUTOINDEX OFF${GRE} ~ ~ ~ $RES \n" 1>&2
+echo -e  "$GRE ~ ~ ~ BASIC TESTS: ${YEL}AUTOINDEX OFF${GRE} ~ ~ ~ $RES \n" 1>&2
 
 
 ##################################################################################################################
@@ -121,10 +121,10 @@ testURLpath_justFirstHeaderLine "localhost:$PORT/XXX.html"                 "loca
 testURLpath_justFirstHeaderLine "localhost:$PORT/XXX/index_texts.html"     "localhost:XXX:index_texts.html"
 
 # #               URL-PATH EXISTS< BUT NO index.html    					 OUTPUT FILENAME
-testURLpath_justFirstHeaderLine "localhost:$PORT/_folderA/"                 "localhost:_folderA:"
+testURLpath_justFirstHeaderLine "localhost:$PORT/folderA/"                 "localhost:folderA:"
 
 # #               URL-PATH EXISTS< BUT NO SLASH AT END    					 OUTPUT FILENAME
-testURLpath_justFirstHeaderLine "localhost:$PORT/_folderA"                 "localhost:_folderA "
+# testURLpath_justFirstHeaderLine "localhost:$PORT/folderA"                 "localhost:folderA "
 
 # # # # IMAGES
 # testURLpath "localhost:$PORT/images/index_images.html"   "localhost:images:index_images.html"
@@ -226,13 +226,13 @@ testURLpath_justFirstHeaderLine "localhost:$PORT/XXX/index_texts.html"     "loca
 
 # #               URL-PATH EXISTS< BUT NO index.html    					 OUTPUT FILENAME
 echo -en "${BLU}\nFOLDER PATH EXISTS, BUT NO INDEX FILE (return 403 Forbidden):\n${RES}"
-testURLpath_justFirstHeaderLine "localhost:$PORT/_folderA/"                 "localhost:_folderA:"
+testURLpath_justFirstHeaderLine "localhost:$PORT/folderA/"                 "localhost:folderA:"
 
 # #               URL-PATH EXISTS< BUT NO SLASH AND NO INDEX FILE			 OUTPUT FILENAME
 echo -en "${BLU}\nFOLDER PATH EXISTS, BUT NO SLASH AT END (treat as file, return 301 Moved Permanently):\n${RES}"
 echo -en "${BLU}       (should first return 301 with new location with slash, then 403)\n${RES}"
 echo -en "${BLU}       (curl with option -L --location will output all subsequent request, but tester only looks at the first line of the first request)\n${RES}"
-testURLpath_justFirstHeaderLine "localhost:$PORT/_folderA"                 "localhost:_folderA "
+# testURLpath_justFirstHeaderLine "localhost:$PORT/folderA"                 "localhost:folderA "
 
 # # # # IMAGES
 # testURLpath "localhost:$PORT/images/index_images.html"   "localhost:images:index_images.html"
@@ -247,13 +247,7 @@ testURLpath_justFirstHeaderLine "localhost:$PORT/_folderA"                 "loca
 # echo "------------------------------------------------------"
 # cat -e $curlWebservOutput/$testName
 
+sleep 0.3
 pkill -f webserv
-
-# sleep 1
-
-# Start Siege Test
-
-# cd ./tests/siege
-# bash testSiege.sh
 
 

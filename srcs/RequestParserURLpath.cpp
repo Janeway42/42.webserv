@@ -10,10 +10,6 @@
 #include "Parser.hpp"
 #include "RequestParser.hpp"
 
-/*
-	TODO What happens if you dont have a form on your page, but you directly write ?city=aaa in the URL?
-	In this case, no action file is specified ???
-*/
 
 void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 	//std::cout << BLU << "START runExeve\n" << RES;
@@ -52,13 +48,8 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
         // Best practice to ensure the script to find correct relative paths, if needed
         chdir(storage->getRequestData().getURLPathFirstPart().c_str());
 
-//		std::cerr << RED "Before execve in child\n" << RES;
-//		 sleep(500000);
         args[0] = const_cast<char*>(storage->getInterpreterPath().c_str());
 		ret = execve(args[0], args, ENV);
-		// (void)args;
-		// (void)ENV;
-		// ret = -1;
 		if (ret == -1)
 		{
 			std::cerr << RED << "Error: Execve failed: " << ret << "\n" << RES;
@@ -67,12 +58,9 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 		}
 	}
 	else {				// PARENT
-		
 		//std::cerr << "    Start Parent\n";
 		close(_cgi.getPipeCgiOut_1());
 		close(_cgi.getPipeCgiIn_0());
-		//std::cout << BLU "\n       End runExecve()\n" << RES;
-		// sleep(1);
 	}
 }
 
@@ -105,19 +93,15 @@ void Request::callCGI(struct kevent event) {
 	temp.push_back(info_path.append(getServerData().getUploadDirectoryName()));
 	temp.push_back(cookie.append(_data.getRequestCookie()));
 
-    std::cout << "COOKIE: " << cookie << "\n";
-
     char buffer[PATH_MAX];
     if (getcwd(buffer, sizeof(buffer)) == NULL)
         std::cout << RED "Error in callCGI: getcwd() failed\n" RES;
     std::string str = getServerData().getUploadDirectory();
     std::string uploadDir = buffer;
     uploadDir.append(str, 1);
-
 	temp.push_back(upload_path.append(uploadDir));
 
 	char **env = new char*[temp.size() + 1];
-
 	size_t i = 0;
 	for (i = 0; i < temp.size(); i++) {
 		env[i] = new char[temp[i].length() + 1];
@@ -133,20 +117,17 @@ void Request::callCGI(struct kevent event) {
 
 	char *args[3];
     std::string tempPath = _data.getURLPathLastPart();  // must be only the script name, because the CWD is changed to CGI folder
-
-	char *path = (char *)tempPath.c_str();	//  ie: "./resources/cgi/python_cgi_GET.py"
+	char *path = (char *)tempPath.c_str();	            //  ie: "./resources/cgi/python_cgi_GET.py"
 	args[1] = path;
 	args[2] = NULL;
 
 	runExecve(env, args, event);
 
 	//std::cout << "Stored body from CGI: [\n" << BLU << _data.getCgiBody() << RES << "]\n";
-	// Cleanup
-	for (size_t j = 0; j < temp.size(); j++) {
+	for (size_t j = 0; j < temp.size(); j++) {      // Cleanup
 		delete env[j];
 	}
 	delete[] env;
-	//std::cout << BLU "\n       End callCGI()\n" << RES;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -155,11 +136,9 @@ void Request::callCGI(struct kevent event) {
 	Then split each line in vector into map<> key:value */
 std::map<std::string, std::string> Request::storeFormData(std::string queryString)
 {
-	std::cout << CYN << "Start store form data()\n" << RES;
+	//std::cout << CYN << "Start store form data()\n" << RES;
 	//std::cout << GRN << "    BODY:        ["   << _body << "]\n" << RES;
-	//std::cout << GRN << "    queryString:   [" <<  queryString << "]\n" << RES;
 	//std::cout << GRN << "   _queryString:   [" << _data.getQueryString() << "]\n" << RES;
-
 	std::string					line;
 	std::vector<std::string>	formList;
 
@@ -195,10 +174,9 @@ void Request::storeURLPathParts(std::string const & originalUrlPath, std::string
         if (_data.getRequestMethod() == GET) {
             _data.setQueryString(queryString);
             std::cout << "queryString:                   [" << GRN_BG << _data.getQueryString() << RES << "]" << std::endl;
-            // _data.setBody(queryString);  // too early todo JAKA is it needed here?
         }
-        storeFormData(queryString);	// maybe not needed (the whole vector and map) if the cgi script can handle the whole queryString todo JAKA is it needed?
-    }
+        storeFormData(queryString);	// the key:value map is now only used to print them out, 
+    }                               // but the cgi script handles the queryString automatically
 
     _data.setURLPath(originalUrlPath);
     _data.setURLPath_full(URLPath_full);
@@ -270,7 +248,7 @@ static std::string getExtension(std::string const & originalUrlPath) {
 }
 
 std::string Request::parsePath_cgi(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location, std::string const & file_cgi) {
-    // localhost:8080/cgi/python_cgi_GET.py?street=test&city=test+city
+    // Ex.: localhost:8080/cgi/python_cgi_GET.py?street=test&city=test+city
     std::string locationBlockUriName = location->getLocationUriName();
     std::string locationBlockRootDir = location->getRootDirectory();
     setInterpreterPath(location->getInterpreterPath());

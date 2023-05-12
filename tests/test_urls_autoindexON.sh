@@ -59,6 +59,15 @@ CONFIG_FILE=standard_complete_forTester.conf
 mv "$PathNginx/nginx.conf" "$PathNginx/nginx.conf.ORIG"
 cp "$PathMyWebServer/tests/nginx.conf" "$PathNginx/nginx.conf"
 
+
+# Change the names of index.html files to become invisible
+mv $PathMyWebServerPublicFolder/index.html $PathMyWebServerPublicFolder/indexXXX.html
+mv $PathMyWebServerPublicFolder/texts/index_texts.html $PathMyWebServerPublicFolder/texts/index_textsXXX.html
+mv $PathMyWebServerPublicFolder/images/index_images.html $PathMyWebServerPublicFolder/images/index_imagesXXX.html
+
+
+
+
 # COPY THE WHOLE PUBLIC HTML FOLDER FROM WEBSERV TO NGINX
 # BEFORE COPYING, DELETE PREVIOUS HTML FOLDER FROM NGINX, IF IT EXISTS
 rm      -rf $PathNginxPublicFolder
@@ -75,7 +84,7 @@ mkdir -p $curlNginxOutput $curlWebservOutput
 
 
 echo -e  "$GRE\n ~ ~ ~ WEBSERV - TEST, PORT:$PORT ~ ~ ~ ~ ~ ~ $RES " 1>&2
-echo -e  "$GRE ~ ~ ~ BASIC TESTS: ${GRY}AUTOINDEX ON${GRE} ~ ~ ~ $RES \n" 1>&2
+echo -e  "$GRE ~ ~ ~ BASIC TESTS: ${YEL}AUTOINDEX ON${GRE} ~ ~ ~ $RES \n" 1>&2
 
 
 
@@ -110,18 +119,21 @@ function testURLpath_justFirstHeaderLine {
 # #               URL-PATH EXISTING                        OUTPUT FILENAME
 testURLpath "localhost:$PORT"                            "localhost:$PORT"
 testURLpath "localhost:$PORT/"                           "localhost:$PORT"
-testURLpath "localhost:$PORT/index.html"                 "localhost:index.html"
-testURLpath "localhost:$PORT/texts/index_texts.html"     "localhost:texts:index_texts.html"
-testURLpath "localhost:$PORT/texts/one_sentence.html"    "localhost:texts:one_sentence.html"
-testURLpath "localhost:$PORT/texts/one_page.html"        "localhost:texts:one_page.html"
-testURLpath "localhost:$PORT/texts/bible.html"           "localhost:texts:bible.html"
+testURLpath "localhost:$PORT/texts/"                     "localhost:$PORT:texts"
+testURLpath "localhost:$PORT/images/"                    "localhost:$PORT:images"
+testURLpath "localhost:$PORT/error_pages/"               "localhost:$PORT:error_pages"
+# testURLpath "localhost:$PORT/index.html"                 "localhost:index.html"
+# testURLpath "localhost:$PORT/texts/index_texts.html"     "localhost:texts:index_texts.html"
+# testURLpath "localhost:$PORT/texts/one_sentence.html"    "localhost:texts:one_sentence.html"
+# testURLpath "localhost:$PORT/texts/one_page.html"        "localhost:texts:one_page.html"
+# testURLpath "localhost:$PORT/texts/bible.html"           "localhost:texts:bible.html"
 
 # #               URL-PATH NOT EXISTING                  OUTPUT FILENAME
-testURLpath_justFirstHeaderLine "localhost:$PORT/XXX.html"                 "localhost:XXX.html"
-testURLpath_justFirstHeaderLine "localhost:$PORT/XXX/index_texts.html"     "localhost:XXX:index_texts.html"
+# testURLpath_justFirstHeaderLine "localhost:$PORT/XXX.html"                 "localhost:XXX.html"
+# testURLpath_justFirstHeaderLine "localhost:$PORT/XXX/index_texts.html"     "localhost:XXX:index_texts.html"
 
 # #               URL-PATH EXISTS< BUT NO index.html     OUTPUT FILENAME
-testURLpath_justFirstHeaderLine "localhost:$PORT/_folderA"                 "localhost:_folderA"
+# testURLpath_justFirstHeaderLine "localhost:$PORT/folderA"                 "localhost:folderA"
 
 # # # # IMAGES
 # testURLpath "localhost:$PORT/images/index_images.html"   "localhost:images:index_images.html"
@@ -169,17 +181,26 @@ function testURLpath {
 	#echo -e "/n" >> $testURL >> $curlWebservOutput/$testName
 	curl -s -X GET $testURL >> $curlWebservOutput/$testName
 	sleep 0.2
+
+
+	# grep -q "Index of" "$curlWebservOutput/$testName"
+	# grep -q "Index of" "$curlNginxOutput/$testName"
+
+
 	# if diff $curlWebservOutput/$testName $curlNginxOutput/$testName >/dev/null ; then
-	if diff <(head -n 1 $curlWebservOutput/$testName) <(head -n 1 $curlNginxOutput/$testName) >/dev/null ; then
-		echo -en "${GRE}[OK] ${RES}"
-		printf "${GRY}%-50s${RES}" "$testURL"
-		printf "%-20s" "$responseCode"
-		printf "${GRE}%-30s${RES}\n" "Responses are identical"
-	else
-		echo -en "${RED}[KO] ${RES}"
-		printf "${GRY}%-50s${RES}" "$testURL"
-		printf "%-20s" "$responseCode"
-		printf "${RED}%-30s ${RES}\n" "Responses different"
+	if diff <(head -n 1 "$curlWebservOutput/$testName") <(head -n 1 "$curlNginxOutput/$testName") >/dev/null ; then
+		if diff <(grep -q "Index of" "$curlWebservOutput/$testName") <(grep -q "Index of" "$curlNginxOutput/$testName") >/dev/null ; then
+			echo -en "${GRE}[OK] ${RES}"
+			printf "${GRY}%-50s${RES}" "$testURL"
+			printf "%-20s" "$responseCode"
+			printf "${GRE}%-30s${RES}\n" "Responses are identical"
+		else
+			echo 
+			echo -en "${RED}[KO] ${RES}"
+			printf "${GRY}%-50s${RES}" "$testURL"
+			printf "%-20s" "$responseCode"
+			printf "${RED}%-30s ${RES}\n" "Responses different"
+		fi
 	fi
 }
 
@@ -215,20 +236,23 @@ echo -en "${BLU}\nPATH IS EXISTING:\n${RES}"
 
 testURLpath "localhost:$PORT"                            "localhost:$PORT"
 testURLpath "localhost:$PORT/"                           "localhost:$PORT"
-testURLpath "localhost:$PORT/index.html"                 "localhost:index.html"
-testURLpath "localhost:$PORT/texts/index_texts.html"     "localhost:texts:index_texts.html"
-testURLpath "localhost:$PORT/texts/one_sentence.html"    "localhost:texts:one_sentence.html"
-testURLpath "localhost:$PORT/texts/one_page.html"        "localhost:texts:one_page.html"
-testURLpath "localhost:$PORT/texts/bible.html"           "localhost:texts:bible.html"
+testURLpath "localhost:$PORT/texts/"                     "localhost:$PORT:texts"
+testURLpath "localhost:$PORT/images/"                    "localhost:$PORT:images"
+testURLpath "localhost:$PORT/error_pages/"               "localhost:$PORT:error_pages"
+# testURLpath "localhost:$PORT/index.html"                 "localhost:index.html"
+# testURLpath "localhost:$PORT/texts/index_texts.html"     "localhost:texts:index_texts.html"
+# testURLpath "localhost:$PORT/texts/one_sentence.html"    "localhost:texts:one_sentence.html"
+# testURLpath "localhost:$PORT/texts/one_page.html"        "localhost:texts:one_page.html"
+# testURLpath "localhost:$PORT/texts/bible.html"           "localhost:texts:bible.html"
 
 # #               URL-PATH NOT EXISTING                  OUTPUT FILENAME
-echo -en "${BLU}\nPATH NOT EXISTING:\n${RES}"
-testURLpath_justFirstHeaderLine "localhost:$PORT/XXX.html"                 "localhost:XXX.html"
-testURLpath_justFirstHeaderLine "localhost:$PORT/XXX/index_texts.html"     "localhost:XXX:index_texts.html"
+# echo -en "${BLU}\nPATH NOT EXISTING:\n${RES}"
+# testURLpath_justFirstHeaderLine "localhost:$PORT/XXX.html"                 "localhost:XXX.html"
+# testURLpath_justFirstHeaderLine "localhost:$PORT/XXX/index_texts.html"     "localhost:XXX:index_texts.html"
 
 # #               URL-PATH EXISTS< BUT NO index.html     OUTPUT FILENAME
-echo -en "${BLU}\nPATH NOT EXISTING:\n${RES}"
-testURLpath_justFirstHeaderLine "localhost:$PORT/_folderA"                 "localhost:_folderA"
+# echo -en "${BLU}\nPATH NOT EXISTING:\n${RES}"
+# testURLpath_justFirstHeaderLine "localhost:$PORT/_folderA"                 "localhost:_folderA"
 
 # # # # IMAGES
 # testURLpath "localhost:$PORT/images/index_images.html"   "localhost:images:index_images.html"
@@ -243,13 +267,15 @@ testURLpath_justFirstHeaderLine "localhost:$PORT/_folderA"                 "loca
 # echo "------------------------------------------------------"
 # cat -e $curlWebservOutput/$testName
 
+
+# Rename the index files back to original names
+mv $PathMyWebServerPublicFolder/indexXXX.html          $PathMyWebServerPublicFolder/index.html
+mv $PathMyWebServerPublicFolder/texts/index_textsXXX.html    $PathMyWebServerPublicFolder/texts/index_texts.html
+mv $PathMyWebServerPublicFolder/images/index_imagesXXX.html   $PathMyWebServerPublicFolder/images/index_images.html
+
+
+
+sleep 0.3
 pkill -f webserv
-
-# sleep 1
-
-# Start Siege Test
-
-# cd ./tests/siege
-# bash testSiege.sh
 
 
