@@ -65,14 +65,18 @@ int WebServer::checkExistingSocket(int location, std::string port, std::string h
 
 WebServer::~WebServer()
 {
-	std::vector<ServerData>::iterator it;
-	for (it = _servers.begin(); it != _servers.end(); it++)
-	{
-		if (fcntl(it->getListeningSocket(), F_GETFD) != -1)
-			close(it->getListeningSocket());
+	try {
+		std::vector<ServerData>::iterator it;
+		for (it = _servers.begin(); it != _servers.end(); it++)
+		{
+			if (fcntl(it->getListeningSocket(), F_GETFD) != -1)
+				close(it->getListeningSocket());
+		}
+		close(_kq);
+		std::cout << CYN << "WebServer Destructor" << RES << std::endl;
+	} catch (...) {
+		throw ServerException(std::string("Failed to deinitialise webser JOYCE"));
 	}
-	close(_kq);
-	std::cout << CYN << "WebServer Destructor" << RES << std::endl;
 }
 
 // --------------------------------------------------------- server main loop

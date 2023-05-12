@@ -30,7 +30,7 @@ void ResponseData::createResponseHeader(struct kevent& event) {
     std::string redirection = storage->getRedirection().empty() ? "" : "Location: " + storage->getRedirection();
 	std::string cookiesHeader = "";
 
-	std::cout << "cookies in _data: " << storage->getRequestData().getRequestCookie() << " -------------------------------------------!!!!!!!!!!!!!!!!!!!!!!"<< std::endl;
+	std::cout << PUR << "cookies in _data: " << storage->getRequestData().getRequestCookie() << RES << std::endl;
 
 	if (storage->getRequestData().getRequestCookie() != "")
 		cookiesHeader = "Set-Cookie: " + storage->getRequestData().getRequestCookie() + "\r\n";
@@ -94,7 +94,7 @@ void ResponseData::createResponse(struct kevent& event) {
 
 	std::cout << "fd: " << storage->getFdClient() << std::endl;
 
-    // If the Form data tht came form the body contained a "delete=" key, and the current request is POST or DELETE
+    // If the Form data that came from the body contained a "delete=" key, and the current request is POST or DELETE
     // we can return 405 Method Not Allowed
     if (storage->getRequestData().formDataHasDelete() && not storage->deleteIsAllowed()) {//} || storage->getRequestData().getRequestMethod() == POST)) {
         std::cout << RED << "Location does not accept the Method - 405 Method not allowed will be returned" << RES << std::endl;

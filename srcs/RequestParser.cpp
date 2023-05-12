@@ -115,6 +115,7 @@ int Request::storeWordsFromFirstLine(std::string firstLine) {
 			} else {
 				std::cout << RED << "Error: This method is not recognized\n" << RES;
 				_httpStatus = METHOD_NOT_ALLOWED; 
+				//_httpStatus = BAD_REQUEST; // for 42 tester
 			}
 		}
 		else if (i == 1)
@@ -164,7 +165,7 @@ int Request::storeWordsFromOtherLine(std::string otherLine) {
 				iter++;
 				_data.setRequestContentLength(*iter);
 			}
-			else if (*iter == "Cookie:"){
+			else if (*iter == "Cookie:") {
 				iter++;
 				_data.setRequestCookie(*iter);
 			}
@@ -204,11 +205,6 @@ void Request::setSpecificServer()
 		}
 	}
 }
-
-/* TODO
- * - What if method is GET (normaly without body) AND content-length is not zero ???
- * - What if method POST and content-length is zero ???
- */
 
 void Request::parseHeaderAndPath(std::string & tmpHeader, std::string::size_type it) {
     std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: " << _clientFd << std::endl;
@@ -301,7 +297,6 @@ void Request::appendToRequest(const char str[], size_t len) {
 	std::string				strToFind = "\r\n\r\n";
 	std::string::size_type	it, it2;
 	std::string				tmpHeader;
-
 	if (_headerDone == false) {
 		_data.setTemp(_data.getTemp() + chunk);
 
@@ -319,8 +314,11 @@ void Request::appendToRequest(const char str[], size_t len) {
                     std::cout << "----------> Form data has \"delete=\" key on it\n" << RES;
                     _data.setFormDataHasDelete(true);
                 }
+				appendLastChunkToBody2(str + it2, len - it2); // TODO THIS LINE WAS DOWN BELOW BEFORE
             }
-			appendLastChunkToBody2(str + it2, len - it2); // jaka, changed to vector
+		//	try {
+				//appendLastChunkToBody2(str + it2, len - it2); // jaka, changed to vector
+		//	} catch (...) { throw std::runtime_error("JOYCE Something Bad happened here"); }
 			return ;
 		}
 	}
@@ -330,10 +328,23 @@ void Request::appendToRequest(const char str[], size_t len) {
 }
 
 // Last chunk means, last chunk of header section, so first chunk of body
-int Request::appendLastChunkToBody2(const char *str, size_t len) {
+int Request::appendLastChunkToBody2(const char *str, size_t len) {// TODO WHY THIS RETURNS ????
 	_data.setClientBytesSoFar(len);
-	std::vector<uint8_t> tempVec(str, str + len); // convert adn assign str to vector
-	_data.setBody(tempVec);
+/*try {
+	std::cout << RED << "str: " << str << RES << std::endl;
+	std::cout << RED << "len: " << len << RES << std::endl;
+	std::cout << RED << "str + len: " << str + len << RES << std::endl;
+	std::vector<uint8_t> tempVec(str, str + len); // convert adn assign str to vector// commented by joyce
+	_data.setBody(tempVec);// cmmented by JOYCE
+} catch (const std::out_of_range& e) { throw std::runtime_error(std::string("JOYCE Something Bad happened here: ") + e.what()); }*/
+
+	std::cout << RED << "_data.getClientBytesSoFar(): " << _data.getClientBytesSoFar() << RES << std::endl;
+	std::cout << RED << ":_data.getRequestContentLength(): " <<  _data.getRequestContentLength() << RES << std::endl;
+	if (_data.getClientBytesSoFar() > _data.getRequestContentLength()) {   // Compare body length
+		std::cout << RED << "Error: Body-Length, first chunk (" << _data.getClientBytesSoFar() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;
+        _httpStatus = BAD_REQUEST;
+		return (1);
+	}
 
 	if (_data.getClientBytesSoFar() > getServerData().getClientMaxBodySize()) {
 		std::cout << RED "REQUEST BODY CONTENT TOO LARGE (max allowed: " << getServerData().getClientMaxBodySize() << ")\n" RES;
@@ -341,11 +352,15 @@ int Request::appendLastChunkToBody2(const char *str, size_t len) {
 		return (1);
 	}
 
-	if (_data.getClientBytesSoFar() > _data.getRequestContentLength()) {   // Compare body length
-		std::cout << RED << "Error: Body-Length, first chunk (" << _data.getClientBytesSoFar() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;
-        _httpStatus = I_AM_A_TEAPOT;
-		return (1);
-	}
+// changed locaiton by joyce to after error handling
+try {
+	std::cout << RED << "str: " << str << RES << std::endl;
+	std::cout << RED << "len: " << len << RES << std::endl;
+	std::cout << RED << "str + len: " << str + len << RES << std::endl;
+	std::vector<uint8_t> tempVec(str, str + len); // convert adn assign str to vector
+	_data.setBody(tempVec);
+} catch (const std::out_of_range& e) { throw std::runtime_error(std::string("JOYCE Something Bad happened here: ") + e.what()); }
+
 	if (_data.getClientBytesSoFar() == _data.getRequestContentLength()) {
 		std::cout << GRN << "_doneparsing == true\n" << RES;
 		_doneParsing = true;
@@ -363,14 +378,15 @@ int Request::appendLastChunkToBody2(const char *str, size_t len) {
 }
 
 int Request::appendToBody(const char* str, size_t len) {
-	std::vector<uint8_t> newChunk(str, str + len); // convert adn assign str to vector
-	_data.setClientBytesSoFar(len);
+//	std::vector<uint8_t> newChunk(str, str + len); // convert adn assign str to vector//commented by JOYCE
+//	_data.setClientBytesSoFar(len);//commented by JOYCE
 	//std::cout << YEL "CLIENT BYTES SO FAR: " << _data.getClientBytesSoFar() << "\n" << RES;
 
-	std::vector<uint8_t> & tmp = _data.getBody();
-	tmp.reserve(_data.getRequestContentLength() + len);
-	tmp.insert(tmp.end(), newChunk.begin(), newChunk.end());
-	_data.setBody(tmp);
+//	std::vector<uint8_t> & tmp = _data.getBody();//commented by JOYCE
+//	tmp.reserve(_data.getRequestContentLength() + len);//commented by JOYCE
+//	tmp.insert(tmp.end(), newChunk.begin(), newChunk.end());//commented by JOYCE
+//	_data.setBody(tmp);//commented by JOYCE
+//
 	//std::cout << CYN << "    body after append:  [" << _data.getBody() << "]\n" << RES;
 	//std::cout << CYN << "    getClientMaxBodySize:  [" << getServerData().getClientMaxBodySize() << "]\n" << RES;
 	
@@ -381,11 +397,22 @@ int Request::appendToBody(const char* str, size_t len) {
 	}
 	if (_data.getClientBytesSoFar() > _data.getRequestContentLength()) {		// Compare body lenght
 		std::cout << RED << "Error: Body-Length (" << _data.getClientBytesSoFar() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;// sleep(2);
-        _httpStatus = I_AM_A_TEAPOT;
+        _httpStatus = BAD_REQUEST;
 		return (1);
 	}
+
+	// changed to here by JOYCE
+	// setting the vector if no error was returned
+		std::vector<uint8_t> newChunk(str, str + len); // convert adn assign str to vector
+	_data.setClientBytesSoFar(len);
+	std::vector<uint8_t> & tmp = _data.getBody();
+	tmp.reserve(_data.getRequestContentLength() + len);
+	tmp.insert(tmp.end(), newChunk.begin(), newChunk.end());
+	_data.setBody(tmp);
+
 //	else if (_data.getBody().size() == _data.getRequestContentLength()) {
-	else if (_data.getClientBytesSoFar() == _data.getRequestContentLength()) {
+	if (_data.getClientBytesSoFar() == _data.getRequestContentLength()) {
+	//else if (_data.getClientBytesSoFar() == _data.getRequestContentLength()) {// todo joyce commentd this out
 		std::cout << GRN << "OK: Done parsing.\n" RES;
 		_doneParsing = true;
 		return (0);

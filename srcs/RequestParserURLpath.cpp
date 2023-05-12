@@ -486,7 +486,7 @@ void Request::checkMethods(std::vector<AllowMethods> const & methods) {
         }
     }
     if (not methodsMatched) {
-        setHttpStatus(METHOD_NOT_ALLOWED);
+        setHttpStatus(METHOD_NOT_ALLOWED);// comment by JOYCE
         std::cout << std::endl << RED << "Location does not accept the Method - 405 Method not allowed will be returned"
             << RES << std::endl;
     } else {
