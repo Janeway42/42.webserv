@@ -19,7 +19,7 @@
 # define BLU     "\033[34m"
 # define PUR     "\033[35m"
 # define CYN     "\033[36m"
-# define GRY     "\033[37m"
+# define GRY     "\033[2m"
 
 # define RES     "\033[0m"
 

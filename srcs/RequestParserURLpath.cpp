@@ -172,7 +172,8 @@ void Request::storeURLPathParts(std::string const & originalUrlPath, std::string
         std::string	queryString = originalUrlPath.substr(positionQuestionMark + 1);
         if (_data.getRequestMethod() == GET) {
             _data.setQueryString(queryString);
-            std::cout << "queryString:                   [" << GRN_BG << _data.getQueryString() << RES << "]" << std::endl;
+            std::cout << "queryString:                   [" << GRN << _data.getQueryString() << RES << "]" << std::endl;
+            // _data.setBody(queryString);  // too early todo JAKA is it needed here?
         }
         storeFormData(queryString);	// the key:value map is now only used to print them out, 
     }                               // but the cgi script handles the queryString automatically
@@ -468,7 +469,7 @@ void Request::checkMethods(std::vector<AllowMethods> const & methods) {
         }
     }
     if (not methodsMatched) {
-        setHttpStatus(METHOD_NOT_ALLOWED);
+        setHttpStatus(METHOD_NOT_ALLOWED);// comment by JOYCE
         std::cout << std::endl << RED << "Location does not accept the Method - 405 Method not allowed will be returned"
             << RES << std::endl;
     } else {
