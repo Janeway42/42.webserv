@@ -12,21 +12,17 @@ More important:
             CRASHED AGAIN FOR ME (I went all over the website, including all CGI, then I went to other server and waited, then ctrl C and it leaked)
     JAKA:
         - Is it necessary at exit to set all variables to empty in destructors? -> it calls its members desructor -> check main.c
+        - body chunk len ssize_t as -1? research (using the tester)
         - Finish tester
-        - If cookie arrives, give some response in the cgi as a proof
-        - DONE Download the file, --> FILE NOT FIND
     JOYCE:
-        - Run Codam tester just to know what will happen
-
+        - SEARCH FOR TODO, JAKA. CORINA. JOYCE on all files
 
 important:
-
- * - What if method is GET (normaly without body) AND content-length is not zero ???
  * - What if method POST and content-length is zero ???
+
+Does cookies expire?
 
 // PDF
 However, you are allowed to use fcntl() only as follows:
-fcntl(fd, F_SETFL, O_NONBLOCK);
+fcntl(fd, F_SETFL, O_NONBLOCK); ?? what exactly is GET one doing?
 Any other flag is forbidden.
-
-SEARCH FOR TODO, JAKA. CORINA. JOYCE on all files

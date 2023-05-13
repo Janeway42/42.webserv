@@ -19,14 +19,14 @@ class RequestData {
 
 		std::string 			_reqHeader;
 		std::vector<uint8_t>	_reqBody;
-		size_t					_clientBytesSoFar;	
+		ssize_t					_clientBytesSoFar;	
 		std::string				_reqTemp;				
 
 		std::string				_reqServerName;
 		std::string				_reqPort;
 
 		std::string				_reqAccept;
-		int						_reqContentLength;
+		ssize_t					_reqContentLength;
 		std::string				_requestContentType;
 		std::string				_responseContentType;
 
@@ -57,7 +57,7 @@ class RequestData {
 		const std::string	getHttpVersion() const;
 		const std::string	getHeader() const;
 		const std::string	getTemp() const;
-		size_t				getClientBytesSoFar() const;
+		ssize_t				getClientBytesSoFar() const;
 		std::vector<uint8_t> & getBody();
 
 		const std::string	getRequestServerName() const;
@@ -66,7 +66,7 @@ class RequestData {
 		const std::string	getRequestAccept() const;
 		const std::string	getRequestContentType() const;
 		const std::string	getResponseContentType() const;
-		size_t				getRequestContentLength() const;
+		ssize_t				getRequestContentLength() const;
 		const std::string	getRequestCookie() const;
 
 		const std::string 	getURLPath()const;
@@ -93,7 +93,7 @@ class RequestData {
 		void	setHeader(std::string str);
 		void	setBody(std::vector<uint8_t> & str);
 		void	setTemp(std::string str);
-		void	setClientBytesSoFar(size_t ret);		
+		void	setClientBytesSoFar(ssize_t ret);		
 		void	setRequestServerName(std::string reqHost);
 		void	setRequestPort(std::string reqHost);
 

@@ -201,7 +201,7 @@ void WebServer::readRequest(struct kevent& event)
 	// --------------------------------------------------------------
 	if ((int)event.ident == (storage->getCgiData()).getPipeCgiOut_0())
 	{
-		size_t ret = read(event.ident, &buffer,  BUFFER_SIZE - 1);
+		ssize_t ret = read(event.ident, &buffer,  BUFFER_SIZE - 1);
 		if (ret < 0) // <--eval--> this checks for ret == -1, ret == 0 is checked in the main loop
 		{
 			std::cout << "failed read in pipe _fd_out[0] from cgi\n";
@@ -225,7 +225,9 @@ void WebServer::readRequest(struct kevent& event)
 	// --------------------------------------------------------------
 	else if ((int)event.ident == storage->getFdClient())
 	{
-		int ret = recv(event.ident, &buffer, BUFFER_SIZE - 1, 0);
+		ssize_t ret = recv(event.ident, &buffer, BUFFER_SIZE - 1, 0);
+		std::cout << "recv ret = " << ret << std::endl;
+
 
 		if (ret <= 0) // <--eval--> kq will NEVER send a READ event if there is nothing to receive thus ret == 0 will never happen  
 		{
@@ -236,11 +238,14 @@ void WebServer::readRequest(struct kevent& event)
 		}
 		else if (storage->getDone() == false)
 		{
+			std::cout << "recv ret before appendToRequest = " << ret << std::endl;
 			storage->appendToRequest(buffer, ret);
 			//std::cout << CYN "    returned from ATR(), _parsingDone: " << storage->getDone() << ", isCGI: " << storage->getResponseData().getIsCgi() << "\n" RES;
 
 			std::cout << "HTTP STATUS: " << storage->getHttpStatus() << std::endl;
 			std::cout << "CGI STATUS: " << storage->getCgiData().getIsCgi() << std::endl; // jaka09
+			// if (storage->getHttpStatus() != OK)
+			// 	storage->setHttpStatus(METHOD_NOT_ALLOWED);
 
 			if ((storage->getHttpStatus() != NO_STATUS && storage->getHttpStatus() != OK) || (storage->getDone() == true && storage->getCgiData().getIsCgi() == false))
 			{

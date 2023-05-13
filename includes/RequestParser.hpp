@@ -49,12 +49,11 @@ class Request : public Parser {
         std::string _interpreter_path;
 
 		void parseHeaderAndPath(std::string & tmpHeader, std::string::size_type it);
-		int appendLastChunkToBody2(const char *str, size_t len);
-		int appendToBody(const char *str, size_t len);
+		int appendLastChunkToBody(const char *str, ssize_t len);
+		int appendToBody(const char *str, ssize_t len);
 
 		// cleanup ---------------------------
 		// void	    chooseMethod_StartAction(struct kevent event);  // Doesn't seem to be in use anymore - to be cleaned
-		//int 		appendLastChunkToBody(std::string::size_type it);
 		// int 		appendToBody(std::string request);
 
 	public:
@@ -96,7 +95,7 @@ class Request : public Parser {
         std::string parsePath_regularCase(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);
         std::string parsePath_root(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);
 //        std::string parsePath_edgeCase(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);//todo mayne not needed?
-		void appendToRequest(const char str[], size_t len);
+		void appendToRequest(const char str[], ssize_t len);
 		void storeURLPathParts(std::string const & originalUrlPath, std::string const & newUrlPath);
 		void checkIfPathExists(std::string const & path);
 		void callCGI(struct kevent event);

@@ -289,7 +289,7 @@ std::string Request::getErrorPage()
 // ---------------------------------------------------------------------------------------------------------------------------------------
 
 
-void Request::appendToRequest(const char str[], size_t len) {
+void Request::appendToRequest(const char str[], ssize_t len) {
 	std::cout << PUR << "Start appendToRequest(): _hasBody: " << _hasBody << " | _doneParsing: " << _doneParsing << " \n" << RES;
 
 	// sleep(3); // testing TIMER
@@ -314,11 +314,13 @@ void Request::appendToRequest(const char str[], size_t len) {
                     std::cout << "----------> Form data has \"delete=\" key on it\n" << RES;
                     _data.setFormDataHasDelete(true);
                 }
-				appendLastChunkToBody2(str + it2, len - it2); // TODO THIS LINE WAS DOWN BELOW BEFORE
+				std::cout << "recv ret inside appendToRequest = " << len << std::endl;
+				std::cout << "it2 on appendToRequest = " << it2 << std::endl;
+				std::cout << "len - it2 on appendToRequest = " << len - it2 << std::endl;
+
+				appendLastChunkToBody(str + it2, len - it2); // TODO THIS LINE WAS DOWN BELOW BEFORE
             }
-		//	try {
-				//appendLastChunkToBody2(str + it2, len - it2); // jaka, changed to vector
-		//	} catch (...) { throw std::runtime_error("JOYCE Something Bad happened here"); }
+			// 	appendLastChunkToBody(str + it2, len - it2); // jaka, changed to vector
 			return ;
 		}
 	}
@@ -328,15 +330,18 @@ void Request::appendToRequest(const char str[], size_t len) {
 }
 
 // Last chunk means, last chunk of header section, so first chunk of body
-int Request::appendLastChunkToBody2(const char *str, size_t len) {// TODO WHY THIS RETURNS ????
+int Request::appendLastChunkToBody(const char *str, ssize_t len) {// TODO WHY THIS RETURNS ????
 	_data.setClientBytesSoFar(len);
-/*try {
 	std::cout << RED << "str: " << str << RES << std::endl;
 	std::cout << RED << "len: " << len << RES << std::endl;
 	std::cout << RED << "str + len: " << str + len << RES << std::endl;
-	std::vector<uint8_t> tempVec(str, str + len); // convert adn assign str to vector// commented by joyce
-	_data.setBody(tempVec);// cmmented by JOYCE
-} catch (const std::out_of_range& e) { throw std::runtime_error(std::string("JOYCE Something Bad happened here: ") + e.what()); }*/
+//try {
+	// std::cout << RED << "str: " << str << RES << std::endl;
+	// std::cout << RED << "len: " << len << RES << std::endl;
+	// std::cout << RED << "str + len: " << str + len << RES << std::endl;
+	// std::vector<uint8_t> tempVec(str, str + len); // convert adn assign str to vector// commented by joy ce
+	// _data.setBody(tempVec);// cmmented by JOYCE
+//} catch (const std::out_of_range& e) { throw std::runtime_error(std::string("JOYCE Something Bad happened here: ") + e.what()); }
 
 	std::cout << RED << "_data.getClientBytesSoFar(): " << _data.getClientBytesSoFar() << RES << std::endl;
 	std::cout << RED << ":_data.getRequestContentLength(): " <<  _data.getRequestContentLength() << RES << std::endl;
@@ -354,11 +359,12 @@ int Request::appendLastChunkToBody2(const char *str, size_t len) {// TODO WHY TH
 
 // changed locaiton by joyce to after error handling
 try {
-	std::cout << RED << "str: " << str << RES << std::endl;
-	std::cout << RED << "len: " << len << RES << std::endl;
-	std::cout << RED << "str + len: " << str + len << RES << std::endl;
-	std::vector<uint8_t> tempVec(str, str + len); // convert adn assign str to vector
-	_data.setBody(tempVec);
+	std::cout << RED << "std::string(str).size(): " << static_cast<ssize_t>(std::string(str).size()) << RES << std::endl;
+	if (str != nullptr && len > 0 && len <= static_cast<ssize_t>(std::string(str).size())) {
+		std::vector<uint8_t> tempVec(str, str + len); // convert adn assign str to vector
+		_data.setBody(tempVec);
+	}
+
 } catch (const std::out_of_range& e) { throw std::runtime_error(std::string("JOYCE Something Bad happened here: ") + e.what()); }
 
 	if (_data.getClientBytesSoFar() == _data.getRequestContentLength()) {
@@ -377,7 +383,10 @@ try {
 	return (0);
 }
 
-int Request::appendToBody(const char* str, size_t len) {
+int Request::appendToBody(const char* str, ssize_t len) {
+	std::cout << RED << "appendToBody - str: " << str << RES << std::endl;
+	std::cout << RED << "appendToBody - len: " << len << RES << std::endl;
+	std::cout << RED << "appendToBody - str + len: " << str + len << RES << std::endl;
 //	std::vector<uint8_t> newChunk(str, str + len); // convert adn assign str to vector//commented by JOYCE
 //	_data.setClientBytesSoFar(len);//commented by JOYCE
 	//std::cout << YEL "CLIENT BYTES SO FAR: " << _data.getClientBytesSoFar() << "\n" << RES;
@@ -397,13 +406,14 @@ int Request::appendToBody(const char* str, size_t len) {
 	}
 	if (_data.getClientBytesSoFar() > _data.getRequestContentLength()) {		// Compare body lenght
 		std::cout << RED << "Error: Body-Length (" << _data.getClientBytesSoFar() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;// sleep(2);
-        _httpStatus = BAD_REQUEST;
+        // _httpStatus = BAD_REQUEST;
+        // _httpStatus = METHOD_NOT_ALLOWED;
 		return (1);
 	}
 
 	// changed to here by JOYCE
 	// setting the vector if no error was returned
-		std::vector<uint8_t> newChunk(str, str + len); // convert adn assign str to vector
+	std::vector<uint8_t> newChunk(str, str + len); // convert adn assign str to vector
 	_data.setClientBytesSoFar(len);
 	std::vector<uint8_t> & tmp = _data.getBody();
 	tmp.reserve(_data.getRequestContentLength() + len);

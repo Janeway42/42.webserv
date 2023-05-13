@@ -67,7 +67,7 @@ const std::string RequestData::getTemp() const {
 	return _reqTemp;
 }
 
-size_t RequestData::getClientBytesSoFar() const {
+ssize_t RequestData::getClientBytesSoFar() const {
 	return _clientBytesSoFar;
 }
 
@@ -83,7 +83,7 @@ const std::string RequestData::getRequestAccept() const {
 	return _reqAccept;
 }
 
-size_t RequestData::getRequestContentLength() const {
+ssize_t RequestData::getRequestContentLength() const {
 	return _reqContentLength;
 }
 
@@ -243,7 +243,7 @@ void RequestData::setTemp(std::string reqTemp)
 	_reqTemp = reqTemp;
 }
 
-void RequestData::setClientBytesSoFar(size_t ret)
+void RequestData::setClientBytesSoFar(ssize_t ret)
 {
 	_clientBytesSoFar += ret;
 }
@@ -272,7 +272,7 @@ void RequestData::setRequestAccept(std::string reqAccept)
 
 void RequestData::setRequestContentLength(std::string reqContentLength)
 {
-	_reqContentLength = stoi(reqContentLength);
+	_reqContentLength = stol(reqContentLength);
 }
 
 void RequestData::setResponseContentType(std::string fileExtension)
