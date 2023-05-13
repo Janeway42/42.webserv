@@ -27,6 +27,7 @@ void ResponseData::createResponseHeader(struct kevent& event) {
 
 	Request *storage = (Request *)event.udata;
 
+    std::string content_type = storage->getRequestData().getResponseContentType().empty() ? "" : "Content-Type: " + storage->getRequestData().getResponseContentType() + "\r\n";
     std::string redirection = storage->getRedirection().empty() ? "" : "Location: " + storage->getRedirection();
 	std::string cookiesHeader = "";
 
@@ -37,7 +38,7 @@ void ResponseData::createResponseHeader(struct kevent& event) {
 
 	_responseHeader = "HTTP/1.1 " + std::to_string(storage->getHttpStatus()) + " " + httpStatusToString(storage->getHttpStatus()) + "\r\n"
         // "Content-Type: text/html\r\n"
-        "Content-Type: " + storage->getRequestData().getResponseContentType() + "\r\n"
+        + content_type +
         "Content-Encoding: identity\r\n"
         "Connection: close\r\n" + cookiesHeader + 
         "Content-Length: " + std::to_string(_responseBody.length()) + "\r\n"
@@ -144,7 +145,7 @@ void ResponseData::createResponse(struct kevent& event) {
                 _responseBody = storage->getRequestData().getCgiBody();
                 //   std::cout << "Setting cgi _responseBody: [" << _responseBody << "]\n";
             } else {
-                if (storage->getRequestData().getResponseContentType() == "text/html" || storage->getRequestData().getResponseContentType() == "application/pdf") {
+                if (storage->getRequestData().getResponseContentType().empty() || storage->getRequestData().getResponseContentType() == "text/html" || storage->getRequestData().getResponseContentType() == "application/pdf") {
                     std::cout << GRN << "The path is a file: [" << GRN << _responsePath << "]" << RES << std::endl;
                     _responseBody = streamFile(_responsePath);
                     // std::cout << "Setting _responseBody: [" << _responseBody << "]\n";
