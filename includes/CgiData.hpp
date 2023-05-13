@@ -16,7 +16,7 @@ class CgiData: public Parser
 		int				_fd_out[2]; // we read from cgi - we read from _fd_out[0]
 		bool			_pipesDone;
 		bool			_isCgi;
-		unsigned long	_bytesToCgi;
+		ssize_t   		_bytesToCgi;
 
 	public:
 		CgiData();
@@ -26,7 +26,7 @@ class CgiData: public Parser
 		void 			closePipes();
 
 		// getters
-		unsigned long	getBytesToCgi();
+		ssize_t			getBytesToCgi();
 		bool			getIsCgi();
 		bool			getPipesDone();
 		int				getPipeCgiIn_0();
@@ -37,7 +37,7 @@ class CgiData: public Parser
 		// setters
 		void			setIsCgi(bool val);
 		void			setPipesDone(bool val);
-		void			setBytesToCgi(int val);
+		void			setBytesToCgi(ssize_t val);
 	
 		class CgiException: public std::exception
         {

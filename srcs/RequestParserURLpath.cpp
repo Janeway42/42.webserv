@@ -282,22 +282,24 @@ std::string Request::parsePath_dir(std::string const & originalUrlPath, std::str
     // Ex.: localhost:8080/test/ or localhost:8080/test/sub/
     // Obs.: A directory URI always have a / at the end (otherwise it is a file)
     if (originalUrlPath.find('?') == std::string::npos) {
+                    std::cout << "JOYCEEE directory" << std::endl << RES;
+
         std::cout << BLU << "No '?' found and originalUrlPath has no GET-Form data" << RES << std::endl;
         std::string locationBlockUriName = location->getLocationUriName();
         std::string locationBlockRootDir = location->getRootDirectory();
 
         // Here we are matching the first directory of the URI with the locationBlockUriName + / (since it comes
         // without it from the config file)
-        if (firstDirectoryFromUrlPath == (locationBlockUriName + '/')) {
+        if (firstDirectoryFromUrlPath == (locationBlockUriName + '/') || pathType(locationBlockRootDir + originalUrlPath) == DIRECTORY) {
             std::cout << "Path is a directory." << std::endl << RES;
-
             _data.setIsFolder(true);
+            
             std::cout << BLU << "location block for [" << RES BLU_BG << originalUrlPath << RES;
             std::cout << BLU << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES << "]" << std::endl;
             std::cout << BLU << "Its root_directory [" << locationBlockRootDir << "] and configuration will be used" << RES << std::endl;
 
             // If autoindex is off and no index file, return 403 Forbidden, else return folder content
-            if (pathType(locationBlockRootDir + originalUrlPath + location->getIndexFile()) != REG_FILE) {
+            if (pathType(locationBlockRootDir + originalUrlPath + '/' + location->getIndexFile()) != REG_FILE) {
                 _data.setAutoIndex(location->getAutoIndex());
                 if (not location->getAutoIndex()) {
                     std::cout << GRY << "Auto index is off and no index file found on the location [";
@@ -310,7 +312,7 @@ std::string Request::parsePath_dir(std::string const & originalUrlPath, std::str
             } else {
                 _data.setFileExtension(getExtension(location->getIndexFile()));
             }
-            return locationBlockRootDir + originalUrlPath + location->getIndexFile();
+            return locationBlockRootDir + originalUrlPath + '/' + location->getIndexFile();
         }
     }
     return std::string();
@@ -395,7 +397,7 @@ std::string Request::parsePath_regularCase(std::string const & originalUrlPath, 
             }
         }
         // -------------------------------------------------------------------------------------------------- DIRECTORY
-        if (originalUrlPath.at(originalUrlPath.size() - 1) == '/') {
+        //if (originalUrlPath.at(originalUrlPath.size() - 1) == '/') {
             std::string firstDirectoryFromUrlPath;
             if (lastSlash > 0) {
                 // If lastSlash is not zero, then we are dealing with subdirectories (i.e.: /dir/dir1/ex/), which means
@@ -410,7 +412,7 @@ std::string Request::parsePath_regularCase(std::string const & originalUrlPath, 
             if (not URLPath_full_dir.empty()) {
                 return URLPath_full_dir;
             }
-        }
+        //}
     }
     return std::string();
 }
@@ -448,8 +450,8 @@ std::string Request::parsePath_root(std::string const & originalUrlPath, std::ve
 // receiving a copy of originalUrlPath, so it can be modified in case we have a redirection on the location block
 void Request::checkRedirection(std::string getRedirection) {
     if (not getRedirection.empty()) {
-        std::cout << YEL << "Redirection found: " << getRedirection << RES << std::endl;
-        std::cout << YEL << "A 301 response response will be sent, with the redirection url on it!" << RES << std::endl;
+        std::cout << BLU << "Redirection found: " << getRedirection << RES << std::endl;
+        std::cout << BLU << "A 301 response response will be sent, with the redirection url on it!" << RES << std::endl;
         setHttpStatus(MOVE_PERMANENTLY);
         setRedirection(getRedirection);
     }
@@ -469,7 +471,7 @@ void Request::checkMethods(std::vector<AllowMethods> const & methods) {
         }
     }
     if (not methodsMatched) {
-        setHttpStatus(METHOD_NOT_ALLOWED);// comment by JOYCE
+        setHttpStatus(METHOD_NOT_ALLOWED);
         std::cout << std::endl << RED << "Location does not accept the Method - 405 Method not allowed will be returned"
             << RES << std::endl;
     } else {
@@ -504,6 +506,10 @@ std::string Request::parsePath_locationMatch(std::string const & originalUrlPath
             checkRedirection(location->getRedirection());
             break;
         }
+        // if (not location->getRedirection().empty()) {
+        //     //checkRedirection(location->getRedirection());
+        //     break;
+        // }
 
         std::cout << YEL << "The url path [" << originalUrlPath << "] did not match the current location block [";
         std::cout << locationBlockUriName << "] from the config file. ";

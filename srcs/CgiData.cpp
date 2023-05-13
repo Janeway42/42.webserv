@@ -77,7 +77,7 @@ bool CgiData::getIsCgi()
 	return (_isCgi);
 }
 
-unsigned long CgiData::getBytesToCgi()
+ssize_t CgiData::getBytesToCgi()
 {
 	return (_bytesToCgi);
 }
@@ -114,7 +114,7 @@ void CgiData::setIsCgi(bool val)
 	_isCgi = val;
 }
 
-void CgiData::setBytesToCgi(int val)
+void CgiData::setBytesToCgi(ssize_t val)
 {
 	_bytesToCgi += val;
 }

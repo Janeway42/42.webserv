@@ -1,4 +1,4 @@
-#include "ConfigFileParser.hpp"
+#include "../includes/ConfigFileParser.hpp"
 
 void func() {
     system("leaks a.out");
