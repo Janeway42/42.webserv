@@ -100,6 +100,7 @@ enum AllowMethods {
     GET = 0,
     POST,
     DELETE,
+    PUT,
     NONE
 };
 

@@ -19,6 +19,7 @@ class ServerLocation : public Parser {
         std::string _root_directory;
         std::vector<AllowMethods> _allow_methods;
         std::string _index_file;
+        bool _no_index_file;
         bool _auto_index;
         std::string _redirection;
         std::string _interpreter_path;
@@ -42,6 +43,7 @@ class ServerLocation : public Parser {
         std::string getRootDirectory() const;
         std::vector<AllowMethods> getAllowMethods() const;
         std::string getIndexFile() const;
+        bool noIndexFile() const;
         bool getAutoIndex() const;
         std::string getRedirection() const;
         std::string getInterpreterPath() const;

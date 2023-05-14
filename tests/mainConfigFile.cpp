@@ -1,9 +1,10 @@
 #include "../includes/ConfigFileParser.hpp"
 
+// c++ -Iincludes -Wall -Werror -Wextra -pedantic -std=c++98 -Wshadow -g3 ./tests/mainConfigFile.cpp srcs/Parser.cpp srcs/ConfigFileParser.cpp srcs/ServerLocation.cpp srcs/ServerData.cpp -o confiFileTester
+
 void func() {
-    system("leaks a.out");
+    system("leaks confiFileTester");
 }
-// c++ -Iincludes -Wall -Werror -Wextra -pedantic -std=c++98 -Wshadow -fsanitize=address -g3 srcs/ConfigFileParser.cpp srcs/ServerData.cpp srcs/ServerLocation.cpp srcs/Parser.cpp tests/mainConfigFile.cpp
 
 int main(int ac, char **av) {
     //atexit(func);

@@ -14,7 +14,7 @@ environ = os.environ.copy()
 for param in os.environ.keys():
 	if param == 'UPLOAD_DIR':
 		uploadDir_AbsPath = os.environ[param]
-	if param == 'INFO_PATH':
+	if param == 'PATH_INFO':
 	    uploadDirName = os.environ[param]
 
 sys.stderr.write('!!! From python uploads: ')
