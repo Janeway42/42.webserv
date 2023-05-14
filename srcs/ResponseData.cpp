@@ -27,15 +27,6 @@ void ResponseData::createResponseHeader(struct kevent& event) {
 
 	Request *storage = (Request *)event.udata;
 
-    std::string content_length = std::to_string(_responseBody.length());
-
-    // JUST TO PASS 42 TESTER
-    if (storage->getRequestData().getURLPath_full().find("youpi.bla") != std::string::npos && storage->getRequestData().getRequestMethod() == POST) {
-        std::cout << "content_length = \"100000000\" for 42 tester" << std::endl;
-        content_length = "100000000";
-    }
-
-    std::string content_type = storage->getRequestData().getResponseContentType().empty() ? "" : "Content-Type: " + storage->getRequestData().getResponseContentType() + "\r\n";
     std::string redirection = storage->getRedirection().empty() ? "" : "Location: " + storage->getRedirection();
 	std::string cookiesHeader = "";
 
@@ -46,11 +37,10 @@ void ResponseData::createResponseHeader(struct kevent& event) {
 
 	_responseHeader = "HTTP/1.1 " + std::to_string(storage->getHttpStatus()) + " " + httpStatusToString(storage->getHttpStatus()) + "\r\n"
         // "Content-Type: text/html\r\n"
-        + content_type +
+        "Content-Type: " + storage->getRequestData().getResponseContentType() + "\r\n"
         "Content-Encoding: identity\r\n"
-        "Connection: close\r\n"
-        + cookiesHeader +
-        "Content-Length: " + content_length + "\r\n"
+        "Connection: close\r\n" + cookiesHeader + 
+        "Content-Length: " + std::to_string(_responseBody.length()) + "\r\n"
         + redirection + "\r\n\r\n";
 }
 
@@ -149,12 +139,12 @@ void ResponseData::createResponse(struct kevent& event) {
         // if it is not a folder (it checks first if cgi -> if not then it checks text (includes error), else image
         else {
             if (storage->getCgiData().getIsCgi() && storage->getHttpStatus() == OK) {
-                std::cout << GRN << "The path is a file to send to a cgi interpreter: [" << GRN << _responsePath << "]" << RES << std::endl;
+                std::cout << GRN << "The path contains query -> cgi: [" << GRN << _responsePath << "]" << RES << std::endl;
                 std::cout << "Setting _responseBody\n";
                 _responseBody = storage->getRequestData().getCgiBody();
                 //   std::cout << "Setting cgi _responseBody: [" << _responseBody << "]\n";
             } else {
-                if (storage->getRequestData().getResponseContentType().empty() || storage->getRequestData().getResponseContentType() == "text/html" || storage->getRequestData().getResponseContentType() == "application/pdf") {
+                if (storage->getRequestData().getResponseContentType() == "text/html" || storage->getRequestData().getResponseContentType() == "application/pdf") {
                     std::cout << GRN << "The path is a file: [" << GRN << _responsePath << "]" << RES << std::endl;
                     _responseBody = streamFile(_responsePath);
                     // std::cout << "Setting _responseBody: [" << _responseBody << "]\n";
@@ -169,11 +159,7 @@ void ResponseData::createResponse(struct kevent& event) {
             }
         }
         if (_responseBody.empty() && storage->getHttpStatus() != NO_STATUS) {
-            if (storage->getRequestData().getIsFolder() && pathType(_responsePath) != DIRECTORY) {
-                storage->setHttpStatus(NOT_FOUND);
-            } else {
-                storage->setHttpStatus(INTERNAL_SERVER_ERROR);
-            }
+            storage->setHttpStatus(INTERNAL_SERVER_ERROR);
             setResponseStatus(event);
             std::cout << "CHECK IF STRING WAS EMPTY, responspath: "  << _responsePath << "\n";
             _responseBody = streamFile(_responsePath);
@@ -183,32 +169,27 @@ void ResponseData::createResponse(struct kevent& event) {
 	createResponseHeader(event);
 	_fullResponse += _responseHeader + _responseBody;
      std::cout << "-------------\n_responseHeader:\n" RES << _responseHeader << "\n-------------" << std::endl;
-     //std::cout << "-------------\n_responseBody:\n" RES << _responseBody << "\n-------------" << std::endl;
 }
 
-std::string getSpecificErrorPage(Request* storage, std::vector<std::string> const & errorPages, std::string const & defaultErrorPage) {
-    Parser parser;
+static std::string getSpecificErrorPage(Request* storage, std::vector<std::string> const & errorPages, std::string const & defaultErrorPage) {
+
     storage->getRequestData().setFileExtension(defaultErrorPage);
     std::vector<std::string>::const_iterator it = errorPages.cbegin();
     for (; it != errorPages.cend(); ++it) {
              std::cout << "errorPages:\n" RES << *it << "\n-------------" << std::endl;
         if (it->find(std::to_string(storage->getHttpStatus())) != std::string::npos) {
-            // If error page is found on the config file AND it exists, return it
-            if (parser.pathType(*it) == REG_FILE) {
-                std::cout << "Error page on config file will be used" << std::endl;
-                return *it;
-            }
+            // If error page is found on the config file, return it
+            return *it;
         }
     }
     // Otherwise return a default config file
-    std::cout << "Internal server default error page will be used" << std::endl;
     return defaultErrorPage;
 }
 
 void ResponseData::setResponseStatus(struct kevent& event)
 {
 	Request *storage = (Request *)event.udata;
-	std::cout << CYN << "Start setResponseStatus(), current status: "<< storage->getHttpStatus() << "\n" << RES;
+	std::cout << CYN << "Start setResponseStatus(), current: "<< storage->getHttpStatus() << "\n" << RES;
 
     std::string defaultStatusPath = "./_server_default_status/";
     //todo add more default pages?
@@ -428,3 +409,38 @@ size_t	ResponseData::getSentSoFar() { // jaka
 // {
 // 	return (_errorOverride);
 // }
+
+// ------------------------------------------------------------------------------ HTTP STATUS
+// ------------------------------------------------------------------------------------------
+
+// 200 OK  - default
+//     Standard response for successful HTTP requests. The actual response will depend on the request method used. 
+// 	In a GET request, the response will contain an entity corresponding to the requested resource. 
+// 	In a POST request, the response will contain an entity describing or containing the result of the action.
+
+// 400 Bad Request  - error 1
+//     The server cannot or will not process the request due to an apparent client error 
+// 	(e.g., malformed request syntax, size too large, invalid request message framing, or deceptive request routing).
+
+// 405 Method Not Allowed - error 2
+//     A request method is not supported for the requested resource; for example, a GET request on a form that requires data to be presented via POST, 
+// 	or a PUT request on a read-only resource.
+
+// 408 Request Timeout - error 3
+//     The server timed out waiting for the request. According to HTTP specifications: "The client did not produce a request within the time that 
+// 	the server was prepared to wait. The client MAY repeat the request without modifications at any later time."
+
+// ---------------
+
+// 404 Not Found
+//     The requested resource could not be found but may be available in the future. Subsequent requests by the client are permissible.
+
+// 411 Length Required
+//     The request did not specify the length of its content, which is required by the requested resource.
+
+// 413 Payload Too Large
+//     The request is larger than the server is willing or able to process. Previously called "Request Entity Too Large" in RFC 2616.
+
+// 414 URI Too Long
+//     The URI provided was too long for the server to process. Often the result of too much data being encoded as a query-string of a GET request, 
+// 	in which case it should be converted to a POST request. Called "Request-URI Too Long" previously in RFC 2616.

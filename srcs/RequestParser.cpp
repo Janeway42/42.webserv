@@ -104,8 +104,7 @@ int Request::storeWordsFromFirstLine(std::string firstLine) {
 	std::vector<std::string>::iterator iter = arr.begin();
 	for (int i = 0; iter < arr.end(); iter++, i++) {
 		if (i == 0) {
-            // OBS.: PUT IS HERE AS A HACK ONLY TO PASS THE 42 TESTER
-			if (*iter == "GET" || *iter == "POST" || *iter == "DELETE" || *iter == "PUT") {
+			if (*iter == "GET" || *iter == "POST" || *iter == "DELETE") {
 				std::cout << GRN << "REQUEST METHOD: " << *iter << RES << std::endl << std::endl;
                 if (*iter == "GET")
 				    _data.setRequestMethod(GET);
@@ -113,11 +112,10 @@ int Request::storeWordsFromFirstLine(std::string firstLine) {
                     _data.setRequestMethod(POST);
                 if (*iter == "DELETE")
                     _data.setRequestMethod(DELETE);
-                if (*iter == "PUT")
-                    _data.setRequestMethod(PUT);
 			} else {
 				std::cout << RED << "Error: This method is not recognized\n" << RES;
-				_httpStatus = METHOD_NOT_ALLOWED;
+				_httpStatus = METHOD_NOT_ALLOWED; 
+				//_httpStatus = BAD_REQUEST; // for 42 tester
 			}
 		}
 		else if (i == 1)
@@ -347,16 +345,13 @@ int Request::appendLastChunkToBody(const char *str, ssize_t len) {// TODO WHY TH
 
 	std::cout << RED << "_data.getClientBytesSoFar(): " << _data.getClientBytesSoFar() << RES << std::endl;
 	std::cout << RED << ":_data.getRequestContentLength(): " <<  _data.getRequestContentLength() << RES << std::endl;
-    // The PUT part is just a hack to pass the 42 tester (we actually don't accept PUT)
-	if (_data.getClientBytesSoFar() > _data.getRequestContentLength() && _data.getRequestMethod() != PUT &&
-            _data.getURLPath_full().find("youpi.bla") == std::string::npos) {
+	if (_data.getClientBytesSoFar() > _data.getRequestContentLength()) {   // Compare body length
 		std::cout << RED << "Error: Body-Length, first chunk (" << _data.getClientBytesSoFar() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;
         _httpStatus = BAD_REQUEST;
 		return (1);
 	}
 
-    // The PUT part is just a hack to pass the 42 tester (we actually don't accept PUT)
-	if (_data.getClientBytesSoFar() > getServerData().getClientMaxBodySize() && _data.getRequestMethod() != PUT) {
+	if (_data.getClientBytesSoFar() > getServerData().getClientMaxBodySize()) {
 		std::cout << RED "REQUEST BODY CONTENT TOO LARGE (max allowed: " << getServerData().getClientMaxBodySize() << ")\n" RES;
 		_httpStatus = CONTENT_TOO_LARGE;
 		return (1);
@@ -459,7 +454,7 @@ RequestData & Request::getRequestData(){
     return _data;
 }
 
-ServerData & Request::getServerData(){
+ServerData & Request::getServerData(){   // do we need reference? 
     return _specificServer;
 }
 

@@ -243,10 +243,9 @@ void WebServer::readRequest(struct kevent& event)
 			//std::cout << CYN "    returned from ATR(), _parsingDone: " << storage->getDone() << ", isCGI: " << storage->getResponseData().getIsCgi() << "\n" RES;
 
 			std::cout << "HTTP STATUS: " << storage->getHttpStatus() << std::endl;
-			std::cout << "CGI STATUS: " << storage->getCgiData().getIsCgi() << std::endl;
-
-            // FOR LOGGING
-            //std::cout << "Buffer from recv:[" << PUR << buffer << RES << "]" << std::endl;
+			std::cout << "CGI STATUS: " << storage->getCgiData().getIsCgi() << std::endl; // jaka09
+			// if (storage->getHttpStatus() != OK)
+			// 	storage->setHttpStatus(METHOD_NOT_ALLOWED);
 
 			if ((storage->getHttpStatus() != NO_STATUS && storage->getHttpStatus() != OK) || (storage->getDone() == true && storage->getCgiData().getIsCgi() == false))
 			{

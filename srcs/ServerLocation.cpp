@@ -8,7 +8,6 @@ ServerLocation::ServerLocation(std::string const & server_root_directory, std::s
     _location_cgi_extension(std::string()),
     _root_directory(server_root_directory),
     _index_file(server_index_file),
-    _no_index_file(true),
     _auto_index(false),
     _redirection(std::string()),
     _interpreter_path(std::string()),
@@ -27,7 +26,6 @@ ServerLocation::~ServerLocation() {
     _root_directory.clear();
     _allow_methods = std::vector<AllowMethods>(NONE);
     _index_file.clear();
-    _no_index_file = true;
     _auto_index = false;
     _redirection.clear();
     _interpreter_path.clear();
@@ -62,10 +60,6 @@ std::vector<AllowMethods> ServerLocation::getAllowMethods() const {
 
 std::string ServerLocation::getIndexFile() const {
     return _index_file;
-}
-
-bool ServerLocation::noIndexFile() const {
-    return _no_index_file;
 }
 
 bool ServerLocation::getAutoIndex() const {
@@ -159,10 +153,6 @@ void ServerLocation::setAllowMethods(std::string const & allowMethods) {
         if (allowMethods.find("DELETE") != std::string::npos) {
             locationAllowMethods.push_back(DELETE);
         }
-        // HACK TO PASS 42 TESTER (WE ACTUALLY DO NOT ACCEPT PUT)
-        if (allowMethods.find("PUT") != std::string::npos) {
-            locationAllowMethods.push_back(PUT);
-        }
         std::string::size_type numberOfSpaces = 0;
         for (std::string::size_type it = 0; allowMethods[it] ; it++) {
             if (isSpace(allowMethods[it])) {
@@ -190,7 +180,6 @@ void ServerLocation::setIndexFile(std::string const & indexFile) {
                  * to the _index_file private variable (without the root_directory added to it, since for a location, if
                  * auto_index is on, this same index_file would be used for the subdirectories) */
                 _index_file = indexFile;
-                _no_index_file = false;
             }
         } else {
             throw ParserException(CONFIG_FILE_ERROR("index_file", NOT_SUPPORTED));

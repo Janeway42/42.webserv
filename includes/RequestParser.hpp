@@ -24,7 +24,7 @@
 	// 	temp = path.substr(1, std::string::npos);
 	// std::size_t found = temp.find_last_of(".");
 	// std::string extension = temp.substr(found, std::string::npos);
-
+	
 	//std::cout << GRN "Found Extension: [" << temp << "]\n" << RES;
 	//std::cout << GRN "Found Extension: [" << extension << "]\n" RES;
 
