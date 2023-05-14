@@ -14,7 +14,7 @@ cgitb.enable()	# detailed errors msgs
 for param in os.environ.keys():
     if param == 'UPLOAD_DIR':
         uploadDir_AbsPath = os.environ[param]
-    if param == 'PATH_INFO':
+    if param == 'INFO_PATH':
         uploadDirName = os.environ[param]
 
 
