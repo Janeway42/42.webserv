@@ -246,7 +246,7 @@ void WebServer::readRequest(struct kevent& event)
 			std::cout << "CGI STATUS: " << storage->getCgiData().getIsCgi() << std::endl;
 
             // FOR LOGGING
-            std::cout << "Buffer from recv:[" << PUR << buffer << RES << "]" << std::endl;
+            //std::cout << "Buffer from recv:[" << PUR << buffer << RES << "]" << std::endl;
 
 			if ((storage->getHttpStatus() != NO_STATUS && storage->getHttpStatus() != OK) || (storage->getDone() == true && storage->getCgiData().getIsCgi() == false))
 			{

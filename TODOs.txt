@@ -17,10 +17,8 @@ More important:
         - Finish tester
         - Does cookies expire?
     JOYCE:
-        - make testr pass
+        - make testr pass (NEED HELP)
         - SEARCH FOR TODO, JAKA. CORINA. JOYCE on all files
-        - make config file main work on terminal
-        - delete a 404 config file error after program is running
 
 // PDF
 However, you are allowed to use fcntl() only as follows:
