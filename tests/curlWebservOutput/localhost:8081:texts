@@ -1,0 +1,16 @@
+HTTP/1.1 200 OK
+
+<html>
+<head>
+<title>Index./resources/texts//</title>
+</head>
+<body><h2>Index of the folder: <span style='color:blue;'>./resources/texts//</h2><ul></span>
+<li><a href='/texts//./'>  ./  </a></li>
+<li><a href='/texts//../'>  ../  </a></li>
+<li><a href='/texts//bible.html'>  bible.html  </a></li>
+<li><a href='/texts//bla'>  bla  </a></li>
+<li><a href='/texts//favicon.jpg'>  favicon.jpg  </a></li>
+<li><a href='/texts//index_textsXXX.html'>  index_textsXXX.html  </a></li>
+<li><a href='/texts//one_page.html'>  one_page.html  </a></li>
+<li><a href='/texts//one_sentence.html'>  one_sentence.html  </a></li>
+</ul></body></htm

@@ -1,0 +1,26 @@
+HTTP/1.1 200 OK
+
+<html>
+<head><title>Index of /</title></head>
+<body>
+<h1>Index of /</h1><hr><pre><a href="../">../</a>
+<a href="UPLOADS/">UPLOADS/</a>                                           14-May-2023 10:52                   -
+<a href="cgi/">cgi/</a>                                               14-May-2023 10:52                   -
+<a href="cookiesSet/">cookiesSet/</a>                                        14-May-2023 10:52                   -
+<a href="error_pages/">error_pages/</a>                                       14-May-2023 10:52                   -
+<a href="folderA/">folderA/</a>                                           14-May-2023 10:52                   -
+<a href="icons/">icons/</a>                                             14-May-2023 10:52                   -
+<a href="images/">images/</a>                                            14-May-2023 10:52                   -
+<a href="localhost/">localhost/</a>                                         14-May-2023 10:52                   -
+<a href="location_random_dir/">location_random_dir/</a>                               14-May-2023 10:52                   -
+<a href="server_root/">server_root/</a>                                       14-May-2023 10:52                   -
+<a href="texts/">texts/</a>                                             14-May-2023 10:52                   -
+<a href="400.html">400.html</a>                                           14-May-2023 10:52                2395
+<a href="cgi_index.html">cgi_index.html</a>                                     14-May-2023 10:52                3538
+<a href="favicon.ico">favicon.ico</a>                                        14-May-2023 10:52               15406
+<a href="indexXXX.html">indexXXX.html</a>                                      14-May-2023 10:52                1231
+<a href="sanitizer_error.txt">sanitizer_error.txt</a>                                14-May-2023 10:52                3094
+<a href="sanitizer_error_getHttpStatus.txt">sanitizer_error_getHttpStatus.txt</a>                  14-May-2023 10:52                2965
+<a href="test.html">test.html</a>                                          14-May-2023 10:52                  99
+</pre><hr></body>
+</html>

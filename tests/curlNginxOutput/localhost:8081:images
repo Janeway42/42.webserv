@@ -1,0 +1,22 @@
+HTTP/1.1 200 OK
+
+<html>
+<head><title>Index of /images/</title></head>
+<body>
+<h1>Index of /images/</h1><hr><pre><a href="../">../</a>
+<a href="someFolder/">someFolder/</a>                                        14-May-2023 10:52                   -
+<a href="favicon.ico">favicon.ico</a>                                        14-May-2023 10:52               15406
+<a href="image.png">image.png</a>                                          14-May-2023 10:52              109894
+<a href="img_109kb.jpg">img_109kb.jpg</a>                                      14-May-2023 10:52              108934
+<a href="img_13000kb.jpg">img_13000kb.jpg</a>                                    14-May-2023 10:52            13482898
+<a href="img_36kb.jpg">img_36kb.jpg</a>                                       14-May-2023 10:52               35581
+<a href="img_5000kb.jpg">img_5000kb.jpg</a>                                     14-May-2023 10:52             4992867
+<a href="img_938kb.jpg">img_938kb.jpg</a>                                      14-May-2023 10:52              937941
+<a href="index_imagesXXX.html">index_imagesXXX.html</a>                               14-May-2023 10:52                1450
+<a href="thb_109kb.jpg">thb_109kb.jpg</a>                                      14-May-2023 10:52                5408
+<a href="thb_13000kb.jpg">thb_13000kb.jpg</a>                                    14-May-2023 10:52               13686
+<a href="thb_36kb.jpg">thb_36kb.jpg</a>                                       14-May-2023 10:52                3242
+<a href="thb_5000kb.jpg">thb_5000kb.jpg</a>                                     14-May-2023 10:52                7268
+<a href="thb_938kb.jpg">thb_938kb.jpg</a>                                      14-May-2023 10:52                3187
+</pre><hr></body>
+</html>

@@ -1,0 +1,14 @@
+HTTP/1.1 200 OK
+
+<html>
+<head><title>Index of /error_pages/</title></head>
+<body>
+<h1>Index of /error_pages/</h1><hr><pre><a href="../">../</a>
+<a href="400.html">400.html</a>                                           14-May-2023 10:52                  79
+<a href="403.html">403.html</a>                                           14-May-2023 10:52                 208
+<a href="404.html">404.html</a>                                           14-May-2023 10:52                  77
+<a href="405.html">405.html</a>                                           14-May-2023 10:52                  86
+<a href="500.html">500.html</a>                                           14-May-2023 10:52                 263
+<a href="504.html">504.html</a>                                           14-May-2023 10:52                 271
+</pre><hr></body>
+</html>
