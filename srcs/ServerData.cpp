@@ -300,7 +300,6 @@ void ServerData::setUploadDirectory(const std::string &uploadDirectory) {
     /* not mandatory | default: ./uploads */
     if (not uploadDirectory.empty() && uploadDirectory != "/" && uploadDirectory != "./") {
         std::string upload_dir = addRootDirectoryPath(_root_directory, uploadDirectory);
-        std::cout << "UPLOADDIR: " << upload_dir << "\n";
         PathType type = pathType(upload_dir);
         // doesn't contain regexp (regular expressions), wildcards or full/relative path
         if (type == DIRECTORY) {
