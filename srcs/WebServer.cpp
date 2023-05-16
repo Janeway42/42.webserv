@@ -291,8 +291,8 @@ void WebServer::sendResponse(struct kevent& event)
 		std::vector<uint8_t>::iterator endPoint   = tmpBody.end();
 		
 		if (endPoint < startPoint) {
-			std::size_t dataSize = static_cast<std::size_t>(endPoint - startPoint);
-			//std::cout << " ....... a)  End is smaller than Start, dataSize: " << dataSize << "\n";		
+			// std::size_t dataSize = static_cast<std::size_t>(endPoint - startPoint);
+			std::cout << " ....... a)  End is smaller than Start\n";		
 		}
 		else if (endPoint >= startPoint) {
 			

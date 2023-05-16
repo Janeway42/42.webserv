@@ -292,6 +292,7 @@ std::string Request::getErrorPage()
 void Request::appendToRequest(const char str[], ssize_t len) {
 	std::cout << PUR << "Start appendToRequest(): _hasBody: " << _hasBody << " | _doneParsing: " << _doneParsing << " \n" << RES;
 
+
 	// sleep(3); // testing TIMER
 	std::string 			chunk = std::string(str);
 	std::string				strToFind = "\r\n\r\n";
@@ -302,6 +303,8 @@ void Request::appendToRequest(const char str[], ssize_t len) {
 
 		if ((it = _data.getTemp().find(strToFind)) != std::string::npos) {
 			parseHeaderAndPath(tmpHeader, it);
+		
+			std::cout << PUR << "str: [" << str << "]" << RES << std::endl; // to remove, jaka
 
 			// in case of error shouldn't it directly return here? 
 			// if (_doneParsing == true)
@@ -360,7 +363,9 @@ int Request::appendLastChunkToBody(const char *str, ssize_t len) {// TODO WHY TH
 // changed location by joyce to after error handling
 try {
 	std::cout << RED << "std::string(str).size(): " << static_cast<ssize_t>(std::string(str).size()) << RES << std::endl;
+	std::cout << RED << "            strlen(str): " << strlen(str) << RES << std::endl;
 	if (str != nullptr && len > 0 && len <= static_cast<ssize_t>(std::string(str).size())) {
+		std::cout << RED << "            a)\n";
 		std::vector<uint8_t> tempVec(str, str + len); // convert and assign str to vector
 		_data.setBody(tempVec);
 	}
@@ -422,6 +427,8 @@ int Request::appendToBody(const char* str, ssize_t len) {
 	tmp.reserve(_data.getRequestContentLength() + len);
 	tmp.insert(tmp.end(), newChunk.begin(), newChunk.end());
 	_data.setBody(tmp);
+	std::cout << GRN << "bytesFromClientSoFar: " << _data.getClientBytesSoFar() << ",  reqContLen: " <<  _data.getRequestContentLength() << "\n" RES; // to remove, jaka
+	std::cout << GRN << "getBody().size(): " << _data.getBody().size() << RES "\n";
 
 //	else if (_data.getBody().size() == _data.getRequestContentLength()) {
 	if (_data.getClientBytesSoFar() == _data.getRequestContentLength()) {
