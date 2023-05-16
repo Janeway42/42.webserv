@@ -332,9 +332,9 @@ void Request::appendToRequest(const char str[], ssize_t len) {
 // Last chunk means, last chunk of header section, so first chunk of body
 int Request::appendLastChunkToBody(const char *str, ssize_t len) {// TODO WHY THIS RETURNS ????
 	_data.setClientBytesSoFar(len);
-	std::cout << RED << "str: " << str << RES << std::endl;
+	std::cout << RED << "str: [" << str << "]" << RES << std::endl;
 	std::cout << RED << "len: " << len << RES << std::endl;
-	std::cout << RED << "str + len: " << str + len << RES << std::endl;
+	std::cout << RED << "str + len: [" << str + len << "]" << RES << std::endl;
 //try {
 	// std::cout << RED << "str: " << str << RES << std::endl;
 	// std::cout << RED << "len: " << len << RES << std::endl;
@@ -357,11 +357,11 @@ int Request::appendLastChunkToBody(const char *str, ssize_t len) {// TODO WHY TH
 		return (1);
 	}
 
-// changed locaiton by joyce to after error handling
+// changed location by joyce to after error handling
 try {
 	std::cout << RED << "std::string(str).size(): " << static_cast<ssize_t>(std::string(str).size()) << RES << std::endl;
 	if (str != nullptr && len > 0 && len <= static_cast<ssize_t>(std::string(str).size())) {
-		std::vector<uint8_t> tempVec(str, str + len); // convert adn assign str to vector
+		std::vector<uint8_t> tempVec(str, str + len); // convert and assign str to vector
 		_data.setBody(tempVec);
 	}
 
@@ -384,9 +384,12 @@ try {
 }
 
 int Request::appendToBody(const char* str, ssize_t len) {
-	std::cout << RED << "appendToBody - str: " << str << RES << std::endl;
+	// std::cout << RED << "appendToBody - str: " << str << RES << std::endl;
 	std::cout << RED << "appendToBody - len: " << len << RES << std::endl;
-	std::cout << RED << "appendToBody - str + len: " << str + len << RES << std::endl;
+	std::cout << RED << "appendToBody - str + len: [" << str + len << "]\n" << RES << std::endl;
+	std::cout << RED << "        getBody().size():" << _data.getBody().size() << "\n" << RES << std::endl;
+	// std::cout << RED << "BytesFromCLientSoFar: " << _data.getClientBytesSoFar() << "\n" << RES << std::endl;	// to remove, jaka
+	
 //	std::vector<uint8_t> newChunk(str, str + len); // convert adn assign str to vector//commented by JOYCE
 //	_data.setClientBytesSoFar(len);//commented by JOYCE
 	//std::cout << YEL "CLIENT BYTES SO FAR: " << _data.getClientBytesSoFar() << "\n" << RES;
@@ -413,7 +416,7 @@ int Request::appendToBody(const char* str, ssize_t len) {
 
 	// changed to here by JOYCE
 	// setting the vector if no error was returned
-	std::vector<uint8_t> newChunk(str, str + len); // convert adn assign str to vector
+	std::vector<uint8_t> newChunk(str, str + len); // convert and assign str to vector
 	_data.setClientBytesSoFar(len);
 	std::vector<uint8_t> & tmp = _data.getBody();
 	tmp.reserve(_data.getRequestContentLength() + len);
@@ -424,6 +427,8 @@ int Request::appendToBody(const char* str, ssize_t len) {
 	if (_data.getClientBytesSoFar() == _data.getRequestContentLength()) {
 	//else if (_data.getClientBytesSoFar() == _data.getRequestContentLength()) {// todo joyce commentd this out
 		std::cout << GRN << "OK: Done parsing.\n" RES;
+		std::cout << GRN << "bytesFromClientSoFar: " << _data.getClientBytesSoFar() << "  ==  reqContLen: " <<  _data.getRequestContentLength() << "\n" RES; // to remove, jaka
+		std::cout << GRN << "getBody().size(): " << _data.getBody().size() << RES "\n";
 		_doneParsing = true;
 		return (0);
 	}

@@ -93,6 +93,8 @@ void ResponseData::createResponse(struct kevent& event) {
 	Request *storage = (Request *)event.udata;
 
 	std::cout << "fd: " << storage->getFdClient() << std::endl;
+    std::cout << "   _responseBody: [" << _responseBody << "]\n";   // to remove, jaka
+
 
     // If the Form data that came from the body contained a "delete=" key, and the current request is POST or DELETE
     // we can return 405 Method Not Allowed
@@ -142,7 +144,7 @@ void ResponseData::createResponse(struct kevent& event) {
                 std::cout << GRN << "The path contains query -> cgi: [" << GRN << _responsePath << "]" << RES << std::endl;
                 std::cout << "Setting _responseBody\n";
                 _responseBody = storage->getRequestData().getCgiBody();
-                //   std::cout << "Setting cgi _responseBody: [" << _responseBody << "]\n";
+                // std::cout << "Setting cgi _responseBody: [" << _responseBody << "]\n";
             } else {
                 if (storage->getRequestData().getResponseContentType() == "text/html" || storage->getRequestData().getResponseContentType() == "application/pdf") {
                     std::cout << GRN << "The path is a file: [" << GRN << _responsePath << "]" << RES << std::endl;

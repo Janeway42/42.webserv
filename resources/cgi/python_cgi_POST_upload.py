@@ -136,6 +136,8 @@ html = html_template.format(items_html)
 # Output the HTML page
 print(html)
 
+sys.stderr.write('!!! From Python Upload: end of script\n')
+# sys.stderr.write(html)
 
 
 
