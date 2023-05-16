@@ -22,6 +22,7 @@ DELETE http://api.example.com/employee/1
 // random filename Z5z=k b0JaL9px!u8I]2'N[3Q6@vF.4f7qn~X$^j(s1l{T,y]+eK%=^_ .jpg
 
 #include <unistd.h> // sleep
+// #include <limits.h>
 #include "RequestParser.hpp"
 
 /** Default constructor */
@@ -153,7 +154,6 @@ int Request::storeWordsFromOtherLine(std::string otherLine) {
 			// 	std::string temp = (*iter).substr(0, (*iter).find(":"));
 			// 	_data.setRequestHost(temp);
 			// }
-
 			else if (*iter == "Host:") {
 				iter++;
 				std::string temp = (*iter).substr(0, (*iter).find(":"));
@@ -292,7 +292,6 @@ std::string Request::getErrorPage()
 void Request::appendToRequest(const char str[], ssize_t len) {
 	std::cout << PUR << "Start appendToRequest(): _hasBody: " << _hasBody << " | _doneParsing: " << _doneParsing << " \n" << RES;
 
-
 	// sleep(3); // testing TIMER
 	std::string 			chunk = std::string(str);
 	std::string				strToFind = "\r\n\r\n";
@@ -303,12 +302,6 @@ void Request::appendToRequest(const char str[], ssize_t len) {
 
 		if ((it = _data.getTemp().find(strToFind)) != std::string::npos) {
 			parseHeaderAndPath(tmpHeader, it);
-		
-			std::cout << PUR << "str: [" << str << "]" << RES << std::endl; // to remove, jaka
-
-			// in case of error shouldn't it directly return here? 
-			// if (_doneParsing == true)
-			//	return  ;
 
 			std::cout << YEL << "Found header ending /r/n, maybe there is body\n" << RES;
 			it2 = chunk.find(strToFind) + strToFind.length();	// needed to find the start of body, as char*, not std::string, because body will be vector
@@ -331,6 +324,7 @@ void Request::appendToRequest(const char str[], ssize_t len) {
 		appendToBody(str, len);	// changed to char*, because it needs to become a vector
 	}
 }
+
 
 // Last chunk means, last chunk of header section, so first chunk of body
 int Request::appendLastChunkToBody(const char *str, ssize_t len) {// TODO WHY THIS RETURNS ????
@@ -364,8 +358,10 @@ int Request::appendLastChunkToBody(const char *str, ssize_t len) {// TODO WHY TH
 try {
 	std::cout << RED << "std::string(str).size(): " << static_cast<ssize_t>(std::string(str).size()) << RES << std::endl;
 	std::cout << RED << "            strlen(str): " << strlen(str) << RES << std::endl;
-	if (str != nullptr && len > 0 && len <= static_cast<ssize_t>(std::string(str).size())) {
-		std::cout << RED << "            a)\n";
+
+	// if (str != nullptr && len > 0 && len <= static_cast<ssize_t>(std::string(str).size())) {	// jaka: It never entered this if, because str.size() shows
+	if (str != nullptr && len > 0 && len < LONG_MAX) { 															// incorrect/smaller size, because this str contains \0 characters
+		std::cout << RED << "            a)\n";													// because it is an image
 		std::vector<uint8_t> tempVec(str, str + len); // convert and assign str to vector
 		_data.setBody(tempVec);
 	}
@@ -393,7 +389,6 @@ int Request::appendToBody(const char* str, ssize_t len) {
 	std::cout << RED << "appendToBody - len: " << len << RES << std::endl;
 	std::cout << RED << "appendToBody - str + len: [" << str + len << "]\n" << RES << std::endl;
 	std::cout << RED << "        getBody().size():" << _data.getBody().size() << "\n" << RES << std::endl;
-	// std::cout << RED << "BytesFromCLientSoFar: " << _data.getClientBytesSoFar() << "\n" << RES << std::endl;	// to remove, jaka
 	
 //	std::vector<uint8_t> newChunk(str, str + len); // convert adn assign str to vector//commented by JOYCE
 //	_data.setClientBytesSoFar(len);//commented by JOYCE
@@ -418,7 +413,6 @@ int Request::appendToBody(const char* str, ssize_t len) {
         // _httpStatus = METHOD_NOT_ALLOWED;
 		return (1);
 	}
-
 	// changed to here by JOYCE
 	// setting the vector if no error was returned
 	std::vector<uint8_t> newChunk(str, str + len); // convert and assign str to vector
@@ -427,15 +421,10 @@ int Request::appendToBody(const char* str, ssize_t len) {
 	tmp.reserve(_data.getRequestContentLength() + len);
 	tmp.insert(tmp.end(), newChunk.begin(), newChunk.end());
 	_data.setBody(tmp);
-	std::cout << GRN << "bytesFromClientSoFar: " << _data.getClientBytesSoFar() << ",  reqContLen: " <<  _data.getRequestContentLength() << "\n" RES; // to remove, jaka
-	std::cout << GRN << "getBody().size(): " << _data.getBody().size() << RES "\n";
 
-//	else if (_data.getBody().size() == _data.getRequestContentLength()) {
 	if (_data.getClientBytesSoFar() == _data.getRequestContentLength()) {
 	//else if (_data.getClientBytesSoFar() == _data.getRequestContentLength()) {// todo joyce commentd this out
 		std::cout << GRN << "OK: Done parsing.\n" RES;
-		std::cout << GRN << "bytesFromClientSoFar: " << _data.getClientBytesSoFar() << "  ==  reqContLen: " <<  _data.getRequestContentLength() << "\n" RES; // to remove, jaka
-		std::cout << GRN << "getBody().size(): " << _data.getBody().size() << RES "\n";
 		_doneParsing = true;
 		return (0);
 	}

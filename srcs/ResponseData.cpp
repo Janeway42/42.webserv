@@ -144,7 +144,7 @@ void ResponseData::createResponse(struct kevent& event) {
                 std::cout << GRN << "The path contains query -> cgi: [" << GRN << _responsePath << "]" << RES << std::endl;
                 std::cout << "Setting _responseBody\n";
                 _responseBody = storage->getRequestData().getCgiBody();
-                // std::cout << "Setting cgi _responseBody: [" << _responseBody << "]\n";
+                std::cout << "Setting cgi _responseBody: [" << _responseBody << "]\n";
             } else {
                 if (storage->getRequestData().getResponseContentType() == "text/html" || storage->getRequestData().getResponseContentType() == "application/pdf") {
                     std::cout << GRN << "The path is a file: [" << GRN << _responsePath << "]" << RES << std::endl;
