@@ -115,8 +115,7 @@ int Request::storeWordsFromFirstLine(std::string firstLine) {
                     _data.setRequestMethod(DELETE);
 			} else {
 				std::cout << RED << "Error: This method is not recognized\n" << RES;
-				_httpStatus = METHOD_NOT_ALLOWED; 
-				//_httpStatus = BAD_REQUEST; // for 42 tester
+				_httpStatus = METHOD_NOT_ALLOWED;
 			}
 		}
 		else if (i == 1)
@@ -342,7 +341,7 @@ int Request::appendLastChunkToBody(const char *str, ssize_t len) {// TODO WHY TH
 
 	std::cout << RED << "_data.getClientBytesSoFar(): " << _data.getClientBytesSoFar() << RES << std::endl;
 	std::cout << RED << ":_data.getRequestContentLength(): " <<  _data.getRequestContentLength() << RES << std::endl;
-	if (_data.getClientBytesSoFar() > _data.getRequestContentLength()) {   // Compare body length
+	if (_data.getClientBytesSoFar() > _data.getRequestContentLength()) {
 		std::cout << RED << "Error: Body-Length, first chunk (" << _data.getClientBytesSoFar() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;
         _httpStatus = BAD_REQUEST;
 		return (1);
@@ -455,7 +454,7 @@ RequestData & Request::getRequestData(){
     return _data;
 }
 
-ServerData & Request::getServerData(){   // do we need reference? 
+ServerData & Request::getServerData(){
     return _specificServer;
 }
 
