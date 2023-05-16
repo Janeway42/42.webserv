@@ -201,7 +201,14 @@ function testURLpath {
 			printf "%-20s" "$responseCode"
 			printf "${RED}%-30s ${RES}\n" "Responses different"
 		fi
+	else
+		echo 
+		echo -en "${RED}[KO] ${RES}"
+		printf "${GRY}%-50s${RES}" "$testURL"
+		printf "%-20s" "$responseCode"
+		printf "${RED}%-30s ${RES}\n" "Responses different"
 	fi
+
 }
 
 

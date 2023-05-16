@@ -46,7 +46,6 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 
         // Best practice to ensure the script to find correct relative paths, if needed
         chdir(storage->getRequestData().getURLPathFirstPart().c_str());
-
         args[0] = const_cast<char*>(storage->getInterpreterPath().c_str());
 		ret = execve(args[0], args, ENV);
 		if (ret == -1)
