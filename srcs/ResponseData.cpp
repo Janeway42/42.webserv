@@ -325,7 +325,7 @@ std::string&	ResponseData::eraseSentChunkFromFullResponse(unsigned long retBytes
 	return (_fullResponse.erase(0, retBytes));
 }
 
-void	ResponseData::increaseSentSoFar(size_t bytesSent) {
+void	ResponseData::increaseSentSoFar(ssize_t bytesSent) {
 	_bytesToClient += bytesSent;
 }
 // void ResponseData::overrideFullResponse()  // NOT USED anymore - to be cleaned out
@@ -350,7 +350,7 @@ void ResponseData::setResponseBody(std::string file)
     _responseBody += file;
 }
 
-void ResponseData::setBytesToClient(int val)
+void ResponseData::setBytesToClient(ssize_t val)
 {
     _bytesToClient += val;
 }

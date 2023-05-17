@@ -331,13 +331,6 @@ int Request::appendLastChunkToBody(const char *str, ssize_t len) {// TODO WHY TH
 	std::cout << RED << "str: [" << str << "]" << RES << std::endl;
 	std::cout << RED << "len: " << len << RES << std::endl;
 	std::cout << RED << "str + len: [" << str + len << "]" << RES << std::endl;
-//try {
-	// std::cout << RED << "str: " << str << RES << std::endl;
-	// std::cout << RED << "len: " << len << RES << std::endl;
-	// std::cout << RED << "str + len: " << str + len << RES << std::endl;
-	// std::vector<uint8_t> tempVec(str, str + len); // convert adn assign str to vector// commented by joy ce
-	// _data.setBody(tempVec);// cmmented by JOYCE
-//} catch (const std::out_of_range& e) { throw std::runtime_error(std::string("JOYCE Something Bad happened here: ") + e.what()); }
 
 	std::cout << RED << "_data.getClientBytesSoFar(): " << _data.getClientBytesSoFar() << RES << std::endl;
 	std::cout << RED << ":_data.getRequestContentLength(): " <<  _data.getRequestContentLength() << RES << std::endl;
@@ -353,19 +346,13 @@ int Request::appendLastChunkToBody(const char *str, ssize_t len) {// TODO WHY TH
 		return (1);
 	}
 
-// changed location by joyce to after error handling
-try {
 	std::cout << RED << "std::string(str).size(): " << static_cast<ssize_t>(std::string(str).size()) << RES << std::endl;
 	std::cout << RED << "            strlen(str): " << strlen(str) << RES << std::endl;
 
-	// if (str != nullptr && len > 0 && len <= static_cast<ssize_t>(std::string(str).size())) {	// jaka: It never entered this if, because str.size() shows
-	if (str != nullptr && len > 0 && len < LONG_MAX) { 															// incorrect/smaller size, because this str contains \0 characters
-		std::cout << RED << "            a)\n";													// because it is an image
+	if (str != nullptr && len > 0 && len < LONG_MAX) {
 		std::vector<uint8_t> tempVec(str, str + len); // convert and assign str to vector
 		_data.setBody(tempVec);
 	}
-
-} catch (const std::out_of_range& e) { throw std::runtime_error(std::string("JOYCE Something Bad happened here: ") + e.what()); }
 
 	if (_data.getClientBytesSoFar() == _data.getRequestContentLength()) {
 		std::cout << GRN << "_doneparsing == true\n" << RES;
@@ -388,16 +375,7 @@ int Request::appendToBody(const char* str, ssize_t len) {
 	std::cout << RED << "appendToBody - len: " << len << RES << std::endl;
 	std::cout << RED << "appendToBody - str + len: [" << str + len << "]\n" << RES << std::endl;
 	std::cout << RED << "        getBody().size():" << _data.getBody().size() << "\n" << RES << std::endl;
-	
-//	std::vector<uint8_t> newChunk(str, str + len); // convert adn assign str to vector//commented by JOYCE
-//	_data.setClientBytesSoFar(len);//commented by JOYCE
-	//std::cout << YEL "CLIENT BYTES SO FAR: " << _data.getClientBytesSoFar() << "\n" << RES;
 
-//	std::vector<uint8_t> & tmp = _data.getBody();//commented by JOYCE
-//	tmp.reserve(_data.getRequestContentLength() + len);//commented by JOYCE
-//	tmp.insert(tmp.end(), newChunk.begin(), newChunk.end());//commented by JOYCE
-//	_data.setBody(tmp);//commented by JOYCE
-//
 	//std::cout << CYN << "    body after append:  [" << _data.getBody() << "]\n" << RES;
 	//std::cout << CYN << "    getClientMaxBodySize:  [" << getServerData().getClientMaxBodySize() << "]\n" << RES;
 	
@@ -412,14 +390,16 @@ int Request::appendToBody(const char* str, ssize_t len) {
         // _httpStatus = METHOD_NOT_ALLOWED;
 		return (1);
 	}
-	// changed to here by JOYCE
-	// setting the vector if no error was returned
-	std::vector<uint8_t> newChunk(str, str + len); // convert and assign str to vector
+
 	_data.setClientBytesSoFar(len);
-	std::vector<uint8_t> & tmp = _data.getBody();
-	tmp.reserve(_data.getRequestContentLength() + len);
-	tmp.insert(tmp.end(), newChunk.begin(), newChunk.end());
-	_data.setBody(tmp);
+	// setting the vector if no error was returned
+    if (str != nullptr && len > 0 && len < LONG_MAX) {
+        std::vector<uint8_t> newChunk(str, str + len); // convert and assign str to vector
+        std::vector<uint8_t> &tmp = _data.getBody();
+        tmp.reserve(_data.getRequestContentLength() + len);
+        tmp.insert(tmp.end(), newChunk.begin(), newChunk.end());
+        _data.setBody(tmp);
+    }
 
 	if (_data.getClientBytesSoFar() == _data.getRequestContentLength()) {
 	//else if (_data.getClientBytesSoFar() == _data.getRequestContentLength()) {// todo joyce commentd this out

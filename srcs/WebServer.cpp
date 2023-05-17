@@ -121,7 +121,7 @@ void WebServer::runServer()
 						removeFilter(evList[i], EVFILT_READ, "failed kevent EV_EOF - EVFILT_READ");
 						if (storage->getCgiData().getIsCgi() == true) // <--eval--> this is specifically for ret = 0 && EV_EOF
 						{
-							std::cout << "EOF READ pipe " << storage->getHttpStatus() << "\n";
+							std::cout << "EOF READ pipe. HTTP STATUS: " << storage->getHttpStatus() << "\n";
 							close(evList[i].ident);
 							if (addFilter(storage->getFdClient(), evList[i], EVFILT_WRITE) == 1)   //  this allows client write
 								cleanAddFilterFail(storage->getFdClient(), evList[i], "failed kevent EV_ADD, EVFILT_WRITE, EOF READ _fd_out[0]");
@@ -140,11 +140,14 @@ void WebServer::runServer()
 					std::cout << GRY << "----------------------------------------------------------------------------------------------------------------- WRITE" << RES << std::endl;
 					if (evList[i].flags & EV_EOF)
 					{
+                        std::cout << RED << "write finished" << std::endl;
 						removeFilter(evList[i], EVFILT_WRITE, "failed kevent EV_EOF - EVFILT_WRITE");
 						closeClient(evList[i]);
 					}
-					else
-						sendResponse(evList[i]);
+					else {
+                        std::cout << RED << "write sendResponse" << std::endl;
+                        sendResponse(evList[i]);
+                    }
 				}
 			}
 		}	
@@ -329,9 +332,8 @@ void WebServer::sendResponse(struct kevent& event)
 		}
 
 		std::string content = storage->getResponseData().getFullResponse();
-		unsigned long myRet = 0;
 		std::cout << CYN << "SENDING CHUNK, response length before send: " << content.size() << RES << "\n";
-		myRet = send(event.ident, content.c_str(), content.size(), 0);
+        ssize_t myRet = send(event.ident, content.c_str(), content.size(), 0);
 		std::cout << CYN << "SEND return - sucessfully sent: " << myRet << RES << "\n";
 
 		if (myRet < 0)
@@ -341,7 +343,7 @@ void WebServer::sendResponse(struct kevent& event)
 		}
 		else
 		{
-			if (content.size() == myRet) // <--eval--> this includes also the = 0 case ===> myRet == 0 and fullResponse.length() == 0
+			if (static_cast<ssize_t>(content.size()) == myRet) // <--eval--> this includes also the = 0 case ===> myRet == 0 and fullResponse.length() == 0
 			{
 				std::cout << CYN << "ALL SENT, CLOSE CLIENT" RES "\n";
 				removeFilter(event, EVFILT_WRITE, "failed kevent, EV_DELETE, EVFILT_WRITE, success on _fdClient");
@@ -493,7 +495,7 @@ void	WebServer::chooseMethod_StartCGI(struct kevent event, Request * storage) {
 	}
 	if (storage->getRequestData().getRequestMethod() == POST)
 			storage->callCGI(event);
-	if (storage->getRequestData().getRequestMethod() == DELETE) {// TODO JOYCE I DONT KNOW HOW BUT I REMEMBER IT COMING HERE ONCE
+	if (storage->getRequestData().getRequestMethod() == DELETE) {
 		std::cout << GRN << "DELETE METHOD" << RES << std::endl;
 		if (storage->pathType(storage->getRequestData().getURLPath()) != REG_FILE) {
 			std::cout << RED << "ERROR 404 Not Found" << RES << std::endl;

@@ -25,7 +25,6 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 	retFork = fork();
     if (retFork < 0)
         std::cout << RED << "Error: Fork failed\n" << RES;
-
     else if (retFork == 0) { // CHILD
         std::cout << CYN << "Start CHILD execve()\n" << RES;
         std::cout << CYN << "Interpreter Path: " << storage->getInterpreterPath() << RES << std::endl;
@@ -54,9 +53,10 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 			delete storage;
 			sleep(31);
 		}
+        // todo maybe needs to exit in case execve fails
 	}
 	else {				// PARENT
-		//std::cerr << "    Start Parent\n";
+		std::cerr << "    Start Parent\n";
 		close(_cgi.getPipeCgiOut_1());
 		close(_cgi.getPipeCgiIn_0());
 	}
@@ -290,7 +290,7 @@ std::string Request::parsePath_dir(std::string const & originalUrlPath, std::str
 
         // Here we are matching the first directory of the URI with the locationBlockUriName + / (since it comes
         // without it from the config file)
-        if (firstDirectoryFromUrlPath == (locationBlockUriName + '/') || pathType(locationBlockRootDir + originalUrlPath) == DIRECTORY) {
+        if (firstDirectoryFromUrlPath == (locationBlockUriName + '/') && pathType(locationBlockRootDir + originalUrlPath) == DIRECTORY) {
             std::cout << "Path is a directory." << std::endl << RES;
             _data.setIsFolder(true);
             
