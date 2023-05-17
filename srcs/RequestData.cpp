@@ -290,8 +290,8 @@ void RequestData::setResponseContentType(std::string fileExtension)
 		_responseContentType = "image/x-con";
 	else if (fileExtension == ".pdf")
 		_responseContentType = "application/pdf";
-	else if (fileExtension == "")
-		_responseContentType = "";
+//	else if (fileExtension == "")// TODO LEAVE IT LIKE THIS?? OR test/text or anythign is content type HAS to be there?
+//		_responseContentType = "";
 }
 
 void RequestData::setRequestContentType(std::string str) {

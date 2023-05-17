@@ -100,7 +100,7 @@ enum AllowMethods {
     GET = 0,
     POST,
     DELETE,
-    PUT,
+    PUT,// Just to pass 42 tester
     NONE
 };
 

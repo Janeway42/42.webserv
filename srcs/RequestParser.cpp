@@ -22,6 +22,7 @@ DELETE http://api.example.com/employee/1
 // random filename Z5z=k b0JaL9px!u8I]2'N[3Q6@vF.4f7qn~X$^j(s1l{T,y]+eK%=^_ .jpg
 
 #include <unistd.h> // sleep
+// #include <limits.h>
 #include "RequestParser.hpp"
 
 /** Default constructor */
@@ -305,10 +306,6 @@ void Request::appendToRequest(const char str[], ssize_t len) {
 		if ((it = _data.getTemp().find(strToFind)) != std::string::npos) {
 			parseHeaderAndPath(tmpHeader, it);
 
-			// in case of error shouldn't it directly return here? 
-			// if (_doneParsing == true)
-			//	return  ;
-
 			std::cout << YEL << "Found header ending /r/n, maybe there is body\n" << RES;
 			it2 = chunk.find(strToFind) + strToFind.length();	// needed to find the start of body, as char*, not std::string, because body will be vector
             if (it2 != std::string::npos) {
@@ -331,12 +328,13 @@ void Request::appendToRequest(const char str[], ssize_t len) {
 	}
 }
 
+
 // Last chunk means, last chunk of header section, so first chunk of body
 int Request::appendLastChunkToBody(const char *str, ssize_t len) {// TODO WHY THIS RETURNS ????
 	_data.setClientBytesSoFar(len);
-	std::cout << RED << "str: " << str << RES << std::endl;
+	std::cout << RED << "str: [" << str << "]" << RES << std::endl;
 	std::cout << RED << "len: " << len << RES << std::endl;
-	std::cout << RED << "str + len: " << str + len << RES << std::endl;
+	std::cout << RED << "str + len: [" << str + len << "]" << RES << std::endl;
 
 	std::cout << RED << "_data.getClientBytesSoFar(): " << _data.getClientBytesSoFar() << RES << std::endl;
 	std::cout << RED << ":_data.getRequestContentLength(): " <<  _data.getRequestContentLength() << RES << std::endl;
@@ -355,8 +353,11 @@ int Request::appendLastChunkToBody(const char *str, ssize_t len) {// TODO WHY TH
 		return (1);
 	}
 
-    if (str != nullptr && len > 0 && len < LONG_MAX) {
-		std::vector<uint8_t> tempVec(str, str + len); // convert adn assign str to vector
+	std::cout << RED << "std::string(str).size(): " << static_cast<ssize_t>(std::string(str).size()) << RES << std::endl;
+	std::cout << RED << "            strlen(str): " << strlen(str) << RES << std::endl;
+
+	if (str != nullptr && len > 0 && len < LONG_MAX) {
+		std::vector<uint8_t> tempVec(str, str + len); // convert and assign str to vector
 		_data.setBody(tempVec);
 	}
 
@@ -377,9 +378,10 @@ int Request::appendLastChunkToBody(const char *str, ssize_t len) {// TODO WHY TH
 }
 
 int Request::appendToBody(const char* str, ssize_t len) {
-	std::cout << RED << "appendToBody - str: " << str << RES << std::endl;
+	// std::cout << RED << "appendToBody - str: " << str << RES << std::endl;
 	std::cout << RED << "appendToBody - len: " << len << RES << std::endl;
-	std::cout << RED << "appendToBody - str + len: " << str + len << RES << std::endl;
+	std::cout << RED << "appendToBody - str + len: [" << str + len << "]\n" << RES << std::endl;
+	std::cout << RED << "        getBody().size():" << _data.getBody().size() << "\n" << RES << std::endl;
 
 	//std::cout << CYN << "    body after append:  [" << _data.getBody() << "]\n" << RES;
 	//std::cout << CYN << "    getClientMaxBodySize:  [" << getServerData().getClientMaxBodySize() << "]\n" << RES;
@@ -399,14 +401,13 @@ int Request::appendToBody(const char* str, ssize_t len) {
 	_data.setClientBytesSoFar(len);
 	// setting the vector if no error was returned
     if (str != nullptr && len > 0 && len < LONG_MAX) {
-        std::vector<uint8_t> newChunk(str, str + len); // convert adn assign str to vector
+        std::vector<uint8_t> newChunk(str, str + len); // convert and assign str to vector
         std::vector<uint8_t> &tmp = _data.getBody();
         tmp.reserve(_data.getRequestContentLength() + len);
         tmp.insert(tmp.end(), newChunk.begin(), newChunk.end());
         _data.setBody(tmp);
     }
 
-//	else if (_data.getBody().size() == _data.getRequestContentLength()) {
 	if (_data.getClientBytesSoFar() == _data.getRequestContentLength()) {
 	//else if (_data.getClientBytesSoFar() == _data.getRequestContentLength()) {// todo joyce commentd this out
 		std::cout << GRN << "OK: Done parsing.\n" RES;

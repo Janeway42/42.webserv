@@ -24,7 +24,7 @@ class ResponseData: public Parser
 		std::string		_responsePath;
 
 		ssize_t 		_lengthFullResponse;	// needs to be set at the end of making the response (just once)
-		unsigned long 	_bytesToClient;
+        ssize_t 	    _bytesToClient;
 		bool			_responseDone;
 
 	public:
@@ -38,7 +38,7 @@ class ResponseData: public Parser
 		void			createResponseHeader(struct kevent& event);
         std::string		streamFile(std::string file);
         std::string 	setImage(std::string imagePath);
-        void			increaseSentSoFar(size_t bytesSent);
+        void			increaseSentSoFar(ssize_t bytesSent);
         std::string&	eraseSentChunkFromFullResponse(unsigned long retBytes); // to erase the sent chunk from the remaining response content
         std::string		storeFolderContent(const char *path);
 
@@ -56,7 +56,7 @@ class ResponseData: public Parser
 		void			setResponsePath(std::string path);
 		void			setResponseBody(std::string file);
 		void			setResponseDone(bool val);
-		void			setBytesToClient(int val);
+		void			setBytesToClient(ssize_t val);
 		void			setResponseFull(std::string response);
 
 		// NOT USED - to be cleaned out

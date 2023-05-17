@@ -27,15 +27,6 @@ void ResponseData::createResponseHeader(struct kevent& event) {
 
 	Request *storage = (Request *)event.udata;
 
-    std::string content_length = std::to_string(_responseBody.length());
-
-    // JUST TO PASS 42 TESTER
-    if (storage->getRequestData().getURLPath_full().find("youpi.bla") != std::string::npos && storage->getRequestData().getRequestMethod() == POST) {
-        std::cout << "content_length = \"100000000\" for 42 tester" << std::endl;
-        content_length = "100000000";
-    }
-
-    std::string content_type = storage->getRequestData().getResponseContentType().empty() ? "" : "Content-Type: " + storage->getRequestData().getResponseContentType() + "\r\n";
     std::string redirection = storage->getRedirection().empty() ? "" : "Location: " + storage->getRedirection();
 	std::string cookiesHeader = "";
 
@@ -46,11 +37,10 @@ void ResponseData::createResponseHeader(struct kevent& event) {
 
 	_responseHeader = "HTTP/1.1 " + std::to_string(storage->getHttpStatus()) + " " + httpStatusToString(storage->getHttpStatus()) + "\r\n"
         // "Content-Type: text/html\r\n"
-        + content_type +
+        "Content-Type: " + storage->getRequestData().getResponseContentType() + "\r\n"
         "Content-Encoding: identity\r\n"
-        "Connection: close\r\n"
-        + cookiesHeader +
-        "Content-Length: " + content_length + "\r\n"
+        "Connection: close\r\n" + cookiesHeader + 
+        "Content-Length: " + std::to_string(_responseBody.length()) + "\r\n"
         + redirection + "\r\n\r\n";
 }
 
@@ -103,6 +93,8 @@ void ResponseData::createResponse(struct kevent& event) {
 	Request *storage = (Request *)event.udata;
 
 	std::cout << "fd: " << storage->getFdClient() << std::endl;
+    std::cout << "   _responseBody: [" << _responseBody << "]\n";   // to remove, jaka
+
 
     // If the Form data that came from the body contained a "delete=" key, and the current request is POST or DELETE
     // we can return 405 Method Not Allowed
@@ -152,9 +144,9 @@ void ResponseData::createResponse(struct kevent& event) {
                 std::cout << GRN << "The path is a file to send to a cgi interpreter: [" << GRN << _responsePath << "]" << RES << std::endl;
                 std::cout << "Setting _responseBody\n";
                 _responseBody = storage->getRequestData().getCgiBody();
-                //   std::cout << "Setting cgi _responseBody: [" << _responseBody << "]\n";
+                std::cout << "Setting cgi _responseBody: [" << _responseBody << "]\n";
             } else {
-                if (storage->getRequestData().getResponseContentType().empty() || storage->getRequestData().getResponseContentType() == "text/html" || storage->getRequestData().getResponseContentType() == "application/pdf") {
+                if (storage->getRequestData().getResponseContentType() == "text/html" || storage->getRequestData().getResponseContentType() == "application/pdf") {
                     std::cout << GRN << "The path is a file: [" << GRN << _responsePath << "]" << RES << std::endl;
                     _responseBody = streamFile(_responsePath);
                     // std::cout << "Setting _responseBody: [" << _responseBody << "]\n";
@@ -333,7 +325,7 @@ std::string&	ResponseData::eraseSentChunkFromFullResponse(unsigned long retBytes
 	return (_fullResponse.erase(0, retBytes));
 }
 
-void	ResponseData::increaseSentSoFar(size_t bytesSent) {
+void	ResponseData::increaseSentSoFar(ssize_t bytesSent) {
 	_bytesToClient += bytesSent;
 }
 // void ResponseData::overrideFullResponse()  // NOT USED anymore - to be cleaned out
@@ -358,7 +350,7 @@ void ResponseData::setResponseBody(std::string file)
     _responseBody += file;
 }
 
-void ResponseData::setBytesToClient(int val)
+void ResponseData::setBytesToClient(ssize_t val)
 {
     _bytesToClient += val;
 }

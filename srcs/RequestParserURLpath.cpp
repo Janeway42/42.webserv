@@ -25,7 +25,6 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 	retFork = fork();
     if (retFork < 0)
         std::cout << RED << "Error: Fork failed\n" << RES;
-
     else if (retFork == 0) { // CHILD
         std::cout << CYN << "Start CHILD execve()\n" << RES;
         std::cout << CYN << "Interpreter Path: " << storage->getInterpreterPath() << RES << std::endl;
@@ -46,7 +45,6 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 
         // Best practice to ensure the script to find correct relative paths, if needed
         chdir(storage->getRequestData().getURLPathFirstPart().c_str());
-
         args[0] = const_cast<char*>(storage->getInterpreterPath().c_str());
 		ret = execve(args[0], args, ENV);
 		if (ret == -1)
@@ -55,9 +53,10 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 			delete storage;
 			sleep(31);
 		}
+        // todo maybe needs to exit in case execve fails
 	}
 	else {				// PARENT
-		//std::cerr << "    Start Parent\n";
+		std::cerr << "    Start Parent\n";
 		close(_cgi.getPipeCgiOut_1());
 		close(_cgi.getPipeCgiIn_0());
 	}
@@ -78,10 +77,6 @@ void Request::callCGI(struct kevent event) {
 	std::string upload_path		= "UPLOAD_DIR=";
 	std::string cookie		    = "COOKIE=";
 
-    // Total hack to pass 42 tester
-//    if (_data.getURLPath_full().find("youpi.bla") != std::string::npos && _data.getRequestMethod() == POST) {
-//        content_length	= "CONTENT_LENGTH=100000000";
-//    }
 	// Convert length to string
 	std::stringstream ssContLen;
 	ssContLen << _data.getRequestContentLength();
@@ -338,7 +333,6 @@ std::string Request::parsePath_dir(std::string const & originalUrlPath, std::str
         } else {
             std::cout << locationBlockRootDir + originalUrlPath << " is NOT a directory"<< std::endl;
         }
-
     }
     return std::string();
 }
@@ -398,8 +392,6 @@ std::string Request::parsePath_regularCase(std::string const & originalUrlPath, 
         // -------------------------------------------------------------------------------------------------- FILE
         if (lastSlash != std::string::npos) {
             std::string scriptFile = originalUrlPath.substr(lastSlash);
-            std::cout << RED << "scriptFile: " << scriptFile << RES << std::endl << RES;
-
             if (not scriptFile.empty() &&
                     (scriptFile.find(".py") == std::string::npos
                     && scriptFile.find(".php") == std::string::npos
@@ -407,8 +399,8 @@ std::string Request::parsePath_regularCase(std::string const & originalUrlPath, 
                     && scriptFile.find(".bla") == std::string::npos)) {
                 scriptFile = "";
             }
-            std::cout << RED << "scriptFile: " << scriptFile << RES << std::endl << RES;
-            std::cout << RED << "path: " << locationBlockRootDir + (scriptFile == "" ? originalUrlPath : scriptFile) << RES << std::endl << RES;
+            std::cout << RED << "scriptFile (if it is a script): " << scriptFile << RES << std::endl << RES;
+            std::cout << RED << "path to be searched: " << locationBlockRootDir + (scriptFile == "" ? originalUrlPath : scriptFile) << RES << std::endl << RES;
 
             if (pathType(locationBlockRootDir + (scriptFile == "" ? originalUrlPath : scriptFile)) == REG_FILE) {
                 _data.setFileExtension(getExtension(originalUrlPath));

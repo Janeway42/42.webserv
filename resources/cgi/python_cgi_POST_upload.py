@@ -17,9 +17,9 @@ for param in os.environ.keys():
 	if param == 'PATH_INFO':
 	    uploadDirName = os.environ[param]
 
-sys.stderr.write('!!! From python uploads: ')
-sys.stderr.write(uploadDirName)
-sys.stderr.write('\n')
+# sys.stderr.write('!!! From python uploads: ')
+# sys.stderr.write(uploadDirName)
+# sys.stderr.write('\n')
 
 
 form = cgi.FieldStorage()
@@ -136,6 +136,8 @@ html = html_template.format(items_html)
 # Output the HTML page
 print(html)
 
+sys.stderr.write('From Python Upload: end of script\n')
+# sys.stderr.write(html)
 
 
 
