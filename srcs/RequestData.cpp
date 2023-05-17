@@ -10,6 +10,7 @@ RequestData::RequestData() {
 	_reqPort			 = "";
 	_reqHeader			 = "";
     _reqContentLength	 = 0;
+	_reqHeaderBytesSoFar = 0;
 	_clientBytesSoFar	 = 0;
 
     _URLPath			 = "default";
@@ -57,6 +58,10 @@ const std::string RequestData::getHttpVersion() const {
 
 const std::string RequestData::getHeader() const {
 	return _reqHeader;
+}
+
+size_t RequestData::getReqHeaderBytesSoFar() {	// added jaka, maybe needed for TESTER42
+	return _reqHeaderBytesSoFar;
 }
 
 std::vector<uint8_t> & RequestData::getBody() {
@@ -349,4 +354,8 @@ void RequestData::setFormList(std::vector<std::string> formList) {
 
 void RequestData::setRequestCookie(std::string reqCookie){
 	_reqCookie = reqCookie;
+}
+
+void RequestData::setReqHeaderBytesSoFar(size_t nrBytes) {	// added jaka, maybe needed for TESTER42
+	_reqHeaderBytesSoFar += nrBytes;
 }
