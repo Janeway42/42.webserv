@@ -60,7 +60,7 @@ const std::string RequestData::getHeader() const {
 	return _reqHeader;
 }
 
-size_t RequestData::getReqHeaderBytesSoFar() {	// added jaka, maybe needed for TESTER42
+ssize_t RequestData::getReqHeaderBytesSoFar() {	// added jaka, maybe needed for TESTER42
 	return _reqHeaderBytesSoFar;
 }
 
@@ -356,6 +356,6 @@ void RequestData::setRequestCookie(std::string reqCookie){
 	_reqCookie = reqCookie;
 }
 
-void RequestData::setReqHeaderBytesSoFar(size_t nrBytes) {	// added jaka, maybe needed for TESTER42
+void RequestData::setReqHeaderBytesSoFar(ssize_t nrBytes) {	// added jaka, maybe needed for TESTER42
 	_reqHeaderBytesSoFar += nrBytes;
 }

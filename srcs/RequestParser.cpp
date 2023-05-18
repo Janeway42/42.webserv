@@ -288,44 +288,70 @@ std::string Request::getErrorPage()
 
 
 // OLD OLD OLD
+
+// void Request::appendToRequest(const char str[], ssize_t len) {
+// 	std::cout << PUR << "Start appendToRequest(): _hasBody: " << _hasBody << " | _doneParsing: " << _doneParsing << " \n" << RES;
+
+// 	// sleep(3); // testing TIMER
+// 	std::string 			chunk = std::string(str);
+// 	std::string				strToFind = "\r\n\r\n";
+// 	std::string::size_type	it, it2;
+// 	std::string				tmpHeader;
+// 	if (_headerDone == false) {
+// 		_data.setReqHeaderBytesSoFar(len);
+//         std::cout << "data.getTemp(): [" << _data.getTemp() << "]\n";
+// 		_data.setTemp(_data.getTemp() + chunk);
+		
+
+// 		if ((it = _data.getTemp().find(strToFind)) != std::string::npos) {
+// 			parseHeaderAndPath(tmpHeader, it);
+
+// 			std::cout << YEL << "Found header ending /r/n, maybe there is body\n" << RES;
+// 			it2 = chunk.find(strToFind) + strToFind.length();	// needed to find the start of body, as char*, not std::string, because body will be vector
+// 			std::string::size_type it3 = _data.getTemp().find(strToFind) + strToFind.length();
+
+// 			std::cout << "it2: [" << it2 << "]\n";
+// 			std::cout << "it3: [" << it3 << "]\n";
+
+//             std::cout << "END OF THE HEADER: [" << _data.getTemp().find(strToFind) + strToFind.length() << "]\n";
+// 			std::cout << "LAST OF THE /r/n/r/n: [" << _data.getTemp()[_data.getTemp().find(strToFind) + strToFind.length() + 1] << "]\n";
+// 			std::cout << "LAST CHARACTER:       [" << _data.getTemp()[_data.getTemp().find(strToFind) - 1] << "]\n";
+// 			if (it2 != std::string::npos) {
+//                 if (std::string(str + it2).find("delete=") != std::string::npos) {
+//                     std::cout << "----------> Form data has \"delete=\" key on it\n" << RES;
+//                     _data.setFormDataHasDelete(true);
+//                 }
+// 				std::cout << "recv ret inside appendToRequest = " << len << std::endl;
+// 				std::cout << "it2 on appendToRequest = " << it2 << std::endl;
+// 				std::cout << "len - it2 on appendToRequest = " << len - it2 << std::endl;
+// 				std::cout << "BsF - it2 on appendToRequest = " << _data.getReqHeaderBytesSoFar() - it2 << std::endl;
+// 				std::cout << "       getClientBytesSoFar() = " << _data.getClientBytesSoFar() << std::endl;
+
+// 				std::cout << "BEGINING OF THE BODY old one: [" << str + it2 << "]\n";
+// 				std::cout << "BEGINING OF THE BODY new one: [" << _data.getTemp().c_str() + it2 << "]\n";
+
+// 				std::cout << "BEGINING OF THE BODY INDEX old one: [" << len - it2 << "]\n";
+// 				std::cout << "BEGINING OF THE BODY INDEX new one: [" << _data.getReqHeaderBytesSoFar() - it2 << "]\n";
+// 				appendLastChunkToBody(str + it2, len - it2); // TODO THIS LINE WAS DOWN BELOW BEFORE
+//             }
+// 			// 	appendLastChunkToBody(str + it2, len - it2); // jaka, changed to vector
+// 			return ;
+// 		}
+// 	}
+// 	if (_hasBody == true && _doneParsing == false) {
+// 		appendToBody(str, len);	// changed to char*, because it needs to become a vector
+// 	}
+// }
+
 /*
-void Request::appendToRequest(const char str[], ssize_t len) {
-	std::cout << PUR << "Start appendToRequest(): _hasBody: " << _hasBody << " | _doneParsing: " << _doneParsing << " \n" << RES;
-
-	// sleep(3); // testing TIMER
-	std::string 			chunk = std::string(str);
-	std::string				strToFind = "\r\n\r\n";
-	std::string::size_type	it, it2;
-	std::string				tmpHeader;
-	if (_headerDone == false) {
-		_data.setTemp(_data.getTemp() + chunk);
-
-		if ((it = _data.getTemp().find(strToFind)) != std::string::npos) {
-			parseHeaderAndPath(tmpHeader, it);
-
-			std::cout << YEL << "Found header ending /r/n, maybe there is body\n" << RES;
-			it2 = chunk.find(strToFind) + strToFind.length();	// needed to find the start of body, as char*, not std::string, because body will be vector
-            if (it2 != std::string::npos) {
-                if (std::string(str + it2).find("delete=") != std::string::npos) {
-                    std::cout << "----------> Form data has \"delete=\" key on it\n" << RES;
-                    _data.setFormDataHasDelete(true);
-                }
-				std::cout << "recv ret inside appendToRequest = " << len << std::endl;
-				std::cout << "it2 on appendToRequest = " << it2 << std::endl;
-				std::cout << "len - it2 on appendToRequest = " << len - it2 << std::endl;
-
-				appendLastChunkToBody(str + it2, len - it2); // TODO THIS LINE WAS DOWN BELOW BEFORE
-            }
-			// 	appendLastChunkToBody(str + it2, len - it2); // jaka, changed to vector
-			return ;
-		}
-	}
-	if (_hasBody == true && _doneParsing == false) {
-		appendToBody(str, len);	// changed to char*, because it needs to become a vector
-	}
-}
+FORM IS [FieldStorage(None, None, [FieldStorage('filename', 'img_109kb.jpg', b'\xff\xd8\xff\xe0\x00necti6\x00-----------------------------4762128632152873151196614667\r\nContent-Disposition: form-data; name="filename"; filename="img_109kb.jpg"\r\nContent-Type: image/jpeg\r\n\r\n\xff\xd8\xff\xe0\x00ccept: te\x00\x00\x00\x00\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00 \xa4\x01n/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate, br\r\nContent-Type: multipart/form-data; boundary=---------------------------4762128632152873151196614667\r\nContent-Length: 109159\r\nOrigin: http://localhost:8080\r\nConnection: keep-alive\r\nReferer: http://localhost:8080/cgi_index.html\r\nUpgrade-Insecure-Requests: 1\r\nSec-Fetch-Dest: document\r\nSec-Fetch-Mode: navigate\r\nSec-Fetch-Site: same-origin\r\nSec-Fetch-User: ?1\r\n'), FieldStorage('filename', 'img_109kb.jpg', b'\xff
 */
-
+// 109161 - 109163
+// not working 109163, header 109163
+// 109159 not working 109159
+//366121729914394477162335944107
+//131663514610318751333138714684
+//339158854218625524422778464230
 
 void Request::appendToRequest(const char str[], ssize_t len) {
 	std::cout << PUR << "Start appendToRequest(): _hasBody: " << _hasBody << " | _doneParsing: " << _doneParsing << " \n" << RES;
@@ -333,11 +359,13 @@ void Request::appendToRequest(const char str[], ssize_t len) {
 
 	// sleep(3); // testing TIMER
 	std::string 			chunk = std::string(str);
-	std::string				strToFind = "\r\n\r\n";
+	std::string				strToFind = "\n\r\n\r";
 	std::string::size_type	it, it2;
 	std::string				tmpHeader;
 	if (_headerDone == false) {
 		_data.setReqHeaderBytesSoFar(len);	// added jaka, for TESTER42: Keep track of all bytes so far in the header (not body)
+       std::cout << "data.getTemp(): [" << _data.getTemp() << "]\n";
+		
 		_data.setTemp(_data.getTemp() + chunk);
 
 		if ((it = _data.getTemp().find(strToFind)) != std::string::npos) {
@@ -346,6 +374,9 @@ void Request::appendToRequest(const char str[], ssize_t len) {
 			std::cout << YEL << "Found header ending /r/n, maybe there is body\n" << RES;
 			// it2 = chunk.find(strToFind) + strToFind.length();	// needed to find the start of body, as char*, not std::string, because body will be vector
 			it2 = _data.getTemp().find(strToFind) + strToFind.length();	// needed to find the start of body, as char*, not std::string, because body will be vector // jaka: to remove
+			std::cout << "END OF THE HEADER: [" << _data.getTemp().find(strToFind) + strToFind.length() << "]\n";
+			std::cout << "LAST OF THE /r/n/r/n: [" << _data.getTemp()[_data.getTemp().find(strToFind) + strToFind.length() + 1] << "]\n";
+			std::cout << "LAST CHARACTER:       [" << _data.getTemp()[_data.getTemp().find(strToFind) - 1] << "]\n";
 
             if (it2 != std::string::npos) {
                 // if (std::string(str + it2).find("delete=") != std::string::npos) {
@@ -357,12 +388,13 @@ void Request::appendToRequest(const char str[], ssize_t len) {
 				std::cout << "it2       on appendToRequest = " << it2 << std::endl;
 				std::cout << "len - it2 on appendToRequest = " << len - it2 << std::endl;
 				std::cout << "BsF - it2 on appendToRequest = " << _data.getReqHeaderBytesSoFar() - it2 << std::endl;
-				std::cout << "       getClientBytesSoFar() = " << _data.getReqHeaderBytesSoFar() << std::endl;
+				std::cout << "       getClientBytesSoFar() = " << _data.getClientBytesSoFar() << std::endl;
 
-				// appendLastChunkToBody(str + it2, len - it2); // TODO THIS LINE WAS DOWN BELOW BEFORE
-				appendLastChunkToBody(_data.getTemp().c_str() + it2, _data.getReqHeaderBytesSoFar() - it2); // TODO THIS LINE WAS DOWN BELOW BEFORE
-            }
-			// 	appendLastChunkToBody(str + it2, len - it2); // jaka, changed to vector
+				std::cout << "BEGINING OF THE BODY: [" << _data.getTemp().c_str() + it2 << "]\n";
+				// std::cout << "FIRST:                [" << _data.getTemp()[_data.getReqHeaderBytesSoFar() - it2] << "]\n";
+				appendLastChunkToBody(_data.getTemp().c_str() + it2, len - it2); // TODO THIS LINE WAS DOWN BELOW BEFORE
+
+			}
 			return ;
 		}
 	}
@@ -370,6 +402,7 @@ void Request::appendToRequest(const char str[], ssize_t len) {
 		appendToBody(str, len);	// changed to char*, because it needs to become a vector
 	}
 }
+
 
 
 // Last chunk means, last chunk of header section, so first chunk of body
@@ -433,8 +466,7 @@ int Request::appendToBody(const char* str, ssize_t len) {
 	}
 	if (_data.getClientBytesSoFar() > _data.getRequestContentLength()) {		// Compare body lenght
 		std::cout << RED << "Error: Body-Length (" << _data.getClientBytesSoFar() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;// sleep(2);
-        // _httpStatus = BAD_REQUEST;
-        // _httpStatus = METHOD_NOT_ALLOWED;
+        _httpStatus = BAD_REQUEST;
 		return (1);
 	}
 
