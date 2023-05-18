@@ -504,8 +504,8 @@ std::string Request::parsePath_locationMatch(std::string const & originalUrlPath
         }
         if (not URLPath_full.empty() || getHttpStatus() == FORBIDDEN) {
 			if (not location->getLocationCookie().empty()) {
-                _data.setRequestCookie(location->getLocationCookie());
-                std::cout << "Cookies from the location: " << location->getLocationCookie() << std::endl;
+                _data.setRequestSetCookie(location->getLocationCookie());
+                std::cout << "Cookies from the location: " << location->getLocationSetCookie() << std::endl;
             }
             std::cout << "Method from the request: " << allowMethodsToString(_data.getRequestMethod()) << std::endl;
             checkMethods(location->getAllowMethods());

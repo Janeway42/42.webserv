@@ -140,7 +140,7 @@ void WebServer::runServer()
 					std::cout << GRY << "----------------------------------------------------------------------------------------------------------------- WRITE" << RES << std::endl;
 					if (evList[i].flags & EV_EOF)
 					{
-                        std::cout << RED << "write finished" << std::endl;
+                        std::cout << RED << "client closed connection before response" << std::endl;
 						removeFilter(evList[i], EVFILT_WRITE, "failed kevent EV_EOF - EVFILT_WRITE");
 						closeClient(evList[i]);
 					}
