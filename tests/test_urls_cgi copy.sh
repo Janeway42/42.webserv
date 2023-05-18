@@ -48,10 +48,10 @@ PathMyWebServerPublicFolder="$PathMyWebServer/resources/"			# path to html conte
 PathNginxPublicFolder="/Users/jmurovec/.brew/var/www/resources/"		# the above folder will be copied to this nginx folder	CODAM
 # PathNginx="/usr/local/etc/nginx/"									# nginx executable	HOME
 PathNginx="/Users/jmurovec/.brew/etc/nginx/"						# nginx executable	CODAM
-PORT=8080
 localhost="http://localhost:$PORT/"
 curlNginxOutput="$PathMyWebServer/tests/curlNginxOutput/"
 curlWebservOutput="$PathMyWebServer/tests/curlWebservOutput/"
+PORT=8080
 CONFIG_FILE=standard_complete_forTester.conf
 
 
@@ -74,15 +74,15 @@ mkdir -p $curlNginxOutput $curlWebservOutput
 # echo "nkdir name: " $curlNginxOutput
 
 echo -e  "$GRE\n ~ ~ ~ WEBSERV - TEST, PORT:$PORT ~ ~ ~ ~ ~ ~ $RES " 1>&2
-echo -e  "$GRE ~ ~ ~ BASIC TESTS: ${YEL}AUTOINDEX OFF${GRE} ~ ~ ~ $RES \n" 1>&2
+echo -e  "$GRE ~ ~ ~ BASIC TESTS: ${GRY}AUTOINDEX OFF${GRE} ~ ~ ~ $RES \n" 1>&2
 
 
 ##################################################################################################################
 ### START NGINX ##################################################################################################
 
 # echo $PASSWORD | sudo -S nginx -g "daemon off;" &
-nginx -g "daemon off;" &
-sleep 1		# needs some time to start running 
+# nginx -g "daemon off;" &
+# sleep 1		# needs some time to start running 
 
 
 # Open all html pages with nginx and store the result into CurlNginxOutput
@@ -108,23 +108,15 @@ function testURLpath_justFirstHeaderLine {
 
 
 ### TEST URLs ############################################################################
-# #               URL-PATH EXISTING                        OUTPUT FILENAME
-testURLpath "localhost:$PORT"                            "localhost:$PORT"
-testURLpath "localhost:$PORT/"                           "localhost:$PORT"
-testURLpath "localhost:$PORT/index.html"                 "localhost:index.html"
-testURLpath "localhost:$PORT/texts/index_texts.html"     "localhost:texts:index_texts.html"
-testURLpath "localhost:$PORT/texts/one_sentence.html"    "localhost:texts:one_sentence.html"
-testURLpath "localhost:$PORT/texts/one_page.html"        "localhost:texts:one_page.html"
-testURLpath "localhost:$PORT/texts/bible.html"           "localhost:texts:bible.html"
-# #               URL-PATH NOT EXISTING                  OUTPUT FILENAME
-testURLpath_justFirstHeaderLine "localhost:$PORT/XXX.html"                 "localhost:XXX.html"
-testURLpath_justFirstHeaderLine "localhost:$PORT/XXX/index_texts.html"     "localhost:XXX:index_texts.html"
 
-# #               URL-PATH EXISTS< BUT NO index.html    					 OUTPUT FILENAME
-testURLpath_justFirstHeaderLine "localhost:$PORT/folderA/"                 "localhost:folderA:"
+# # CGI UPLOAD
+# curl -i -F 'filename=@/Users/jmurovec/Desktop/text_small.txt' http://localhost:8080/cgi/python_cgi_POST_upload.py	# -i prints the response header
+# curl    -F 'filename=@/Users/jmurovec/Desktop/text_small.txt' http://localhost:8080/cgi/python_cgi_POST_upload.py > $curlNginxOutput/cgi_POST_upload ;	sleep 0.1
+# curl  -s  -F 'filename=@/Users/jmurovec/Desktop/text_small.txt' http://localhost:8080/cgi/python_cgi_POST_upload.py # > ./curlWebservOutput/cgi_POST_upload ;	sleep 0.1
 
-# #               URL-PATH EXISTS< BUT NO SLASH AT END    					 OUTPUT FILENAME
-# testURLpath_justFirstHeaderLine "localhost:$PORT/folderA"                 "localhost:folderA "
+# testURLpath "http://localhost:8080/cgi/python_cgi_GET.py?street=Singel&city=Tokio" "8080:cgi:GET_withQuery"
+
+echo -e "\r" >> $curlNginxOutput/cgi_POST_upload ;	sleep 0.1
 
 # # # # IMAGES
 # testURLpath "localhost:$PORT/images/index_images.html"   "localhost:images:index_images.html"
@@ -137,10 +129,8 @@ sleep 1
 cat /Users/jmurovec/.brew/Cellar/nginx/logs/error.log > ./error.log		# CODAM
 
 # STOP NGINX
-nginx -s stop
-# sudo nginx -s stop
-# echo "EXIT tests"
-# exit
+# nginx -s stop
+
 
 
 ##################################################################################################################
@@ -165,14 +155,14 @@ printf "${BLU}%s%-50s%-30s%-30s${RES}\n" "     " "Tested URL"  "Response Code"
 function testURLpath {
 	testURL=$1
 	testName=$2
-	responseCode=$(curl -i -s  -X GET $testURL | head -n 1)
+	# responseCode=$(curl -i -s  -X GET $testURL | head -n 1)
 	echo "$responseCode" > $curlWebservOutput/$testName
 	responseCode=$(echo "$responseCode" | tr -d '\r\n')
 	# echo "RESPONSECODE: " "$responseCode"
-	#echo -e "/n" >> $testURL >> $curlWebservOutput/$testName
-	curl -s -X GET $testURL >> $curlWebservOutput/$testName
+	# echo -e "/n" >> $testURL >> $curlWebservOutput/$testName
+	# curl -s -X GET $testURL >> $curlWebservOutput/$testName
 	sleep 0.2
-	if diff $curlWebservOutput/$testName $curlNginxOutput/$testName >/dev/null ; then
+	if diff $curlSavedCgiOutput/$testName $curlNginxOutput/$testName >/dev/null ; then
 		echo -en "${GRE}[OK] ${RES}"
 		printf "${GRY}%-50s${RES}" "$testURL"
 		printf "%-20s" "$responseCode"
@@ -189,13 +179,13 @@ function testURLpath {
 function testURLpath_justFirstHeaderLine {
 	testURL=$1
 	testName=$2
-	responseCode=$(curl -i -s  -X GET $testURL | head -n 1)
-	echo "$responseCode" > $curlWebservOutput/$testName
-	responseCode=$(echo "$responseCode" | tr -d '\r\n')
+	#responseCode=$(curl -i -s  -X GET $testURL | head -n 1)
+	#echo "$responseCode" > $curlWebservOutput/$testName
+	#responseCode=$(echo "$responseCode" | tr -d '\r\n')
 	# echo "RESPONSECODE: " "$responseCode"
 	#echo -e "/n" >> $testURL >> $curlWebservOutput/$testName
 	sleep 0.2
-	if diff <(head -n 1 $curlWebservOutput/$testName) <(head -n 1 $curlNginxOutput/$testName) >/dev/null ; then
+	if diff <(head -n 1 $curlCompareCgiOutput/$testName) <(head -n 1 $curlNginxOutput/$testName) >/dev/null ; then
 		echo -en "${GRE}[OK] ${RES}"
 		printf "${GRY}%-50s${RES}" "$testURL"
 		printf "%-30s" "$responseCode"
@@ -209,30 +199,15 @@ function testURLpath_justFirstHeaderLine {
 }
 
 ### TEST URLs ############################################################################
-# #               URL-PATH EXISTING                        OUTPUT FILENAME
-echo -en "${BLU}\nPATH IS EXISTING:\n${RES}"
-testURLpath "localhost:$PORT"                            "localhost:$PORT"
-testURLpath "localhost:$PORT/"                           "localhost:$PORT"
-testURLpath "localhost:$PORT/index.html"                 "localhost:index.html"
-testURLpath "localhost:$PORT/texts/index_texts.html"     "localhost:texts:index_texts.html"
-testURLpath "localhost:$PORT/texts/one_sentence.html"    "localhost:texts:one_sentence.html"
-testURLpath "localhost:$PORT/texts/one_page.html"        "localhost:texts:one_page.html"
-testURLpath "localhost:$PORT/texts/bible.html"           "localhost:texts:bible.html"
 
-# #               URL-PATH NOT EXISTING                  					OUTPUT FILENAME
-echo -en "${BLU}\nFILE PATH NOT EXISTING (return 404 Not Found)\n${RES}"
-testURLpath_justFirstHeaderLine "localhost:$PORT/XXX.html"                 "localhost:XXX.html"
-testURLpath_justFirstHeaderLine "localhost:$PORT/XXX/index_texts.html"     "localhost:XXX:index_texts.html"
+# # CGI UPLOAD
+# curl -i -F 'filename=@/Users/jmurovec/Desktop/text_small.txt' http://localhost:8080/cgi/python_cgi_POST_upload.py	# -i prints the response header
+# curl    -F 'filename=@/Users/jmurovec/Desktop/text_small.txt' http://localhost:8080/cgi/python_cgi_POST_upload.py #> $curlNginxOutput/cgi_POST_upload ;	sleep 0.1
+# curl  -s  -F 'filename=@/Users/jmurovec/Desktop/text_small.txt' http://localhost:8080/cgi/python_cgi_POST_upload.py # > ./curlNginxOutput/cgi_POST_upload ;	sleep 0.1
 
-# #               URL-PATH EXISTS< BUT NO index.html    					 OUTPUT FILENAME
-echo -en "${BLU}\nFOLDER PATH EXISTS, BUT NO INDEX FILE (return 403 Forbidden):\n${RES}"
-testURLpath_justFirstHeaderLine "localhost:$PORT/folderA/"                 "localhost:folderA:"
+curl -X GET "http://localhost:8080/cgi/python_cgi_GET.py?street=Singel&city=Tokio" # > "./curlNginxOutput/localhost:8080GET"
+testURLpath "python_cgi_GET.py?street=Singel&city=Tokio"  "localhost:8080GET"
 
-# #               URL-PATH EXISTS< BUT NO SLASH AND NO INDEX FILE			 OUTPUT FILENAME
-echo -en "${BLU}\nFOLDER PATH EXISTS, BUT NO SLASH AT END (treat as file, return 301 Moved Permanently):\n${RES}"
-echo -en "${BLU}       (should first return 301 with new location with slash, then 403)\n${RES}"
-echo -en "${BLU}       (curl with option -L --location will output all subsequent request, but tester only looks at the first line of the first request)\n${RES}"
-# testURLpath_justFirstHeaderLine "localhost:$PORT/folderA"                 "localhost:folderA "
 
 # # # # IMAGES
 # testURLpath "localhost:$PORT/images/index_images.html"   "localhost:images:index_images.html"
@@ -247,7 +222,9 @@ echo -en "${BLU}       (curl with option -L --location will output all subsequen
 # echo "------------------------------------------------------"
 # cat -e $curlWebservOutput/$testName
 
-sleep 0.3
 pkill -f webserv
 
+sleep 1
+
+# Start Siege Test
 

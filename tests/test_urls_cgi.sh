@@ -42,7 +42,7 @@ RES='\033[0m'
 ### SETTINGS #################################################################
 PASSWORD="..."													# local sudo password, to run /usr/local/opt/nginx/bin/nginx -g "daemon off;" (this method is bad, but for now brew is not working)
 # PathMyWebServer="/Users/jmb/Desktop/projects/webserv03may00"		# path to ./webserv executable  HOME
-PathMyWebServer="/Users/jmurovec/Desktop/projects/webserv08may00/"		# path to ./webserv executable  CODAM
+PathMyWebServer="/Users/jmurovec/Desktop/projects/webserv16may/"		# path to ./webserv executable  CODAM
 PathMyWebServerPublicFolder="$PathMyWebServer/resources/"			# path to html content of the webserv 
 # PathNginxPublicFolder="/usr/local/var/www/resources/"					# the above folder will be copied to this nginx folder  HOME
 PathNginxPublicFolder="/Users/jmurovec/.brew/var/www/resources/"		# the above folder will be copied to this nginx folder	CODAM
@@ -81,30 +81,30 @@ echo -e  "$GRE ~ ~ ~ BASIC TESTS: ${GRY}AUTOINDEX OFF${GRE} ~ ~ ~ $RES \n" 1>&2
 ### START NGINX ##################################################################################################
 
 # echo $PASSWORD | sudo -S nginx -g "daemon off;" &
-nginx -g "daemon off;" &
-sleep 1		# needs some time to start running 
+# nginx -g "daemon off;" &
+# sleep 1		# needs some time to start running 
 
 
 # Open all html pages with nginx and store the result into CurlNginxOutput
 # The header is called separately with Curl. Only the first line is stored (ie: HTTP/1.1 200 OK)
-function testURLpath {
-	testURL=$1
-	testName=$2
-	# echo "name: " $curlNginxOutput/$testName
-	# echo "URL to test by Nginx:" $testURL
-	curl -i -s  -X GET $testURL | head -n 1 > $curlNginxOutput/$testName
-	sleep 0.1
-	echo -e "\r" >> $curlNginxOutput/$testName
-	curl -s -X GET $testURL >> $curlNginxOutput/$testName
-	sleep 0.1
-}
+# function testURLpath {
+# 	testURL=$1
+# 	testName=$2
+# 	# echo "name: " $curlNginxOutput/$testName
+# 	# echo "URL to test by Nginx:" $testURL
+# 	curl -i -s  -X GET $testURL | head -n 1 > $curlNginxOutput/$testName
+# 	sleep 0.1
+# 	echo -e "\r" >> $curlNginxOutput/$testName
+# 	curl -s -X GET $testURL >> $curlNginxOutput/$testName
+# 	sleep 0.1
+# }
 
-function testURLpath_justFirstHeaderLine {
-	testURL=$1
-	testName=$2
-	curl -s -L -i -X GET $testURL | head -n 1 > $curlNginxOutput/$testName ;	sleep 0.1
-	echo -e "\r" >> $curlNginxOutput/$testName ;	sleep 0.1
-}
+# function testURLpath_justFirstHeaderLine {
+# 	testURL=$1
+# 	testName=$2
+# 	curl -s -L -i -X GET $testURL | head -n 1 > $curlNginxOutput/$testName ;	sleep 0.1
+# 	echo -e "\r" >> $curlNginxOutput/$testName ;	sleep 0.1
+# }
 
 
 ### TEST URLs ############################################################################
@@ -112,9 +112,11 @@ function testURLpath_justFirstHeaderLine {
 # # CGI UPLOAD
 # curl -i -F 'filename=@/Users/jmurovec/Desktop/text_small.txt' http://localhost:8080/cgi/python_cgi_POST_upload.py	# -i prints the response header
 # curl    -F 'filename=@/Users/jmurovec/Desktop/text_small.txt' http://localhost:8080/cgi/python_cgi_POST_upload.py > $curlNginxOutput/cgi_POST_upload ;	sleep 0.1
-curl  -s  -F 'filename=@/Users/jmurovec/Desktop/text_small.txt' http://localhost:8080/cgi/python_cgi_POST_upload.py # > ./curlWebservOutput/cgi_POST_upload ;	sleep 0.1
+# curl  -s  -F 'filename=@/Users/jmurovec/Desktop/text_small.txt' http://localhost:8080/cgi/python_cgi_POST_upload.py # > ./curlWebservOutput/cgi_POST_upload ;	sleep 0.1
 
-echo -e "\r" >> $curlNginxOutput/cgi_POST_upload ;	sleep 0.1
+# testURLpath "http://localhost:8080/cgi/python_cgi_GET.py?street=Singel&city=Tokio" "8080:cgi:GET_withQuery"
+
+# echo -e "\r" >> $curlNginxOutput/cgi_POST_upload ;	sleep 0.1
 
 # # # # IMAGES
 # testURLpath "localhost:$PORT/images/index_images.html"   "localhost:images:index_images.html"
@@ -122,15 +124,13 @@ echo -e "\r" >> $curlNginxOutput/cgi_POST_upload ;	sleep 0.1
 # # # CGI
 # testURLpath "localhost:$PORT/cgi/cgi_index.html"         "localhost:cgi:cgi_index.html"
 # testURLpath 'localhost:$PORT/cgi/python_cgi_GET.py?street=Singel&city=Tokio'         "localhost:cgi:python_get.py?street=Singel&city=Tokio"
-sleep 1
+# sleep 1
 # cat /usr/local/var/log/nginx/error.log > ./error.log					# HOME
-cat /Users/jmurovec/.brew/Cellar/nginx/logs/error.log > ./error.log		# CODAM
+# cat /Users/jmurovec/.brew/Cellar/nginx/logs/error.log > ./error.log		# CODAM
 
 # STOP NGINX
-nginx -s stop
-# sudo nginx -s stop
-# echo "EXIT tests"
-# exit
+# nginx -s stop
+
 
 
 ##################################################################################################################
@@ -140,7 +140,7 @@ sleep 0.5
 
 # Remove any old Curl Output
 rm -rf $curlWebservOutput
-
+sleep 5
 
 cd ../
 ./webserv $CONFIG_FILE > log.txt & 
@@ -155,14 +155,14 @@ printf "${BLU}%s%-50s%-30s%-30s${RES}\n" "     " "Tested URL"  "Response Code"
 function testURLpath {
 	testURL=$1
 	testName=$2
-	responseCode=$(curl -i -s  -X GET $testURL | head -n 1)
+	# responseCode=$(curl -i -s  -X GET $testURL | head -n 1)
 	echo "$responseCode" > $curlWebservOutput/$testName
 	responseCode=$(echo "$responseCode" | tr -d '\r\n')
 	# echo "RESPONSECODE: " "$responseCode"
-	#echo -e "/n" >> $testURL >> $curlWebservOutput/$testName
-	curl -s -X GET $testURL >> $curlWebservOutput/$testName
+	# echo -e "/n" >> $testURL >> $curlWebservOutput/$testName
+	# curl -s -X GET $testURL >> $curlWebservOutput/$testName
 	sleep 0.2
-	if diff $curlWebservOutput/$testName $curlNginxOutput/$testName >/dev/null ; then
+	if diff $curlSavedCgiOutput/$testName $curlNginxOutput/$testName >/dev/null ; then
 		echo -en "${GRE}[OK] ${RES}"
 		printf "${GRY}%-50s${RES}" "$testURL"
 		printf "%-20s" "$responseCode"
@@ -179,13 +179,13 @@ function testURLpath {
 function testURLpath_justFirstHeaderLine {
 	testURL=$1
 	testName=$2
-	responseCode=$(curl -i -s  -X GET $testURL | head -n 1)
-	echo "$responseCode" > $curlWebservOutput/$testName
-	responseCode=$(echo "$responseCode" | tr -d '\r\n')
+	#responseCode=$(curl -i -s  -X GET $testURL | head -n 1)
+	#echo "$responseCode" > $curlWebservOutput/$testName
+	#responseCode=$(echo "$responseCode" | tr -d '\r\n')
 	# echo "RESPONSECODE: " "$responseCode"
 	#echo -e "/n" >> $testURL >> $curlWebservOutput/$testName
 	sleep 0.2
-	if diff <(head -n 1 $curlWebservOutput/$testName) <(head -n 1 $curlNginxOutput/$testName) >/dev/null ; then
+	if diff <(head -n 1 $curlCompareCgiOutput/$testName) <(head -n 1 $curlNginxOutput/$testName) >/dev/null ; then
 		echo -en "${GRE}[OK] ${RES}"
 		printf "${GRY}%-50s${RES}" "$testURL"
 		printf "%-30s" "$responseCode"
@@ -203,8 +203,10 @@ function testURLpath_justFirstHeaderLine {
 # # CGI UPLOAD
 # curl -i -F 'filename=@/Users/jmurovec/Desktop/text_small.txt' http://localhost:8080/cgi/python_cgi_POST_upload.py	# -i prints the response header
 # curl    -F 'filename=@/Users/jmurovec/Desktop/text_small.txt' http://localhost:8080/cgi/python_cgi_POST_upload.py #> $curlNginxOutput/cgi_POST_upload ;	sleep 0.1
-curl  -s  -F 'filename=@/Users/jmurovec/Desktop/text_small.txt' http://localhost:8080/cgi/python_cgi_POST_upload.py # > ./curlNginxOutput/cgi_POST_upload ;	sleep 0.1
+# curl  -s  -F 'filename=@/Users/jmurovec/Desktop/text_small.txt' http://localhost:8080/cgi/python_cgi_POST_upload.py # > ./curlNginxOutput/cgi_POST_upload ;	sleep 0.1
 
+curl -X GET "http://localhost:8080/cgi/python_cgi_GET.py?street=Singel&city=Tokio" # > "./curlNginxOutput/localhost:8080GET"
+testURLpath "python_cgi_GET.py?street=Singel&city=Tokio"  "localhost:8080GET"
 
 
 # # # # IMAGES
@@ -222,11 +224,7 @@ curl  -s  -F 'filename=@/Users/jmurovec/Desktop/text_small.txt' http://localhost
 
 pkill -f webserv
 
-# sleep 1
+sleep 1
 
 # Start Siege Test
-
-# cd ./tests/siege
-# bash testSiege.sh
-
 

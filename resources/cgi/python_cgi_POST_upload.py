@@ -24,19 +24,22 @@ for param in os.environ.keys():
 
 form = cgi.FieldStorage()
 # sys.stderr.write('FORM IS [' + str(form) + ']\n')
+# Get filename here
+fileItem = form['filename']
+# fileItem
+
+# sys.stderr.write('!!! fileItem: [')
+# sys.stderr.write(fileItem.filename)
+# sys.stderr.write(']\n')
 
 if 'filename' not in form or not form['filename'].value:
 	print("Error: You need to choose a file to be uploaded")
 	exit ()
 
 
-# Get filename here
-fileItem = form['filename']
-# fileItem
 
-sys.stderr.write('!!! fileItem: ')
-sys.stderr.write(fileItem.filename)
-sys.stderr.write('\n')
+
+
 
 # Test if the file was uploaded
 if fileItem.filename:
