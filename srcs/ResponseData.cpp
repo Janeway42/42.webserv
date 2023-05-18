@@ -41,7 +41,7 @@ void ResponseData::createResponseHeader(struct kevent& event) {
         "Content-Encoding: identity\r\n"
         "Connection: close\r\n" + cookiesHeader + 
         "Content-Length: " + std::to_string(_responseBody.length()) + "\r\n"
-        + redirection + "\r\n\r\n";
+        + redirection + "\r\n";
 }
 
 /** #################################### Methods #################################### */
