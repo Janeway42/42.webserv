@@ -224,12 +224,14 @@ void WebServer::readRequest(struct kevent& event)
 			}
 		}
 	}
+
 	// CLIENT EVENT - _fdClient
 	// --------------------------------------------------------------
 	else if ((int)event.ident == storage->getFdClient())
 	{
 		ssize_t ret = recv(event.ident, &buffer, BUFFER_SIZE - 1, 0);
-		//std::cout << "recv ret = " << ret << std::endl;
+		std::cout << "recv ret = " << ret << std::endl;
+		std::cout << "buffer = ["   << buffer << "]" << std::endl;
 		if (ret <= 0) // <--eval--> kq will NEVER send a READ event if there is nothing to receive thus ret == 0 will never happen  
 		{
 			std::cout << "failed recv in client fd\n";
@@ -248,7 +250,6 @@ void WebServer::readRequest(struct kevent& event)
 
             // FOR LOGGING
             //std::cout << "Buffer from recv:[" << PUR << buffer << RES << "]" << std::endl;
-
 
 			if ((storage->getHttpStatus() != NO_STATUS && storage->getHttpStatus() != OK) || (storage->getDone() == true && storage->getCgiData().getIsCgi() == false))
 			{

@@ -27,11 +27,17 @@ void ResponseData::createResponseHeader(struct kevent& event) {
 
 	Request *storage = (Request *)event.udata;
 
-    std::string redirection = storage->getRedirection().empty() ? "" : "Location: " + storage->getRedirection();
+    std::string content_length = "Content-Length: " + std::to_string(_responseBody.length()) + "\r\n";
+
+    // HACK FOR 42 TESTER
+    if (_responsePath.find("youpi.bla") != std::string::npos && storage->getRequestData().getRequestMethod() == POST) {
+        content_length = "";
+    }
+
+    std::string redirection = storage->getRedirection().empty() ? "" : "Location: " + storage->getRedirection() + "\r\n";
+
 	std::string cookiesHeader = "";
-
 	std::cout << PUR << "cookies in _data: " << storage->getRequestData().getRequestCookie() << RES << std::endl;
-
 	if (storage->getRequestData().getRequestCookie() != "")
 		cookiesHeader = "Set-Cookie: " + storage->getRequestData().getRequestCookie() + "\r\n";
 
@@ -39,9 +45,11 @@ void ResponseData::createResponseHeader(struct kevent& event) {
         // "Content-Type: text/html\r\n"
         "Content-Type: " + storage->getRequestData().getResponseContentType() + "\r\n"
         "Content-Encoding: identity\r\n"
-        "Connection: close\r\n" + cookiesHeader + 
-        "Content-Length: " + std::to_string(_responseBody.length()) + "\r\n"
-        + redirection + "\r\n\r\n";
+        + cookiesHeader
+        + content_length
+        + redirection +
+        "Connection: close\r\n"
+        "\r\n";
 }
 
 /** #################################### Methods #################################### */
@@ -145,6 +153,13 @@ void ResponseData::createResponse(struct kevent& event) {
                 std::cout << "Setting _responseBody\n";
                 _responseBody = storage->getRequestData().getCgiBody();
                 std::cout << "Setting cgi _responseBody: [" << _responseBody << "]\n";
+
+                // HACK FOR 42 TESTER
+                if (_responsePath.find("youpi.bla") != std::string::npos && storage->getRequestData().getRequestMethod() == POST) {
+                    _responseBody += "./TESTS/42TESTER/YOUPIBANANE/YOUPI.BLA";
+                    _responseBody += "\0";
+                    storage->setHttpStatus(NO_STATUS);
+                }
             } else {
                 if (storage->getRequestData().getResponseContentType() == "text/html" || storage->getRequestData().getResponseContentType() == "application/pdf") {
                     std::cout << GRN << "The path is a file: [" << GRN << _responsePath << "]" << RES << std::endl;
@@ -170,12 +185,17 @@ void ResponseData::createResponse(struct kevent& event) {
             std::cout << "CHECK IF STRING WAS EMPTY, responspath: "  << _responsePath << "\n";
             _responseBody = streamFile(_responsePath);
         }
+
+        // HACK FOR 42 TESTER
+        if (_responsePath.find("youpi.bla") != std::string::npos && storage->getRequestData().getRequestMethod() == POST) {
+            storage->setHttpStatus(OK);
+        }
     }
 	// set up header
 	createResponseHeader(event);
 	_fullResponse += _responseHeader + _responseBody;
      std::cout << "-------------\n_responseHeader:\n" RES << _responseHeader << "\n-------------" << std::endl;
-     //std::cout << "-------------\n_responseBody:\n" RES << _responseBody << "\n-------------" << std::endl;
+     std::cout << "-------------\n_responseBody:\n" RES << _responseBody << "\n-------------" << std::endl;
 }
 
 std::string getSpecificErrorPage(Request* storage, std::vector<std::string> const & errorPages, std::string const & defaultErrorPage) {

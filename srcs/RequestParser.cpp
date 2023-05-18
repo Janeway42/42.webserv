@@ -156,7 +156,6 @@ int Request::storeWordsFromOtherLine(std::string otherLine) {
 			// 	std::string temp = (*iter).substr(0, (*iter).find(":"));
 			// 	_data.setRequestHost(temp);
 			// }
-
 			else if (*iter == "Host:") {
 				iter++;
 				std::string temp = (*iter).substr(0, (*iter).find(":"));
@@ -209,11 +208,11 @@ void Request::setSpecificServer()
 	}
 }
 
-void Request::parseHeaderAndPath(std::string & tmpHeader, std::string::size_type it) {
+void Request::parseHeaderAndPath(std::string::size_type it) {
     std::cout << "⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: " << _clientFd << std::endl;
 
 	_hasBody = true;
-	tmpHeader = _data.getHeader();
+    std::string tmpHeader = _data.getHeader();
 	tmpHeader.append(_data.getTemp().substr(0, it));
 	_data.setHeader(tmpHeader);
 	std::cout << BLU << "STORED HEADER: \n" << tmpHeader << "\n" << RES;
@@ -288,56 +287,55 @@ std::string Request::getErrorPage()
 	return (temp);
 }
 
-
 // ---------------------------------------------------------------------------------------------------------------------------------------
 
 
-void Request::appendToRequest(const char str[], ssize_t len) {
-	std::cout << PUR << "Start appendToRequest(): _hasBody: " << _hasBody << " | _doneParsing: " << _doneParsing << " \n" << RES;
+// OLD OLD OLD
 
-	// sleep(3); // testing TIMER
-	std::string 			chunk = std::string(str);
-	std::string				strToFind = "\r\n\r\n";
-	std::string::size_type	it, it2;
-	std::string				tmpHeader;
-	if (_headerDone == false) {
-		_data.setTemp(_data.getTemp() + chunk);
+ void Request::appendToRequest(const char str[], ssize_t len) {
+     std::cout << PUR << "Start appendToRequest(): _hasBody: " << _hasBody << " | _doneParsing: " << _doneParsing << " \n" << RES;
+     std::string strToFind = "\r\n\r\n";
+     std::string::size_type it;
+     if (_headerDone == false) {
+         std::cout << "data.getTemp(): [" << _data.getTemp() << "]\n";
+         _data.setTemp(_data.getTemp() + std::string(str));
 
-		if ((it = _data.getTemp().find(strToFind)) != std::string::npos) {
-			parseHeaderAndPath(tmpHeader, it);
+         if ((it = _data.getTemp().find(strToFind)) != std::string::npos) {
+             std::cout << YEL << "Found header ending /r/n, maybe there is body\n" << RES;
+             parseHeaderAndPath(it);
 
-			std::cout << YEL << "Found header ending /r/n, maybe there is body\n" << RES;
-			it2 = chunk.find(strToFind) + strToFind.length();	// needed to find the start of body, as char*, not std::string, because body will be vector
-            if (it2 != std::string::npos) {
-                if (std::string(str + it2).find("delete=") != std::string::npos) {
-                    std::cout << "----------> Form data has \"delete=\" key on it\n" << RES;
-                    _data.setFormDataHasDelete(true);
-                }
-				std::cout << "recv ret inside appendToRequest = " << len << std::endl;
-				std::cout << "it2 on appendToRequest = " << it2 << std::endl;
-				std::cout << "len - it2 on appendToRequest = " << len - it2 << std::endl;
+             // needed to find the start of body, as char*, not std::string, because body will be a vector
+             std::string::size_type it2 = _data.getTemp().find(strToFind) + strToFind.length();
 
-				appendLastChunkToBody(str + it2, len - it2); // TODO THIS LINE WAS DOWN BELOW BEFORE
-            }
-			// 	appendLastChunkToBody(str + it2, len - it2); // jaka, changed to vector
-			return ;
-		}
-	}
-	if (_hasBody == true && _doneParsing == false) {
-		appendToBody(str, len);	// changed to char*, because it needs to become a vector
-	}
-}
+             if (it2 != std::string::npos) {
+                 if (std::string(str + it2).find("delete=") != std::string::npos) {
+                     std::cout << "----------> Form data has \"delete=\" key on it\n" << RES;
+                     _data.setFormDataHasDelete(true);
+                 }
+                 std::cout << "recv ret inside appendToRequest = " << len << std::endl;
+                 std::cout << "it2 on appendToRequest = " << it2 << std::endl;
+                 std::cout << "len - it2 on appendToRequest = " << len - it2 << std::endl;
+                 std::cout << "BsF - it2 on appendToRequest = " << _data.getReqHeaderBytesSoFar() - it2 << std::endl;
 
+                 appendLastChunkToBody(str + it2, len - it2); // TODO THIS LINE WAS DOWN BELOW BEFORE
+             }
+             return;
+         }
+     }
+     if (_hasBody == true && _doneParsing == false) {
+         appendToBody(str, len); // changed to char*, because it needs to become a vector
+     }
+ }
 
 // Last chunk means, last chunk of header section, so first chunk of body
 int Request::appendLastChunkToBody(const char *str, ssize_t len) {// TODO WHY THIS RETURNS ????
 	_data.setClientBytesSoFar(len);
-	std::cout << RED << "str: [" << str << "]" << RES << std::endl;
-	std::cout << RED << "len: " << len << RES << std::endl;
-	std::cout << RED << "str + len: [" << str + len << "]" << RES << std::endl;
+//	std::cout << RED << "str: [" << str << "]" << RES << std::endl;
+//	std::cout << RED << "len: " << len << RES << std::endl;
+//	std::cout << RED << "str + len: [" << str + len << "]" << RES << std::endl;
 
-	std::cout << RED << "_data.getClientBytesSoFar(): " << _data.getClientBytesSoFar() << RES << std::endl;
-	std::cout << RED << ":_data.getRequestContentLength(): " <<  _data.getRequestContentLength() << RES << std::endl;
+//	std::cout << RED << "_data.getClientBytesSoFar(): " << _data.getClientBytesSoFar() << RES << std::endl;
+//	std::cout << RED << ":_data.getRequestContentLength(): " <<  _data.getRequestContentLength() << RES << std::endl;
     // The PUT part is just a hack to pass the 42 tester (we actually don't accept PUT)
 	if (_data.getClientBytesSoFar() > _data.getRequestContentLength() && _data.getRequestMethod() != PUT &&
             _data.getURLPath_full().find("youpi.bla") == std::string::npos) {
@@ -352,9 +350,6 @@ int Request::appendLastChunkToBody(const char *str, ssize_t len) {// TODO WHY TH
 		_httpStatus = CONTENT_TOO_LARGE;
 		return (1);
 	}
-
-	std::cout << RED << "std::string(str).size(): " << static_cast<ssize_t>(std::string(str).size()) << RES << std::endl;
-	std::cout << RED << "            strlen(str): " << strlen(str) << RES << std::endl;
 
 	if (str != nullptr && len > 0 && len < LONG_MAX) {
 		std::vector<uint8_t> tempVec(str, str + len); // convert and assign str to vector
@@ -393,8 +388,7 @@ int Request::appendToBody(const char* str, ssize_t len) {
 	}
 	if (_data.getClientBytesSoFar() > _data.getRequestContentLength()) {		// Compare body lenght
 		std::cout << RED << "Error: Body-Length (" << _data.getClientBytesSoFar() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;// sleep(2);
-        // _httpStatus = BAD_REQUEST;
-        // _httpStatus = METHOD_NOT_ALLOWED;
+        _httpStatus = BAD_REQUEST;
 		return (1);
 	}
 

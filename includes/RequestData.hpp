@@ -17,6 +17,8 @@ class RequestData {
 		std::string				_reqHttpVersion;
 		std::string				_reqCookie;
 
+		ssize_t					_reqHeaderBytesSoFar;		// added jaka, maybe needed for TESTER42 /r/n/r/n
+
 		std::string 			_reqHeader;
 		std::vector<uint8_t>	_reqBody;
 		ssize_t					_clientBytesSoFar;	
@@ -56,6 +58,8 @@ class RequestData {
 		const std::string	getHttpPath() const;
 		const std::string	getHttpVersion() const;
 		const std::string	getHeader() const;
+		ssize_t				getReqHeaderBytesSoFar();	// added jaka, maybe needed for TESTER42
+
 		const std::string	getTemp() const;
 		ssize_t				getClientBytesSoFar() const;
 		std::vector<uint8_t> & getBody();
@@ -114,7 +118,8 @@ class RequestData {
 		void	setFormDataHasDelete(bool b);
 		void	setFormList(std::vector<std::string>);				// maybe not needed
 		void	setFormData(std::map<std::string, std::string>);	// maybe not needed
-
+		void	setReqHeaderBytesSoFar(ssize_t nrBytes);
+		
 };
 
 #endif // REQUESTDATA_HPP
