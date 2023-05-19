@@ -48,7 +48,7 @@ class Request : public Parser {
         bool _delete_is_allowed;
         std::string _interpreter_path;
 
-		void parseHeaderAndPath(std::string & tmpHeader, std::string::size_type it);
+		void parseHeaderAndPath(std::string::size_type it);
 		int appendLastChunkToBody(const char *str, ssize_t len);
 		int appendToBody(const char *str, ssize_t len);
 

@@ -30,10 +30,13 @@ void ResponseData::createResponseHeader(struct kevent& event) {
     std::string redirection = storage->getRedirection().empty() ? "" : "Location: " + storage->getRedirection();
 	std::string cookiesHeader = "";
 
-	std::cout << PUR << "cookies in _data: " << storage->getRequestData().getRequestCookie() << RES << std::endl;
+	std::cout << PUR << "cookies in location: " << storage->getRequestData().getRequestSetCookie() << RES << std::endl;
+	std::cout << PUR << "cookies in request: " << storage->getRequestData().getRequestCookie() << RES << std::endl;
 
-	if (storage->getRequestData().getRequestCookie() != "")
+	if (storage->getRequestData().getRequestSetCookie() != "")
 		cookiesHeader = "Set-Cookie: " + storage->getRequestData().getRequestCookie() + "\r\n";
+    else if (storage->getRequestData().getRequestCookie() != "")
+        cookiesHeader = "Cookie: " + storage->getRequestData().getRequestCookie() + "\r\n";
 
 	_responseHeader = "HTTP/1.1 " + std::to_string(storage->getHttpStatus()) + " " + httpStatusToString(storage->getHttpStatus()) + "\r\n"
         // "Content-Type: text/html\r\n"

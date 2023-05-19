@@ -24,6 +24,7 @@ RequestData::RequestData() {
 	_cgiBody			 = "";
 
 	_responseContentType = "text/html";
+	_reqSetCookie			 = "";
 	_reqCookie			 = "";
 }
 
@@ -35,6 +36,7 @@ RequestData::~RequestData() {
     _reqHttpVersion = "";
 	_reqServerName  = "";
 	_reqPort        = "";
+	_reqSetCookie	= "";
 	_reqCookie		= "";
 }
 
@@ -149,10 +151,13 @@ std::vector<std::string> RequestData::getFormList() const {	// Cannot return con
 	return _formList;										// because iterator won't work
 }
 
+const std::string RequestData::getRequestSetCookie() const {
+	return _reqSetCookie;
+}
+
 const std::string RequestData::getRequestCookie() const {
 	return _reqCookie;
 }
-
 /** ########################################################################## */
 /** Request Setters */
 
@@ -352,10 +357,13 @@ void RequestData::setFormList(std::vector<std::string> formList) {
 	_formList = formList;
 }
 
+void RequestData::setRequestSetCookie(std::string reqSetCookie){
+	_reqSetCookie = reqSetCookie;
+}
+
 void RequestData::setRequestCookie(std::string reqCookie){
 	_reqCookie = reqCookie;
 }
-
 void RequestData::setReqHeaderBytesSoFar(ssize_t nrBytes) {	// added jaka, maybe needed for TESTER42
 	_reqHeaderBytesSoFar += nrBytes;
 }
