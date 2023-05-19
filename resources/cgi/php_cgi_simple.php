@@ -6,19 +6,19 @@
 
 // Print a message to the client
 
-print "<h3> ... This is Python script for POST method ...</h3><br>";
+print "<h3> ... This is PHP script for GET method ...</h3><br>";
 
 
 for ($i = 1; $i <= 20; $i++) {
     $red = rand(0, 255); $green = rand(0, 255); $blue = rand(0, 255);
     $color1 = "rgb($red, $green, $blue)";
-    print   "<div style='background-color: $color1; width:20%; margin:1% 0 0 5%;     padding:1% 1% 1% 1%'>";
+    print   "<div style='background-color: $color1; width:20%; margin:1% 0 0 1%;     padding:1% 1% 1% 1%'>";
 
     $red = rand(0, 255); $green = rand(0, 255); $blue = rand(0, 255);
     $color2 = "rgb($red, $green, $blue)";
-    $red = rand(0, 255); $green = rand(0, 255); $blue = rand(0, 255);
-    $color3 = "rgb($red, $green, $blue)";
-    print "<p style='background-color:$color2; color:$color3'> Hello from PHP script $i </p> 
+    // $red = rand(0, 255); $green = rand(0, 255); $blue = rand(0, 255);
+    // $color3 = "rgb($red, $green, $blue)";
+    print "<p style='background-color:$color1; color:$color2'> Hello from PHP script $i </p> 
     </div>";
 }
 

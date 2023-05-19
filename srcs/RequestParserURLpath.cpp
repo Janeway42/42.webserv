@@ -12,7 +12,8 @@
 
 void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 	//std::cout << BLU << "START runExeve\n" << RES;
-	(void)event;
+	// (void)event;
+	// (void)ENV;
 
 	Request *storage = (Request *)event.udata;
 
@@ -47,13 +48,12 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
         chdir(storage->getRequestData().getURLPathFirstPart().c_str());
         args[0] = const_cast<char*>(storage->getInterpreterPath().c_str());
 		ret = execve(args[0], args, ENV);
-		if (ret == -1)
-		{
-			std::cerr << RED << "Error: Execve failed: " << ret << "\n" << RES;
-			delete storage;
-			sleep(31);
-		}
-        // todo maybe needs to exit in case execve fails
+        // if (ret == -1) {
+        std::cerr << RED << "Error: Execve failed: " << ret << "\n" << RES;
+        delete storage;
+        sleep(31);  // todo, can this be replaced with macro TIMEOUT?
+        exit(1);
+		// }
 	}
 	else {				// PARENT
 		std::cerr << "    Start Parent\n";
@@ -174,7 +174,6 @@ void Request::storeURLPathParts(std::string const & originalUrlPath, std::string
         if (_data.getRequestMethod() == GET) {
             _data.setQueryString(queryString);
             std::cout << "queryString:                   [" << GRN << _data.getQueryString() << RES << "]" << std::endl;
-            // _data.setBody(queryString);  // too early todo JAKA is it needed here?
         }
         storeFormData(queryString);	// the key:value map is now only used to print them out, 
     }                               // but the cgi script handles the queryString automatically

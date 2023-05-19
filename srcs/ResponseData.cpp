@@ -93,7 +93,7 @@ void ResponseData::createResponse(struct kevent& event) {
 	Request *storage = (Request *)event.udata;
 
 	std::cout << "fd: " << storage->getFdClient() << std::endl;
-    std::cout << "   _responseBody: [" << _responseBody << "]\n";   // to remove, jaka
+    // std::cout << "   _responseBody: [" << _responseBody << "]\n";   // to remove, jaka
 
 
     // If the Form data that came from the body contained a "delete=" key, and the current request is POST or DELETE
