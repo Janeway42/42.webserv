@@ -184,12 +184,19 @@ void Request::storeURLPathParts(std::string const & originalUrlPath, std::string
 	_data.setPathLastPart(URLPath_full.substr(posLastSlash + 1));
 }
 
+
+
 void Request::checkIfPathExists(std::string const & URLPath_full) {
     std::cout << CYN << "Start CheckIfPathExists(), URLPath_full [" << URLPath_full << "] \n" << RES;
 
     // Here at the end URLPath_full will always be a file, either because the request was a file, or because
     // the correct index file was appended to it (from location or server block, the config file parser decided already)
     PathType type = pathType(URLPath_full);
+
+    if (type == PATH_TYPE_ERROR) {   // added jaka
+        setHttpStatus(FORBIDDEN);    // added jaka
+        return;
+    }
     if (type != REG_FILE) {
         std::cout << RED << std::endl << "Error: file [" << RES << URLPath_full << RED;
         std::cout << "] was not found. Returning 404 NOT FOUND" << RES << std::endl << std::endl;
@@ -199,6 +206,7 @@ void Request::checkIfPathExists(std::string const & URLPath_full) {
         setHttpStatus(OK);
     }
 }
+
 
 static void printPathParts(RequestData reqData) {
 	std::cout << std::endl;

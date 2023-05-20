@@ -34,7 +34,7 @@ void ResponseData::createResponseHeader(struct kevent& event) {
 	std::cout << PUR << "cookies in request: " << storage->getRequestData().getRequestCookie() << RES << std::endl;
 
 	if (storage->getRequestData().getRequestSetCookie() != "")
-		cookiesHeader = "Set-Cookie: " + storage->getRequestData().getRequestCookie() + "\r\n";
+		cookiesHeader = "Set-Cookie: " + storage->getRequestData().getRequestSetCookie() + "\r\n";
     else if (storage->getRequestData().getRequestCookie() != "")
         cookiesHeader = "Cookie: " + storage->getRequestData().getRequestCookie() + "\r\n";
 
@@ -44,7 +44,7 @@ void ResponseData::createResponseHeader(struct kevent& event) {
         "Content-Encoding: identity\r\n"
         "Connection: close\r\n" + cookiesHeader + 
         "Content-Length: " + std::to_string(_responseBody.length()) + "\r\n"
-        + redirection + "\r\n";
+        + redirection + "\r\n\r\n";
 }
 
 /** #################################### Methods #################################### */
@@ -96,7 +96,7 @@ void ResponseData::createResponse(struct kevent& event) {
 	Request *storage = (Request *)event.udata;
 
 	std::cout << "fd: " << storage->getFdClient() << std::endl;
-    // std::cout << "   _responseBody: [" << _responseBody << "]\n";   // to remove, jaka
+    // std::cout << "   _responseBody: [" << _responseBody << "]\n";   // todo remove, jaka
 
 
     // If the Form data that came from the body contained a "delete=" key, and the current request is POST or DELETE

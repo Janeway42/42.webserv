@@ -314,16 +314,13 @@ std::string Request::getErrorPage()
                  std::cout << "len - it2 on appendToRequest = " << len - it2 << std::endl;
                  std::cout << "BsF - it2 on appendToRequest = " << _data.getReqHeaderBytesSoFar() - it2 << std::endl;
 
-				std::cout << "BEGINING OF THE BODY: [" << _data.getTemp().c_str() + it2 << "]\n";
-				// std::cout << "FIRST:                [" << _data.getTemp()[_data.getReqHeaderBytesSoFar() - it2] << "]\n";
-				appendLastChunkToBody(_data.getTemp().c_str() + it2, len - it2); // TODO THIS LINE WAS DOWN BELOW BEFORE
-
+                appendLastChunkToBody(str + it2, len - it2); // TODO THIS LINE WAS DOWN BELOW BEFORE
 			}
-			return ;
+			return;
 		}
 	}
 	if (_hasBody == true && _doneParsing == false) {
-		appendToBody(str, len);	// changed to char*, because it needs to become a vector
+		 appendToBody(str, len); // changed to char*, because it needs to become a vector
 	}
 }
 

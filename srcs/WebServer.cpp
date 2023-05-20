@@ -205,8 +205,6 @@ void WebServer::readRequest(struct kevent& event)
 	if ((int)event.ident == (storage->getCgiData()).getPipeCgiOut_0())
 	{
 		ssize_t ret = read(event.ident, &buffer,  BUFFER_SIZE - 1);
-		std::cout << "XXXXXXXX ret from READ from CGI: " << ret << "\n"; //jaka, to remove
-
 		if (ret < 0) // <--eval--> this checks for ret == -1, ret == 0 is checked in the main loop
 		{
 			std::cout << "failed read in pipe _fd_out[0] from cgi\n";
