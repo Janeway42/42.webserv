@@ -117,6 +117,7 @@ create_temp_files:
 	cp -f ./resources/images/img_36kb.jpg ./resources/UPLOADS/noPerm.jpg
 	chmod 000 ./resources/folder_noPerm
 	chmod 000 ./resources/noPerm.html
+	chmod 000 ./resources/images/noPerm.jpg
 	chmod 000 ./resources/UPLOADS/noPerm.jpg
 clean:
 	rm -rf $(OBJ)
@@ -129,6 +130,7 @@ fclean: clean
 #	added jaka:
 	@rm -rf ./tests/curlNginxOutput ./tests/curlWebservOutput ./tests/siege/outputFiles ./tests/error.log
 	chmod 744 ./resources/folder_noPerm ./resources/UPLOADS/noPerm.jpg
+	mv	./resources/UPLOADS/noPerm.jpg	./resources/UPLOADS/some_image.jpg
 	@rm -rf  ./resources/folder_noPerm
 	@rm -rf  ./resources/noPerm.html
 	@rm -rf  ./resources/images/noPerm.jpg
