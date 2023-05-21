@@ -31,6 +31,7 @@ std::string Parser::getOneCleanValueFromKey(std::string & contentLine, std::stri
     return std::string();
 }
 
+
 /* define if path is file(1), folder(2) or something else(3) */
 PathType Parser::pathType(std::string const & path) {
     struct stat	buffer = {};
@@ -38,17 +39,26 @@ PathType Parser::pathType(std::string const & path) {
     DIR* dir = opendir(path.c_str());// could also use the std::ifstream and then use the .is_open()
     if (stat(path.c_str(), &buffer) == 0) {
         if (buffer.st_mode & S_IFREG) {
-            return (REG_FILE);
+            if (buffer.st_mode & S_IRUSR) // added jaka
+                return (REG_FILE);
+            std::cout << RED "Error: This file has no READ permission\n" RES;
+            return (PATH_TYPE_ERROR); // added jaka, todo: if no permission, code should be 403 Forbidden
         } else if (buffer.st_mode & S_IFDIR || dir != NULL) {
             /* The & operator computes the logical AND of its operands. The result of x & y is true if
              * both x and y evaluate to true. Otherwise, the result is false */
-            (void)closedir(dir);
-            return (DIRECTORY);
+            if (buffer.st_mode & S_IRUSR) { // added jaka
+                (void)closedir(dir);
+                return (DIRECTORY);
+            }
+            std::cout << RED "Error: This folder has no READ permission\n" RES;
+            return (PATH_TYPE_ERROR); // added jaka, todo: if no permission, code should be 403 Forbidden
         } else
             return (OTHER_PATH_TYPE);
     }
     return (PATH_TYPE_ERROR);
 }
+
+
 
 std::string Parser::addCurrentDirPath(std::string const & fileOrDir) const {
     if (fileOrDir.at(0) != '.') {

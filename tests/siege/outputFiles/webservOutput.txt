@@ -1,0 +1,33 @@
+[32mstandard_complete.conf will be used![0m
+====================
+host: 0.0.0.0
+listens to: 8080
+_addr in set listening socket: 0x7ffeeee615d0 / addr->protocol: 6
+hostname used on getaddrinfo: 0.0.0.0
+SERVER NAME: localhost
+HOST: 0.0.0.0
+PORT: 8080
+LISTENING SOCKET: 4
+--------------------------------------------------------
+====================
+host: 127.0.0.1
+listens to: 4242
+_addr in set listening socket: 0x7ffeeee615d0 / addr->protocol: 6
+hostname used on getaddrinfo: 127.0.0.1
+SERVER NAME: test
+HOST: 127.0.0.1
+PORT: 4242
+LISTENING SOCKET: 5
+--------------------------------------------------------
+====================
+host: 0.0.0.0
+listens to: 4243
+_addr in set listening socket: 0x7ffeeee615d0 / addr->protocol: 6
+hostname used on getaddrinfo: 0.0.0.0
+SERVER NAME: f0r1s2.codam.nl
+HOST: 0.0.0.0
+PORT: 4243
+LISTENING SOCKET: 6
+--------------------------------------------------------
+[36mWebServer Overloaded Constructor[0m
+[2m----------------------------------------------------------------------------------------------------------------- WHILE LOOP 0[0m

@@ -314,15 +314,15 @@ std::string Request::getErrorPage()
                  std::cout << "len - it2 on appendToRequest = " << len - it2 << std::endl;
                  std::cout << "BsF - it2 on appendToRequest = " << _data.getReqHeaderBytesSoFar() - it2 << std::endl;
 
-                 appendLastChunkToBody(str + it2, len - it2); // TODO THIS LINE WAS DOWN BELOW BEFORE
-             }
-             return;
-         }
-     }
-     if (_hasBody == true && _doneParsing == false) {
-         appendToBody(str, len); // changed to char*, because it needs to become a vector
-     }
- }
+                appendLastChunkToBody(str + it2, len - it2); // TODO THIS LINE WAS DOWN BELOW BEFORE
+			}
+			return;
+		}
+	}
+	if (_hasBody == true && _doneParsing == false) {
+		 appendToBody(str, len); // changed to char*, because it needs to become a vector
+	}
+}
 
 // Last chunk means, last chunk of header section, so first chunk of body
 int Request::appendLastChunkToBody(const char *str, ssize_t len) {// TODO WHY THIS RETURNS ????

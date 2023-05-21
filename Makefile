@@ -90,7 +90,9 @@ CONFIG_FILE = standard_complete.conf
 
 all: $(NAME)
 
-$(NAME): $(OBJ) $(INCLUDES_DEPENDENCY)
+
+
+$(NAME): create_temp_files $(OBJ) $(INCLUDES_DEPENDENCY)
 	$(CPP) $(FLAGS) -o $@ $(OBJ)
 	@echo "$(GREEN)server loaded$(RESET)"
 	@echo "$(GREEN)run ./webserv [file.conf]$(RESET)"
@@ -107,6 +109,16 @@ $(NAME): $(OBJ) $(INCLUDES_DEPENDENCY)
 
 ################################# CLEAN RULES #################################
 
+create_temp_files:
+	@echo "$(GREEN) CREATE TEMP FILES $(CONFIG_FILE)$(RESET)\n"
+	mkdir -p ./resources/folder_noPerm
+	cp -f ./resources/index.html 			./resources/noPerm.html
+	cp -f ./resources/images/img_36kb.jpg ./resources/images/noPerm.jpg
+	cp -f ./resources/images/img_36kb.jpg ./resources/UPLOADS/noPerm.jpg
+	chmod 000 ./resources/folder_noPerm
+	chmod 000 ./resources/noPerm.html
+	chmod 000 ./resources/images/noPerm.jpg
+	chmod 000 ./resources/UPLOADS/noPerm.jpg
 clean:
 	rm -rf $(OBJ)
 	@rm -rf a.out *.dSYM
@@ -117,6 +129,11 @@ fclean: clean
 	rm -f $(NAME)
 #	added jaka:
 	@rm -rf ./tests/curlNginxOutput ./tests/curlWebservOutput ./tests/siege/outputFiles ./tests/error.log
+	chmod 744 ./resources/folder_noPerm ./resources/UPLOADS/noPerm.jpg
+	mv	./resources/UPLOADS/noPerm.jpg	./resources/UPLOADS/some_image.jpg
+	@rm -rf  ./resources/folder_noPerm
+	@rm -rf  ./resources/noPerm.html
+	@rm -rf  ./resources/images/noPerm.jpg
 	@echo "$(YELLOW)fclean done$(RESET)"
 
 re: fclean all

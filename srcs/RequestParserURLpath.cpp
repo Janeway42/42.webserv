@@ -12,7 +12,8 @@
 
 void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 	//std::cout << BLU << "START runExeve\n" << RES;
-	(void)event;
+	// (void)event;
+	// (void)ENV;
 
 	Request *storage = (Request *)event.udata;
 
@@ -47,13 +48,12 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
         chdir(storage->getRequestData().getURLPathFirstPart().c_str());
         args[0] = const_cast<char*>(storage->getInterpreterPath().c_str());
 		ret = execve(args[0], args, ENV);
-		if (ret == -1)
-		{
-			std::cerr << RED << "Error: Execve failed: " << ret << "\n" << RES;
-			delete storage;
-			sleep(31);
-		}
-        // todo maybe needs to exit in case execve fails
+        // if (ret == -1) {
+        std::cerr << RED << "Error: Execve failed: " << ret << "\n" << RES;
+        delete storage;
+        sleep(31);  // todo, can this be replaced with macro TIMEOUT?
+        exit(1);
+		// }
 	}
 	else {				// PARENT
 		std::cerr << "    Start Parent\n";
@@ -174,7 +174,6 @@ void Request::storeURLPathParts(std::string const & originalUrlPath, std::string
         if (_data.getRequestMethod() == GET) {
             _data.setQueryString(queryString);
             std::cout << "queryString:                   [" << GRN << _data.getQueryString() << RES << "]" << std::endl;
-            // _data.setBody(queryString);  // too early todo JAKA is it needed here?
         }
         storeFormData(queryString);	// the key:value map is now only used to print them out, 
     }                               // but the cgi script handles the queryString automatically
@@ -185,12 +184,19 @@ void Request::storeURLPathParts(std::string const & originalUrlPath, std::string
 	_data.setPathLastPart(URLPath_full.substr(posLastSlash + 1));
 }
 
+
+
 void Request::checkIfPathExists(std::string const & URLPath_full) {
     std::cout << CYN << "Start CheckIfPathExists(), URLPath_full [" << URLPath_full << "] \n" << RES;
 
     // Here at the end URLPath_full will always be a file, either because the request was a file, or because
     // the correct index file was appended to it (from location or server block, the config file parser decided already)
     PathType type = pathType(URLPath_full);
+
+    if (type == PATH_TYPE_ERROR) {   // added jaka
+        setHttpStatus(FORBIDDEN);    // added jaka
+        return;
+    }
     if (type != REG_FILE) {
         std::cout << RED << std::endl << "Error: file [" << RES << URLPath_full << RED;
         std::cout << "] was not found. Returning 404 NOT FOUND" << RES << std::endl << std::endl;
@@ -200,6 +206,7 @@ void Request::checkIfPathExists(std::string const & URLPath_full) {
         setHttpStatus(OK);
     }
 }
+
 
 static void printPathParts(RequestData reqData) {
 	std::cout << std::endl;
@@ -505,7 +512,8 @@ std::string Request::parsePath_locationMatch(std::string const & originalUrlPath
         if (not URLPath_full.empty() || getHttpStatus() == FORBIDDEN) {
 			if (not location->getLocationCookie().empty()) {
                 _data.setRequestSetCookie(location->getLocationCookie());
-                std::cout << "Cookies from the location: " << location->getLocationSetCookie() << std::endl;
+                // std::cout << "Cookies from the location: " << location->getLocationSetCookie() << std::endl;
+                std::cout << "Cookies from the location: " << location->getLocationCookie() << std::endl;
             }
             std::cout << "Method from the request: " << allowMethodsToString(_data.getRequestMethod()) << std::endl;
             checkMethods(location->getAllowMethods());
