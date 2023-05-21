@@ -65,18 +65,14 @@ int WebServer::checkExistingSocket(int location, std::string port, std::string h
 
 WebServer::~WebServer()
 {
-	try {
-		std::vector<ServerData>::iterator it;
-		for (it = _servers.begin(); it != _servers.end(); it++)
-		{
-			if (fcntl(it->getListeningSocket(), F_GETFD) != -1)
-				close(it->getListeningSocket());
-		}
-		close(_kq);
-		std::cout << CYN << "WebServer Destructor" << RES << std::endl;
-	} catch (...) {
-		throw ServerException(std::string("Failed to deinitialise webser JOYCE"));
-	}
+    std::vector<ServerData>::iterator it;
+    for (it = _servers.begin(); it != _servers.end(); it++)
+    {
+        if (fcntl(it->getListeningSocket(), F_GETFD) != -1)
+            close(it->getListeningSocket());
+    }
+    close(_kq);
+    std::cout << CYN << "WebServer Destructor" << RES << std::endl;
 }
 
 // --------------------------------------------------------- server main loop
@@ -140,12 +136,12 @@ void WebServer::runServer()
 					std::cout << GRY << "----------------------------------------------------------------------------------------------------------------- WRITE" << RES << std::endl;
 					if (evList[i].flags & EV_EOF)
 					{
-                        std::cout << RED << "write finished" << std::endl;
+                        std::cout << RED << "client closed connection before response" << std::endl;
 						removeFilter(evList[i], EVFILT_WRITE, "failed kevent EV_EOF - EVFILT_WRITE");
 						closeClient(evList[i]);
 					}
 					else {
-                        std::cout << RED << "write sendResponse" << std::endl;
+                        std::cout << "write sendResponse" << std::endl;
                         sendResponse(evList[i]);
                     }
 				}
@@ -388,7 +384,7 @@ void WebServer::newClient(struct kevent event)
 			return ;
 		}
 
-		int time = 30 * 1000;     // TODO needs to be 30 for final version -----------------------------------------
+		int time = TIMEOUT * 1000; // needs to be 30 for final version -----------------------------------------
 		EV_SET(&evSet, fd, EVFILT_TIMER, EV_ADD, 0, time, storage); 
 		if (kevent(_kq, &evSet, 1, NULL, 0, NULL) == -1)
 		{

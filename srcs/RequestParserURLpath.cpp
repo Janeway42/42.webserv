@@ -6,13 +6,15 @@
 #include <vector>
 #include <unistd.h>
 #include <sys/stat.h>
-#include <filesystem> // temp, to test current directory
+#include <filesystem>
 #include "Parser.hpp"
 #include "RequestParser.hpp"
+#include "WebServer.hpp"
 
 void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
 	//std::cout << BLU << "START runExeve\n" << RES;
-	(void)event;
+	// (void)event;
+	// (void)ENV;
 
 	Request *storage = (Request *)event.udata;
 
@@ -47,13 +49,10 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
         chdir(storage->getRequestData().getURLPathFirstPart().c_str());
         args[0] = const_cast<char*>(storage->getInterpreterPath().c_str());
 		ret = execve(args[0], args, ENV);
-		if (ret == -1)
-		{
-			std::cerr << RED << "Error: Execve failed: " << ret << "\n" << RES;
-			delete storage;
-			sleep(31);
-		}
-        // todo maybe needs to exit in case execve fails
+        std::cerr << RED << "Error: Execve failed: " << ret << "\n" << RES;
+        delete storage;
+        sleep(TIMEOUT + 1);
+        exit(1);
 	}
 	else {				// PARENT
 		std::cerr << "    Start Parent\n";
@@ -174,7 +173,6 @@ void Request::storeURLPathParts(std::string const & originalUrlPath, std::string
         if (_data.getRequestMethod() == GET) {
             _data.setQueryString(queryString);
             std::cout << "queryString:                   [" << GRN << _data.getQueryString() << RES << "]" << std::endl;
-            // _data.setBody(queryString);  // too early todo JAKA is it needed here?
         }
         storeFormData(queryString);	// the key:value map is now only used to print them out, 
     }                               // but the cgi script handles the queryString automatically
@@ -185,13 +183,18 @@ void Request::storeURLPathParts(std::string const & originalUrlPath, std::string
 	_data.setPathLastPart(URLPath_full.substr(posLastSlash + 1));
 }
 
+
+
 void Request::checkIfPathExists(std::string const & URLPath_full) {
     std::cout << CYN << "Start CheckIfPathExists(), URLPath_full [" << URLPath_full << "] \n" << RES;
 
     // Here at the end URLPath_full will always be a file, either because the request was a file, or because
     // the correct index file was appended to it (from location or server block, the config file parser decided already)
     PathType type = pathType(URLPath_full);
-    if (type != REG_FILE) {
+
+    if (type == NO_PERMISSION_FILE) {
+        setHttpStatus(FORBIDDEN);
+    } else if (type != REG_FILE) {
         std::cout << RED << std::endl << "Error: file [" << RES << URLPath_full << RED;
         std::cout << "] was not found. Returning 404 NOT FOUND" << RES << std::endl << std::endl;
         setHttpStatus(NOT_FOUND);
@@ -200,6 +203,7 @@ void Request::checkIfPathExists(std::string const & URLPath_full) {
         setHttpStatus(OK);
     }
 }
+
 
 static void printPathParts(RequestData reqData) {
 	std::cout << std::endl;
@@ -226,26 +230,6 @@ static void printPathParts(RequestData reqData) {
         std::cout << "Form Data:    " << YEL << "(not present)\n" << RES;
     }
     std::cout << std::endl;
-}
-
-static std::string getExtension(std::string const & originalUrlPath) {
-    // Ex.: localhost:8080/favicon.ico or localhost:8080/cgi/python_cgi_GET.py?street=test&city=test+city or localhost:8080/index.html
-    std::string urlPath = originalUrlPath;
-    std::string extension = std::string();
-
-    std::string::size_type hasQuery = originalUrlPath.find_first_of('?');
-    if (hasQuery != std::string::npos) {
-        urlPath = originalUrlPath.substr(0, hasQuery);
-    }
-
-    std::string::size_type hasExtension = urlPath.find_last_of(".");
-    if (hasExtension != std::string::npos) {
-        extension = urlPath.substr(hasExtension);
-        std::cout << BLU << "File extension: "  << extension << RES << std::endl;
-    } else {
-        std::cout  << "There is no extension in the file" << std::endl;
-    }
-    return extension;
 }
 
 std::string Request::parsePath_cgi(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location, std::string const & file_cgi) {
@@ -290,29 +274,34 @@ std::string Request::parsePath_dir(std::string const & originalUrlPath, std::str
 
         // Here we are matching the first directory of the URI with the locationBlockUriName + / (since it comes
         // without it from the config file)
-        if (firstDirectoryFromUrlPath == (locationBlockUriName + '/') && pathType(locationBlockRootDir + originalUrlPath) == DIRECTORY) {
-            std::cout << "Path is a directory." << std::endl << RES;
-            _data.setIsFolder(true);
-            
+        PathType type = pathType(locationBlockRootDir + originalUrlPath);
+        if (firstDirectoryFromUrlPath == (locationBlockUriName + '/')) {
             std::cout << BLU << "location block for [" << RES BLU_BG << originalUrlPath << RES;
             std::cout << BLU << "] exists on config file as [" << RES BLU_BG << locationBlockUriName << RES << "]" << std::endl;
             std::cout << BLU << "Its root_directory [" << locationBlockRootDir << "] and configuration will be used" << RES << std::endl;
 
-            // If autoindex is off and no index file, return 403 Forbidden, else return folder content
-            if (pathType(locationBlockRootDir + originalUrlPath + '/' + location->getIndexFile()) != REG_FILE) {
-                _data.setAutoIndex(location->getAutoIndex());
-                if (not location->getAutoIndex()) {
-                    std::cout << GRY << "Auto index is off and no index file found on the location [";
-                    std::cout << locationBlockRootDir + originalUrlPath << "]. Returning 403 Forbidden" << RES << std::endl;
-                    setHttpStatus(FORBIDDEN);
+            if (location->getRedirection().empty() && (type == DIRECTORY || type == NO_PERMISSION_DIR)) {
+                std::cout << "Path is a directory." << std::endl << RES;
+                _data.setIsFolder(true);
+
+                // If autoindex is off and no index file, return 403 Forbidden, else return folder content
+                if (pathType(locationBlockRootDir + originalUrlPath + '/' + location->getIndexFile()) != REG_FILE) {
+                    _data.setAutoIndex(location->getAutoIndex());
+                    if (not location->getAutoIndex()) {
+                        std::cout << GRY << "Auto index is off and no index file found on the location [";
+                        std::cout << locationBlockRootDir + originalUrlPath << "]. Returning 403 Forbidden" << RES
+                                  << std::endl;
+                        setHttpStatus(FORBIDDEN);
+                    } else {
+                        std::cout << GRY << "Auto index is on and no index file found on the location [";
+                        std::cout << locationBlockRootDir + originalUrlPath << "]. Folder content will be served" << RES
+                                  << std::endl;
+                    }
                 } else {
-                    std::cout << GRY << "Auto index is on and no index file found on the location [";
-                    std::cout << locationBlockRootDir + originalUrlPath << "]. Folder content will be served" << RES << std::endl;
+                    _data.setFileExtension(location->getIndexFile());
                 }
-            } else {
-                _data.setFileExtension(getExtension(location->getIndexFile()));
             }
-            return locationBlockRootDir + originalUrlPath + '/' + location->getIndexFile();
+            return locationBlockRootDir + originalUrlPath + location->getIndexFile();
         } else {
             std::cout << locationBlockRootDir + originalUrlPath << " is NOT a directory"<< std::endl;
         }
@@ -382,8 +371,9 @@ std::string Request::parsePath_regularCase(std::string const & originalUrlPath, 
             std::cout << RED << "scriptFile (if it is a script): " << scriptFile << RES << std::endl << RES;
             std::cout << RED << "path to be searched: " << locationBlockRootDir + (scriptFile == "" ? originalUrlPath : scriptFile) << RES << std::endl << RES;
 
-            if (pathType(locationBlockRootDir + (scriptFile == "" ? originalUrlPath : scriptFile)) == REG_FILE) {
-                _data.setFileExtension(getExtension(originalUrlPath));
+            PathType type = pathType(locationBlockRootDir + (scriptFile == "" ? originalUrlPath : scriptFile));
+            if (type == REG_FILE || type == NO_PERMISSION_FILE) {
+                _data.setFileExtension(originalUrlPath);
                 std::string URLPath_full_file = parsePath_file(originalUrlPath, location);
                 if (not URLPath_full_file.empty()) {
                     return URLPath_full_file;
@@ -394,8 +384,9 @@ std::string Request::parsePath_regularCase(std::string const & originalUrlPath, 
         std::string::size_type firstQuestionMark = originalUrlPath.find_first_of('?');
         if (firstQuestionMark != std::string::npos) {
             std::string fileCgi = originalUrlPath.substr(lastSlash,  firstQuestionMark - lastSlash);
-            _data.setFileExtension(getExtension(originalUrlPath));
-            if (not fileCgi.empty() && pathType(locationBlockRootDir + fileCgi) == REG_FILE) {
+            _data.setFileExtension(originalUrlPath);
+            PathType type = pathType(locationBlockRootDir + fileCgi);
+            if (not fileCgi.empty() && (type == REG_FILE || type == NO_PERMISSION_FILE)) {
                 std::string URLPath_full_cgi = parsePath_cgi(originalUrlPath, location, fileCgi);
                 if (not URLPath_full_cgi.empty()) {
                     return URLPath_full_cgi;
@@ -403,7 +394,7 @@ std::string Request::parsePath_regularCase(std::string const & originalUrlPath, 
             }
         }
         // -------------------------------------------------------------------------------------------------- DIRECTORY
-        //if (originalUrlPath.at(originalUrlPath.size() - 1) == '/') {
+        if (originalUrlPath.at(originalUrlPath.size() - 1) == '/') {
             std::string firstDirectoryFromUrlPath;
             if (lastSlash > 0) {
                 // If lastSlash is not zero, then we are dealing with subdirectories (i.e.: /dir/dir1/ex/), which means
@@ -418,7 +409,7 @@ std::string Request::parsePath_regularCase(std::string const & originalUrlPath, 
             if (not URLPath_full_dir.empty()) {
                 return URLPath_full_dir;
             }
-        //}
+        }
     }
     return std::string();
 }
@@ -446,7 +437,7 @@ std::string Request::parsePath_root(std::string const & originalUrlPath, std::ve
                 setHttpStatus(FORBIDDEN);
             }
         } else {
-            _data.setFileExtension(getExtension(location->getIndexFile()));
+            _data.setFileExtension(location->getIndexFile());
         }
         return locationBlockRootDir + locationBlockUriName + location->getIndexFile();
     }
@@ -504,7 +495,8 @@ std::string Request::parsePath_locationMatch(std::string const & originalUrlPath
         }
         if (not URLPath_full.empty() || getHttpStatus() == FORBIDDEN) {
 			if (not location->getLocationCookie().empty()) {
-                _data.setRequestCookie(location->getLocationCookie());
+                _data.setRequestSetCookie(location->getLocationCookie());
+                // std::cout << "Cookies from the location: " << location->getLocationSetCookie() << std::endl;
                 std::cout << "Cookies from the location: " << location->getLocationCookie() << std::endl;
             }
             std::cout << "Method from the request: " << allowMethodsToString(_data.getRequestMethod()) << std::endl;
@@ -512,10 +504,6 @@ std::string Request::parsePath_locationMatch(std::string const & originalUrlPath
             checkRedirection(location->getRedirection());
             break;
         }
-        // if (not location->getRedirection().empty()) {
-        //     //checkRedirection(location->getRedirection());
-        //     break;
-        // }
 
         std::cout << YEL << "The url path [" << originalUrlPath << "] did not match the current location block [";
         std::cout << locationBlockUriName << "] from the config file. ";
@@ -543,7 +531,7 @@ void Request::checkIfPathCanBeServed(std::string  const & originalUrlPath) {
             if (originalUrlPath.find("/_") != std::string::npos) {
                 std::cout << YEL << "Internal directory requested, it will be served but no need to search for its "
                                     "location on the config file" << RES << std::endl << std::endl;
-                _data.setFileExtension(getExtension(originalUrlPath));
+                _data.setFileExtension(originalUrlPath);
                 URLPath_full = serverBlockDir + originalUrlPath;
             } else {
                 std::cout << RED << "As the UrlPath did not match any location block, ";
@@ -556,7 +544,7 @@ void Request::checkIfPathCanBeServed(std::string  const & originalUrlPath) {
             }
         }
         _data.setResponseContentType(_data.getFileExtension());
-        storeURLPathParts(originalUrlPath, URLPath_full);// TODO: do that only if _data.getRequestMethod() != POST ?????
+        storeURLPathParts(originalUrlPath, URLPath_full);
 
         printPathParts(_data);
         if (getHttpStatus() == NO_STATUS) {

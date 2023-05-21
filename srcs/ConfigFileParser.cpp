@@ -167,7 +167,7 @@ void ConfigFileParser::parseFileLocationBlock(std::ifstream & configFile, Server
             /* If the index file specified in the server block has a different name than the index file specified
              * in the location block, both files will be used for requests that match that location */
             else if (_server_location.getIndexFile() != _server_data.getIndexFile()) {
-                _server_location.useServerBlockIndexFile = true;// todo delete? not needed since the response class will search on server block anyway if it does not find the index file on the location block
+                _server_location.useServerBlockIndexFile = true;
             }
             continue;
         }

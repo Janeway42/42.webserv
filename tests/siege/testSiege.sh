@@ -8,32 +8,34 @@ YEL='\033[33m'
 BLU='\033[34m'
 RES='\033[0m'
 
-mkdir outputFiles
+
+if  ! command -v siege &> /dev/null ; then
+  echo -e  "$RED\n siege is not installed $RES \n" 1>&2
+  exit 1
+fi
+
+mkdir -p outputFiles
 rm -f ./outputFiles/webservOutput.txt
 outputOut="./outputFiles/stdOut.txt"
 outputErr="./outputFiles/stdErr.txt"
-portNr="8080"
-NrSeconds=5
+# portNr="8080"
+portNr="4141"
+NrSeconds=60
 TIME="-t${NrSeconds}s"
 
-rm $outputOut
-rm $outputErr
+rm -f $outputOut
+rm -f $outputErr
 
 echo -e  "$GRE\n ~ ~ ~ TEST SIEGE ~ ~ ~ $RES \n" 1>&2
 printf "$GRE Start the Webserv  $RES \n" 1>&2
 
 # Run WebServ
 rm -f ./tests/siege/outputFiles/webservOutput.txt
-cd ../../ ;  ./webserv >> ./tests/siege/outputFiles/webservOutput.txt & 
+cd ../../ ;  ./webserv standard_complete_simple.conf >> ./tests/siege/outputFiles/webservOutput.txt & 
 # cd ../../ ;  ./webserv >> /dev/null & 
 cd tests/siege/
 sleep 2     # Wait that the Webserver starts
 
-
-
-
-
-# !!! It does not work with -p flag: -p 8080 
 
 printf "$GRE Testing Siege: $GRY http://localhost:$portNr/index.html $RES \n" 1>&2
 
@@ -51,25 +53,25 @@ function countdown {
 }
 
 
-echo -e "$BLU   TEST: 1 user, $TIME seconds $RES" 1>&2
-countdown &
-siege -b -c1 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
+# echo -e "$BLU   TEST: 1 user, $TIME seconds $RES" 1>&2
+# countdown &
+# siege -b -c1 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
 
-echo -e "$BLU   TEST: 20 users, $TIME seconds $RES" 1>&2
-countdown &
-siege -b -c20 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
+# echo -e "$BLU   TEST: 20 users, $TIME seconds $RES" 1>&2
+# countdown &
+# siege -b -c20 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
 
 echo -e "$BLU   TEST: 50 users, $TIME seconds $RES" 1>&2
 countdown &
 siege -b -c50 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
 
-echo -e "$BLU   TEST: 100 users, $TIME seconds $RES" 1>&2
-countdown &
-siege -b -c100 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
+# echo -e "$BLU   TEST: 100 users, $TIME seconds $RES" 1>&2
+# countdown &
+# siege -b -c100 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
 
-echo -e "$BLU   TEST: 150 users, $TIME seconds $RES" 1>&2
-countdown &
-siege -b -c150 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
+# echo -e "$BLU   TEST: 150 users, $TIME seconds $RES" 1>&2
+# countdown &
+# siege -b -c150 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
 
 # echo -e "$BLU   TEST: 200 users, $TIME seconds $RES" 1>&2
 # siege -b -c200 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr

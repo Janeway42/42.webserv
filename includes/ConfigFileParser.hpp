@@ -23,7 +23,7 @@ class ConfigFileParser : public Parser {
     public:
         ConfigFileParser(std::string const & configFileName);
         /* explicit keyword is here so the compiler won't do implicit conversions, which means implicitly calling this
-         * constructor anytime a string is given to this type (e.g.: ConfigFileParser obj; obj = std::string("Test");) todo check this*/
+         * constructor anytime a string is given to this type (e.g.: ConfigFileParser obj; obj = std::string("Test");)*/
         virtual ~ConfigFileParser();
 
         /* As more than 1 server block can be added (with one or more location blocks inside) */

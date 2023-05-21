@@ -15,9 +15,10 @@ class RequestData {
 		AllowMethods			_reqMethod;
 		std::string				_reqHttpPath;
 		std::string				_reqHttpVersion;
+		std::string				_reqSetCookie;
 		std::string				_reqCookie;
 
-		ssize_t					_reqHeaderBytesSoFar;		// added jaka, maybe needed for TESTER42 /r/n/r/n
+		ssize_t					_reqHeaderBytesSoFar;
 
 		std::string 			_reqHeader;
 		std::vector<uint8_t>	_reqBody;
@@ -58,7 +59,7 @@ class RequestData {
 		const std::string	getHttpPath() const;
 		const std::string	getHttpVersion() const;
 		const std::string	getHeader() const;
-		ssize_t				getReqHeaderBytesSoFar();	// added jaka, maybe needed for TESTER42
+		ssize_t				getReqHeaderBytesSoFar();
 
 		const std::string	getTemp() const;
 		ssize_t				getClientBytesSoFar() const;
@@ -71,6 +72,7 @@ class RequestData {
 		const std::string	getRequestContentType() const;
 		const std::string	getResponseContentType() const;
 		ssize_t				getRequestContentLength() const;
+		const std::string	getRequestSetCookie() const;
 		const std::string	getRequestCookie() const;
 
 		const std::string 	getURLPath()const;
@@ -93,6 +95,7 @@ class RequestData {
 		void	setRequestMethod(AllowMethods reqMethod);
 		void	setRequestPath(std::string reqPath);
 		void	setHttpVersion(std::string reqHttpVersion);
+		void	setRequestSetCookie(std::string reqSetCookie);
 		void	setRequestCookie(std::string reqCookie);
 		void	setHeader(std::string str);
 		void	setBody(std::vector<uint8_t> & str);

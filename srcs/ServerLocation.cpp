@@ -101,7 +101,7 @@ void ServerLocation::setLocation(std::string const & location) {
         }
         if (isLocationCgi()) {
             if (location[0] == '.') {
-                _location_cgi_extension = locationName;// todo maybe not needed
+                _location_cgi_extension = locationName;
                 _location_uri_name = locationName;
                 return ;
             } else {

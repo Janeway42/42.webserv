@@ -15,10 +15,10 @@
 /** Default constructor */
 ServerData::ServerData()
 	/** Initializing default values for the server block */
-	: _server_name(""),//127.0.0.1
+	: _server_name("localhost"),
 	_host("0.0.0.0"),
-	_listens_to(""),
-	_root_directory(_server_name),
+	_listens_to("8080"),
+	_root_directory("./standard_server"),
 	_index_file("index.html"),
 	_client_max_body_size(1024),
 	_error_page(std::vector<std::string>()),
@@ -229,7 +229,7 @@ void ServerData::setListensTo(std::string const & port) {
 
 void ServerData::setRootDirectory(std::string const & rootDirectory) {
 	/* not mandatory | default: ./$server_name */
-	if (not rootDirectory.empty() && rootDirectory != "/" && rootDirectory != "./") {
+    if (not rootDirectory.empty() && rootDirectory != "/" && rootDirectory != "./") {
 		PathType type = pathType(rootDirectory);
 		if (type == DIRECTORY) {
 			_root_directory = addCurrentDirPath(rootDirectory) + rootDirectory;
@@ -313,57 +313,9 @@ void ServerData::setUploadDirectory(const std::string &uploadDirectory) {
     }
 }
 
-// void ServerData::setListeningSocket() {
-// 	struct addrinfo *addr = NULL;
-// 	struct addrinfo hints = addrinfo();
-
-// 	hints.ai_family = PF_UNSPEC;
-// 	hints.ai_flags = AI_PASSIVE;
-// 	hints.ai_socktype = SOCK_STREAM;
-// 	hints.ai_protocol = 0;
-
-// 	// std::cout  << "IP ADDRESS: " << _server_name << std::endl;
-// 	// std::cout  << "PORT: " << _listens_to << std::endl;
-// 	// hostname: is either a valid host name or a numeric host address string consisting of a dotted decimal IPv4 address or an IPv6 address.
-// 	// servname: is either a decimal port number or a service name listed in services(5).
-
-// 	// CHANGED:	This was causing the Siege error.
-// 	// 			Apparently Siege wants the IP address, not ServerName 'localhost'
-// 	//			Now Siege works.
-// 	if (getaddrinfo("0.0.0.0", _listens_to.c_str(), &hints, &_addr) != 0) {
-// 		//freeaddrinfo(_addr); no need?
-// 		throw std::runtime_error("Failed getaddrinfo");
-// 	}
-// 	std::cout << "_addr in set listening socket: " << &addr << " / addr->protocol: " << _addr->ai_protocol << std::endl;
-
-// 	// for testing memory leaks
-// 	// int out = getaddrinfo(_server_name.c_str(), _listens_to.c_str(), &hints, &_addr);
-// 	// out = 5;
-// 	// if (out != 0)
-// 	// {
-// 	// 	std::cout << "------------------- failed addr!!!!\n";
-// 	// 	throw std::runtime_error("Failed getaddrinfo");
-// 	// }
-
-// 	_listening_socket = socket(_addr->ai_family, _addr->ai_socktype, _addr->ai_protocol);
-// 	if (_listening_socket < 0)
-// 		throw std::runtime_error("Failed socket");
-// 	fcntl(_listening_socket, F_SETFL, O_NONBLOCK);
-
-// 	int socket_on = 1;
-// 	setsockopt(_listening_socket, SOL_SOCKET, SO_REUSEADDR, &socket_on, sizeof(socket_on));
-// 	if (bind(_listening_socket, _addr->ai_addr, _addr->ai_addrlen) == -1)
-// 		throw std::runtime_error("Failed bind (errno: " + std::to_string(errno) + ")");
-// 	if (listen(_listening_socket, SOMAXCONN) == -1)  // max nr of accepted connections
-// 		throw std::runtime_error("Failed listen");
-
-// 	freeaddrinfo(addr);
-// }
-
 void ServerData::setExistingListeningSocket(int fd) {
 	_listening_socket = fd;
 }
-
 
 void ServerData::setListeningSocket() {
 	struct addrinfo *addr = NULL;
@@ -373,19 +325,11 @@ void ServerData::setListeningSocket() {
 	hints.ai_flags = AI_PASSIVE;
 	hints.ai_socktype = SOCK_STREAM;
 
-	// CHANGED:	This was causing the Siege error.
-	// 			Apparently Siege wants the IP address, not ServerName 'localhost'
-	//			Now Siege works.
-    // std::string hostname = _server_name;
-    // if (_server_name_is_ip == false) {
-    //     // 0.0.0.0 it's an address used to refer to all IP addresses on the same machine
-    //     hostname = "0.0.0.0";
-    // }
+    // Apparently Siege wants the IP address, not ServerName 'localhost'.
+
 	// hostname: is either a valid host name or a numeric host address string consisting of a dotted decimal IPv4 address or an IPv6 address.
 	// servname: is either a decimal port number or a service name listed in services(5).
-	std::cout << "====================\nhost: " << _host << std::endl;
-	std::cout << "listens to: " << _listens_to << std::endl;
-
+	std::cout << "====================\n" << std::endl;
 
 	if (getaddrinfo(_host.c_str(), _listens_to.c_str(), &hints, &addr) != 0)
 	{
@@ -413,51 +357,3 @@ void ServerData::setListeningSocket() {
 	if (listen(_listening_socket, SOMAXCONN) == -1)  // max nr of accepted connections
 		throw std::runtime_error("Failed listen");
 }
-
-
-// void ServerData::setListeningSocket() {
-// 	struct addrinfo *addr = NULL;
-// 	struct addrinfo hints = addrinfo();
-
-// 	hints.ai_family = PF_UNSPEC;
-// 	hints.ai_flags = AI_PASSIVE;
-// 	hints.ai_socktype = SOCK_STREAM;
-
-// 	// CHANGED:	This was causing the Siege error.
-// 	// 			Apparently Siege wants the IP address, not ServerName 'localhost'
-// 	//			Now Siege works.
-//     std::string hostname = _server_name;
-//     if (_server_name_is_ip == false) {
-//         // 0.0.0.0 it's an address used to refer to all IP addresses on the same machine
-//         hostname = "0.0.0.0";
-//     }
-// 	// hostname: is either a valid host name or a numeric host address string consisting of a dotted decimal IPv4 address or an IPv6 address.
-// 	// servname: is either a decimal port number or a service name listed in services(5).
-// 	if (getaddrinfo(hostname.c_str(), _listens_to.c_str(), &hints, &addr) != 0)
-// 	{
-// 		freeaddrinfo(addr);
-// 		throw std::runtime_error("Failed getaddrinfo");
-// 	}
-// 	std::cout << "----------" << std::endl;
-// 	std::cout << "_addr in set listening socket: " << &addr << " / addr->protocol: " << addr->ai_protocol << std::endl;
-// 	std::cout << "hostname used on getaddrinfo: " << hostname << std::endl;
-// 	std::cout << "----------" << std::endl;
-
-// 	_listening_socket = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
-// 	if (_listening_socket < 0)
-// 		throw std::runtime_error("Failed socket");
-// 	fcntl(_listening_socket, F_SETFL, O_NONBLOCK);
-
-// 	int socket_on = 1;
-// 	setsockopt(_listening_socket, SOL_SOCKET, SO_REUSEADDR, &socket_on, sizeof(socket_on));
-// 	if (bind(_listening_socket, addr->ai_addr, addr->ai_addrlen) == -1)
-// 	{
-// 		freeaddrinfo(addr);
-// 		throw std::runtime_error("Failed bind");
-// 		// throw std::runtime_error("Failed bind (errno: " + std::to_string(errno) + ")");
-// 	}
-
-// 	freeaddrinfo(addr);
-// 	if (listen(_listening_socket, SOMAXCONN) == -1)  // max nr of accepted connections
-// 		throw std::runtime_error("Failed listen");
-// }

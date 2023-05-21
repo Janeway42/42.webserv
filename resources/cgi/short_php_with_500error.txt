@@ -1,0 +1,208 @@
+
+
+
+
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ New client connection ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+fd new client: 7
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 71
+----------------------------------------------------------------------------------------------------------------- READ
+recv ret = 527
+buffer = [GET /cgi/php_cgi_simple.php? HTTP/1.1
+Host: localhost:8080
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/113.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:8080/cgi_index.html
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: same-origin
+Sec-Fetch-User: ?1
+
+]
+recv ret before appendToRequest = 527
+Start appendToRequest(): _hasBody: 0 | _doneParsing: 0 
+data.getTemp(): []
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Start parsing ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ fd: 7
+STORED HEADER: 
+GET /cgi/php_cgi_simple.php? HTTP/1.1
+Host: localhost:8080
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/113.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:8080/cgi_index.html
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: same-origin
+Sec-Fetch-User: ?1
+REQUEST METHOD: GET
+
+__________________ _specificServer: localhost
+
+originalUrlPath:               [/cgi/php_cgi_simple.php?]
+server block root directory:   [./resources]
+
+Starting checkIfPathCanBeServed() and searching for the correct location block on the config file:
+
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [/subfolder]
+locationBlockRootDir:            [./resources/location_random_dir]
+scriptFile (if it is a script): /php_cgi_simple.php?
+path to be searched: ./resources/location_random_dir/php_cgi_simple.php?
+File extension: .php
+The url path [/cgi/php_cgi_simple.php?] did not match the current location block [/subfolder] from the config file. 
+Checking the next locationBlockUriName
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [.py]
+locationBlockRootDir:            [./resources/cgi]
+scriptFile (if it is a script): /php_cgi_simple.php?
+path to be searched: ./resources/cgi/php_cgi_simple.php?
+File extension: .php
+Deleting file name from it so the extension can be matched against the location block uri extension name. Extension: .php
+There is GET Form data
+The url path [/cgi/php_cgi_simple.php?] did not match the current location block [.py] from the config file. 
+Checking the next locationBlockUriName
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+locationBlockUriName:            [.php]
+locationBlockRootDir:            [./resources/cgi]
+scriptFile (if it is a script): /php_cgi_simple.php?
+path to be searched: ./resources/cgi/php_cgi_simple.php?
+File extension: .php
+Deleting file name from it so the extension can be matched against the location block uri extension name. Extension: .php
+There is GET Form data
+setIsCgi(true)
+cgi location block for [/cgi/php_cgi_simple.php?] exists on config file as [.php]
+Its root_directory [./resources/cgi] and configuration will be used
+Method from the request: GET
+Method allowed from the config file: GET POST DELETE 
+Location accepts the GET method, continuing...
+⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻ ⎻
+
+Start storeURLPathParts(). URLPath_full: [./resources/cgi/php_cgi_simple.php]
+queryString:                   []
+
+URL Path:        [/cgi/php_cgi_simple.php?]
+Full URI Path:   [./resources/cgi/php_cgi_simple.php]
+Path first part: [./resources/cgi/]
+Path LAST part:  [php_cgi_simple.php]
+File extension:  [.php]
+Form Data:    (not present)
+
+Start CheckIfPathExists(), URLPath_full [./resources/cgi/php_cgi_simple.php] 
+Path ./resources/cgi/php_cgi_simple.php exists
+
+HTTP status after checkIfPathCanBeServed(): 200
+Found header ending /r/n, maybe there is body
+it2: [527]
+it3: [527]
+END OF THE HEADER: [527]
+LAST OF THE /r/n/r/n: [G]
+LAST CHARACTER:       [1]
+recv ret inside appendToRequest = 527
+it2 on appendToRequest = 527
+len - it2 on appendToRequest = 0
+BsF - it2 on appendToRequest = 0
+       getClientBytesSoFar() = 0
+BEGINING OF THE BODY old one: []
+BEGINING OF THE BODY new one: []
+BEGINING OF THE BODY INDEX old one: [0]
+BEGINING OF THE BODY INDEX new one: [0]
+str: []
+len: 0
+str + len: []
+_data.getClientBytesSoFar(): 0
+:_data.getRequestContentLength(): 0
+std::string(str).size(): 0
+            strlen(str): 0
+_doneparsing == true
+There is no body
+content type: [text/html]
+HTTP STATUS: 200
+CGI STATUS: 1
+          ReadRequest: C) Done receiving the request, start CGI
+Start ChooseMethodStartCGI()
+start GET, callCGI
+Start callCGI, cgi path: ./resources/cgi/php_cgi_simple.php
+STORED ENV:
+    1 REQUEST_METHOD=GET
+    2 SERVER_PROTOCOL=HTTP/1.1
+    3 CONTENT_TYPE=
+    4 CONTENT_LENGTH=0
+    5 QUERY_STRING=
+    6 SERVER_NAME=localhost
+    7 COMSPEC=
+    8 PATH_INFO=UPLOADS
+    9 COOKIE=
+    10 UPLOAD_DIR=/Users/jmb/Desktop/projects/webserv16may/resources/UPLOADS
+Created pipes:  in[0]8,  in[1]9, out[0]10, out[1]11 
+    Start Parent
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 72
+----------------------------------------------------------------------------------------------------------------- WRITE
+write sendResponse
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CGI ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ CGI Response sent ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 73
+Start CHILD execve()
+Interpreter Path: /usr/bin/php
+----------------------------------------------------------------------------------------------------------------- READ
+EOF from ReadRequest, close the reading FD: 10
+EOF READ pipe. HTTP STATUS: 200
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 74
+----------------------------------------------------------------------------------------------------------------- WRITE
+write sendResponse
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ This event FD belongs to CLIENT ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+Start createResponse
+fd: 7
+   _responseBody: []
+Start setResponseStatus(), current status: 200
+_responsePath: [[./resources/cgi/php_cgi_simple.php]]
+_responsePath after SetResponseStatus(): ./resources/cgi/php_cgi_simple.php]
+getURLPath:      [/cgi/php_cgi_simple.php?]
+getFullPath:     [./resources/cgi/php_cgi_simple.php]
+getHttpStatus(): [200]
+response path:   [./resources/cgi/php_cgi_simple.php]
+content type:    [text/html]
+The path is a file to send to a cgi interpreter: [./resources/cgi/php_cgi_simple.php]
+Setting _responseBody
+Setting cgi _responseBody: []
+Start setResponseStatus(), current status: 500
+errorPages:
+./resources/error_pages/404.html
+-------------
+errorPages:
+./resources/error_pages/405.html
+-------------
+errorPages:
+./resources/error_pages/500.html
+-------------
+Error page on config file will be used
+CHECK IF STRING WAS EMPTY, responspath: ./resources/error_pages/500.html
+File to be streamed: ./resources/error_pages/500.html
+cookies in _data: 
+-------------
+_responseHeader:
+HTTP/1.1 500 Internal Server Error
+Content-Type: text/html
+Content-Encoding: identity
+Connection: close
+Content-Length: 265
+
+
+-------------
+SENDING CHUNK, response length before send: 396
+SEND return - sucessfully sent: 396
+ALL SENT, CLOSE CLIENT
+fd that will be closed: 7
+original request: /cgi/php_cgi_simple.php?
+⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻ Connection closed ⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻⎻
+
+----------------------------------------------------------------------------------------------------------------- WHILE LOOP 75

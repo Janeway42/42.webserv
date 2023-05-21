@@ -276,7 +276,6 @@ std::string Request::getErrorPage()
             temp = getSpecificErrorPage(_specificServer.getErrorPages(), defaultStatusPath + "HTTPVersionNotSupported.html");
             break;
         } default: {
-            // "Set-Cookie: id=123; jaka=500; Max-Age=10; HttpOnly\r\n";
             std::cout << "_httpStatus: [[" << GRN << _httpStatus << RES << "]]\n";
             break;
         }
@@ -309,30 +308,26 @@ std::string Request::getErrorPage()
                      std::cout << "----------> Form data has \"delete=\" key on it\n" << RES;
                      _data.setFormDataHasDelete(true);
                  }
-                 std::cout << "recv ret inside appendToRequest = " << len << std::endl;
-                 std::cout << "it2 on appendToRequest = " << it2 << std::endl;
-                 std::cout << "len - it2 on appendToRequest = " << len - it2 << std::endl;
-                 std::cout << "BsF - it2 on appendToRequest = " << _data.getReqHeaderBytesSoFar() - it2 << std::endl;
+//                 std::cout << "recv ret inside appendToRequest = " << len << std::endl;
+//                 std::cout << "it2 on appendToRequest = " << it2 << std::endl;
+//                 std::cout << "len - it2 on appendToRequest = " << len - it2 << std::endl;
+//                 std::cout << "BsF - it2 on appendToRequest = " << _data.getReqHeaderBytesSoFar() - it2 << std::endl;
 
-                 appendLastChunkToBody(str + it2, len - it2); // TODO THIS LINE WAS DOWN BELOW BEFORE
-             }
-             return;
-         }
-     }
-     if (_hasBody == true && _doneParsing == false) {
-         appendToBody(str, len); // changed to char*, because it needs to become a vector
-     }
- }
+                 appendLastChunkToBody(str + it2, len - it2);
+			}
+			return;
+		}
+	}
+	if (_hasBody == true && _doneParsing == false) {
+		 appendToBody(str, len); // changed to char*, because it needs to become a vector
+	}
+}
 
 // Last chunk means, last chunk of header section, so first chunk of body
-int Request::appendLastChunkToBody(const char *str, ssize_t len) {// TODO WHY THIS RETURNS ????
+int Request::appendLastChunkToBody(const char *str, ssize_t len) {
 	_data.setClientBytesSoFar(len);
-//	std::cout << RED << "str: [" << str << "]" << RES << std::endl;
-//	std::cout << RED << "len: " << len << RES << std::endl;
-//	std::cout << RED << "str + len: [" << str + len << "]" << RES << std::endl;
 
-//	std::cout << RED << "_data.getClientBytesSoFar(): " << _data.getClientBytesSoFar() << RES << std::endl;
-//	std::cout << RED << ":_data.getRequestContentLength(): " <<  _data.getRequestContentLength() << RES << std::endl;
+
 	if (_data.getClientBytesSoFar() > _data.getRequestContentLength()) {
 		std::cout << RED << "Error: Body-Length, first chunk (" << _data.getClientBytesSoFar() << ") is bigger than expected Content-Length (" << _data.getRequestContentLength() << ")\n" << RES;
         _httpStatus = BAD_REQUEST;
@@ -397,7 +392,6 @@ int Request::appendToBody(const char* str, ssize_t len) {
     }
 
 	if (_data.getClientBytesSoFar() == _data.getRequestContentLength()) {
-	//else if (_data.getClientBytesSoFar() == _data.getRequestContentLength()) {// todo joyce commentd this out
 		std::cout << GRN << "OK: Done parsing.\n" RES;
 		_doneParsing = true;
 		return (0);

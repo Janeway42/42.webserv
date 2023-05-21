@@ -15,51 +15,57 @@ std::string appendHTMLhead(std::string path, std::string & htmlStr) {
 }
 
 std::string removeLastFolderFromPath(std::string path) {
-	std::string parentPath;
+    if (path != "./" && path != "../") {
+        std::string parentPath;
 
-	size_t len = path.length() - 1;
-	for ( ; path[len] == '/' ; len--);
-	for (; path[len] != '/' ; len--);
+        size_t len = path.length() - 1;
+        for (; path[len] == '/'; len--);
+        for (; path[len] != '/'; len--);
 
-	parentPath = path.substr(0, len);
-	//std::cout << GRN << "parentPath: [" << parentPath << "]\n" << RES;
-	return (parentPath);
+
+        parentPath = path.substr(0, len + 1);
+        std::cout << GRN << "parentPath: [" << parentPath << "]\n" << RES;
+        return parentPath;
+    }
+    return std::string();
 }
 
 std::string removeRootFolderNameFromPath(std::string path) {
-	size_t positionSecondSlash = path.find("/", 2);
-	//std::cout << RED << "positionSecondSlash: [" << positionSecondSlash << "]\n" << RES;
-	std::string pathWithoutRoot = path.substr(positionSecondSlash);
-	return pathWithoutRoot;
+    if (path != "./" && path != "../") {
+        size_t positionSecondSlash = path.find("/", 2);
+//        std::cout << RED << "positionSecondSlash: [" << positionSecondSlash << "]\n" << RES;
+        std::string pathWithoutRoot = path.substr(positionSecondSlash);
+        return pathWithoutRoot;
+    }
+    return std::string();
 }
 
 std::string appendHTMLbody(std::string line, std::string path, std::string & htmlStr) {
-	int	found;
-//	 std::cout << BLU << "Line: [" << line << "]\n" << RES;
-//	 std::cout << YEL << "Path: [" << path << "]\n" << RES;
-	found = line.find_first_of(" ");
+    // std::cout << BLU << "Line: [" << line << "]\n" << RES;
+    // std::cout << BLU << "Path: [" << path << "]\n" << RES;
+	int found = line.find_first_of(" ");
 	std::string lastWord = line.substr(found + 1, std::string::npos);
-	
+
 	htmlStr.append("<li><a href='");
-	if (lastWord != ".." && lastWord != ".") {
+	if (lastWord != "../" && lastWord != "./") {
 		htmlStr.append(removeRootFolderNameFromPath(path));
 		htmlStr.append(lastWord);
 	}
-	else if (lastWord == "..") {
+	else if (lastWord == "../" && path.size() > 2) {
 		std::string temp = removeLastFolderFromPath(path);
 		size_t positionSecondSlash = path.find("/", 2);
 		std::string rootfolder = path.substr(0, positionSecondSlash);
 		if (temp == rootfolder) {
-			//std::cout << RED "NEW PATH IS NOW THE SAME AS ROOT FOLDER: [" << temp << "], rootfolder: [" << rootfolder<< "]\n" RES;
+			// std::cout << RED "NEW PATH IS NOW THE SAME AS ROOT FOLDER: [" << temp << "], rootfolder: [" << rootfolder<< "]\n" RES;
 			temp = "../";
 		}
-		//temp = removeRootFolderNameFromPath(temp);
-		//std::cout << RED "PARENT FOLDER: [" << temp << "\n" RES; 
+        temp = removeRootFolderNameFromPath(temp);
+		// std::cout << RED "PARENT FOLDER: [" << temp << "\n" RES;
 		htmlStr.append(temp);
 	}
 	htmlStr.append("'>  ");		// end < href >
-	if (lastWord == "..")
-		htmlStr.append(". .<br><br>");
+	if (lastWord == "../")
+		htmlStr.append(". ./<br>");
 	else
 		htmlStr.append(lastWord);
 	htmlStr.append("  </a></li>\n");
@@ -123,48 +129,3 @@ std::string ResponseData::storeFolderContent(const char* path) {
 	std::string htmlStr = makeHtmlString(allFolderContent, path);
 	return (htmlStr);
 }
-
-
-// OLD OLD
-// // Check if maybe fds are leaking
-// std::string ResponseData::storeFolderContentOLD(const char *path) {
-// 	std::cout << RED "start StoreFolderContent(), PATH: [" << path << "]\n" RES;
-// 	int    		fd[2];
-// 	pid_t		retFork;
-// 	std::string	incomingStr;
-
-// 	if (pipe(fd) == -1)
-// 		std::cout << "Error: Pipe failed\n";
-// 	retFork = fork();
-
-// 	if (retFork == 0) {
-// 		//std::cout << "Start CHILD LS\n";
-// 		if (retFork < 0)
-// 			std::cout << "Error: Fork failed\n";
-// 		dup2(fd[1], 1);
-// 		close(fd[0]);
-
-// 		char *arr[4] = {(char*)"/bin/ls", (char*)"-la", (char*)path, NULL};
-// 		int ret = execve(arr[0], arr, NULL);
-// 		std::cout << RED "Error: Execve failed: " << ret << "\n" RES;
-// 	}
-// 	else {
-// 		close(fd[1]);
-// 		char buff[100];
-// 		dup2(fd[0], 0);
-
-// 		for (int ret = 1; ret != 0; ) {
-// 			memset(buff, '\0', 100);
-// 			ret = read(fd[0], buff, 99);
-// 			incomingStr.append(buff);
-// 			// std::cout << YEL "Returned buffer, ret " << ret << "\n" RES;
-// 			//std::cout << CYN "[" << buff << "]\n" RES;
-// 			//std::cout << BLU "[" << incomingStr << "]\n" RES;
-// 		}
-// 	}    
-// 	// std::cout << BLU "[" << incomingStr << "]\n" RES;
-// 	std::string htmlStr = makeHtmlString(incomingStr, path);
-// 	//std::cout << "\nHTML CONTENT OF THE FOLDER: [\n" << htmlStr << "\n]\n";
-// 	return (htmlStr);
-// }
-
