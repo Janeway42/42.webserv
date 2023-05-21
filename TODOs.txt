@@ -1,10 +1,9 @@
 Take a look:
-    Typesomething wrong in al scripts cgi
-        - In the configuration, try to setup the same port multiple times. It should not work. WHAT AREWE DOING HERE? same port on different servers is working now (but not in the same) 
-        - Launch multiple servers at the same time with different configurations but with common ports.
-            Does it work? If it does, ask why the server should work if one of the configurations isn't functional. Keep going.
-        - What happens if you dont have a form on your page, but you directly write ?city=aaa in the URL?
-            It serves the location by regex it seems, 200. We are returning 404 is that ok?
+    - In the configuration, try to setup the same port multiple times. It should not work. WHAT AREWE DOING HERE? same port on different servers is working now (but not in the same)
+    - Launch multiple servers at the same time with different configurations but with common ports.
+        Does it work? If it does, ask why the server should work if one of the configurations isn't functional. Keep going.
+    - What happens if you dont have a form on your page, but you directly write ?city=aaa in the URL?
+        It serves the location by regex it seems, 200. We are returning 404 is that ok?
 ------------------------------------------------------------------------------------------------------------------------
 More important:
     CORINA:
