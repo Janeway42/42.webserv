@@ -94,7 +94,6 @@ class Request : public Parser {
         std::string parsePath_dir(std::string const & originalUrlPath, std::string const & firstDirectoryFromUrlPath, std::vector<ServerLocation>::const_iterator & location);//, std::string const & firstDirectoryFromUrlPath);
         std::string parsePath_regularCase(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);
         std::string parsePath_root(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);
-//        std::string parsePath_edgeCase(std::string const & originalUrlPath, std::vector<ServerLocation>::const_iterator & location);//todo mayne not needed?
 		void appendToRequest(const char str[], ssize_t len);
 		void storeURLPathParts(std::string const & originalUrlPath, std::string const & newUrlPath);
 		void checkIfPathExists(std::string const & path);

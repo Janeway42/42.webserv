@@ -62,7 +62,7 @@ const std::string RequestData::getHeader() const {
 	return _reqHeader;
 }
 
-ssize_t RequestData::getReqHeaderBytesSoFar() {	// added jaka, maybe needed for TESTER42
+ssize_t RequestData::getReqHeaderBytesSoFar() {
 	return _reqHeaderBytesSoFar;
 }
 
@@ -287,7 +287,6 @@ void RequestData::setRequestContentLength(std::string reqContentLength)
 
 void RequestData::setResponseContentType(std::string fileExtension)
 {
-    // todo there are no other extensions that people could try to serve??????
 	if (fileExtension == ".html")
 		_responseContentType = "text/html";
 	else if (fileExtension == ".jpg")
@@ -300,8 +299,6 @@ void RequestData::setResponseContentType(std::string fileExtension)
 		_responseContentType = "image/x-con";
 	else if (fileExtension == ".pdf")
 		_responseContentType = "application/pdf";
-//	else if (fileExtension == "")// TODO LEAVE IT LIKE THIS?? OR test/text or anythign is content type HAS to be there?
-//		_responseContentType = "";
 }
 
 void RequestData::setRequestContentType(std::string str) {
@@ -325,8 +322,24 @@ void RequestData::setPathLastPart(std::string pathLastPart) {
 	_pathLastPart = pathLastPart;
 }
 
-void RequestData::setFileExtension(std::string fileExtension) {
-	_fileExtension = fileExtension;
+void RequestData::setFileExtension(std::string path) {
+    // Ex.: localhost:8080/favicon.ico or localhost:8080/cgi/python_cgi_GET.py?street=test&city=test+city or localhost:8080/index.html
+    std::string urlPath = path;
+    std::string extension = std::string();
+
+    std::string::size_type hasQuery = path.find_first_of('?');
+    if (hasQuery != std::string::npos) {
+        urlPath = path.substr(0, hasQuery);
+    }
+
+    std::string::size_type hasExtension = urlPath.find_last_of(".");
+    if (hasExtension != std::string::npos) {
+        extension = urlPath.substr(hasExtension);
+        std::cout << BLU << "File extension: "  << extension << RES << std::endl;
+    } else {
+        std::cout  << "There is no extension in the file" << std::endl;
+    }
+	_fileExtension = extension;
 }
 
 void RequestData::setIsFolder(bool b) {
@@ -364,6 +377,6 @@ void RequestData::setRequestSetCookie(std::string reqSetCookie){
 void RequestData::setRequestCookie(std::string reqCookie){
 	_reqCookie = reqCookie;
 }
-void RequestData::setReqHeaderBytesSoFar(ssize_t nrBytes) {	// added jaka, maybe needed for TESTER42
+void RequestData::setReqHeaderBytesSoFar(ssize_t nrBytes) {
 	_reqHeaderBytesSoFar += nrBytes;
 }

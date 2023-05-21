@@ -8,6 +8,12 @@ YEL='\033[33m'
 BLU='\033[34m'
 RES='\033[0m'
 
+
+if  ! command -v siege &> /dev/null ; then
+  echo -e  "$RED\n siege is not installed $RES \n" 1>&2
+  exit 1
+fi
+
 mkdir outputFiles
 rm -f ./outputFiles/webservOutput.txt
 outputOut="./outputFiles/stdOut.txt"
@@ -28,9 +34,6 @@ cd ../../ ;  ./webserv >> ./tests/siege/outputFiles/webservOutput.txt &
 # cd ../../ ;  ./webserv >> /dev/null & 
 cd tests/siege/
 sleep 2     # Wait that the Webserver starts
-
-
-
 
 
 # !!! It does not work with -p flag: -p 8080 

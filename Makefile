@@ -127,7 +127,6 @@ clean:
 
 fclean: clean
 	rm -f $(NAME)
-#	added jaka:
 	@rm -rf ./tests/curlNginxOutput ./tests/curlWebservOutput ./tests/siege/outputFiles ./tests/error.log
 	chmod 744 ./resources/folder_noPerm ./resources/UPLOADS/noPerm.jpg
 	mv	./resources/UPLOADS/noPerm.jpg	./resources/UPLOADS/some_image.jpg

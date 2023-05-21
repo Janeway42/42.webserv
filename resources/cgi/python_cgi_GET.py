@@ -1,14 +1,5 @@
 #!/usr/bin/python
 
-######################################## nginx
-# import threading
-# sys.modules['_dummy_thread'] = threading
-# sys.stderr.write(str(sys.path) + '\n')
-# sys.path.append('/Users/jmurovec/.brew/lib/python3.11/site-packages')
-# from flup.server.fcgi import WSGIServer
-# added jaka: nginx is complaining about unsopported version of fastcgi
-######################################## nginx
-
 import sys
 import time
 import cgi, cgitb
@@ -40,15 +31,11 @@ for param in os.environ.keys():
     #else:
     #    URL="DEFAULT=default"
 
-
-
-# from urllib.parse import urlparse, parse_qs # why is this not good ??
 # from urlparse import urlparse, parse_qs        # in python2
 from urllib.parse import urlparse, parse_qs     # in python3
 
 parsed_result = urlparse(URL)
 parse_qs(parsed_result.query)
-
 
 print ("<p>PARSED RESULT: <span style='background-color:lavender; padding:1%;'>")
 print (parsed_result)

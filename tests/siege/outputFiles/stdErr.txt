@@ -1,5 +1,0 @@
-./testSiege.sh: line 56: siege: command not found
-./testSiege.sh: line 60: siege: command not found
-./testSiege.sh: line 64: siege: command not found
-./testSiege.sh: line 68: siege: command not found
-./testSiege.sh: line 72: siege: command not found

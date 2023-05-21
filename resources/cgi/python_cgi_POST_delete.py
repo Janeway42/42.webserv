@@ -22,8 +22,6 @@ form = cgi.FieldStorage()
 
 # Define the path to the folder you want to list
 rootFolder = os.getcwd()
-#pathToUploads = rootFolder + '/resources/uploads/'  # TODO this path has to come from the config file??? (look pdF)
-# uploadDir_AbsPath = '../uploads/'  # TODO this path has to come from the config file??? (look pdF)
 
 for param in os.environ.keys():
     # print("<b>%30s</b>: %s</br>") % (param, os.environ[param])
@@ -78,7 +76,6 @@ html_template = """
 # <input type="hidden" name="delete" value="{}">
 # Define the item HTML template
 
-# TODO The uploads folder must come from config file
 item_template = """
 <form action="python_cgi_POST_delete.py" method="post">
 	<mark><b>{}</b></mark>
@@ -91,11 +88,6 @@ item_template = """
 </form>
 <br>
 """
-
-# # Check if a delete request has been made // (joyce comment for jaka) I have moved it to the python_cgi_POST_delete.py
-# form = cgi.FieldStorage()
-# if "delete" in form:
-#     os.remove(os.path.join(folder_path, form["delete"].value))
 
 # Generate the item HTML
 items_html = ""
