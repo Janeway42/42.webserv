@@ -1,7 +1,7 @@
 # **Webserv**
 Writing your own HTTP server
 
-<img src="https://github.com/Janeway42/webserv/blob/main/webserv-arch.png" width=800 >
+<img src="https://github.com/Janeway42/webserv/blob/main/webserver-arch.png" width=800 >
 
 Useful info:
 --------
