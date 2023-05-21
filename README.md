@@ -1,6 +1,8 @@
 # **Webserv**
 Writing your own HTTP server
 
+<img src="https://github.com/joycemacksuele/joycemacksuele/blob/main/pic_srcs/holygraph42.png" width=400 >
+
 Useful info:
 --------
 - [HTTP (Hypertext Transfer Protocol) ](https://www.techtarget.com/whatis/definition/HTTP-Hypertext-Transfer-Protocol)
