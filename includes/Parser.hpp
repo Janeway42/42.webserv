@@ -93,6 +93,8 @@ enum PathType {
     REG_FILE,
     SYM_LINK,
     OTHER_PATH_TYPE,
+    NO_PERMISSION_FILE,
+    NO_PERMISSION_DIR,
     PATH_TYPE_ERROR
 };
 
@@ -113,23 +115,6 @@ inline const std::string allowMethodsToString(AllowMethods methods) {
     }
 }
 
-enum DataType {// todo: Maybe not used
-    STRING = 0,
-    PORT,
-    IP_ADDRESS,
-    ABSOLUTE_PATH,
-    RELATIVE_PATH,
-    ABSOLUTE_PATH_HTML,
-    RELATIVE_PATH_HTML,
-    BYTES,
-    HTTP_METHOD,
-    BOOL,
-    EXTENSION,
-    HTTP_VERSION,
-    HOST,
-    BODY
-};
-
 /** Parsing error Macros */
 #define NOT_SUPPORTED 0
 #define MANDATORY 1
@@ -139,12 +124,9 @@ enum DataType {// todo: Maybe not used
                                                 : (RES key RED" is missing"))
 
 class Parser {
-    private:
-//        Parser() {};
     public:
         virtual std::string keyParser(std::string & lineContent, std::string const & keyToFind);
         virtual std::string getOneCleanValueFromKey(std::string & contentLine, std::string const & key);
-        virtual DataType getValueType(std::string & lineContent);
         virtual PathType pathType(std::string const & path);
         virtual std::string addCurrentDirPath(std::string const & fileOrDir) const;
         virtual std::string addRootDirectoryPath(std::string const & rootDirectory, std::string const & possiblePath);

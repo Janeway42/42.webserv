@@ -31,34 +31,39 @@ std::string Parser::getOneCleanValueFromKey(std::string & contentLine, std::stri
     return std::string();
 }
 
-
+/*
+ * #define S_IRUSR 0000400  read permission, owner
+ * #define S_IWUSR 0000200  write permission, owner
+ * #define S_IXUSR 0000100  execute/search permission, owner
+ */
 /* define if path is file(1), folder(2) or something else(3) */
 PathType Parser::pathType(std::string const & path) {
     struct stat	buffer = {};
 
-    DIR* dir = opendir(path.c_str());// could also use the std::ifstream and then use the .is_open()
+    DIR* dir = opendir(path.c_str());
     if (stat(path.c_str(), &buffer) == 0) {
         if (buffer.st_mode & S_IFREG) {
-            if (buffer.st_mode & S_IRUSR) // added jaka
+            if (buffer.st_mode & S_IRUSR) {
                 return (REG_FILE);
-            std::cout << RED "Error: This file has no READ permission\n" RES;
-            return (PATH_TYPE_ERROR); // added jaka, todo: if no permission, code should be 403 Forbidden
+            } else if (not (buffer.st_mode & S_IRUSR)) {
+                std::cout << RED "Error: This file has no READ permission\n" RES;
+                return (NO_PERMISSION_FILE);
+            }
         } else if (buffer.st_mode & S_IFDIR || dir != NULL) {
             /* The & operator computes the logical AND of its operands. The result of x & y is true if
              * both x and y evaluate to true. Otherwise, the result is false */
-            if (buffer.st_mode & S_IRUSR) { // added jaka
+            if (buffer.st_mode & S_IRUSR) {
                 (void)closedir(dir);
                 return (DIRECTORY);
+            } else if (not (buffer.st_mode & S_IRUSR)) {
+                std::cout << RED "Error: This folder has no READ permission\n" RES;
+                return (NO_PERMISSION_DIR);
             }
-            std::cout << RED "Error: This folder has no READ permission\n" RES;
-            return (PATH_TYPE_ERROR); // added jaka, todo: if no permission, code should be 403 Forbidden
         } else
             return (OTHER_PATH_TYPE);
     }
     return (PATH_TYPE_ERROR);
 }
-
-
 
 std::string Parser::addCurrentDirPath(std::string const & fileOrDir) const {
     if (fileOrDir.at(0) != '.') {
@@ -88,51 +93,3 @@ std::string Parser::addRootDirectoryPath(std::string const & rootDirectory, std:
 bool Parser::isSpace(char ch) {
     return std::isspace(static_cast<unsigned char>(ch));
 }
-
-//std::string Parser::removeSpaces(std::string content) {
-//    while (!content.empty()) {
-//        content.erase(std::find(content.begin(), content.end(), ' '));
-//    }
-//    return content;
-//}
-
-DataType Parser::getValueType(std::string & lineContent) {// Todo: Maybe not needed
-	if (lineContent.find("server_name") != std::string::npos) {
-		return STRING;
-	} else if (lineContent.find("listens_to") != std::string::npos) {
-		return PORT;
-	} else if (lineContent.find("root_directory") != std::string::npos) {
-		std::string value = getOneCleanValueFromKey(lineContent, "root_directory");
-		if (value[0] == '/') {
-			return ABSOLUTE_PATH;
-		} else {
-			/* Will be set to ./$server_name */
-			return RELATIVE_PATH;
-		}
-	} else if (lineContent.find("index_file") != std::string::npos) {
-		if (lineContent.find(".html") != std::string::npos) {
-			return RELATIVE_PATH_HTML;
-		}
-	} else if (lineContent.find("client_max_body_size") != std::string::npos) {
-		return BYTES;
-	} else if (lineContent.find("error_page") != std::string::npos) {
-		std::string value = getOneCleanValueFromKey(lineContent, "error_page");
-		if (value[0] == '/') {
-			return ABSOLUTE_PATH_HTML;
-		} else {
-			/* Will be set to ./$server_name */
-			return RELATIVE_PATH_HTML;
-		}
-	} else if (lineContent.find("redirection") != std::string::npos) {
-		return PORT;
-	} else if (lineContent.find("location") != std::string::npos) {
-		return RELATIVE_PATH;
-	} else if (lineContent.find("allow_methods") != std::string::npos) {
-		return HTTP_METHOD;
-	} else if (lineContent.find("auto_index") != std::string::npos) {
-		return BOOL;
-	}
-	return STRING;
-	// todo: add cgi location?
-}
-

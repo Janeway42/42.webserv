@@ -16,17 +16,18 @@
 
 #define MAX_EVENTS 100
 #define BUFFER_SIZE 4000
+#define TIMEOUT 30
 
 static bool signalCall;
 
 class WebServer
 {
 	private:
+        WebServer() {};
 		int _kq;
         std::vector<ServerData> _servers;
 
 	public:
-        // todo add a default constructor? -> maybe private so no one can call it
         WebServer(std::string const & configFileName);
 		~WebServer(void);
 
@@ -45,20 +46,10 @@ class WebServer
 		
 		// utils 
 		bool isListeningSocket(int fd);
-		ServerData * getSpecificServer(int fd);
-		int		checkExistingSocket(int location, std::string port, std::string host);
-
-		void	chooseMethod_StartCGI(struct kevent event, Request* storage); 	// added Jaka
-
-
+		ServerData* getSpecificServer(int fd);
+		int checkExistingSocket(int location, std::string port, std::string host);
+		void chooseMethod_StartCGI(struct kevent event, Request* storage);
 		void sendProcesssedResponse(struct kevent& event);
-		// std::string streamFile(std::string file);
-		//void sendResponseFile(struct kevent& event, std::string file);
-		//void sendImmage(struct kevent& event, std::string imgFileName);
-		// int closeClient(struct kevent event, int filter);
-
-		// getters
-		// int getKq();  // not actually used anywhere 
 
         class ServerException: public std::exception
         {

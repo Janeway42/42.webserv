@@ -34,7 +34,6 @@ class ResponseData: public Parser
         // Methods
         void			createResponse(struct kevent& event);
         void    		setResponseStatus(struct kevent& event);
-        // void			createResponseHeader(HttpStatus status, std::string const & redirectionUrl);
 		void			createResponseHeader(struct kevent& event);
         std::string		streamFile(std::string file);
         std::string 	setImage(std::string imagePath);
@@ -58,19 +57,6 @@ class ResponseData: public Parser
 		void			setResponseDone(bool val);
 		void			setBytesToClient(ssize_t val);
 		void			setResponseFull(std::string response);
-
-		// NOT USED - to be cleaned out
-		// ***************************************************************************
-		// added jaka
-		//size_t		getCurrentLength(); // jaka
-		//void 			setCurrentLength(size_t len);
-		// ***************************************************************************
-		// -------------------------------------------------------------
-		// bool 			_errorOverride;
-		// bool			getOverride();
-		// void		setOverride(bool val);
-		// void		overrideFullResponse();			// jaka: maybe will not be used
-		// void		adjustFullResponse(ssize_t ret);
 };
 
 #endif

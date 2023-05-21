@@ -21,8 +21,8 @@ std::string removeLastFolderFromPath(std::string path) {
 	for ( ; path[len] == '/' ; len--);
 	for (; path[len] != '/' ; len--);
 
-	parentPath = path.substr(0, len);
-	//std::cout << GRN << "parentPath: [" << parentPath << "]\n" << RES;
+	parentPath = path.substr(0, len + 1);
+	std::cout << GRN << "parentPath: [" << parentPath << "]\n" << RES;
 	return (parentPath);
 }
 
@@ -34,32 +34,31 @@ std::string removeRootFolderNameFromPath(std::string path) {
 }
 
 std::string appendHTMLbody(std::string line, std::string path, std::string & htmlStr) {
-	int	found;
-//	 std::cout << BLU << "Line: [" << line << "]\n" << RES;
-//	 std::cout << YEL << "Path: [" << path << "]\n" << RES;
-	found = line.find_first_of(" ");
+//    std::cout << BLU << "Line: [" << line << "]\n" << RES;
+//    std::cout << YEL << "Path: [" << path << "]\n" << RES;
+	int found = line.find_first_of(" ");
 	std::string lastWord = line.substr(found + 1, std::string::npos);
-	
+
 	htmlStr.append("<li><a href='");
-	if (lastWord != ".." && lastWord != ".") {
+	if (lastWord != "../" && lastWord != "./") {
 		htmlStr.append(removeRootFolderNameFromPath(path));
 		htmlStr.append(lastWord);
 	}
-	else if (lastWord == "..") {
+	else if (lastWord == "../") {
 		std::string temp = removeLastFolderFromPath(path);
 		size_t positionSecondSlash = path.find("/", 2);
 		std::string rootfolder = path.substr(0, positionSecondSlash);
 		if (temp == rootfolder) {
-			//std::cout << RED "NEW PATH IS NOW THE SAME AS ROOT FOLDER: [" << temp << "], rootfolder: [" << rootfolder<< "]\n" RES;
+//			std::cout << RED "NEW PATH IS NOW THE SAME AS ROOT FOLDER: [" << temp << "], rootfolder: [" << rootfolder<< "]\n" RES;
 			temp = "../";
 		}
-		//temp = removeRootFolderNameFromPath(temp);
-		//std::cout << RED "PARENT FOLDER: [" << temp << "\n" RES; 
+        temp = removeRootFolderNameFromPath(temp);
+//		std::cout << RED "PARENT FOLDER: [" << temp << "\n" RES;
 		htmlStr.append(temp);
 	}
 	htmlStr.append("'>  ");		// end < href >
-	if (lastWord == "..")
-		htmlStr.append(". .<br><br>");
+	if (lastWord == "../")
+		htmlStr.append(". ./<br>");
 	else
 		htmlStr.append(lastWord);
 	htmlStr.append("  </a></li>\n");

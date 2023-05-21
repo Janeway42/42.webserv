@@ -48,9 +48,7 @@ if fileItem.filename:
 	fn = os.path.basename(fileItem.filename)
 	try:
 		parent_dir = os.getcwd()
-	#	with open(parent_dir + '/resources/uploads/' + fn, 'wb') as f:  # TODO this path has to come from the config file??? (look pdF)
-		# with open('../uploads/' + fn, 'wb') as f:  # TODO this path has to come from the config file??? (look pdF)
-		with open(uploadDir_AbsPath + "/" + fn, 'wb') as f:  # TODO this path has to come from the config file??? (look pdF)
+		with open(uploadDir_AbsPath + "/" + fn, 'wb') as f:
 			f.write(fileItem.file.read())
 			message = 'The file ' + fn + ' was uploaded successfully'
 	except IOError as e:
@@ -58,10 +56,6 @@ if fileItem.filename:
 		sys.stderr.write('Error uploading file: ' + str(e))
 		print(message)
 		exit ()
-
-# Define the path to the folder you want to list
-# folder_path = parent_dir + '/resources/uploads/'  # TODO this path has to come from the config file??? (look pdF)
-# folder_path = '../uploads/'  # TODO this path has to come from the config file??? (look pdF)
 
 # Define the HTML template
 html_template = """
@@ -99,7 +93,6 @@ html_template = """
 # <input type="hidden" name="delete" value="{}">
 # Define the item HTML template
 
-# TODO The uploads folder must come from config file
 item_template = """
 <form action="python_cgi_POST_delete.py" method="post">
 	<mark><b>{}</b></mark>
@@ -112,11 +105,6 @@ item_template = """
 </form>
 <br>
 """
-
-# # Check if a delete request has been made // (joyce comment for jaka) I have moved it to the python_cgi_POST_delete.py
-# form = cgi.FieldStorage()
-# if "delete" in form:
-#     os.remove(os.path.join(folder_path, form["delete"].value))
 
 # Generate the item HTML
 items_html = ""
