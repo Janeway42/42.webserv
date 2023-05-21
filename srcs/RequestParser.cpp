@@ -308,10 +308,10 @@ std::string Request::getErrorPage()
                      std::cout << "----------> Form data has \"delete=\" key on it\n" << RES;
                      _data.setFormDataHasDelete(true);
                  }
-                 std::cout << "recv ret inside appendToRequest = " << len << std::endl;
-                 std::cout << "it2 on appendToRequest = " << it2 << std::endl;
-                 std::cout << "len - it2 on appendToRequest = " << len - it2 << std::endl;
-                 std::cout << "BsF - it2 on appendToRequest = " << _data.getReqHeaderBytesSoFar() - it2 << std::endl;
+//                 std::cout << "recv ret inside appendToRequest = " << len << std::endl;
+//                 std::cout << "it2 on appendToRequest = " << it2 << std::endl;
+//                 std::cout << "len - it2 on appendToRequest = " << len - it2 << std::endl;
+//                 std::cout << "BsF - it2 on appendToRequest = " << _data.getReqHeaderBytesSoFar() - it2 << std::endl;
 
                  appendLastChunkToBody(str + it2, len - it2);
 			}

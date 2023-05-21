@@ -100,11 +100,6 @@ void ResponseData::createResponse(struct kevent& event) {
             if (storage->getRequestData().getAutoIndex()) {
                 std::cout << "AUTOINDEX ON, must call storeFolderContent()\n";
                 std::cout << "     URLPathFirstPart: [" << storage->getRequestData().getURLPathFirstPart() << "]" << std::endl;
-                // if (storage->getRequestData().getURLPathFirstPart().empty()) {
-                // 	std::cout << BLU "first part is empty\n" << RES;
-                // 	std::string newPath = "./resources/" + storage->getRequestData().getURLPath();
-                // 	_responseBody = storeFolderContent(newPath.c_str());
-                // } else
                 std::cout << "Setting _responseBody\n";
                 _responseBody = storeFolderContent(storage->getRequestData().getURLPathFirstPart().c_str());
                 if (not _responseBody.empty()) {

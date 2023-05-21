@@ -63,7 +63,7 @@ int main(int ac, char **av) {
                         /************************************* cgi location block data ************************************/
                         std::cout << std::endl << "Starting location block" << std::endl;
                         std::cout << "Is this location a CGI location: " << it_location->isLocationCgi() << std::endl;
-                        std::cout << "Server block and location block index files can be used for requests that match this location: " << it_location->useServerBlockIndexFile << std::endl;
+//                        std::cout << "Server block and location block index files can be used for requests that match this location: " << it_location->useServerBlockIndexFile << std::endl;
 
                         std::string locationCgiExtension = it_location->getLocationCgiExtension();
                         std::cout << GRN << std::left << std::setw(30) << "\"location\": " << locationCgiExtension << RES << std::endl;
