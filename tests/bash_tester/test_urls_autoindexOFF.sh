@@ -42,7 +42,7 @@ RES='\033[0m'
 ### SETTINGS #################################################################
 PASSWORD="..."													# local sudo password, to run /usr/local/opt/nginx/bin/nginx -g "daemon off;" (this method is bad, but for now brew is not working)
 # PathMyWebServer="/Users/jmb/Desktop/projects/webserv03may00"		# path to ./webserv executable  HOME
-PathMyWebServer="/Users/jmurovec/Desktop/projects/webserv16may/"		# path to ./webserv executable  CODAM
+PathMyWebServer="/Users/jmurovec/Desktop/projects/webserv21mayMerged/"		# path to ./webserv executable  CODAM
 PathMyWebServerPublicFolder="$PathMyWebServer/resources/"			# path to html content of the webserv 
 # PathNginxPublicFolder="/usr/local/var/www/resources/"					# the above folder will be copied to this nginx folder  HOME
 PathNginxPublicFolder="/Users/jmurovec/.brew/var/www/resources/"		# the above folder will be copied to this nginx folder	CODAM
@@ -57,8 +57,9 @@ CONFIG_FILE=standard_complete_forTester.conf
 
 # Copy the modified nginx config file into nginx, to override the original nginx.config
 # The modified version has to have correct content, to be able to display webserver html pages
-mv "$PathNginx/nginx.conf" "$PathNginx/nginx.conf.ORIG"
-cp "$PathMyWebServer/tests/nginx.conf" "$PathNginx/nginx.conf"
+# mv "$PathNginx/nginx.conf" "$PathNginx/nginx.conf.ORIG"
+cp "$PathMyWebServer/tests/bash_tester/nginx.conf" "$PathNginx/nginx.conf"
+exit 1
 
 # COPY THE WHOLE PUBLIC HTML FOLDER FROM WEBSERV TO NGINX
 # BEFORE COPYING, DELETE PREVIOUS HTML FOLDER FROM NGINX, IF IT EXISTS
