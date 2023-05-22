@@ -88,11 +88,9 @@ CONFIG_FILE = standard_complete.conf
 # $? = All prerequisites NEWER than the target
 # https://www.gnu.org/software/make/manual/html_node/Automatic-Variables.html
 
-all: $(NAME)
+all: create_temp_files $(NAME)
 
-
-
-$(NAME): create_temp_files $(OBJ) $(INCLUDES_DEPENDENCY)
+$(NAME):  $(OBJ) $(INCLUDES_DEPENDENCY)
 	$(CPP) $(FLAGS) -o $@ $(OBJ)
 	@echo "$(GREEN)server loaded$(RESET)"
 	@echo "$(GREEN)run ./webserv [file.conf]$(RESET)"
@@ -111,14 +109,15 @@ $(NAME): create_temp_files $(OBJ) $(INCLUDES_DEPENDENCY)
 
 create_temp_files:
 	@echo "$(GREEN) CREATE TEMP FILES $(CONFIG_FILE)$(RESET)\n"
-	mkdir -p ./resources/folder_noPerm
-	cp -f ./resources/index.html 			./resources/noPerm.html
-	cp -f ./resources/images/img_36kb.jpg ./resources/images/noPerm.jpg
-	cp -f ./resources/images/img_36kb.jpg ./resources/UPLOADS/noPerm.jpg
-	chmod 000 ./resources/folder_noPerm
-	chmod 000 ./resources/noPerm.html
-	chmod 000 ./resources/images/noPerm.jpg
-	chmod 000 ./resources/UPLOADS/noPerm.jpg
+	@mkdir -p ./resources/folder_noPerm
+	@cp -f ./resources/index.html 			./resources/noPerm.html
+	@cp -f ./resources/images/img_36kb.jpg ./resources/images/noPerm.jpg
+	@cp -f ./resources/images/img_36kb.jpg ./resources/UPLOADS/noPerm.jpg
+	@chmod 000 ./resources/folder_noPerm
+	@chmod 000 ./resources/noPerm.html
+	@chmod 000 ./resources/images/noPerm.jpg
+	@chmod 000 ./resources/UPLOADS/noPerm.jpg
+
 clean:
 	rm -rf $(OBJ)
 	@rm -rf a.out *.dSYM
@@ -128,8 +127,9 @@ clean:
 fclean: clean
 	rm -f $(NAME)
 	@rm -rf ./tests/curlNginxOutput ./tests/curlWebservOutput ./tests/siege/outputFiles ./tests/error.log
-	chmod 744 ./resources/folder_noPerm ./resources/UPLOADS/noPerm.jpg
-	mv	./resources/UPLOADS/noPerm.jpg	./resources/UPLOADS/some_image.jpg
+	@chmod 744 ./resources/folder_noPerm  > /dev/null  2>&1 || true
+	@chmod 744 ./resources/UPLOADS/noPerm.jpg  > /dev/null  2>&1 || true
+	@mv	./resources/UPLOADS/noPerm.jpg	./resources/UPLOADS/some_image.jpg	> /dev/null  2>&1 || true
 	@rm -rf  ./resources/folder_noPerm
 	@rm -rf  ./resources/noPerm.html
 	@rm -rf  ./resources/images/noPerm.jpg
@@ -143,7 +143,7 @@ config: $(CONFIG_FILE)
 	@echo "$(GREEN)Testing $(CONFIG_FILE)$(RESET)\n"
 	@./confiFileTester $(CONFIG_FILE)
 
-.PHONY: all clean fclean re config
+.PHONY: all clean fclean re config create_temp_files
 # PHONY = Prevents make from confusing the phony target with a file name.
 # i.e.: Use PHONY if a target is not intended to be a filename:
 # e.g.: If you happen to have a file named clean, this target won't run, which
