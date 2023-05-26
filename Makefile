@@ -108,7 +108,7 @@ $(NAME):  $(OBJ) $(INCLUDES_DEPENDENCY)
 ################################# CLEAN RULES #################################
 
 create_temp_files:
-	@echo "$(GREEN) CREATE TEMP FILES $(CONFIG_FILE)$(RESET)\n"
+	@echo "$(GREEN) CREATE TEMP FILES $(RESET)\n"
 	@mkdir -p ./resources/folder_noPerm
 	@cp -f ./resources/index.html 			./resources/noPerm.html
 	@cp -f ./resources/images/img_36kb.jpg ./resources/images/noPerm.jpg

@@ -1,0 +1,23 @@
+HTTP/1.1 200 OK
+
+<html>
+<head><title>Index of /</title></head>
+<body>
+<h1>Index of /</h1><hr><pre><a href="../">../</a>
+<a href="UPLOADS/">UPLOADS/</a>                                           25-May-2023 15:35                   -
+<a href="cgi/">cgi/</a>                                               25-May-2023 15:35                   -
+<a href="cookiesSet/">cookiesSet/</a>                                        25-May-2023 15:35                   -
+<a href="error_pages/">error_pages/</a>                                       25-May-2023 15:35                   -
+<a href="folderA/">folderA/</a>                                           25-May-2023 15:35                   -
+<a href="icons/">icons/</a>                                             25-May-2023 15:35                   -
+<a href="images/">images/</a>                                            25-May-2023 15:35                   -
+<a href="localhost/">localhost/</a>                                         25-May-2023 15:35                   -
+<a href="location_random_dir/">location_random_dir/</a>                               25-May-2023 15:35                   -
+<a href="server_root/">server_root/</a>                                       25-May-2023 15:35                   -
+<a href="texts/">texts/</a>                                             25-May-2023 15:35                   -
+<a href="400.html">400.html</a>                                           25-May-2023 15:35                2395
+<a href="cgi_index.html">cgi_index.html</a>                                     25-May-2023 15:35                3578
+<a href="favicon.ico">favicon.ico</a>                                        25-May-2023 15:35               15406
+<a href="indexXXX.html">indexXXX.html</a>                                      25-May-2023 15:35                1816
+</pre><hr></body>
+</html>

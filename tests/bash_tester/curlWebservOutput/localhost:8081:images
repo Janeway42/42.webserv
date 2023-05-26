@@ -1,0 +1,25 @@
+HTTP/1.1 200 OK
+
+<html>
+<head>
+<title>Index./resources/images/</title>
+</head>
+<body><h2>Index of the folder: <span style='color:blue;'>./resources/images/</h2><ul></span>
+<li><a href=''>  ./  </a></li>
+<li><a href='/'>  . ./<br>  </a></li>
+<li><a href='/images/someFolder/'>  someFolder/  </a></li>
+<li><a href='/images/favicon.ico'>  favicon.ico  </a></li>
+<li><a href='/images/img_109kb.jpg'>  img_109kb.jpg  </a></li>
+<li><a href='/images/img_13000kb.jpg'>  img_13000kb.jpg  </a></li>
+<li><a href='/images/img_36kb.jpg'>  img_36kb.jpg  </a></li>
+<li><a href='/images/img_5000kb.jpg'>  img_5000kb.jpg  </a></li>
+<li><a href='/images/img_938kb.jpg'>  img_938kb.jpg  </a></li>
+<li><a href='/images/index_imagesXXX.html'>  index_imagesXXX.html  </a></li>
+<li><a href='/images/thb_109kb.jpg'>  thb_109kb.jpg  </a></li>
+<li><a href='/images/thb_13000kb.jpg'>  thb_13000kb.jpg  </a></li>
+<li><a href='/images/thb_36kb.jpg'>  thb_36kb.jpg  </a></li>
+<li><a href='/images/thb_5000kb.jpg'>  thb_5000kb.jpg  </a></li>
+<li><a href='/images/thb_938kb.jpg'>  thb_938kb.jpg  </a></li>
+<li><a href='/images/webserv-arch.pdf'>  webserv-arch.pdf  </a></li>
+<li><a href='/images/webserver-arch.png'>  webserver-arch.png  </a></li>
+</ul></body></htm
