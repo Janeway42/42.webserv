@@ -17,6 +17,7 @@ class CgiData: public Parser
 		bool			_pipesDone;
 		bool			_isCgi;
 		ssize_t   		_bytesToCgi;
+		pid_t			_childPid;
 
 	public:
 		CgiData();
@@ -33,11 +34,13 @@ class CgiData: public Parser
 		int				getPipeCgiIn_1();
 		int				getPipeCgiOut_0();
 		int				getPipeCgiOut_1();
+		pid_t			getChildPid();
 
 		// setters
 		void			setIsCgi(bool val);
 		void			setPipesDone(bool val);
 		void			setBytesToCgi(ssize_t val);
+		void 			setChildPid(pid_t pid);
 	
 		class CgiException: public std::exception
         {

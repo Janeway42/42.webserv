@@ -55,7 +55,8 @@ void Request::runExecve(char *ENV[], char *args[], struct kevent event) {
         exit(1);
 	}
 	else {				// PARENT
-		std::cerr << "    Start Parent\n";
+		std::cerr << "    Start Parent, fork ret: " << retFork << " \n";
+        _cgi.setChildPid(retFork);
 		close(_cgi.getPipeCgiOut_1());
 		close(_cgi.getPipeCgiIn_0());
 	}

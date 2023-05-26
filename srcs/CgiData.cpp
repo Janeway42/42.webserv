@@ -1,5 +1,6 @@
 #include "CgiData.hpp"
 #include "RequestParser.hpp"
+#include <signal.h>
 
 CgiData::CgiData()
 {
@@ -10,6 +11,7 @@ CgiData::CgiData()
 	_bytesToCgi = 0;
 	_isCgi = false;
 	_pipesDone = false;
+	_childPid = -1;
 }
 
 CgiData::~CgiData(){}
@@ -67,6 +69,10 @@ void CgiData::closePipes()
 		std::cout << "pipe: _fd_out[1]; " <<  fcntl(_fd_out[1], F_GETFD) << std::endl;
 		close(_fd_out[1]);
 	}
+	if (_childPid != -1) {
+		std::cout << "child PID " <<  _childPid << " will be killed (I am sorry)" << std::endl;
+		kill(_childPid, SIGINT);
+	}
 }
 
 // ------------------------------------------------------------------ getters
@@ -106,6 +112,10 @@ bool CgiData::getPipesDone()
 	return (_pipesDone);
 }
 
+pid_t CgiData::getChildPid() {
+	return (_childPid);
+}
+
 // ------------------------------------------------------------------ setters
 // --------------------------------------------------------------------------
 
@@ -122,4 +132,8 @@ void CgiData::setBytesToCgi(ssize_t val)
 void CgiData::setPipesDone(bool val)
 {
 	_pipesDone = val;
+}
+
+void CgiData::setChildPid(pid_t pid) {
+	_childPid = pid;
 }
