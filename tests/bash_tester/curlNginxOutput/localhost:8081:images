@@ -1,0 +1,23 @@
+HTTP/1.1 200 OK
+
+<html>
+<head><title>Index of /images/</title></head>
+<body>
+<h1>Index of /images/</h1><hr><pre><a href="../">../</a>
+<a href="someFolder/">someFolder/</a>                                        25-May-2023 15:35                   -
+<a href="favicon.ico">favicon.ico</a>                                        25-May-2023 15:35               15406
+<a href="img_109kb.jpg">img_109kb.jpg</a>                                      25-May-2023 15:35              108934
+<a href="img_13000kb.jpg">img_13000kb.jpg</a>                                    25-May-2023 15:35            13482898
+<a href="img_36kb.jpg">img_36kb.jpg</a>                                       25-May-2023 15:35               35581
+<a href="img_5000kb.jpg">img_5000kb.jpg</a>                                     25-May-2023 15:35             4992867
+<a href="img_938kb.jpg">img_938kb.jpg</a>                                      25-May-2023 15:35              937941
+<a href="index_imagesXXX.html">index_imagesXXX.html</a>                               25-May-2023 15:35                1450
+<a href="thb_109kb.jpg">thb_109kb.jpg</a>                                      25-May-2023 15:35                5408
+<a href="thb_13000kb.jpg">thb_13000kb.jpg</a>                                    25-May-2023 15:35               13686
+<a href="thb_36kb.jpg">thb_36kb.jpg</a>                                       25-May-2023 15:35                3242
+<a href="thb_5000kb.jpg">thb_5000kb.jpg</a>                                     25-May-2023 15:35                7268
+<a href="thb_938kb.jpg">thb_938kb.jpg</a>                                      25-May-2023 15:35                3187
+<a href="webserv-arch.pdf">webserv-arch.pdf</a>                                   25-May-2023 15:35               25993
+<a href="webserver-arch.png">webserver-arch.png</a>                                 25-May-2023 15:35              547890
+</pre><hr></body>
+</html>

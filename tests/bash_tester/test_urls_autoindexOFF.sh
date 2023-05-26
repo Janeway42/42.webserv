@@ -42,7 +42,7 @@ RES='\033[0m'
 ### SETTINGS #################################################################
 PASSWORD="..."													# local sudo password, to run /usr/local/opt/nginx/bin/nginx -g "daemon off;" (this method is bad, but for now brew is not working)
 # PathMyWebServer="/Users/jmb/Desktop/projects/webserv03may00"		# path to ./webserv executable  HOME
-PathMyWebServer="/Users/jmurovec/Desktop/projects/webserv21mayMerged/"		# path to ./webserv executable  CODAM
+PathMyWebServer="/Users/jmurovec/Desktop/projects/webserv25may/"		# path to ./webserv executable  CODAM
 PathMyWebServerPublicFolder="$PathMyWebServer/resources/"			# path to html content of the webserv 
 # PathNginxPublicFolder="/usr/local/var/www/resources/"					# the above folder will be copied to this nginx folder  HOME
 PathNginxPublicFolder="/Users/jmurovec/.brew/var/www/resources/"		# the above folder will be copied to this nginx folder	CODAM
@@ -50,16 +50,29 @@ PathNginxPublicFolder="/Users/jmurovec/.brew/var/www/resources/"		# the above fo
 PathNginx="/Users/jmurovec/.brew/etc/nginx/"						# nginx executable	CODAM
 PORT=8080
 localhost="http://localhost:$PORT/"
-curlNginxOutput="$PathMyWebServer/tests/curlNginxOutput/"
-curlWebservOutput="$PathMyWebServer/tests/curlWebservOutput/"
+curlNginxOutput="$PathMyWebServer/tests/bash_tester/curlNginxOutput/"
+curlWebservOutput="$PathMyWebServer/tests/bash_tester/curlWebservOutput/"
 CONFIG_FILE=standard_complete_forTester.conf
+
+
+# MAKE WEBSERV
+cd ../../
+make
+cd tests/bash_tester
 
 
 # Copy the modified nginx config file into nginx, to override the original nginx.config
 # The modified version has to have correct content, to be able to display webserver html pages
 # mv "$PathNginx/nginx.conf" "$PathNginx/nginx.conf.ORIG"
 cp "$PathMyWebServer/tests/bash_tester/nginx.conf" "$PathNginx/nginx.conf"
-exit 1
+
+# REMOVE FILES WITH NO PERMISSIONS BEFORE COPYING
+chmod 744 $PathMyWebServerPublicFolder/folder_noPerm
+rm -rf $PathMyWebServerPublicFolder/folder_noPerm
+rm -f $PathMyWebServerPublicFolder/noPerm.html
+rm -f $PathMyWebServerPublicFolder/images/noPerm.jpg
+rm -rf $PathMyWebServerPublicFolder/UPLOADS/*
+
 
 # COPY THE WHOLE PUBLIC HTML FOLDER FROM WEBSERV TO NGINX
 # BEFORE COPYING, DELETE PREVIOUS HTML FOLDER FROM NGINX, IF IT EXISTS
@@ -68,6 +81,9 @@ mkdir   -p  $PathNginxPublicFolder
 cp      -r  $PathMyWebServerPublicFolder/*   $PathNginxPublicFolder
 # echo "web $PathMyWebServerPublicFolder"
 # echo "nginx  $PathNginxPublicFolder"
+
+
+
 
 # CREATE 2 FOLDERS FOR WEBSERV AND NGINX OUTPUT FILES
 rm -rf $curlNginxOutput $curlWebservOutput
@@ -125,7 +141,7 @@ testURLpath_justFirstHeaderLine "localhost:$PORT/XXX/index_texts.html"     "loca
 testURLpath_justFirstHeaderLine "localhost:$PORT/folderA/"                 "localhost:folderA:"
 
 # #               URL-PATH EXISTS< BUT NO SLASH AT END    					 OUTPUT FILENAME
-# testURLpath_justFirstHeaderLine "localhost:$PORT/folderA"                 "localhost:folderA "
+testURLpath_justFirstHeaderLine "localhost:$PORT/folderA"                 "localhost:folderA "
 
 # # # # IMAGES
 # testURLpath "localhost:$PORT/images/index_images.html"   "localhost:images:index_images.html"
@@ -141,7 +157,7 @@ cat /Users/jmurovec/.brew/Cellar/nginx/logs/error.log > ./error.log		# CODAM
 nginx -s stop
 # sudo nginx -s stop
 # echo "EXIT tests"
-# exit
+
 
 
 ##################################################################################################################
@@ -153,7 +169,7 @@ sleep 0.5
 rm -rf $curlWebservOutput
 
 
-cd ../
+cd ../../
 ./webserv $CONFIG_FILE > log.txt & 
 sleep 1
 
@@ -233,7 +249,7 @@ testURLpath_justFirstHeaderLine "localhost:$PORT/folderA/"                 "loca
 echo -en "${BLU}\nFOLDER PATH EXISTS, BUT NO SLASH AT END (treat as file, return 301 Moved Permanently):\n${RES}"
 echo -en "${BLU}       (should first return 301 with new location with slash, then 403)\n${RES}"
 echo -en "${BLU}       (curl with option -L --location will output all subsequent request, but tester only looks at the first line of the first request)\n${RES}"
-# testURLpath_justFirstHeaderLine "localhost:$PORT/folderA"                 "localhost:folderA "
+testURLpath_justFirstHeaderLine "localhost:$PORT/folderA"                 "localhost:folderA "
 
 # # # # IMAGES
 # testURLpath "localhost:$PORT/images/index_images.html"   "localhost:images:index_images.html"

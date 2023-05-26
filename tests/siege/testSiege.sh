@@ -14,13 +14,14 @@ if  ! command -v siege &> /dev/null ; then
   exit 1
 fi
 
+# cd siege 
 mkdir -p outputFiles
 rm -f ./outputFiles/webservOutput.txt
 outputOut="./outputFiles/stdOut.txt"
 outputErr="./outputFiles/stdErr.txt"
 # portNr="8080"
-portNr="4141"
-NrSeconds=60
+portNr="8080"
+NrSeconds=5
 TIME="-t${NrSeconds}s"
 
 rm -f $outputOut
@@ -53,31 +54,31 @@ function countdown {
 }
 
 
-# echo -e "$BLU   TEST: 1 user, $TIME seconds $RES" 1>&2
-# countdown &
-# siege -b -c1 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
+echo -e "$BLU   TEST: 1 user, $TIME seconds $RES" 1>&2
+countdown &
+siege -b -c1 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
 
-# echo -e "$BLU   TEST: 20 users, $TIME seconds $RES" 1>&2
-# countdown &
-# siege -b -c20 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
+echo -e "$BLU   TEST: 20 users, $TIME seconds $RES" 1>&2
+countdown &
+siege -b -c20 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
 
 echo -e "$BLU   TEST: 50 users, $TIME seconds $RES" 1>&2
 countdown &
 siege -b -c50 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
 
-# echo -e "$BLU   TEST: 100 users, $TIME seconds $RES" 1>&2
-# countdown &
-# siege -b -c100 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
+echo -e "$BLU   TEST: 100 users, $TIME seconds $RES" 1>&2
+countdown &
+siege -b -c100 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
 
-# echo -e "$BLU   TEST: 150 users, $TIME seconds $RES" 1>&2
-# countdown &
-# siege -b -c150 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
+echo -e "$BLU   TEST: 150 users, $TIME seconds $RES" 1>&2
+countdown &
+siege -b -c150 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
 
-# echo -e "$BLU   TEST: 200 users, $TIME seconds $RES" 1>&2
-# siege -b -c200 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
+echo -e "$BLU   TEST: 200 users, $TIME seconds $RES" 1>&2
+siege -b -c200 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
 
-# echo -e "$BLU   TEST: 250 users, $TIME seconds $RES" 1>&2
-# siege -b -c200 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
+echo -e "$BLU   TEST: 250 users, $TIME seconds $RES" 1>&2
+siege -b -c200 $TIME http://localhost:$portNr/index.html >> $outputOut 2>> $outputErr
 
 sleep 0.3
 pkill -f webserv
