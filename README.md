@@ -1,6 +1,5 @@
 # **42.Webserv**
 
-
 Run:
 ----
 - make
@@ -12,7 +11,7 @@ Run:
 
 Writing your own HTTP [server](https://en.wikipedia.org/wiki/Web_server) from scratch in C++ 98
 
-<img src="https://github.com/Janeway42/webserv/blob/main/resources/images/webserver-arch.png" width=900 >
+<p align="center"><img src="https://github.com/Janeway42/webserv/blob/main/resources/images/webserver-arch.png" width=900></p>
 
 ---
 - Allowed external functions: Everything in C++ 98.
